@@ -113,8 +113,13 @@ export default function AppRouter() {
         <FaqPage />
       </Route>
 
-      <Route path="/library/:rest*">
+      <Route path="/library">
         {/* TODO: Add auth guard when backend auth is wired */}
+        <LibraryApp />
+      </Route>
+
+      <Route path="/library/:rest*">
+        {/* Handles any nested library routes */}
         <LibraryApp />
       </Route>
 

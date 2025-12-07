@@ -22,6 +22,7 @@ export default function HeaderLanding() {
     { name: 'Testimonials', href: '/#testimonials' },
     { name: 'FAQ', href: '/faq' },
     { name: 'About Us', href: '/about-us' },
+    { name: 'Library', href: '/library' },
   ];
 
   const handleAnchorClick = (e, href, onClick) => {

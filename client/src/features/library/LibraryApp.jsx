@@ -11,11 +11,17 @@ import {
   PreviewModal,
 } from '../../components/modals';
 
+// Landing page components
+import HeaderLanding from '../landing/components/HeaderLanding';
+import FooterLanding from '../landing/components/FooterLanding';
+import All4FootyFamilyBar from '../landing/components/All4FootyFamilyBar';
+
 // Hooks
 import { useData } from '../../hooks/useData';
 
 // Styles
 import '../../styles/global.css';
+import '../landing/styles/landing-globals.css';
 
 /**
  * Versa Footy Library experience.
@@ -108,16 +114,21 @@ export default function LibraryApp() {
   const previewCategory = previewSkill ? getCategoryById(previewSkill.categoryId) : null;
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #0a0f1a 0%, #1a1f2e 50%, #0d1117 100%)',
-        fontFamily: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-        color: '#e4e4e7',
-      }}
-    >
-      {/* Header with Stats */}
-      <Header stats={stats} />
+    <>
+      {/* Landing Page Header */}
+      <All4FootyFamilyBar />
+      <div
+        style={{
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #0a0f1a 0%, #1a1f2e 50%, #0d1117 100%)',
+          fontFamily: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+          color: '#e4e4e7',
+        }}
+      >
+        <HeaderLanding />
+
+        {/* Library Stats Header */}
+        <Header stats={stats} />
 
       {/* Main Content */}
       <main style={{ maxWidth: 1400, margin: '0 auto', padding: '32px 40px' }}>
@@ -236,7 +247,11 @@ export default function LibraryApp() {
         onClose={() => setPreviewExercise(null)}
         onEdit={openExerciseModal}
       />
-    </div>
+      </div>
+
+      {/* Landing Page Footer */}
+      <FooterLanding />
+    </>
   );
 }
 
