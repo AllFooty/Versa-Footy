@@ -1,0 +1,5 @@
+export { default as Modal } from './Modal';
+export { default as CategoryModal } from './CategoryModal';
+export { default as SkillModal } from './SkillModal';
+export { default as ExerciseModal } from './ExerciseModal';
+export { default as PreviewModal } from './PreviewModal';
