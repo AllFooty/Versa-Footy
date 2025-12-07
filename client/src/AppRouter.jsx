@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link, Route, Switch } from 'wouter';
 
+import { AuthProvider } from './lib/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+
 import Landing from './features/landing/LandingPage';
 import AboutPage from './features/landing/AboutPage';
 import FaqPage from './features/landing/FaqPage';
@@ -96,37 +99,40 @@ const ghostButtonStyle = {
 
 export default function AppRouter() {
   return (
-    <Switch>
-      <Route path="/">
-        <Landing />
-      </Route>
+    <AuthProvider>
+      <Switch>
+        <Route path="/">
+          <Landing />
+        </Route>
 
-      <Route path="/login">
-        <Login />
-      </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
 
-      <Route path="/about-us">
-        <AboutPage />
-      </Route>
+        <Route path="/about-us">
+          <AboutPage />
+        </Route>
 
-      <Route path="/faq">
-        <FaqPage />
-      </Route>
+        <Route path="/faq">
+          <FaqPage />
+        </Route>
 
-      <Route path="/library">
-        {/* TODO: Add auth guard when backend auth is wired */}
-        <LibraryApp />
-      </Route>
+        <Route path="/library">
+          <ProtectedRoute>
+            <LibraryApp />
+          </ProtectedRoute>
+        </Route>
 
-      <Route path="/library/:rest*">
-        {/* Handles any nested library routes */}
-        <LibraryApp />
-      </Route>
+        <Route path="/library/:rest*">
+          <ProtectedRoute>
+            <LibraryApp />
+          </ProtectedRoute>
+        </Route>
 
-      <Route>
-        <NotFound />
-      </Route>
-    </Switch>
+        <Route>
+          <NotFound />
+        </Route>
+      </Switch>
+    </AuthProvider>
   );
 }
-

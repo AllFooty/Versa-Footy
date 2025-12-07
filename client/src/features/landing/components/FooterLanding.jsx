@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'wouter';
 import SocialIcon from './SocialIcons';
+import { useAuth } from '../../../lib/AuthContext';
 
 const FooterLanding = () => {
+  const { isAuthenticated } = useAuth();
+
   const LinkEl = ({ href, children, style }) => {
     const isExternal = href.startsWith('http');
     if (isExternal) {
@@ -19,14 +22,19 @@ const FooterLanding = () => {
     );
   };
 
-  const quickLinks = [
+  // Base quick links
+  const baseQuickLinks = [
     { name: 'Home', href: '/' },
     { name: 'Features', href: '/#features' },
     { name: 'Testimonials', href: '/#testimonials' },
     { name: 'FAQ', href: '/faq' },
     { name: 'About Us', href: '/about-us' },
-    { name: 'Library', href: '/library' },
   ];
+
+  // Add Library link only when authenticated
+  const quickLinks = isAuthenticated
+    ? [...baseQuickLinks, { name: 'Library', href: '/library' }]
+    : baseQuickLinks;
 
   const legalLinks = [
     { name: 'Terms of Service', href: '/terms-of-service' },

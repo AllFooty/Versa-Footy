@@ -1,10 +1,16 @@
 import React from 'react';
+import { useAuth } from '../lib/AuthContext';
 
 /**
- * App header with logo and stats display
+ * App header with logo, stats display, and sign out
  */
 const Header = ({ stats }) => {
   const { totalCategories, totalSkills, totalExercises } = stats;
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
     <header
@@ -63,11 +69,67 @@ const Header = ({ stats }) => {
           </div>
         </div>
 
-        {/* Stats */}
-        <div style={{ display: 'flex', gap: 24 }}>
-          <StatItem value={totalCategories} label="Categories" color="#3b82f6" />
-          <StatItem value={totalSkills} label="Skills" color="#22c55e" />
-          <StatItem value={totalExercises} label="Exercises" color="#f97316" />
+        {/* Stats & User */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+          {/* Stats */}
+          <div style={{ display: 'flex', gap: 24 }}>
+            <StatItem value={totalCategories} label="Categories" color="#3b82f6" />
+            <StatItem value={totalSkills} label="Skills" color="#22c55e" />
+            <StatItem value={totalExercises} label="Exercises" color="#f97316" />
+          </div>
+
+          {/* User & Sign Out */}
+          {user && (
+            <div 
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 12,
+                paddingLeft: 24,
+                borderLeft: '1px solid rgba(255,255,255,0.1)',
+              }}
+            >
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ 
+                  margin: 0, 
+                  fontSize: 13, 
+                  color: '#a1a1aa',
+                  maxWidth: 160,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {user.email}
+                </p>
+              </div>
+              <button
+                onClick={handleSignOut}
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: 8,
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  background: 'rgba(255,255,255,0.05)',
+                  color: '#a1a1aa',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+                  e.target.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+                  e.target.style.color = '#fca5a5';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255,255,255,0.05)';
+                  e.target.style.borderColor = 'rgba(255,255,255,0.1)';
+                  e.target.style.color = '#a1a1aa';
+                }}
+              >
+                Sign out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

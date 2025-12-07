@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../../lib/AuthContext';
 import styles from '../styles/LandingPage.module.css';
 
 export default function HeaderLanding() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { isAuthenticated, user, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,15 +17,20 @@ export default function HeaderLanding() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navigationItems = [
+  // Base navigation items (always visible)
+  const baseNavigationItems = [
     { name: 'How It Works', href: '/#how-it-works' },
     { name: 'Features', href: '/#features' },
     { name: 'Why Us', href: '/#why-versa-footy' },
     { name: 'Testimonials', href: '/#testimonials' },
     { name: 'FAQ', href: '/faq' },
     { name: 'About Us', href: '/about-us' },
-    { name: 'Library', href: '/library' },
   ];
+
+  // Add Library link only when authenticated
+  const navigationItems = isAuthenticated
+    ? [...baseNavigationItems, { name: 'Library', href: '/library' }]
+    : baseNavigationItems;
 
   const handleAnchorClick = (e, href, onClick) => {
     // Check if it's a hash link (anchor on current page)
@@ -129,6 +136,22 @@ export default function HeaderLanding() {
     gap: '8px',
   };
 
+  const signOutButtonStyle = {
+    background: 'transparent',
+    color: 'rgba(255, 255, 255, 0.85)',
+    borderRadius: '10px',
+    padding: '10px 16px',
+    fontWeight: '500',
+    fontSize: '14px',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    textDecoration: 'none',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+  };
+
   return (
     <header style={headerStyle}>
       <div style={containerStyle}>
@@ -166,17 +189,39 @@ export default function HeaderLanding() {
 
         {/* CTA Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <a 
-            href="/#early-access" 
-            style={buttonStyle} 
-            className="desktop-cta"
-            onClick={(e) => handleAnchorClick(e, '/#early-access')}
-          >
-            <span>Sign Up</span>
-            <svg style={{ width: '16px', height: '16px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </a>
+          {isAuthenticated ? (
+            <>
+              <span style={{ 
+                color: 'rgba(255, 255, 255, 0.7)', 
+                fontSize: '13px',
+                maxWidth: '140px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }} className="desktop-cta">
+                {user?.email}
+              </span>
+              <button 
+                onClick={signOut}
+                style={signOutButtonStyle} 
+                className="desktop-cta"
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <Link href="/login">
+              <a 
+                style={buttonStyle} 
+                className="desktop-cta"
+              >
+                <span>Sign In</span>
+                <svg style={{ width: '16px', height: '16px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
+            </Link>
+          )}
 
           {/* Mobile Menu Button */}
           <button
@@ -256,23 +301,37 @@ export default function HeaderLanding() {
                 transition={{ delay: navigationItems.length * 0.05 }}
                 style={{ paddingTop: '12px' }}
               >
-                <a
-                  href="/#early-access"
-                  style={{
-                    ...buttonStyle,
-                    width: '100%',
-                    justifyContent: 'center',
-                  }}
-                  onClick={(e) => {
-                    handleAnchorClick(e, '/#early-access');
-                    setIsMobileMenuOpen(false);
-                  }}
-                >
-                  <span>Sign Up Now</span>
-                  <svg style={{ width: '16px', height: '16px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </a>
+                {isAuthenticated ? (
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    style={{
+                      ...signOutButtonStyle,
+                      width: '100%',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    Sign Out
+                  </button>
+                ) : (
+                  <Link href="/login">
+                    <a
+                      style={{
+                        ...buttonStyle,
+                        width: '100%',
+                        justifyContent: 'center',
+                      }}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <span>Sign In</span>
+                      <svg style={{ width: '16px', height: '16px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </a>
+                  </Link>
+                )}
               </motion.div>
             </nav>
           </motion.div>
