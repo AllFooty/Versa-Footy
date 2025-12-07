@@ -9,7 +9,6 @@ import './styles/landing-globals.css';
 
 const FaqPage = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 300);
@@ -27,7 +26,7 @@ const FaqPage = () => {
     <>
       <All4FootyFamilyBar />
       <div className={styles.landingPage}>
-        <HeaderLanding isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />
+        <HeaderLanding />
 
         <main>
           {/* Hero Section for FAQ */}

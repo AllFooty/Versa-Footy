@@ -20,7 +20,7 @@ import All4FootyFamilyBar from '../landing/components/All4FootyFamilyBar';
 import { useData } from '../../hooks/useData';
 
 // Styles
-import '../../styles/global.css';
+import '../../styles/library.css';
 import '../landing/styles/landing-globals.css';
 
 /**

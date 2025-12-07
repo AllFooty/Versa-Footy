@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'wouter';
 import { motion } from 'framer-motion';
 import HeaderLanding from './components/HeaderLanding';
 import FooterLanding from './components/FooterLanding';
+import All4FootyFamilyBar from './components/All4FootyFamilyBar';
 import styles from './styles/LandingPage.module.css';
 import './styles/landing-globals.css';
 
@@ -13,16 +14,11 @@ const LinkedInIcon = () => (
 );
 
 const AboutPage = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 300);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <div className={`${styles.aboutPage} min-h-screen flex flex-col relative overflow-hidden`}>
-      <HeaderLanding />
+    <>
+      <All4FootyFamilyBar />
+      <div className={`${styles.aboutPage} min-h-screen flex flex-col relative overflow-hidden`}>
+        <HeaderLanding />
 
       <main className={`${styles.mainContent} flex-grow`}>
         <section className={`${styles.heroSection} py-20 text-center`}>
@@ -182,7 +178,8 @@ const AboutPage = () => {
       </main>
 
       <FooterLanding />
-    </div>
+      </div>
+    </>
   );
 };
 
