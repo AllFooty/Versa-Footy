@@ -1,0 +1,263 @@
+/* =========================================
+   WENGER QUOTE SECTION
+   Premium quote section with elegant styling
+   ========================================= */
+
+.wengerQuoteSection {
+  background: linear-gradient(135deg, #1a2b47 0%, #0f172a 60%, #1e1b4b 100%);
+  position: relative;
+  overflow: hidden;
+  color: white;
+  padding: 5rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .wengerQuoteSection {
+    padding: 6rem 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .wengerQuoteSection {
+    padding: 7rem 3rem;
+  }
+}
+
+/* Background decorative elements */
+.wengerQuoteSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse at 15% 30%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 70%, rgba(255, 209, 102, 0.08) 0%, transparent 50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.wengerQuoteSection::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  right: 5%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Quote container */
+.quoteContainer {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Large decorative quote marks */
+.quoteContainer::before {
+  content: '"';
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  color: rgba(255, 209, 102, 0.15);
+  line-height: 1;
+  z-index: -1;
+}
+
+@media (min-width: 768px) {
+  .quoteContainer::before {
+    font-size: 12rem;
+    top: -60px;
+  }
+}
+
+/* Quote text */
+.quoteText {
+  position: relative;
+  z-index: 2;
+  font-size: 1.375rem;
+  line-height: 1.85;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+@media (min-width: 768px) {
+  .quoteText {
+    font-size: 1.625rem;
+    line-height: 1.9;
+  }
+}
+
+@media (min-width: 1024px) {
+  .quoteText {
+    font-size: 1.875rem;
+  }
+}
+
+/* Highlighted text within quote */
+.quoteHighlight {
+  color: #ffd166;
+  font-weight: 600;
+  position: relative;
+  display: inline;
+  text-shadow: 0 0 20px rgba(255, 209, 102, 0.3);
+}
+
+/* Subtle animation on highlight */
+@keyframes subtleGlow {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(255, 209, 102, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(255, 209, 102, 0.5);
+  }
+}
+
+.quoteHighlight {
+  animation: subtleGlow 3s ease-in-out infinite;
+}
+
+/* Quote author section */
+.quoteAuthor {
+  position: relative;
+  z-index: 2;
+  margin-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Author line decoration */
+.quoteAuthor::before {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #ffd166, transparent);
+  border-radius: 2px;
+  margin-bottom: 0.5rem;
+}
+
+/* Author name */
+.authorName {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+@media (min-width: 768px) {
+  .authorName {
+    font-size: 1.375rem;
+  }
+}
+
+/* Author title/role */
+.authorTitle {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Author image (if used) */
+.authorImage {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 209, 102, 0.4);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .authorImage {
+    width: 88px;
+    height: 88px;
+  }
+}
+
+/* Decorative corner elements */
+.cornerDecoration {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cornerDecoration.topLeft {
+  top: 2rem;
+  left: 2rem;
+  border-top: 2px solid rgba(99, 102, 241, 0.2);
+  border-left: 2px solid rgba(99, 102, 241, 0.2);
+}
+
+.cornerDecoration.bottomRight {
+  bottom: 2rem;
+  right: 2rem;
+  border-bottom: 2px solid rgba(255, 209, 102, 0.2);
+  border-right: 2px solid rgba(255, 209, 102, 0.2);
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 640px) {
+  .wengerQuoteSection {
+    padding: 4rem 1.25rem;
+  }
+  
+  .quoteText {
+    font-size: 1.25rem;
+    line-height: 1.8;
+  }
+  
+  .quoteContainer::before {
+    font-size: 6rem;
+    top: -30px;
+  }
+  
+  .authorName {
+    font-size: 1.125rem;
+  }
+  
+  .authorTitle {
+    font-size: 0.875rem;
+  }
+}
+
+/* Animation for quote appearing */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quoteText.animated {
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.quoteAuthor.animated {
+  animation: fadeInUp 0.8s ease 0.3s forwards;
+  opacity: 0;
+}

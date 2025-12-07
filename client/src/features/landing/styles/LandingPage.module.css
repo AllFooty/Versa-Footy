@@ -1,0 +1,598 @@
+/* =========================================
+   VERSA FOOTY LANDING PAGE STYLES
+   ========================================= */
+
+/* Base Page Styles */
+.landingPage {
+  min-height: 100vh;
+  background-color: #0f172a;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+/* =========================================
+   HEADER STYLES
+   ========================================= */
+.header {
+  background: linear-gradient(180deg, rgba(26, 43, 71, 0.98) 0%, rgba(26, 43, 71, 0.95) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 12px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.navLink {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.businessName {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.businessName:hover {
+  color: #ffd166;
+}
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+.button {
+  background: linear-gradient(135deg, #ff4b4b 0%, #e63946 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 14px 28px;
+  font-weight: 600;
+  font-size: 16px;
+  box-shadow: 0 4px 14px rgba(255, 75, 75, 0.35);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.button:hover {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   HERO SECTION
+   ========================================= */
+.heroSection {
+  background: linear-gradient(165deg, #1a2b47 0%, #0f172a 50%, #1e293b 100%);
+  padding: 60px 0 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroSection::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 80%;
+  height: 200%;
+  background: radial-gradient(ellipse, rgba(99, 102, 241, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .heroSection {
+    padding: 80px 0 100px;
+  }
+}
+
+.tagline {
+  background: linear-gradient(135deg, #ffd166 0%, #ffbe0b 100%);
+  color: #1a2b47;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 15px rgba(255, 209, 102, 0.3);
+}
+
+.heroTitle {
+  color: #ffffff;
+  line-height: 1.15;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 20px 0;
+}
+
+@media (min-width: 640px) {
+  .heroTitle {
+    font-size: 42px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .heroTitle {
+    font-size: 52px;
+  }
+}
+
+.specialHighlightText {
+  background: linear-gradient(135deg, #ff4b4b 0%, #ff6b6b 50%, #ff8585 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heroSubtitle {
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 520px;
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 400;
+  margin: 0 0 32px 0;
+}
+
+@media (min-width: 640px) {
+  .heroSubtitle {
+    font-size: 20px;
+  }
+}
+
+/* Hero Content Layout */
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+}
+
+@media (min-width: 1024px) {
+  .heroContent {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 64px;
+  }
+}
+
+.heroTextContent {
+  flex: 1;
+  text-align: center;
+  max-width: 600px;
+}
+
+@media (min-width: 1024px) {
+  .heroTextContent {
+    text-align: left;
+    max-width: 550px;
+  }
+  
+  .heroTextContent .tagline {
+    margin-left: 0;
+    margin-right: auto;
+  }
+}
+
+.heroMockups {
+  flex: 1;
+  max-width: 500px;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .heroMockups {
+    max-width: 480px;
+  }
+}
+
+/* App Mockups */
+.appMockupsContainer {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .appMockupsContainer {
+    height: 500px;
+  }
+}
+
+.appMockup {
+  position: absolute;
+  width: auto;
+  max-width: 200px;
+  height: auto;
+  max-height: 380px;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  transition: all 0.4s ease;
+}
+
+@media (min-width: 640px) {
+  .appMockup {
+    max-width: 240px;
+    max-height: 460px;
+    border-radius: 32px;
+  }
+}
+
+.mockup1 {
+  transform: translateX(-30%) rotate(-8deg);
+  z-index: 2;
+}
+
+.mockup2 {
+  transform: translateX(30%) rotate(8deg);
+  z-index: 1;
+  opacity: 0.9;
+}
+
+.appMockupsContainer:hover .mockup1 {
+  transform: translateX(-35%) rotate(-12deg) translateY(-10px);
+}
+
+.appMockupsContainer:hover .mockup2 {
+  transform: translateX(35%) rotate(12deg) translateY(-5px);
+  opacity: 1;
+}
+
+/* =========================================
+   SECTION TITLES
+   ========================================= */
+.sectionTitle {
+  color: #1a2b47;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+  position: relative;
+  display: inline-block;
+}
+
+@media (min-width: 640px) {
+  .sectionTitle {
+    font-size: 40px;
+  }
+}
+
+.sectionTitle::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #ff4b4b, #6366f1);
+  border-radius: 2px;
+  margin: 16px auto 0;
+}
+
+/* =========================================
+   HOW IT WORKS SECTION
+   ========================================= */
+.howItWorksSection {
+  background: linear-gradient(165deg, #1a2b47 0%, #0f172a 50%, #1e293b 100%);
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.howItWorksSection::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  left: -10%;
+  width: 50%;
+  height: 160%;
+  background: radial-gradient(ellipse, rgba(99, 102, 241, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.howItWorksSection .sectionTitle {
+  color: #ffffff;
+}
+
+.stepIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.stepTitle {
+  color: #1a2b47;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.stepDescription {
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* =========================================
+   VIDEO SHOWCASE SECTION
+   ========================================= */
+.videoShowcase {
+  background: linear-gradient(135deg, #1a2b47 0%, #0f172a 50%, #1e1b4b 100%);
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.videoShowcase::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(255, 75, 75, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* =========================================
+   WHY VERSA FOOTY SECTION
+   ========================================= */
+.whyVersaFootySection {
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.whyVersaFootySection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -10%;
+  width: 50%;
+  height: 100%;
+  background: radial-gradient(ellipse, rgba(99, 102, 241, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.whyVersaFootySection .sectionTitle {
+  color: #ffffff;
+}
+
+.whyVersaFootyCard {
+  transition: all 0.3s ease;
+}
+
+.whyVersaFootyGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .whyVersaFootyGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* =========================================
+   FEATURES SECTION
+   ========================================= */
+.featuresSection {
+  background: linear-gradient(180deg, #0f172a 0%, #1a2b47 50%, #1e293b 100%);
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.featuresSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse at 10% 20%, rgba(255, 75, 75, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.featuresSection .sectionTitle {
+  color: #ffffff;
+}
+
+/* =========================================
+   TESTIMONIALS SECTION
+   ========================================= */
+.testimonialsSection {
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.testimonialsSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.testimonialsSection .sectionTitle {
+  color: #ffffff;
+}
+
+.testimonialCard {
+  transition: all 0.3s ease;
+}
+
+.testimonialText {
+  color: #334155;
+  font-size: 16px;
+  line-height: 1.75;
+  font-style: italic;
+}
+
+.testimonialAuthor {
+  color: #6366f1;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* =========================================
+   SECTION DIVIDER
+   ========================================= */
+.sectionDivider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 10%, rgba(99, 102, 241, 0.3) 50%, transparent 90%);
+  margin: 0 auto;
+  width: 100%;
+  max-width: 800px;
+}
+
+/* =========================================
+   FAQ SECTION
+   ========================================= */
+.faqSection {
+  background: linear-gradient(180deg, #0f172a 0%, #1a2b47 100%);
+}
+
+.faqSection .sectionTitle {
+  color: #ffffff;
+}
+
+/* =========================================
+   CTA SECTION
+   ========================================= */
+.ctaSection {
+  background: linear-gradient(135deg, #1a2b47 0%, #0f172a 50%, #1e1b4b 100%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaSection::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -25%;
+  width: 50%;
+  height: 200%;
+  background: radial-gradient(ellipse, rgba(99, 102, 241, 0.2) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.ctaSection::after {
+  content: '';
+  position: absolute;
+  bottom: -50%;
+  right: -25%;
+  width: 50%;
+  height: 200%;
+  background: radial-gradient(ellipse, rgba(255, 75, 75, 0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* =========================================
+   EARLY ACCESS SECTION
+   ========================================= */
+.earlyAccessSection {
+  background: linear-gradient(165deg, #1a2b47 0%, #0f172a 50%, #1e293b 100%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.earlyAccessSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse at 30% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(255, 75, 75, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.earlyAccessSection .button {
+  background: linear-gradient(135deg, #ff4b4b 0%, #e63946 100%);
+  color: white;
+  box-shadow: 0 8px 30px rgba(255, 75, 75, 0.35);
+}
+
+.earlyAccessSection .button:hover {
+  background: linear-gradient(135deg, #ffd166 0%, #ffbe0b 100%);
+  color: #1a2b47;
+  box-shadow: 0 12px 40px rgba(255, 209, 102, 0.4);
+}
+
+/* =========================================
+   FOOTER
+   ========================================= */
+.footer {
+  background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 64px 0 24px;
+}
+
+.footerLink {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  color: #ffd166;
+}
+
+/* =========================================
+   RESPONSIVE ADJUSTMENTS
+   ========================================= */
+@media (max-width: 768px) {
+  .howItWorksSection,
+  .whyVersaFootySection,
+  .featuresSection,
+  .testimonialsSection {
+    padding: 60px 0;
+  }
+  
+  .videoShowcase {
+    padding: 60px 0;
+  }
+}
