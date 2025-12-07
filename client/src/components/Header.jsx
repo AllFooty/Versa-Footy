@@ -55,7 +55,7 @@ const Header = ({ stats }) => {
                 WebkitTextFillColor: 'transparent',
               }}
             >
-              Versa Footy Database
+              Versa Footy Library
             </h1>
             <p style={{ margin: 0, fontSize: 13, color: '#71717a' }}>
               Football Skills & Drills Management
