@@ -1,15 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FileText, Plus, Edit3, Trash2, MoreVertical } from 'lucide-react';
+import { FileText, Plus, Edit3, Trash2, MoreVertical, ChevronRight } from 'lucide-react';
 import { IconButton, AgeBadge, SkillCountBadge } from '../ui';
 import ExerciseItem from './ExerciseItem';
 
 /**
  * Single skill item with its exercises
  * Mobile-responsive with touch-friendly interactions
+ * Collapsible to show/hide exercises
  */
 const SkillItem = ({
   skill,
   exercises,
+  isExpanded = false,
+  onToggle,
   onAddExercise,
   onEditSkill,
   onDeleteSkill,
@@ -67,14 +70,28 @@ const SkillItem = ({
       {/* Skill Header */}
       <div
         className="tree-skill touchable"
+        onClick={onToggle}
         style={{ 
           display: 'flex', 
           alignItems: 'center', 
           gap: isMobile ? 10 : 12,
           padding: isMobile ? '12px' : '10px 16px',
           marginLeft: isMobile ? 8 : 32,
+          cursor: 'pointer',
         }}
       >
+        {/* Expand/Collapse Arrow */}
+        <span
+          style={{
+            transition: 'transform 0.2s',
+            transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <ChevronRight size={isMobile ? 16 : 14} color="#71717a" />
+        </span>
+
         <FileText size={isMobile ? 18 : 16} color="#71717a" />
         
         <span style={{ flex: 1, fontWeight: 500, fontSize: isMobile ? 14 : 14 }}>
@@ -87,7 +104,10 @@ const SkillItem = ({
         {/* Kebab Menu */}
         <div ref={menuRef} style={{ position: 'relative' }}>
           <IconButton 
-            onClick={() => setMenuOpen(!menuOpen)} 
+            onClick={(e) => {
+              e.stopPropagation();
+              setMenuOpen(!menuOpen);
+            }} 
             title="Skill options"
             style={isMobile ? { minWidth: 40, minHeight: 40 } : {}}
           >
@@ -96,6 +116,7 @@ const SkillItem = ({
 
           {menuOpen && (
             <div
+              onClick={(e) => e.stopPropagation()}
               style={{
                 position: 'absolute',
                 top: '100%',
@@ -172,8 +193,8 @@ const SkillItem = ({
         </div>
       </div>
 
-      {/* Exercises List */}
-      {exercises.length > 0 && (
+      {/* Exercises List - Only show when expanded */}
+      {isExpanded && exercises.length > 0 && (
         <div style={{ 
           marginLeft: isMobile ? 20 : 64, 
           marginTop: 4,

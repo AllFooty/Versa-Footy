@@ -12,6 +12,8 @@ const CategoryItem = ({
   skills,
   isExpanded,
   onToggle,
+  expandedSkills,
+  onToggleSkill,
   onEditCategory,
   onDeleteCategory,
   onAddSkill,
@@ -218,6 +220,8 @@ const CategoryItem = ({
                 key={skill.id}
                 skill={skill}
                 exercises={getExercisesForSkill(skill.id)}
+                isExpanded={expandedSkills[skill.id] || false}
+                onToggle={() => onToggleSkill(skill.id)}
                 onAddExercise={onAddExercise}
                 onEditSkill={onEditSkill}
                 onDeleteSkill={onDeleteSkill}

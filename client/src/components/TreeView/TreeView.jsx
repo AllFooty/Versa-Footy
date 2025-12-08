@@ -25,6 +25,7 @@ const TreeView = ({
   onDeleteExercise,
 }) => {
   const [expandedCategories, setExpandedCategories] = useState({});
+  const [expandedSkills, setExpandedSkills] = useState({});
   const [isMobile, setIsMobile] = useState(false);
 
   // Detect mobile viewport
@@ -41,6 +42,13 @@ const TreeView = ({
     setExpandedCategories((prev) => ({
       ...prev,
       [categoryId]: !prev[categoryId],
+    }));
+  };
+
+  const toggleSkill = (skillId) => {
+    setExpandedSkills((prev) => ({
+      ...prev,
+      [skillId]: !prev[skillId],
     }));
   };
 
@@ -80,6 +88,8 @@ const TreeView = ({
               skills={skills}
               isExpanded={isExpanded}
               onToggle={toggleCategory}
+              expandedSkills={expandedSkills}
+              onToggleSkill={toggleSkill}
               onEditCategory={onEditCategory}
               onDeleteCategory={onDeleteCategory}
               onAddSkill={onAddSkill}
