@@ -135,7 +135,7 @@ export default function Login() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      setLocation('/library');
+      setLocation('/training');
     }
   }, [isAuthenticated, setLocation]);
 
@@ -206,8 +206,8 @@ export default function Login() {
       if (error) {
         setError(error.message);
       } else if (data.session) {
-        // Successfully authenticated - redirect to library
-        setLocation('/library');
+        // Successfully authenticated - redirect to training app
+        setLocation('/training');
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');

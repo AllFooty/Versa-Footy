@@ -3,11 +3,13 @@ import { Link, Route, Switch } from 'wouter';
 
 import { AuthProvider } from './lib/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminProtectedRoute from './components/AdminProtectedRoute';
 
 import Landing from './features/landing/LandingPage';
 import AboutPage from './features/landing/AboutPage';
 import FaqPage from './features/landing/FaqPage';
 import LibraryApp from './features/library/LibraryApp';
+import TrainingApp from './features/training/TrainingApp';
 import Login from './features/auth/Login';
 
 const NotFound = () => (
@@ -117,16 +119,24 @@ export default function AppRouter() {
           <FaqPage />
         </Route>
 
-        <Route path="/library">
+        {/* Training App - For regular authenticated users */}
+        <Route path="/training">
           <ProtectedRoute>
-            <LibraryApp />
+            <TrainingApp />
           </ProtectedRoute>
         </Route>
 
-        <Route path="/library/:rest*">
-          <ProtectedRoute>
+        {/* Library App - Admin only */}
+        <Route path="/library">
+          <AdminProtectedRoute>
             <LibraryApp />
-          </ProtectedRoute>
+          </AdminProtectedRoute>
+        </Route>
+
+        <Route path="/library/:rest*">
+          <AdminProtectedRoute>
+            <LibraryApp />
+          </AdminProtectedRoute>
         </Route>
 
         <Route>

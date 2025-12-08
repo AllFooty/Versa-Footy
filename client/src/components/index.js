@@ -6,6 +6,10 @@
 export { default as Header } from './Header';
 export { default as SearchBar } from './SearchBar';
 
+// Auth/Route protection components
+export { default as ProtectedRoute } from './ProtectedRoute';
+export { default as AdminProtectedRoute } from './AdminProtectedRoute';
+
 // Tree view components
 export { TreeView, CategoryItem, SkillItem, ExerciseItem } from './TreeView';
 

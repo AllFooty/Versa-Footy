@@ -27,9 +27,9 @@ export default function HeaderLanding() {
     { name: 'About Us', href: '/about-us' },
   ];
 
-  // Add Library link only when authenticated
+  // Add Training link only when authenticated
   const navigationItems = isAuthenticated
-    ? [...baseNavigationItems, { name: 'Library', href: '/library' }]
+    ? [...baseNavigationItems, { name: 'Start Training', href: '/training' }]
     : baseNavigationItems;
 
   const handleAnchorClick = (e, href, onClick) => {
