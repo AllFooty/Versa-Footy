@@ -1,20 +1,11 @@
-import React, { useState } from 'react';
-import { useAuth } from '../lib/AuthContext';
-import { Menu, X, LogOut } from 'lucide-react';
+import React from 'react';
 
 /**
- * App header with logo, stats display, and sign out
+ * App header with logo and stats display
  * Now with mobile-responsive design
  */
 const Header = ({ stats }) => {
   const { totalCategories, totalSkills, totalExercises } = stats;
-  const { user, signOut } = useAuth();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const handleSignOut = async () => {
-    setMobileMenuOpen(false);
-    await signOut();
-  };
 
   return (
     <>
@@ -76,67 +67,11 @@ const Header = ({ stats }) => {
             </div>
           </div>
 
-          {/* Stats & User */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-            {/* Stats */}
-            <div style={{ display: 'flex', gap: 24 }}>
-              <StatItem value={totalCategories} label="Categories" color="#3b82f6" />
-              <StatItem value={totalSkills} label="Skills" color="#22c55e" />
-              <StatItem value={totalExercises} label="Exercises" color="#f97316" />
-            </div>
-
-            {/* User & Sign Out */}
-            {user && (
-              <div 
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: 12,
-                  paddingLeft: 24,
-                  borderLeft: '1px solid rgba(255,255,255,0.1)',
-                }}
-              >
-                <div style={{ textAlign: 'right' }}>
-                  <p style={{ 
-                    margin: 0, 
-                    fontSize: 13, 
-                    color: '#a1a1aa',
-                    maxWidth: 160,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {user.email}
-                  </p>
-                </div>
-                <button
-                  onClick={handleSignOut}
-                  style={{
-                    padding: '8px 14px',
-                    borderRadius: 8,
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    background: 'rgba(255,255,255,0.05)',
-                    color: '#a1a1aa',
-                    fontSize: 13,
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = 'rgba(239, 68, 68, 0.1)';
-                    e.target.style.borderColor = 'rgba(239, 68, 68, 0.3)';
-                    e.target.style.color = '#fca5a5';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = 'rgba(255,255,255,0.05)';
-                    e.target.style.borderColor = 'rgba(255,255,255,0.1)';
-                    e.target.style.color = '#a1a1aa';
-                  }}
-                >
-                  Sign out
-                </button>
-              </div>
-            )}
+          {/* Stats */}
+          <div style={{ display: 'flex', gap: 24 }}>
+            <StatItem value={totalCategories} label="Categories" color="#3b82f6" />
+            <StatItem value={totalSkills} label="Skills" color="#22c55e" />
+            <StatItem value={totalExercises} label="Exercises" color="#f97316" />
           </div>
         </div>
       </header>
@@ -197,24 +132,6 @@ const Header = ({ stats }) => {
             </div>
           </div>
 
-          {/* Menu Button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            style={{
-              width: 44,
-              height: 44,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: 10,
-              color: '#e4e4e7',
-              cursor: 'pointer',
-            }}
-          >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
         </div>
 
         {/* Mobile Stats Bar */}
@@ -223,67 +140,6 @@ const Header = ({ stats }) => {
           <MobileStatItem value={totalSkills} label="Skills" color="#22c55e" />
           <MobileStatItem value={totalExercises} label="Exercises" color="#f97316" />
         </div>
-
-        {/* Mobile Dropdown Menu */}
-        {mobileMenuOpen && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '100%',
-              left: 0,
-              right: 0,
-              background: 'rgba(20, 25, 35, 0.98)',
-              borderBottom: '1px solid rgba(255,255,255,0.06)',
-              padding: '16px',
-              backdropFilter: 'blur(20px)',
-              animation: 'slideUp 0.2s ease-out',
-            }}
-          >
-            {user && (
-              <>
-                <div
-                  style={{
-                    padding: '12px 16px',
-                    background: 'rgba(255,255,255,0.03)',
-                    borderRadius: 10,
-                    marginBottom: 12,
-                  }}
-                >
-                  <p style={{ margin: 0, fontSize: 12, color: '#71717a' }}>Signed in as</p>
-                  <p style={{ 
-                    margin: '4px 0 0', 
-                    fontSize: 14, 
-                    color: '#e4e4e7',
-                    wordBreak: 'break-all',
-                  }}>
-                    {user.email}
-                  </p>
-                </div>
-                <button
-                  onClick={handleSignOut}
-                  style={{
-                    width: '100%',
-                    padding: '14px 16px',
-                    borderRadius: 10,
-                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    color: '#fca5a5',
-                    fontSize: 14,
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 8,
-                  }}
-                >
-                  <LogOut size={16} />
-                  Sign out
-                </button>
-              </>
-            )}
-          </div>
-        )}
       </header>
     </>
   );
