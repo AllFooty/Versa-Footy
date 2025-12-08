@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CategoryItem from './CategoryItem';
 
 /**
  * Main tree view container for categories, skills, and exercises
+ * Mobile-responsive with touch-friendly interactions
  */
 const TreeView = ({
   categories,
@@ -24,6 +25,17 @@ const TreeView = ({
   onDeleteExercise,
 }) => {
   const [expandedCategories, setExpandedCategories] = useState({});
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const toggleCategory = (categoryId) => {
     setExpandedCategories((prev) => ({
@@ -35,37 +47,56 @@ const TreeView = ({
   return (
     <div
       className="tree-view scrollbar"
-      style={{ maxHeight: 'calc(100vh - 280px)', overflowY: 'auto' }}
+      style={{ 
+        maxHeight: isMobile ? 'none' : 'calc(100vh - 280px)', 
+        overflowY: 'auto',
+      }}
     >
-      {categories.map((category) => {
-        const skills = getSkillsForCategory(category.id, {
-          searchTerm,
-          filterAgeGroup,
-        });
-        const isExpanded = expandedCategories[category.id];
+      {categories.length === 0 ? (
+        <div
+          style={{
+            textAlign: 'center',
+            padding: isMobile ? '40px 20px' : '60px 20px',
+            color: '#71717a',
+          }}
+        >
+          <div style={{ fontSize: isMobile ? 36 : 48, marginBottom: 16 }}>⚽</div>
+          <p style={{ fontSize: isMobile ? 14 : 16, margin: 0 }}>
+            No categories yet. Tap the + button to get started!
+          </p>
+        </div>
+      ) : (
+        categories.map((category) => {
+          const skills = getSkillsForCategory(category.id, {
+            searchTerm,
+            filterAgeGroup,
+          });
+          const isExpanded = expandedCategories[category.id];
 
-        return (
-          <CategoryItem
-            key={category.id}
-            category={category}
-            skills={skills}
-            isExpanded={isExpanded}
-            onToggle={toggleCategory}
-            onEditCategory={onEditCategory}
-            onDeleteCategory={onDeleteCategory}
-            onAddSkill={onAddSkill}
-            onEditSkill={onEditSkill}
-            onDeleteSkill={onDeleteSkill}
-            onAddExercise={onAddExercise}
-            onPreviewExercise={onPreviewExercise}
-            onEditExercise={onEditExercise}
-            onDeleteExercise={onDeleteExercise}
-            getExercisesForSkill={(skillId) =>
-              getExercisesForSkill(skillId, { searchTerm })
-            }
-          />
-        );
-      })}
+          return (
+            <CategoryItem
+              key={category.id}
+              category={category}
+              skills={skills}
+              isExpanded={isExpanded}
+              onToggle={toggleCategory}
+              onEditCategory={onEditCategory}
+              onDeleteCategory={onDeleteCategory}
+              onAddSkill={onAddSkill}
+              onEditSkill={onEditSkill}
+              onDeleteSkill={onDeleteSkill}
+              onAddExercise={onAddExercise}
+              onPreviewExercise={onPreviewExercise}
+              onEditExercise={onEditExercise}
+              onDeleteExercise={onDeleteExercise}
+              getExercisesForSkill={(skillId) =>
+                getExercisesForSkill(skillId, { searchTerm })
+              }
+              isMobile={isMobile}
+            />
+          );
+        })
+      )}
     </div>
   );
 };

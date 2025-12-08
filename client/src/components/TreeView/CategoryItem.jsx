@@ -1,10 +1,11 @@
-import React from 'react';
-import { ChevronRight, Edit3, Trash2, Plus } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ChevronRight, Edit3, Trash2, Plus, MoreVertical } from 'lucide-react';
 import { IconButton, Badge } from '../ui';
 import SkillItem from './SkillItem';
 
 /**
  * Single category item with expandable skills
+ * Mobile-responsive with touch-friendly interactions
  */
 const CategoryItem = ({
   category,
@@ -21,18 +22,69 @@ const CategoryItem = ({
   onEditExercise,
   onDeleteExercise,
   getExercisesForSkill,
+  isMobile = false,
 }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [menuOpen]);
+
   const handleToggle = () => {
     onToggle(category.id);
   };
 
+  const handleMenuToggle = (e) => {
+    e.stopPropagation();
+    setMenuOpen((prev) => !prev);
+  };
+
   const handleEdit = (e) => {
     e.stopPropagation();
+    setMenuOpen(false);
     onEditCategory(category);
   };
 
   const handleDelete = (e) => {
     e.stopPropagation();
+    setMenuOpen(false);
+    
+    // Count total exercises across all skills in this category
+    const totalExercises = skills.reduce(
+      (count, skill) => count + getExercisesForSkill(skill.id).length,
+      0
+    );
+    
+    // Build confirmation message showing what will be deleted
+    let message = `Delete category "${category.name}"?`;
+    if (skills.length > 0 || totalExercises > 0) {
+      message += `\n\nThis will also delete:`;
+      if (skills.length > 0) {
+        message += `\n• ${skills.length} skill${skills.length === 1 ? '' : 's'}`;
+      }
+      if (totalExercises > 0) {
+        message += `\n• ${totalExercises} exercise${totalExercises === 1 ? '' : 's'}`;
+      }
+    }
+    
+    const confirmed = window.confirm(message);
+    if (!confirmed) return;
+    
     onDeleteCategory(category.id);
   };
 
@@ -40,37 +92,109 @@ const CategoryItem = ({
     <div className="tree-category">
       {/* Category Header */}
       <div
-        className="tree-category-header"
+        className="tree-category-header touchable"
         onClick={handleToggle}
-        style={{ borderLeft: `3px solid ${category.color}` }}
+        style={{ 
+          borderLeft: `3px solid ${category.color}`,
+          minHeight: isMobile ? 56 : 'auto',
+        }}
       >
         {/* Expand/Collapse Arrow */}
         <span
           style={{
             transition: 'transform 0.2s',
             transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+            display: 'flex',
+            alignItems: 'center',
           }}
         >
-          <ChevronRight size={18} color="#71717a" />
+          <ChevronRight size={isMobile ? 20 : 18} color="#71717a" />
         </span>
 
         {/* Category Icon & Name */}
-        <span style={{ fontSize: 20 }}>{category.icon}</span>
-        <span style={{ fontWeight: 600, flex: 1 }}>{category.name}</span>
+        <span style={{ fontSize: isMobile ? 22 : 20 }}>{category.icon}</span>
+        <span style={{ 
+          fontWeight: 600, 
+          flex: 1,
+          fontSize: isMobile ? 15 : 14,
+        }}>
+          {category.name}
+        </span>
 
         {/* Skills Count Badge */}
         <Badge color={category.color}>
           {skills.length} {skills.length === 1 ? 'skill' : 'skills'}
         </Badge>
 
-        {/* Actions */}
-        <div style={{ display: 'flex', gap: 4 }}>
-          <IconButton onClick={handleEdit} title="Edit category">
-            <Edit3 size={14} />
+        {/* Kebab Menu */}
+        <div ref={menuRef} style={{ position: 'relative' }}>
+          <IconButton 
+            onClick={handleMenuToggle} 
+            title="Category options"
+            style={{ 
+              minWidth: isMobile ? 44 : 32,
+              minHeight: isMobile ? 44 : 32,
+            }}
+          >
+            <MoreVertical size={isMobile ? 18 : 16} />
           </IconButton>
-          <IconButton danger onClick={handleDelete} title="Delete category">
-            <Trash2 size={14} />
-          </IconButton>
+
+          {menuOpen && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                marginTop: 4,
+                backgroundColor: '#1e1e24',
+                border: '1px solid #2e2e38',
+                borderRadius: isMobile ? 12 : 8,
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
+                zIndex: 50,
+                minWidth: isMobile ? 160 : 140,
+                overflow: 'hidden',
+              }}
+            >
+              <button
+                onClick={handleEdit}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  width: '100%',
+                  padding: isMobile ? '14px 16px' : '10px 12px',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  color: '#e4e4e7',
+                  fontSize: isMobile ? 15 : 14,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                }}
+              >
+                <Edit3 size={isMobile ? 16 : 14} />
+                Edit
+              </button>
+              <button
+                onClick={handleDelete}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  width: '100%',
+                  padding: isMobile ? '14px 16px' : '10px 12px',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  color: '#ef4444',
+                  fontSize: isMobile ? 15 : 14,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                }}
+              >
+                <Trash2 size={isMobile ? 16 : 14} />
+                Delete
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -80,7 +204,11 @@ const CategoryItem = ({
           {skills.length === 0 ? (
             <div
               className="tree-skill"
-              style={{ color: '#52525b', fontStyle: 'italic' }}
+              style={{ 
+                color: '#52525b', 
+                fontStyle: 'italic',
+                padding: isMobile ? '16px' : '10px 16px',
+              }}
             >
               No skills yet. Add one!
             </div>
@@ -96,6 +224,7 @@ const CategoryItem = ({
                 onPreviewExercise={onPreviewExercise}
                 onEditExercise={onEditExercise}
                 onDeleteExercise={onDeleteExercise}
+                isMobile={isMobile}
               />
             ))
           )}
@@ -103,10 +232,16 @@ const CategoryItem = ({
           {/* Add Skill Button */}
           <button
             className="btn-secondary"
-            style={{ marginLeft: 32, marginTop: 8 }}
+            style={{ 
+              marginLeft: isMobile ? 16 : 32, 
+              marginTop: 8,
+              minHeight: isMobile ? 44 : 'auto',
+              fontSize: isMobile ? 14 : 13,
+            }}
             onClick={() => onAddSkill(category)}
           >
-            <Plus size={14} /> Add Skill to {category.name}
+            <Plus size={isMobile ? 16 : 14} /> 
+            {isMobile ? 'Add Skill' : `Add Skill to ${category.name}`}
           </button>
         </div>
       )}

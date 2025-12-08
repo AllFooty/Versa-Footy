@@ -131,7 +131,10 @@ export default function LibraryApp() {
         <Header stats={stats} />
 
       {/* Main Content */}
-      <main style={{ maxWidth: 1400, margin: '0 auto', padding: '32px 40px' }}>
+      <main 
+        style={{ maxWidth: 1400, margin: '0 auto' }}
+        className="library-main-content"
+      >
         {/* Loading State */}
         {loading && (
           <div
