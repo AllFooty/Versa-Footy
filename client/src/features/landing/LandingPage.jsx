@@ -157,7 +157,6 @@ const testimonials = [
 
 export default function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { scrollY } = useScroll();
 
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.95]);
@@ -189,7 +188,7 @@ export default function LandingPage() {
     <>
       <All4FootyFamilyBar />
       <div className={styles.landingPage}>
-        <HeaderLanding isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />
+        <HeaderLanding />
 
         <main>
           {/* Hero Section */}
