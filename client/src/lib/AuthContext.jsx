@@ -8,14 +8,16 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(false);
 
-  // Fetch user profile from profiles table
+  // Fetch user profile from profiles table (non-blocking)
   const fetchProfile = async (userId) => {
     if (!userId) {
       setProfile(null);
       return null;
     }
 
+    setProfileLoading(true);
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -35,35 +37,40 @@ export function AuthProvider({ children }) {
       console.error('Error fetching profile:', err);
       setProfile(null);
       return null;
+    } finally {
+      setProfileLoading(false);
     }
   };
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    // Get initial session - DON'T wait for profile fetch to show UI
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       
-      if (session?.user) {
-        await fetchProfile(session.user.id);
-      }
-      
+      // Set loading to false IMMEDIATELY after getting session
+      // This allows the UI to render while profile loads in background
       setLoading(false);
+      
+      // Fetch profile in background (non-blocking)
+      if (session?.user) {
+        fetchProfile(session.user.id);
+      }
     });
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        setLoading(false);
         
+        // Fetch profile in background (non-blocking)
         if (session?.user) {
-          await fetchProfile(session.user.id);
+          fetchProfile(session.user.id);
         } else {
           setProfile(null);
         }
-        
-        setLoading(false);
       }
     );
 
@@ -83,6 +90,7 @@ export function AuthProvider({ children }) {
     session,
     profile,
     loading,
+    profileLoading,
     signOut,
     isAuthenticated: !!user,
     isAdmin: profile?.is_admin === true,

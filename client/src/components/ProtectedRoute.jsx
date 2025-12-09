@@ -24,13 +24,13 @@ const spinnerStyle = {
 export default function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
 
-  // Show loading state while checking authentication
+  // Show loading state while checking session (this should be fast now)
   if (loading) {
     return (
       <div style={loadingContainerStyle}>
         <div style={{ textAlign: 'center' }}>
           <div style={spinnerStyle} />
-          <p style={{ marginTop: 16, color: '#71717a' }}>Checking authentication...</p>
+          <p style={{ marginTop: 16, color: '#71717a' }}>Loading...</p>
         </div>
       </div>
     );
@@ -41,6 +41,6 @@ export default function ProtectedRoute({ children }) {
     return <Redirect to="/login" />;
   }
 
-  // Render protected content
+  // Render protected content immediately - profile loads in background
   return children;
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Video, Upload, Trash2 } from 'lucide-react';
+import { Video, Upload, Trash2, CheckCircle } from 'lucide-react';
 import Modal from './Modal';
 import { Input, TextArea, Select, FormField, Label } from '../ui';
 import { DIFFICULTY_OPTIONS, DEFAULTS } from '../../constants';
@@ -21,7 +21,9 @@ const ExerciseModal = ({
   const [formData, setFormData] = useState(DEFAULTS.exercise);
   const [videoFile, setVideoFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState(null);
 
@@ -43,6 +45,8 @@ const ExerciseModal = ({
     }
     setVideoFile(null);
     setUploadError(null);
+    setUploadProgress(0);
+    setUploadSuccess(false);
     setDeleting(false);
     setDeleteMessage(null);
   }, [editItem, isOpen, preselectedSkillId]);
@@ -55,6 +59,8 @@ const ExerciseModal = ({
     const file = event.target.files?.[0];
     setVideoFile(file || null);
     setUploadError(null);
+    setUploadProgress(0);
+    setUploadSuccess(false);
   };
 
   const handleSave = async () => {
@@ -63,15 +69,23 @@ const ExerciseModal = ({
 
     try {
       setUploadError(null);
+      setUploadSuccess(false);
       let nextVideoUrl = formData.videoUrl;
 
       if (videoFile) {
         setUploading(true);
+        setUploadProgress(0);
+        
         const { publicUrl } = await uploadExerciseVideo(
           videoFile,
-          editItem?.id || formData.skillId
+          editItem?.id || formData.skillId,
+          (progress) => setUploadProgress(progress)
         );
         nextVideoUrl = publicUrl;
+        
+        // Show success briefly before saving
+        setUploadSuccess(true);
+        setUploadProgress(100);
       }
 
       await onSave(
@@ -85,6 +99,7 @@ const ExerciseModal = ({
       onClose();
       setVideoFile(null);
       setDeleteMessage(null);
+      setUploadSuccess(false);
     } catch (err) {
       setUploadError(err.message || 'Failed to upload video.');
       console.error('Video upload/save error:', err);
@@ -105,6 +120,8 @@ const ExerciseModal = ({
     setDeleting(true);
     setDeleteMessage(null);
     setUploadError(null);
+    setUploadProgress(0);
+    setUploadSuccess(false);
 
     try {
       if (formData.videoUrl) {
@@ -127,7 +144,13 @@ const ExerciseModal = ({
       onClose={onClose}
       onSave={handleSave}
       saveLabel={
-        uploading ? 'Uploading...' : deleting ? 'Removing...' : editItem ? 'Update' : 'Save'
+        uploading 
+          ? `Uploading${uploadProgress > 0 ? ` ${uploadProgress}%` : '...'}` 
+          : deleting 
+            ? 'Removing...' 
+            : editItem 
+              ? 'Update' 
+              : 'Save'
       }
       saveDisabled={uploading || deleting}
     >
@@ -207,22 +230,89 @@ const ExerciseModal = ({
               }}
             >
               {videoFile
-                ? `Selected file: ${videoFile.name}`
+                ? `Selected file: ${videoFile.name} (${(videoFile.size / (1024 * 1024)).toFixed(2)} MB)`
                 : `Existing video: ${formData.videoUrl}`}
             </div>
           )}
-          <div style={{ display: 'flex', gap: 10, marginTop: 8, flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={handleRemoveVideo}
-              disabled={uploading || deleting}
-              style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+          
+          {/* Upload Progress Bar */}
+          {uploading && (
+            <div style={{ marginTop: 12 }}>
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                marginBottom: 6,
+                fontSize: 13,
+                color: '#a1a1aa'
+              }}>
+                <span>Uploading video...</span>
+                <span style={{ fontWeight: 600, color: '#60a5fa' }}>{uploadProgress}%</span>
+              </div>
+              <div style={{
+                width: '100%',
+                height: 8,
+                background: 'rgba(255,255,255,0.1)',
+                borderRadius: 4,
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  width: `${uploadProgress}%`,
+                  height: '100%',
+                  background: 'linear-gradient(90deg, #3b82f6, #60a5fa)',
+                  borderRadius: 4,
+                  transition: 'width 0.3s ease',
+                }} />
+              </div>
+              <div style={{ 
+                marginTop: 6, 
+                fontSize: 12, 
+                color: '#71717a',
+                textAlign: 'center'
+              }}>
+                {uploadProgress < 100 
+                  ? 'Please wait while your video uploads...' 
+                  : 'Upload complete! Saving exercise...'}
+              </div>
+            </div>
+          )}
+          
+          {/* Upload Success Message */}
+          {uploadSuccess && !uploading && (
+            <div
+              style={{
+                marginTop: 12,
+                padding: '10px 12px',
+                background: 'rgba(74, 222, 128, 0.1)',
+                border: '1px solid rgba(74, 222, 128, 0.3)',
+                borderRadius: 8,
+                color: '#4ade80',
+                fontSize: 13,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+              }}
             >
-              <Trash2 size={14} />
-              Remove video
-            </button>
-          </div>
+              <CheckCircle size={16} />
+              Video uploaded successfully!
+            </div>
+          )}
+          
+          {/* Only show Remove button when there's a video to remove */}
+          {(videoFile || formData.videoUrl) && (
+            <div style={{ display: 'flex', gap: 10, marginTop: 10, flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={handleRemoveVideo}
+                disabled={uploading || deleting}
+                style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+              >
+                <Trash2 size={14} />
+                {deleting ? 'Removing...' : 'Remove video'}
+              </button>
+            </div>
+          )}
+          
           {deleteMessage && (
             <div
               style={{
@@ -238,11 +328,15 @@ const ExerciseModal = ({
             <div
               style={{
                 marginTop: 8,
+                padding: '10px 12px',
+                background: 'rgba(248, 113, 113, 0.1)',
+                border: '1px solid rgba(248, 113, 113, 0.3)',
+                borderRadius: 8,
                 color: '#f87171',
                 fontSize: 13,
               }}
             >
-              {uploadError}
+              ⚠️ {uploadError}
             </div>
           )}
         </div>
