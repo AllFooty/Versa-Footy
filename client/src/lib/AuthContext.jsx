@@ -43,38 +43,67 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    // Get initial session - DON'T wait for profile fetch to show UI
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      // Set loading to false IMMEDIATELY after getting session
-      // This allows the UI to render while profile loads in background
+    // Check if supabase.auth is available (handles missing credentials gracefully)
+    if (!supabase.auth) {
+      console.error('Supabase auth not initialized. Check your credentials.');
       setLoading(false);
-      
-      // Fetch profile in background (non-blocking)
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      }
-    });
+      return;
+    }
 
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+    // Get initial session - DON'T wait for profile fetch to show UI
+    supabase.auth.getSession()
+      .then(({ data: { session }, error }) => {
+        if (error) {
+          console.error('Error getting session:', error.message);
+          // Still allow app to render - user will just appear logged out
+        }
+        
         setSession(session);
         setUser(session?.user ?? null);
+        
+        // Set loading to false IMMEDIATELY after getting session
+        // This allows the UI to render while profile loads in background
         setLoading(false);
         
         // Fetch profile in background (non-blocking)
         if (session?.user) {
           fetchProfile(session.user.id);
-        } else {
-          setProfile(null);
         }
-      }
-    );
+      })
+      .catch((err) => {
+        // Handle any unexpected errors (e.g., localStorage unavailable on mobile)
+        console.error('Failed to get session:', err);
+        setLoading(false);
+        // App will render as logged out - user can try logging in again
+      });
 
-    return () => subscription.unsubscribe();
+    // Listen for auth state changes
+    let subscription;
+    try {
+      const { data } = supabase.auth.onAuthStateChange(
+        (_event, session) => {
+          setSession(session);
+          setUser(session?.user ?? null);
+          setLoading(false);
+          
+          // Fetch profile in background (non-blocking)
+          if (session?.user) {
+            fetchProfile(session.user.id);
+          } else {
+            setProfile(null);
+          }
+        }
+      );
+      subscription = data?.subscription;
+    } catch (err) {
+      console.error('Failed to set up auth listener:', err);
+    }
+
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
   }, []);
 
   const signOut = async () => {
