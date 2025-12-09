@@ -120,12 +120,12 @@ const noteStyle = {
 
 export default function Login() {
   const [, setLocation] = useLocation();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   
   // Form state
   const [email, setEmail] = useState('');
   const [otpCode, setOtpCode] = useState('');
-  const [step, setStep] = useState('email'); // 'email' or 'otp'
+  const [step, setStep] = useState('email'); // 'email', 'otp', or 'success'
   
   // UI state
   const [loading, setLoading] = useState(false);
@@ -134,10 +134,46 @@ export default function Login() {
 
   // Redirect if already authenticated
   useEffect(() => {
-    if (isAuthenticated) {
-      setLocation('/training');
+    if (isAuthenticated && !authLoading) {
+      // Small delay to ensure smooth transition
+      const timer = setTimeout(() => {
+        setLocation('/training');
+      }, 100);
+      return () => clearTimeout(timer);
     }
-  }, [isAuthenticated, setLocation]);
+  }, [isAuthenticated, authLoading, setLocation]);
+
+  // If authenticated, show loading/redirect state
+  if (isAuthenticated) {
+    return (
+      <div style={containerStyle}>
+        <div style={cardStyle}>
+          <div style={{ textAlign: 'center', padding: '20px 0' }}>
+            <div style={{
+              width: 56,
+              height: 56,
+              borderRadius: '50%',
+              background: 'rgba(34, 197, 94, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 16px',
+            }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
+            <h2 style={{ color: '#f1f5f9', fontSize: 20, margin: '0 0 8px 0' }}>
+              Successfully signed in!
+            </h2>
+            <p style={{ color: '#94a3b8', fontSize: 14, margin: 0 }}>
+              Redirecting you to training...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
@@ -205,13 +241,16 @@ export default function Login() {
 
       if (error) {
         setError(error.message);
+        setLoading(false);
       } else if (data.session) {
-        // Successfully authenticated - redirect to training app
-        setLocation('/training');
+        // Show success state - the useEffect will handle redirect
+        // when isAuthenticated updates
+        setStep('success');
+        setMessage('Successfully signed in! Redirecting...');
+        // Don't set loading to false - keep showing loading state until redirect
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');
-    } finally {
       setLoading(false);
     }
   };
@@ -251,36 +290,63 @@ export default function Login() {
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
-        <p style={{ 
-          textTransform: 'uppercase', 
-          letterSpacing: '0.25em', 
-          fontSize: 11, 
-          margin: 0, 
-          color: '#64748b' 
-        }}>
-          {step === 'email' ? 'Sign In' : 'Verify'}
-        </p>
-        
-        <h1 style={{ margin: '8px 0 8px 0', fontSize: 24, color: '#f1f5f9' }}>
-          {step === 'email' ? 'Welcome to Versa Footy' : 'Enter your code'}
-        </h1>
-        
-        <p style={{ 
-          color: '#94a3b8', 
-          fontSize: 14, 
-          marginBottom: 24, 
-          lineHeight: 1.5 
-        }}>
-          {step === 'email' 
-            ? 'Enter your email and we\'ll send you a code to sign in.'
-            : `We sent a 6-digit code to ${email}`
-          }
-        </p>
+        {step !== 'success' && (
+          <>
+            <p style={{ 
+              textTransform: 'uppercase', 
+              letterSpacing: '0.25em', 
+              fontSize: 11, 
+              margin: 0, 
+              color: '#64748b' 
+            }}>
+              {step === 'email' ? 'Sign In' : 'Verify'}
+            </p>
+            
+            <h1 style={{ margin: '8px 0 8px 0', fontSize: 24, color: '#f1f5f9' }}>
+              {step === 'email' ? 'Welcome to Versa Footy' : 'Enter your code'}
+            </h1>
+            
+            <p style={{ 
+              color: '#94a3b8', 
+              fontSize: 14, 
+              marginBottom: 24, 
+              lineHeight: 1.5 
+            }}>
+              {step === 'email' 
+                ? 'Enter your email and we\'ll send you a code to sign in.'
+                : `We sent a 6-digit code to ${email}`
+              }
+            </p>
+          </>
+        )}
 
         {error && <div style={errorStyle}>{error}</div>}
-        {message && <div style={successStyle}>{message}</div>}
+        {message && step !== 'success' && <div style={successStyle}>{message}</div>}
 
-        {step === 'email' ? (
+        {step === 'success' ? (
+          <div style={{ textAlign: 'center', padding: '20px 0' }}>
+            <div style={{
+              width: 56,
+              height: 56,
+              borderRadius: '50%',
+              background: 'rgba(34, 197, 94, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 16px',
+            }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
+            <p style={{ color: '#86efac', fontSize: 15, margin: 0, fontWeight: 500 }}>
+              Successfully signed in!
+            </p>
+            <p style={{ color: '#94a3b8', fontSize: 14, margin: '8px 0 0 0' }}>
+              Redirecting you to training...
+            </p>
+          </div>
+        ) : step === 'email' ? (
           <form onSubmit={handleSendOtp}>
             <label style={labelStyle} htmlFor="email">
               Email address
@@ -358,11 +424,13 @@ export default function Login() {
           </form>
         )}
 
-        <p style={noteStyle}>
-          <Link href="/" style={{ color: '#60a5fa', textDecoration: 'none' }}>
-            ← Back to home
-          </Link>
-        </p>
+        {step !== 'success' && (
+          <p style={noteStyle}>
+            <Link href="/" style={{ color: '#60a5fa', textDecoration: 'none' }}>
+              ← Back to home
+            </Link>
+          </p>
+        )}
       </div>
     </div>
   );

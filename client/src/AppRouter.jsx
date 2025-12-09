@@ -10,6 +10,7 @@ import AboutPage from './features/landing/AboutPage';
 import FaqPage from './features/landing/FaqPage';
 import LibraryApp from './features/library/LibraryApp';
 import TrainingApp from './features/training/TrainingApp';
+import SettingsPage from './features/settings/SettingsPage';
 import Login from './features/auth/Login';
 
 const NotFound = () => (
@@ -123,6 +124,13 @@ export default function AppRouter() {
         <Route path="/training">
           <ProtectedRoute>
             <TrainingApp />
+          </ProtectedRoute>
+        </Route>
+
+        {/* Settings Page - For authenticated users */}
+        <Route path="/settings">
+          <ProtectedRoute>
+            <SettingsPage />
           </ProtectedRoute>
         </Route>
 

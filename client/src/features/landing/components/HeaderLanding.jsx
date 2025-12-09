@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../lib/AuthContext';
-import styles from '../styles/LandingPage.module.css';
+import ProfileDropdown from '../../../components/ProfileDropdown';
 
 export default function HeaderLanding() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { isAuthenticated, user, signOut } = useAuth();
+  const [showMobileSignOutConfirm, setShowMobileSignOutConfirm] = useState(false);
+  const { isAuthenticated, user, profile, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -136,22 +137,6 @@ export default function HeaderLanding() {
     gap: '8px',
   };
 
-  const signOutButtonStyle = {
-    background: 'transparent',
-    color: 'rgba(255, 255, 255, 0.85)',
-    borderRadius: '10px',
-    padding: '10px 16px',
-    fontWeight: '500',
-    fontSize: '14px',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    textDecoration: 'none',
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '6px',
-  };
-
   return (
     <header style={headerStyle}>
       <div style={containerStyle}>
@@ -190,25 +175,9 @@ export default function HeaderLanding() {
         {/* CTA Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {isAuthenticated ? (
-            <>
-              <span style={{ 
-                color: 'rgba(255, 255, 255, 0.7)', 
-                fontSize: '13px',
-                maxWidth: '140px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }} className="desktop-cta">
-                {user?.email}
-              </span>
-              <button 
-                onClick={signOut}
-                style={signOutButtonStyle} 
-                className="desktop-cta"
-              >
-                Sign Out
-              </button>
-            </>
+            <div className="desktop-cta">
+              <ProfileDropdown />
+            </div>
           ) : (
             <Link href="/login">
               <a 
@@ -295,27 +264,125 @@ export default function HeaderLanding() {
                   </LinkEl>
                 </motion.div>
               ))}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: navigationItems.length * 0.05 }}
-                style={{ paddingTop: '12px' }}
-              >
-                {isAuthenticated ? (
-                  <button
-                    onClick={() => {
-                      signOut();
-                      setIsMobileMenuOpen(false);
-                    }}
+              {isAuthenticated ? (
+                <>
+                  {/* Mobile User Info */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: navigationItems.length * 0.05 }}
                     style={{
-                      ...signOutButtonStyle,
-                      width: '100%',
-                      justifyContent: 'center',
+                      padding: '16px',
+                      marginTop: '12px',
+                      background: 'rgba(255, 255, 255, 0.03)',
+                      borderRadius: '12px',
+                      borderTop: '1px solid rgba(255, 255, 255, 0.08)',
                     }}
                   >
-                    Sign Out
-                  </button>
-                ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                      <div style={{
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        color: 'white',
+                        flexShrink: 0,
+                      }}>
+                        {profile?.full_name ? 
+                          profile.full_name.trim().split(' ').length >= 2 ?
+                            `${profile.full_name.trim().split(' ')[0][0]}${profile.full_name.trim().split(' ')[profile.full_name.trim().split(' ').length - 1][0]}`.toUpperCase() :
+                            profile.full_name.trim().substring(0, 2).toUpperCase() :
+                          user?.email?.substring(0, 2).toUpperCase() || 'U'
+                        }
+                      </div>
+                      <div style={{ overflow: 'hidden' }}>
+                        <div style={{
+                          fontSize: '15px',
+                          fontWeight: '600',
+                          color: 'white',
+                          marginBottom: '2px',
+                        }}>
+                          {profile?.full_name || 'Set your name'}
+                        </div>
+                        <div style={{
+                          fontSize: '12px',
+                          color: 'rgba(255, 255, 255, 0.5)',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}>
+                          {user?.email}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <Link href="/settings">
+                        <a
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          style={{
+                            flex: 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '8px',
+                            padding: '10px 16px',
+                            background: 'rgba(255, 255, 255, 0.06)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            borderRadius: '10px',
+                            color: 'rgba(255, 255, 255, 0.9)',
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            cursor: 'pointer',
+                            textDecoration: 'none',
+                          }}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                          </svg>
+                          Settings
+                        </a>
+                      </Link>
+                      <button
+                        onClick={() => setShowMobileSignOutConfirm(true)}
+                        style={{
+                          flex: 1,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          padding: '10px 16px',
+                          background: 'rgba(239, 68, 68, 0.1)',
+                          border: '1px solid rgba(239, 68, 68, 0.3)',
+                          borderRadius: '10px',
+                          color: '#ef4444',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                          <polyline points="16 17 21 12 16 7" />
+                          <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        Sign Out
+                      </button>
+                    </div>
+                  </motion.div>
+                </>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: navigationItems.length * 0.05 }}
+                  style={{ paddingTop: '12px' }}
+                >
                   <Link href="/login">
                     <a
                       style={{
@@ -331,8 +398,8 @@ export default function HeaderLanding() {
                       </svg>
                     </a>
                   </Link>
-                )}
-              </motion.div>
+                </motion.div>
+              )}
             </nav>
           </motion.div>
         )}
@@ -356,6 +423,118 @@ export default function HeaderLanding() {
           }
         }
       `}</style>
+
+      {/* Mobile Sign Out Confirmation Modal */}
+      <AnimatePresence>
+        {showMobileSignOutConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.8)',
+              backdropFilter: 'blur(8px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 2000,
+              padding: '20px',
+            }}
+            onClick={() => setShowMobileSignOutConfirm(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: 'linear-gradient(145deg, #1e2433 0%, #151a26 100%)',
+                borderRadius: '20px',
+                padding: '24px',
+                width: '100%',
+                maxWidth: '320px',
+                textAlign: 'center',
+              }}
+            >
+              <div style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '50%',
+                background: 'rgba(239, 68, 68, 0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 16px',
+              }}>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+              </div>
+              <h3 style={{
+                fontSize: '18px',
+                fontWeight: '600',
+                color: 'white',
+                margin: '0 0 8px 0',
+              }}>
+                Sign out?
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                color: 'rgba(255, 255, 255, 0.6)',
+                margin: '0 0 24px 0',
+              }}>
+                Are you sure you want to sign out of your account?
+              </p>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button
+                  onClick={() => setShowMobileSignOutConfirm(false)}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    background: 'rgba(255, 255, 255, 0.06)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '12px',
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    signOut();
+                    setShowMobileSignOutConfirm(false);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    background: '#ef4444',
+                    border: 'none',
+                    borderRadius: '12px',
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Sign Out
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </header>
   );
 }

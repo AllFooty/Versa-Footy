@@ -114,6 +114,38 @@ export function AuthProvider({ children }) {
     setProfile(null);
   };
 
+  // Update user profile in profiles table
+  const updateProfile = async (updates) => {
+    if (!user?.id) {
+      throw new Error('No user logged in');
+    }
+
+    setProfileLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({
+          ...updates,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', user.id)
+        .select()
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      setProfile(data);
+      return data;
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      throw err;
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
   const value = {
     user,
     session,
@@ -121,6 +153,7 @@ export function AuthProvider({ children }) {
     loading,
     profileLoading,
     signOut,
+    updateProfile,
     isAuthenticated: !!user,
     isAdmin: profile?.is_admin === true,
   };
