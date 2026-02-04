@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { normalizeDifficulty } from '../utils/difficulty';
+import { AGE_GROUPS } from '../constants';
 
 /**
  * Transform Supabase category to frontend format
@@ -350,11 +351,22 @@ export const useData = () => {
    * Get skills for a category with optional filtering
    */
   const getSkillsForCategory = useCallback(
-    (categoryId, { searchTerm = '', filterAgeGroup = '' } = {}) => {
+    (categoryId, { searchTerm = '', filterAgeGroup = '', filterHasExercises = false, exactAgeMatch = false } = {}) => {
       let result = skills.filter((s) => s.categoryId === categoryId);
 
       if (filterAgeGroup) {
-        result = result.filter((s) => s.ageGroup === filterAgeGroup);
+        if (exactAgeMatch) {
+          // Exact match: only show skills for the selected age
+          result = result.filter((s) => s.ageGroup === filterAgeGroup);
+        } else {
+          // Cumulative: show all skills up to and including the selected age
+          const maxIndex = AGE_GROUPS.indexOf(filterAgeGroup);
+          result = result.filter((s) => AGE_GROUPS.indexOf(s.ageGroup) <= maxIndex);
+        }
+      }
+
+      if (filterHasExercises) {
+        result = result.filter((s) => exercises.some((e) => e.skillId === s.id));
       }
 
       if (searchTerm) {
@@ -364,7 +376,7 @@ export const useData = () => {
 
       return result;
     },
-    [skills]
+    [skills, exercises]
   );
 
   /**

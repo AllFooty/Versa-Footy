@@ -11,6 +11,8 @@ const TreeView = ({
   getExercisesForSkill,
   searchTerm,
   filterAgeGroup,
+  filterHasExercises,
+  exactAgeMatch,
   // Category actions
   onEditCategory,
   onDeleteCategory,
@@ -78,6 +80,8 @@ const TreeView = ({
           const skills = getSkillsForCategory(category.id, {
             searchTerm,
             filterAgeGroup,
+            filterHasExercises,
+            exactAgeMatch,
           });
           const isExpanded = expandedCategories[category.id];
 

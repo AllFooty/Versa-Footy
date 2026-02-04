@@ -11,6 +11,10 @@ const SearchBar = ({
   onSearchChange,
   filterAgeGroup,
   onFilterChange,
+  filterHasExercises,
+  onFilterHasExercisesChange,
+  exactAgeMatch,
+  onExactAgeMatchChange,
   onAddExercise,
   onAddSkill,
   onAddCategory,
@@ -69,11 +73,65 @@ const SearchBar = ({
             <option value="">All Ages</option>
             {AGE_GROUPS.map((age) => (
               <option key={age} value={age}>
-                {age}
+                {age} {!exactAgeMatch && '& below'}
               </option>
             ))}
           </select>
         </div>
+
+        {/* Exact Age Match Filter */}
+        {filterAgeGroup && (
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              cursor: 'pointer',
+              color: '#a1a1aa',
+              fontSize: 14,
+              userSelect: 'none',
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={exactAgeMatch}
+              onChange={(e) => onExactAgeMatchChange(e.target.checked)}
+              style={{
+                width: 16,
+                height: 16,
+                accentColor: '#E63946',
+                cursor: 'pointer',
+              }}
+            />
+            Exact age only
+          </label>
+        )}
+
+        {/* Has Exercises Filter */}
+        <label
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            cursor: 'pointer',
+            color: '#a1a1aa',
+            fontSize: 14,
+            userSelect: 'none',
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={filterHasExercises}
+            onChange={(e) => onFilterHasExercisesChange(e.target.checked)}
+            style={{
+              width: 16,
+              height: 16,
+              accentColor: '#E63946',
+              cursor: 'pointer',
+            }}
+          />
+          Has Exercises
+        </label>
 
         {/* Action Buttons */}
         <button className="btn-primary" onClick={onAddExercise}>
@@ -116,8 +174,8 @@ const SearchBar = ({
           <Filter size={16} color="#71717a" style={{ flexShrink: 0 }} />
           <select
             className="select"
-            style={{ 
-              flex: 1, 
+            style={{
+              flex: 1,
               minWidth: 0,
               fontSize: '16px', /* Ensures readable dropdown options on mobile */
             }}
@@ -127,10 +185,67 @@ const SearchBar = ({
             <option value="">All Age Groups</option>
             {AGE_GROUPS.map((age) => (
               <option key={age} value={age}>
-                {age}
+                {age} {!exactAgeMatch && '& below'}
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Mobile Filter Checkboxes */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+          {/* Exact Age Match Filter */}
+          {filterAgeGroup && (
+            <label
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                cursor: 'pointer',
+                color: '#a1a1aa',
+                fontSize: 14,
+                userSelect: 'none',
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={exactAgeMatch}
+                onChange={(e) => onExactAgeMatchChange(e.target.checked)}
+                style={{
+                  width: 18,
+                  height: 18,
+                  accentColor: '#E63946',
+                  cursor: 'pointer',
+                }}
+              />
+              Exact age only
+            </label>
+          )}
+
+          {/* Has Exercises Filter */}
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              cursor: 'pointer',
+              color: '#a1a1aa',
+              fontSize: 14,
+              userSelect: 'none',
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={filterHasExercises}
+              onChange={(e) => onFilterHasExercisesChange(e.target.checked)}
+              style={{
+                width: 18,
+                height: 18,
+                accentColor: '#E63946',
+                cursor: 'pointer',
+              }}
+            />
+            Has Exercises
+          </label>
         </div>
       </div>
 

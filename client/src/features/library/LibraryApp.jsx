@@ -53,6 +53,8 @@ export default function LibraryApp() {
   // Search & Filter state
   const [searchTerm, setSearchTerm] = useState('');
   const [filterAgeGroup, setFilterAgeGroup] = useState('');
+  const [filterHasExercises, setFilterHasExercises] = useState(false);
+  const [exactAgeMatch, setExactAgeMatch] = useState(false);
 
   // Modal state
   const [categoryModal, setCategoryModal] = useState({ open: false, item: null });
@@ -186,6 +188,10 @@ export default function LibraryApp() {
             onSearchChange={setSearchTerm}
             filterAgeGroup={filterAgeGroup}
             onFilterChange={setFilterAgeGroup}
+            filterHasExercises={filterHasExercises}
+            onFilterHasExercisesChange={setFilterHasExercises}
+            exactAgeMatch={exactAgeMatch}
+            onExactAgeMatchChange={setExactAgeMatch}
             onAddExercise={() => openExerciseModal()}
             onAddSkill={() => openSkillModal()}
             onAddCategory={() => openCategoryModal()}
@@ -200,6 +206,8 @@ export default function LibraryApp() {
             getExercisesForSkill={getExercisesForSkill}
             searchTerm={searchTerm}
             filterAgeGroup={filterAgeGroup}
+            filterHasExercises={filterHasExercises}
+            exactAgeMatch={exactAgeMatch}
             // Category actions
             onEditCategory={openCategoryModal}
             onDeleteCategory={deleteCategory}
