@@ -355,7 +355,7 @@ const ExerciseModal = ({
           </Select>
         </FormField>
 
-        <FormField label="Description / Instructions" id="exercise-description">
+        <FormField label="Description" id="exercise-description">
           <TextArea
             id="exercise-description"
             placeholder="Detailed instructions for this exercise..."

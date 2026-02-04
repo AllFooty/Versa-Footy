@@ -87,7 +87,7 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
           <Video size={14} color="#52525b" />
         )}
 
-        {/* Exercise Name & Instructions */}
+        {/* Exercise Name & Description */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <span style={{ fontSize: 13, color: '#a1a1aa', display: 'block' }}>
             {exercise.name}

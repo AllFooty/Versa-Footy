@@ -268,7 +268,7 @@ const PreviewModal = ({
                   letterSpacing: 1,
                 }}
               >
-                Instructions
+                Description
               </h3>
               <div
                 style={{
