@@ -87,10 +87,25 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
           <Video size={14} color="#52525b" />
         )}
 
-        {/* Exercise Name */}
-        <span style={{ flex: 1, fontSize: 13, color: '#a1a1aa' }}>
-          {exercise.name}
-        </span>
+        {/* Exercise Name & Instructions */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ fontSize: 13, color: '#a1a1aa', display: 'block' }}>
+            {exercise.name}
+          </span>
+          {exercise.instructions && (
+            <span style={{
+              fontSize: 11,
+              color: '#71717a',
+              display: 'block',
+              marginTop: 2,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}>
+              {exercise.instructions}
+            </span>
+          )}
+        </div>
 
         {/* Difficulty Stars */}
         <span className="badge" style={getDifficultyStyle(exercise.difficulty)}>
@@ -217,18 +232,31 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
 
       {/* Exercise Info */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ 
+        <span style={{
           display: 'block',
-          fontSize: 14, 
-          color: '#e4e4e7', 
+          fontSize: 14,
+          color: '#e4e4e7',
           fontWeight: 500,
-          marginBottom: 4,
+          marginBottom: exercise.instructions ? 2 : 4,
         }}>
           {exercise.name}
         </span>
+        {exercise.instructions && (
+          <span style={{
+            display: 'block',
+            fontSize: 12,
+            color: '#71717a',
+            marginBottom: 4,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}>
+            {exercise.instructions}
+          </span>
+        )}
         {/* Difficulty Stars */}
-        <span 
-          className="badge" 
+        <span
+          className="badge"
           style={{
             ...getDifficultyStyle(exercise.difficulty),
             padding: '4px 8px',
