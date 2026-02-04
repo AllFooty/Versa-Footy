@@ -92,7 +92,7 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
           <span style={{ fontSize: 13, color: '#a1a1aa', display: 'block' }}>
             {exercise.name}
           </span>
-          {exercise.instructions && (
+          {exercise.description && (
             <span style={{
               fontSize: 11,
               color: '#71717a',
@@ -102,7 +102,7 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
             }}>
-              {exercise.instructions}
+              {exercise.description}
             </span>
           )}
         </div>
@@ -237,11 +237,11 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
           fontSize: 14,
           color: '#e4e4e7',
           fontWeight: 500,
-          marginBottom: exercise.instructions ? 2 : 4,
+          marginBottom: exercise.description ? 2 : 4,
         }}>
           {exercise.name}
         </span>
-        {exercise.instructions && (
+        {exercise.description && (
           <span style={{
             display: 'block',
             fontSize: 12,
@@ -251,7 +251,7 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
           }}>
-            {exercise.instructions}
+            {exercise.description}
           </span>
         )}
         {/* Difficulty Stars */}
