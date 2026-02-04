@@ -55,13 +55,7 @@ const TreeView = ({
   };
 
   return (
-    <div
-      className="tree-view scrollbar"
-      style={{ 
-        maxHeight: isMobile ? 'none' : 'calc(100vh - 280px)', 
-        overflowY: 'auto',
-      }}
-    >
+    <div className="tree-view">
       {categories.length === 0 ? (
         <div
           style={{
