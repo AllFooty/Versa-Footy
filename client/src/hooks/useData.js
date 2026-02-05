@@ -34,6 +34,7 @@ const transformExercise = (exercise) => ({
   videoUrl: exercise.video_url,
   difficulty: normalizeDifficulty(exercise.difficulty),
   description: exercise.description,
+  equipment: exercise.equipment || [],
 });
 
 /**
@@ -270,6 +271,7 @@ export const useData = () => {
           video_url: exerciseData.videoUrl || null,
           difficulty: normalizeDifficulty(exerciseData.difficulty),
           description: exerciseData.description,
+          equipment: exerciseData.equipment || [],
         })
         .select()
         .single();
@@ -295,6 +297,7 @@ export const useData = () => {
           video_url: exerciseData.videoUrl || null,
           difficulty: normalizeDifficulty(exerciseData.difficulty),
           description: exerciseData.description,
+          equipment: exerciseData.equipment || [],
           updated_at: new Date().toISOString(),
         })
         .eq('id', id)

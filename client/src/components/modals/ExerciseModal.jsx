@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Video, Upload, Trash2, CheckCircle } from 'lucide-react';
+import { Video, Upload, Trash2, CheckCircle, X, Plus } from 'lucide-react';
 import Modal from './Modal';
 import { Input, TextArea, Select, FormField, Label } from '../ui';
-import { DIFFICULTY_OPTIONS, DEFAULTS } from '../../constants';
+import { DIFFICULTY_OPTIONS, DEFAULTS, EQUIPMENT_OPTIONS } from '../../constants';
 import { normalizeDifficulty } from '../../utils/difficulty';
 import { uploadExerciseVideo, deleteExerciseVideo } from '../../lib/storage';
 
@@ -26,6 +26,7 @@ const ExerciseModal = ({
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState(null);
+  const [customEquipment, setCustomEquipment] = useState('');
 
   // Reset form when modal opens/closes or editItem changes
   useEffect(() => {
@@ -36,6 +37,7 @@ const ExerciseModal = ({
         videoUrl: editItem.videoUrl || '',
         difficulty: normalizeDifficulty(editItem.difficulty),
         description: editItem.description || '',
+        equipment: editItem.equipment || [],
       });
     } else {
       setFormData({
@@ -43,6 +45,7 @@ const ExerciseModal = ({
         skillId: preselectedSkillId || '',
       });
     }
+    setCustomEquipment('');
     setVideoFile(null);
     setUploadError(null);
     setUploadProgress(0);
@@ -92,6 +95,7 @@ const ExerciseModal = ({
         {
           ...formData,
           videoUrl: nextVideoUrl,
+          equipment: formData.equipment || [],
         },
         editItem?.id
       );
@@ -354,6 +358,118 @@ const ExerciseModal = ({
             ))}
           </Select>
         </FormField>
+
+        <div>
+          <Label>Equipment Needed</Label>
+          {/* Selected equipment tags */}
+          {formData.equipment && formData.equipment.length > 0 && (
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 8,
+              marginBottom: 10,
+            }}>
+              {formData.equipment.map((item) => (
+                <span
+                  key={item}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    padding: '5px 10px',
+                    background: 'rgba(59, 130, 246, 0.15)',
+                    border: '1px solid rgba(59, 130, 246, 0.3)',
+                    borderRadius: 6,
+                    color: '#93c5fd',
+                    fontSize: 13,
+                  }}
+                >
+                  {item}
+                  <button
+                    type="button"
+                    onClick={() => handleChange('equipment', formData.equipment.filter((e) => e !== item))}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#93c5fd',
+                      cursor: 'pointer',
+                      padding: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <X size={14} />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+          {/* Equipment option buttons */}
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 6,
+            marginBottom: 10,
+          }}>
+            {EQUIPMENT_OPTIONS.filter((opt) => !(formData.equipment || []).includes(opt)).map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => handleChange('equipment', [...(formData.equipment || []), opt])}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  padding: '5px 10px',
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 6,
+                  color: '#a1a1aa',
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}
+              >
+                <Plus size={12} />
+                {opt}
+              </button>
+            ))}
+          </div>
+          {/* Custom equipment input */}
+          <div style={{ display: 'flex', gap: 8 }}>
+            <Input
+              placeholder="Add custom equipment..."
+              value={customEquipment}
+              onChange={(e) => setCustomEquipment(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && customEquipment.trim()) {
+                  e.preventDefault();
+                  const val = customEquipment.trim();
+                  if (!(formData.equipment || []).includes(val)) {
+                    handleChange('equipment', [...(formData.equipment || []), val]);
+                  }
+                  setCustomEquipment('');
+                }
+              }}
+              style={{ flex: 1 }}
+            />
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => {
+                const val = customEquipment.trim();
+                if (val && !(formData.equipment || []).includes(val)) {
+                  handleChange('equipment', [...(formData.equipment || []), val]);
+                }
+                setCustomEquipment('');
+              }}
+              disabled={!customEquipment.trim()}
+              style={{ padding: '8px 14px', fontSize: 13 }}
+            >
+              Add
+            </button>
+          </div>
+        </div>
 
         <FormField label="Description" id="exercise-description">
           <TextArea

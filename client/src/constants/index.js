@@ -29,6 +29,22 @@ export const AGE_GROUPS = [
 ];
 
 /**
+ * Common equipment options for exercises
+ */
+export const EQUIPMENT_OPTIONS = [
+  'Ball',
+  'Cones',
+  'Agility Ladder',
+  'Goal',
+  'Wall',
+  'Mannequin',
+  'Resistance Band',
+  'Hurdles',
+  'Poles',
+  'Rebounder',
+];
+
+/**
  * Default values for new items
  */
 export const DEFAULTS = {
@@ -49,5 +65,6 @@ export const DEFAULTS = {
     videoUrl: '',
     difficulty: 1,
     description: '',
+    equipment: [],
   },
 };

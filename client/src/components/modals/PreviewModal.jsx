@@ -162,6 +162,41 @@ const PreviewModal = ({
             </span>
           </div>
 
+          {/* Equipment */}
+          {exercise.equipment && exercise.equipment.length > 0 && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: isMobile ? 8 : 12,
+                padding: isMobile ? '12px 14px' : '16px 20px',
+                background: 'rgba(0,0,0,0.2)',
+                borderRadius: 12,
+                marginBottom: isMobile ? 16 : 20,
+                flexWrap: 'wrap',
+              }}
+            >
+              <span style={{ color: '#71717a', fontSize: isMobile ? 13 : 14 }}>Equipment:</span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {exercise.equipment.map((item) => (
+                  <span
+                    key={item}
+                    style={{
+                      padding: '4px 10px',
+                      background: 'rgba(59, 130, 246, 0.15)',
+                      border: '1px solid rgba(59, 130, 246, 0.25)',
+                      borderRadius: 6,
+                      color: '#93c5fd',
+                      fontSize: isMobile ? 12 : 13,
+                    }}
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Video Section */}
           {embedUrl ? (
             <div

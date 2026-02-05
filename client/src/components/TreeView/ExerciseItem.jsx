@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Edit3, Trash2, Video, Play, ChevronRight, MoreVertical } from 'lucide-react';
+import { Edit3, Trash2, Video, Play, ChevronRight, MoreVertical, Wrench } from 'lucide-react';
 import { IconButton } from '../ui';
 import { renderDifficultyStars, getDifficultyStyle } from '../../utils/difficulty';
 
@@ -106,6 +106,26 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
             </span>
           )}
         </div>
+
+        {/* Equipment indicator */}
+        {exercise.equipment && exercise.equipment.length > 0 && (
+          <span
+            title={exercise.equipment.join(', ')}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 4,
+              padding: '3px 8px',
+              background: 'rgba(59, 130, 246, 0.1)',
+              borderRadius: 4,
+              color: '#60a5fa',
+              fontSize: 11,
+            }}
+          >
+            <Wrench size={11} />
+            {exercise.equipment.length}
+          </span>
+        )}
 
         {/* Difficulty Stars */}
         <span className="badge" style={getDifficultyStyle(exercise.difficulty)}>
@@ -254,18 +274,38 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
             {exercise.description}
           </span>
         )}
-        {/* Difficulty Stars */}
-        <span
-          className="badge"
-          style={{
-            ...getDifficultyStyle(exercise.difficulty),
-            padding: '4px 8px',
-            fontSize: 11,
-            display: 'inline-flex',
-          }}
-        >
-          {renderDifficultyStars(exercise.difficulty)}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+          {/* Equipment indicator */}
+          {exercise.equipment && exercise.equipment.length > 0 && (
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                padding: '4px 8px',
+                background: 'rgba(59, 130, 246, 0.1)',
+                borderRadius: 4,
+                color: '#60a5fa',
+                fontSize: 11,
+              }}
+            >
+              <Wrench size={11} />
+              {exercise.equipment.length}
+            </span>
+          )}
+          {/* Difficulty Stars */}
+          <span
+            className="badge"
+            style={{
+              ...getDifficultyStyle(exercise.difficulty),
+              padding: '4px 8px',
+              fontSize: 11,
+              display: 'inline-flex',
+            }}
+          >
+            {renderDifficultyStars(exercise.difficulty)}
+          </span>
+        </div>
       </div>
 
       {/* Kebab Menu */}
