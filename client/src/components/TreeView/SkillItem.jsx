@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { FileText, Plus, Edit3, Trash2, MoreVertical, ChevronRight } from 'lucide-react';
 import { IconButton, AgeBadge, SkillCountBadge } from '../ui';
 import ExerciseItem from './ExerciseItem';
+import DeleteSkillModal from '../modals/DeleteSkillModal';
 
 /**
  * Single skill item with its exercises
@@ -22,6 +23,7 @@ const SkillItem = ({
   isMobile = false,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const menuRef = useRef(null);
 
   // Close menu when clicking outside
@@ -44,15 +46,7 @@ const SkillItem = ({
 
   const handleDeleteSkill = () => {
     setMenuOpen(false);
-    const exerciseCount = exercises.length;
-    const confirmed = window.confirm(
-      exerciseCount > 0
-        ? `Delete skill "${skill.name}" and its ${exerciseCount} exercise${exerciseCount === 1 ? '' : 's'}?`
-        : `Delete skill "${skill.name}"?`
-    );
-
-    if (!confirmed) return;
-    onDeleteSkill(skill.id);
+    setDeleteModalOpen(true);
   };
 
   const handleEdit = () => {
@@ -192,6 +186,15 @@ const SkillItem = ({
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteSkillModal
+        isOpen={deleteModalOpen}
+        skill={skill}
+        exerciseCount={exercises.length}
+        onConfirm={onDeleteSkill}
+        onClose={() => setDeleteModalOpen(false)}
+      />
 
       {/* Exercises List - Only show when expanded */}
       {isExpanded && exercises.length > 0 && (

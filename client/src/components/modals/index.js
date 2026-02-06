@@ -4,3 +4,5 @@ export { default as SkillModal } from './SkillModal';
 export { default as ExerciseModal } from './ExerciseModal';
 export { default as PreviewModal } from './PreviewModal';
 export { default as ProfileEditModal } from './ProfileEditModal';
+export { default as DeleteSkillModal } from './DeleteSkillModal';
+export { default as DeleteCategoryModal } from './DeleteCategoryModal';

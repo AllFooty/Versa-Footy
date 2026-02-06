@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronRight, Edit3, Trash2, Plus, MoreVertical } from 'lucide-react';
 import { IconButton, Badge } from '../ui';
 import SkillItem from './SkillItem';
+import DeleteCategoryModal from '../modals/DeleteCategoryModal';
 
 /**
  * Single category item with expandable skills
@@ -27,6 +28,7 @@ const CategoryItem = ({
   isMobile = false,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const menuRef = useRef(null);
 
   // Close menu when clicking outside
@@ -65,30 +67,14 @@ const CategoryItem = ({
   const handleDelete = (e) => {
     e.stopPropagation();
     setMenuOpen(false);
-    
-    // Count total exercises across all skills in this category
-    const totalExercises = skills.reduce(
-      (count, skill) => count + getExercisesForSkill(skill.id).length,
-      0
-    );
-    
-    // Build confirmation message showing what will be deleted
-    let message = `Delete category "${category.name}"?`;
-    if (skills.length > 0 || totalExercises > 0) {
-      message += `\n\nThis will also delete:`;
-      if (skills.length > 0) {
-        message += `\n• ${skills.length} skill${skills.length === 1 ? '' : 's'}`;
-      }
-      if (totalExercises > 0) {
-        message += `\n• ${totalExercises} exercise${totalExercises === 1 ? '' : 's'}`;
-      }
-    }
-    
-    const confirmed = window.confirm(message);
-    if (!confirmed) return;
-    
-    onDeleteCategory(category.id);
+    setDeleteModalOpen(true);
   };
+
+  // Count total exercises across all skills in this category
+  const totalExercises = skills.reduce(
+    (count, skill) => count + getExercisesForSkill(skill.id).length,
+    0
+  );
 
   return (
     <div className="tree-category">
@@ -199,6 +185,16 @@ const CategoryItem = ({
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteCategoryModal
+        isOpen={deleteModalOpen}
+        category={category}
+        skillCount={skills.length}
+        exerciseCount={totalExercises}
+        onConfirm={onDeleteCategory}
+        onClose={() => setDeleteModalOpen(false)}
+      />
 
       {/* Expanded Content */}
       {isExpanded && (
