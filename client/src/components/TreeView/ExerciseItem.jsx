@@ -123,6 +123,25 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
             )}
           </div>
 
+          {/* Combo badge */}
+          {exercise.skillIds && exercise.skillIds.length > 1 && (
+            <span
+              title={`Combo: ${exercise.skillIds.length} skills`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '3px 8px',
+                background: 'rgba(251, 191, 36, 0.15)',
+                borderRadius: 4,
+                color: '#fbbf24',
+                fontSize: 11,
+                fontWeight: 600,
+              }}
+            >
+              Combo
+            </span>
+          )}
+
           {/* Equipment indicator */}
           {exercise.equipment && exercise.equipment.length > 0 && (
             <span
@@ -294,6 +313,23 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
             </span>
           )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+            {/* Combo badge */}
+            {exercise.skillIds && exercise.skillIds.length > 1 && (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '4px 8px',
+                  background: 'rgba(251, 191, 36, 0.15)',
+                  borderRadius: 4,
+                  color: '#fbbf24',
+                  fontSize: 11,
+                  fontWeight: 600,
+                }}
+              >
+                Combo
+              </span>
+            )}
             {/* Equipment indicator */}
             {exercise.equipment && exercise.equipment.length > 0 && (
               <span

@@ -61,7 +61,7 @@ export const DEFAULTS = {
   },
   exercise: {
     name: '',
-    skillId: '',
+    skillIds: [],
     videoUrl: '',
     difficulty: 1,
     description: '',

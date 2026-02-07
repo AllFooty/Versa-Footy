@@ -114,6 +114,9 @@ export default function LibraryApp() {
 
   const previewSkill = previewExercise ? getSkillById(previewExercise.skillId) : null;
   const previewCategory = previewSkill ? getCategoryById(previewSkill.categoryId) : null;
+  const previewSkills = previewExercise
+    ? (previewExercise.skillIds || []).map((id) => getSkillById(id)).filter(Boolean)
+    : [];
 
   return (
     <>
@@ -255,6 +258,8 @@ export default function LibraryApp() {
         exercise={previewExercise}
         skill={previewSkill}
         category={previewCategory}
+        previewSkills={previewSkills}
+        getCategoryById={getCategoryById}
         onClose={() => setPreviewExercise(null)}
         onEdit={openExerciseModal}
       />

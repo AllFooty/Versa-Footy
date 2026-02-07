@@ -12,6 +12,8 @@ const PreviewModal = ({
   exercise,
   skill,
   category,
+  previewSkills = [],
+  getCategoryById,
   onClose,
   onEdit,
 }) => {
@@ -102,22 +104,57 @@ const PreviewModal = ({
                 flexWrap: 'wrap',
               }}
             >
-              {category && (
-                <Badge color={category.color}>
-                  {category.icon} {category.name}
-                </Badge>
+              {previewSkills.length > 1 && (
+                <span style={{
+                  padding: '3px 8px',
+                  background: 'rgba(251, 191, 36, 0.15)',
+                  borderRadius: 4,
+                  color: '#fbbf24',
+                  fontSize: 11,
+                  fontWeight: 600,
+                }}>
+                  Combo
+                </span>
               )}
-              {skill && (
-                <Badge
-                  style={{
-                    background: 'rgba(139, 92, 246, 0.15)',
-                    color: '#8b5cf6',
-                  }}
-                >
-                  {skill.name}
-                </Badge>
+              {previewSkills.length > 0
+                ? previewSkills.map((s) => {
+                    const cat = getCategoryById?.(s.categoryId);
+                    return (
+                      <Badge
+                        key={s.id}
+                        color={cat?.color}
+                        style={!cat?.color ? {
+                          background: 'rgba(139, 92, 246, 0.15)',
+                          color: '#8b5cf6',
+                        } : undefined}
+                      >
+                        {cat?.icon} {s.name}
+                      </Badge>
+                    );
+                  })
+                : (
+                  <>
+                    {category && (
+                      <Badge color={category.color}>
+                        {category.icon} {category.name}
+                      </Badge>
+                    )}
+                    {skill && (
+                      <Badge
+                        style={{
+                          background: 'rgba(139, 92, 246, 0.15)',
+                          color: '#8b5cf6',
+                        }}
+                      >
+                        {skill.name}
+                      </Badge>
+                    )}
+                  </>
+                )}
+              {previewSkills.length > 0 && (
+                <AgeBadge age={[...new Set(previewSkills.map((s) => s.ageGroup).filter(Boolean))].join(', ')} />
               )}
-              {skill?.ageGroup && <AgeBadge age={skill.ageGroup} />}
+              {previewSkills.length === 0 && skill?.ageGroup && <AgeBadge age={skill.ageGroup} />}
             </div>
           </div>
           <IconButton 

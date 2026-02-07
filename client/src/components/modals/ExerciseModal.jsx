@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Video, Upload, Trash2, CheckCircle, X, Plus } from 'lucide-react';
+import { Video, Upload, Trash2, CheckCircle, X, Plus, Check, ChevronDown, ChevronRight } from 'lucide-react';
 import Modal from './Modal';
 import ConfirmModal from './ConfirmModal';
 import { Input, TextArea, Select, FormField, Label } from '../ui';
@@ -9,6 +9,7 @@ import { uploadExerciseVideo, deleteExerciseVideo } from '../../lib/storage';
 
 /**
  * Modal for adding/editing exercises
+ * Supports multi-skill selection via exercise_skills junction table
  */
 const ExerciseModal = ({
   isOpen,
@@ -30,13 +31,14 @@ const ExerciseModal = ({
   const [customEquipment, setCustomEquipment] = useState('');
   const [confirmRemoveVideo, setConfirmRemoveVideo] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState({});
 
   // Reset form when modal opens/closes or editItem changes
   useEffect(() => {
     if (editItem) {
       setFormData({
         name: editItem.name || '',
-        skillId: editItem.skillId || '',
+        skillIds: editItem.skillIds || (editItem.skillId ? [editItem.skillId] : []),
         videoUrl: editItem.videoUrl || '',
         difficulty: normalizeDifficulty(editItem.difficulty),
         description: editItem.description || '',
@@ -45,7 +47,7 @@ const ExerciseModal = ({
     } else {
       setFormData({
         ...DEFAULTS.exercise,
-        skillId: preselectedSkillId || '',
+        skillIds: preselectedSkillId ? [preselectedSkillId] : [],
       });
     }
     setCustomEquipment('');
@@ -56,6 +58,7 @@ const ExerciseModal = ({
     setDeleting(false);
     setDeleteMessage(null);
     setConfirmRemoveVideo(false);
+    setExpandedCategories({});
   }, [editItem, isOpen, preselectedSkillId]);
 
   // Detect mobile viewport
@@ -70,6 +73,20 @@ const ExerciseModal = ({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const toggleSkill = (skillId) => {
+    setFormData((prev) => {
+      const current = prev.skillIds || [];
+      if (current.includes(skillId)) {
+        return { ...prev, skillIds: current.filter((id) => id !== skillId) };
+      }
+      return { ...prev, skillIds: [...current, skillId] };
+    });
+  };
+
+  const toggleCategory = (catId) => {
+    setExpandedCategories((prev) => ({ ...prev, [catId]: !prev[catId] }));
+  };
+
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
     setVideoFile(file || null);
@@ -80,7 +97,7 @@ const ExerciseModal = ({
 
   const handleSave = async () => {
     if (uploading || deleting) return;
-    if (!formData.name.trim() || !formData.skillId) return;
+    if (!formData.name.trim() || !formData.skillIds || formData.skillIds.length === 0) return;
 
     try {
       setUploadError(null);
@@ -93,7 +110,7 @@ const ExerciseModal = ({
 
         const { publicUrl } = await uploadExerciseVideo(
           videoFile,
-          editItem?.id || formData.skillId,
+          editItem?.id || formData.skillIds[0],
           (progress) => setUploadProgress(progress)
         );
         nextVideoUrl = publicUrl;
@@ -148,6 +165,14 @@ const ExerciseModal = ({
     }
   };
 
+  // Helper to get skill info for selected chips
+  const getSkillInfo = (skillId) => {
+    const skill = skills.find((s) => s.id === skillId);
+    if (!skill) return null;
+    const category = categories.find((c) => c.id === skill.categoryId);
+    return { skill, category };
+  };
+
   return (
     <Modal
       title={editItem ? 'Edit Exercise' : 'Add Exercise'}
@@ -175,28 +200,192 @@ const ExerciseModal = ({
           />
         </FormField>
 
-        <FormField label="Associated Skill" id="exercise-skill">
-          <Select
-            id="exercise-skill"
-            value={formData.skillId}
-            onChange={(e) => handleChange('skillId', e.target.value)}
-          >
-            <option value="">Select Skill</option>
+        {/* Multi-Skill Picker */}
+        <div>
+          <Label>
+            Associated Skills
+            {formData.skillIds && formData.skillIds.length > 1 && (
+              <span style={{
+                marginLeft: 8,
+                padding: '2px 8px',
+                background: 'rgba(251, 191, 36, 0.15)',
+                borderRadius: 4,
+                color: '#fbbf24',
+                fontSize: 11,
+                fontWeight: 600,
+              }}>
+                Combo
+              </span>
+            )}
+          </Label>
+
+          {/* Selected skill chips */}
+          {formData.skillIds && formData.skillIds.length > 0 && (
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 8,
+              marginBottom: 10,
+            }}>
+              {formData.skillIds.map((skillId) => {
+                const info = getSkillInfo(skillId);
+                if (!info) return null;
+                return (
+                  <span
+                    key={skillId}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      padding: isMobile ? '8px 12px' : '5px 10px',
+                      background: info.category?.color
+                        ? `${info.category.color}20`
+                        : 'rgba(139, 92, 246, 0.15)',
+                      border: `1px solid ${info.category?.color
+                        ? `${info.category.color}40`
+                        : 'rgba(139, 92, 246, 0.3)'}`,
+                      borderRadius: 6,
+                      color: info.category?.color || '#8b5cf6',
+                      fontSize: isMobile ? 14 : 13,
+                    }}
+                  >
+                    {info.category?.icon} {info.skill.name}
+                    <button
+                      type="button"
+                      onClick={() => toggleSkill(skillId)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: info.category?.color || '#8b5cf6',
+                        cursor: 'pointer',
+                        padding: isMobile ? 4 : 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minWidth: isMobile ? 28 : 'auto',
+                        minHeight: isMobile ? 28 : 'auto',
+                      }}
+                    >
+                      <X size={isMobile ? 16 : 14} />
+                    </button>
+                  </span>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Category-grouped skill picker */}
+          <div style={{
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: 8,
+            overflow: 'hidden',
+            maxHeight: 280,
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch',
+          }}>
             {categories.map((cat) => {
               const categorySkills = skills.filter((s) => s.categoryId === cat.id);
               if (categorySkills.length === 0) return null;
+              const isExpanded = expandedCategories[cat.id] || false;
+              const selectedCount = categorySkills.filter(
+                (s) => (formData.skillIds || []).includes(s.id)
+              ).length;
+
               return (
-                <optgroup key={cat.id} label={`${cat.icon} ${cat.name}`}>
-                  {categorySkills.map((skill) => (
-                    <option key={skill.id} value={skill.id}>
-                      {skill.name}
-                    </option>
-                  ))}
-                </optgroup>
+                <div key={cat.id}>
+                  {/* Category header */}
+                  <button
+                    type="button"
+                    onClick={() => toggleCategory(cat.id)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      width: '100%',
+                      padding: isMobile ? '12px' : '8px 12px',
+                      background: 'rgba(255,255,255,0.03)',
+                      border: 'none',
+                      borderBottom: '1px solid rgba(255,255,255,0.05)',
+                      color: '#d4d4d8',
+                      fontSize: isMobile ? 14 : 13,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      minHeight: isMobile ? 44 : 'auto',
+                    }}
+                  >
+                    {isExpanded
+                      ? <ChevronDown size={14} color="#71717a" />
+                      : <ChevronRight size={14} color="#71717a" />}
+                    <span>{cat.icon} {cat.name}</span>
+                    {selectedCount > 0 && (
+                      <span style={{
+                        marginLeft: 'auto',
+                        padding: '1px 7px',
+                        background: `${cat.color || '#8b5cf6'}30`,
+                        borderRadius: 10,
+                        color: cat.color || '#8b5cf6',
+                        fontSize: 11,
+                        fontWeight: 700,
+                      }}>
+                        {selectedCount}
+                      </span>
+                    )}
+                  </button>
+
+                  {/* Skills in this category */}
+                  {isExpanded && (
+                    <div style={{ padding: '4px 0' }}>
+                      {categorySkills.map((skill) => {
+                        const isSelected = (formData.skillIds || []).includes(skill.id);
+                        return (
+                          <button
+                            key={skill.id}
+                            type="button"
+                            onClick={() => toggleSkill(skill.id)}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 8,
+                              width: '100%',
+                              padding: isMobile ? '10px 12px 10px 32px' : '6px 12px 6px 32px',
+                              background: isSelected
+                                ? `${cat.color || '#8b5cf6'}15`
+                                : 'transparent',
+                              border: 'none',
+                              color: isSelected
+                                ? (cat.color || '#8b5cf6')
+                                : '#a1a1aa',
+                              fontSize: isMobile ? 14 : 13,
+                              cursor: 'pointer',
+                              textAlign: 'left',
+                              transition: 'all 0.15s',
+                              minHeight: isMobile ? 44 : 'auto',
+                            }}
+                          >
+                            {isSelected
+                              ? <Check size={14} />
+                              : <Plus size={12} style={{ opacity: 0.5 }} />}
+                            <span style={{ flex: 1 }}>{skill.name}</span>
+                            <span style={{ fontSize: 11, color: '#52525b' }}>
+                              {skill.ageGroup}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               );
             })}
-          </Select>
-        </FormField>
+          </div>
+
+          {formData.skillIds && formData.skillIds.length === 0 && (
+            <div style={{ marginTop: 6, fontSize: 12, color: '#71717a' }}>
+              Select at least one skill. Multiple skills create a Combo Exercise.
+            </div>
+          )}
+        </div>
 
         <div>
           <Label htmlFor="exercise-video">

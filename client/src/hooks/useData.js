@@ -26,10 +26,13 @@ const transformSkill = (skill) => ({
 
 /**
  * Transform Supabase exercise to frontend format
+ * @param {object} exercise - raw Supabase exercise row
+ * @param {Map<number, number[]>} skillIdsMap - exercise_id → skill_id[] from junction table
  */
-const transformExercise = (exercise) => ({
+const transformExercise = (exercise, skillIdsMap) => ({
   id: exercise.id,
   skillId: exercise.skill_id,
+  skillIds: skillIdsMap?.get(exercise.id) || [exercise.skill_id],
   name: exercise.name,
   videoUrl: exercise.video_url,
   difficulty: normalizeDifficulty(exercise.difficulty),
@@ -55,19 +58,29 @@ export const useData = () => {
       setError(null);
 
       try {
-        const [categoriesRes, skillsRes, exercisesRes] = await Promise.all([
+        const [categoriesRes, skillsRes, exercisesRes, exerciseSkillsRes] = await Promise.all([
           supabase.from('categories').select('*').order('id'),
           supabase.from('skills').select('*').order('id'),
           supabase.from('exercises').select('*').order('id'),
+          supabase.from('exercise_skills').select('exercise_id, skill_id').order('exercise_id'),
         ]);
 
         if (categoriesRes.error) throw categoriesRes.error;
         if (skillsRes.error) throw skillsRes.error;
         if (exercisesRes.error) throw exercisesRes.error;
+        if (exerciseSkillsRes.error) throw exerciseSkillsRes.error;
+
+        // Build exercise_id → skill_id[] map from junction table
+        const skillIdsMap = new Map();
+        for (const row of exerciseSkillsRes.data) {
+          const existing = skillIdsMap.get(row.exercise_id) || [];
+          existing.push(row.skill_id);
+          skillIdsMap.set(row.exercise_id, existing);
+        }
 
         setCategories(categoriesRes.data.map(transformCategory));
         setSkills(skillsRes.data.map(transformSkill));
-        setExercises(exercisesRes.data.map(transformExercise));
+        setExercises(exercisesRes.data.map((e) => transformExercise(e, skillIdsMap)));
       } catch (err) {
         console.error('Error fetching data:', err);
         setError(err.message);
@@ -132,25 +145,44 @@ export const useData = () => {
   }, []);
 
   /**
-   * Delete a category and all its skills and exercises
+   * Delete a category and its skills. Exercises with only skills from
+   * this category are deleted; exercises with cross-category skills survive.
    */
   const deleteCategory = useCallback(async (id) => {
     try {
-      // Get skill IDs for this category to delete related exercises
-      const skillIds = skills
+      const categorySkillIds = skills
         .filter((s) => s.categoryId === id)
         .map((s) => s.id);
 
-      // Delete exercises for these skills
-      if (skillIds.length > 0) {
+      // Find exercises that ONLY have skills from this category
+      const orphanIds = exercises
+        .filter((e) => e.skillIds.every((sid) => categorySkillIds.includes(sid)))
+        .map((e) => e.id);
+
+      // Delete orphaned exercises
+      if (orphanIds.length > 0) {
         const { error: exercisesError } = await supabase
           .from('exercises')
           .delete()
-          .in('skill_id', skillIds);
+          .in('id', orphanIds);
         if (exercisesError) throw exercisesError;
       }
 
-      // Delete skills for this category
+      // For surviving exercises, update skill_id if it pointed to a deleted skill
+      const survivingExercises = exercises.filter(
+        (e) => !orphanIds.includes(e.id) && e.skillIds.some((sid) => categorySkillIds.includes(sid))
+      );
+      for (const ex of survivingExercises) {
+        const remainingSkills = ex.skillIds.filter((sid) => !categorySkillIds.includes(sid));
+        if (categorySkillIds.includes(ex.skillId) && remainingSkills.length > 0) {
+          await supabase
+            .from('exercises')
+            .update({ skill_id: remainingSkills[0] })
+            .eq('id', ex.id);
+        }
+      }
+
+      // Delete skills (cascades exercise_skills rows)
       const { error: skillsError } = await supabase
         .from('skills')
         .delete()
@@ -167,12 +199,26 @@ export const useData = () => {
       // Update local state
       setCategories((prev) => prev.filter((c) => c.id !== id));
       setSkills((prev) => prev.filter((s) => s.categoryId !== id));
-      setExercises((prev) => prev.filter((e) => !skillIds.includes(e.skillId)));
+      setExercises((prev) =>
+        prev
+          .filter((e) => !orphanIds.includes(e.id))
+          .map((e) => {
+            if (e.skillIds.some((sid) => categorySkillIds.includes(sid))) {
+              const remaining = e.skillIds.filter((sid) => !categorySkillIds.includes(sid));
+              return {
+                ...e,
+                skillIds: remaining,
+                skillId: categorySkillIds.includes(e.skillId) ? remaining[0] : e.skillId,
+              };
+            }
+            return e;
+          })
+      );
     } catch (err) {
       console.error('Error deleting category:', err);
       throw err;
     }
-  }, [skills]);
+  }, [skills, exercises]);
 
   // ============ Skill CRUD Operations ============
 
@@ -229,18 +275,40 @@ export const useData = () => {
   }, []);
 
   /**
-   * Delete a skill and all its exercises
+   * Delete a skill. Exercises with only this skill are deleted;
+   * exercises with other skills survive with this skill removed.
    */
   const deleteSkill = useCallback(async (id) => {
     try {
-      // Delete exercises for this skill
-      const { error: exercisesError } = await supabase
-        .from('exercises')
-        .delete()
-        .eq('skill_id', id);
-      if (exercisesError) throw exercisesError;
+      // Find exercises that ONLY have this skill (will be orphaned)
+      const orphanIds = exercises
+        .filter((e) => e.skillIds.length === 1 && e.skillIds.includes(id))
+        .map((e) => e.id);
 
-      // Delete the skill
+      // Delete orphaned exercises
+      if (orphanIds.length > 0) {
+        const { error: exercisesError } = await supabase
+          .from('exercises')
+          .delete()
+          .in('id', orphanIds);
+        if (exercisesError) throw exercisesError;
+      }
+
+      // For exercises that have other skills, update skill_id to their next remaining skill
+      const multiSkillExercises = exercises.filter(
+        (e) => e.skillIds.includes(id) && e.skillIds.length > 1
+      );
+      for (const ex of multiSkillExercises) {
+        const remainingSkills = ex.skillIds.filter((sid) => sid !== id);
+        if (ex.skillId === id) {
+          await supabase
+            .from('exercises')
+            .update({ skill_id: remainingSkills[0] })
+            .eq('id', ex.id);
+        }
+      }
+
+      // Delete the skill (cascades exercise_skills rows)
       const { error: skillError } = await supabase
         .from('skills')
         .delete()
@@ -249,24 +317,39 @@ export const useData = () => {
 
       // Update local state
       setSkills((prev) => prev.filter((s) => s.id !== id));
-      setExercises((prev) => prev.filter((e) => e.skillId !== id));
+      setExercises((prev) =>
+        prev
+          .filter((e) => !orphanIds.includes(e.id))
+          .map((e) =>
+            e.skillIds.includes(id)
+              ? {
+                  ...e,
+                  skillIds: e.skillIds.filter((sid) => sid !== id),
+                  skillId: e.skillId === id ? e.skillIds.find((sid) => sid !== id) : e.skillId,
+                }
+              : e
+          )
+      );
     } catch (err) {
       console.error('Error deleting skill:', err);
       throw err;
     }
-  }, []);
+  }, [exercises]);
 
   // ============ Exercise CRUD Operations ============
 
   /**
-   * Add a new exercise
+   * Add a new exercise with multi-skill support
    */
   const addExercise = useCallback(async (exerciseData) => {
     try {
+      const skillIds = exerciseData.skillIds.map((id) => parseInt(id, 10));
+
+      // Insert exercise (skill_id = first skill for backward compat)
       const { data, error } = await supabase
         .from('exercises')
         .insert({
-          skill_id: parseInt(exerciseData.skillId, 10),
+          skill_id: skillIds[0],
           name: exerciseData.name,
           video_url: exerciseData.videoUrl || null,
           difficulty: normalizeDifficulty(exerciseData.difficulty),
@@ -277,7 +360,16 @@ export const useData = () => {
         .single();
 
       if (error) throw error;
-      setExercises((prev) => [...prev, transformExercise(data)]);
+
+      // Insert junction rows
+      const { error: junctionError } = await supabase
+        .from('exercise_skills')
+        .insert(skillIds.map((sid) => ({ exercise_id: data.id, skill_id: sid })));
+
+      if (junctionError) throw junctionError;
+
+      const skillIdsMap = new Map([[data.id, skillIds]]);
+      setExercises((prev) => [...prev, transformExercise(data, skillIdsMap)]);
     } catch (err) {
       console.error('Error adding exercise:', err);
       throw err;
@@ -285,14 +377,17 @@ export const useData = () => {
   }, []);
 
   /**
-   * Update an existing exercise
+   * Update an existing exercise with multi-skill support
    */
   const updateExercise = useCallback(async (id, exerciseData) => {
     try {
+      const skillIds = exerciseData.skillIds.map((sid) => parseInt(sid, 10));
+
+      // Update exercise table (skill_id = first skill for backward compat)
       const { data, error } = await supabase
         .from('exercises')
         .update({
-          skill_id: parseInt(exerciseData.skillId, 10),
+          skill_id: skillIds[0],
           name: exerciseData.name,
           video_url: exerciseData.videoUrl || null,
           difficulty: normalizeDifficulty(exerciseData.difficulty),
@@ -305,8 +400,22 @@ export const useData = () => {
         .single();
 
       if (error) throw error;
+
+      // Replace junction rows: delete all, re-insert
+      const { error: deleteError } = await supabase
+        .from('exercise_skills')
+        .delete()
+        .eq('exercise_id', id);
+      if (deleteError) throw deleteError;
+
+      const { error: insertError } = await supabase
+        .from('exercise_skills')
+        .insert(skillIds.map((sid) => ({ exercise_id: id, skill_id: sid })));
+      if (insertError) throw insertError;
+
+      const skillIdsMap = new Map([[id, skillIds]]);
       setExercises((prev) =>
-        prev.map((e) => (e.id === id ? transformExercise(data) : e))
+        prev.map((e) => (e.id === id ? transformExercise(data, skillIdsMap) : e))
       );
     } catch (err) {
       console.error('Error updating exercise:', err);
@@ -369,7 +478,7 @@ export const useData = () => {
       }
 
       if (filterHasExercises) {
-        result = result.filter((s) => exercises.some((e) => e.skillId === s.id));
+        result = result.filter((s) => exercises.some((e) => e.skillIds.includes(s.id)));
       }
 
       if (searchTerm) {
@@ -387,7 +496,7 @@ export const useData = () => {
    */
   const getExercisesForSkill = useCallback(
     (skillId, { searchTerm = '' } = {}) => {
-      let result = exercises.filter((e) => e.skillId === skillId);
+      let result = exercises.filter((e) => e.skillIds.includes(skillId));
 
       if (searchTerm) {
         const term = searchTerm.toLowerCase();
