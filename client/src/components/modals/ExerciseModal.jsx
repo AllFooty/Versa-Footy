@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { Video, Upload, Trash2, CheckCircle, X, Plus, Check, ChevronDown, ChevronRight, Search } from 'lucide-react';
 import Modal from './Modal';
 import ConfirmModal from './ConfirmModal';
@@ -639,15 +640,18 @@ const ExerciseModal = ({
             </div>
           )}
 
-          {/* Full-screen picker overlay */}
-          <MobileSkillPicker
-            isOpen={skillPickerOpen}
-            onClose={() => setSkillPickerOpen(false)}
-            categories={categories}
-            skills={skills}
-            selectedSkillIds={selectedIds}
-            onToggleSkill={toggleSkill}
-          />
+          {/* Full-screen picker overlay — portal to escape modal transform */}
+          {skillPickerOpen && createPortal(
+            <MobileSkillPicker
+              isOpen={skillPickerOpen}
+              onClose={() => setSkillPickerOpen(false)}
+              categories={categories}
+              skills={skills}
+              selectedSkillIds={selectedIds}
+              onToggleSkill={toggleSkill}
+            />,
+            document.body
+          )}
         </div>
       );
     }
