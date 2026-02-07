@@ -8,7 +8,7 @@ import { useAuth } from '../lib/AuthContext';
  * Shows user info, settings link, and sign out with confirmation
  */
 export default function ProfileDropdown() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, isAdmin, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [showConfirmSignOut, setShowConfirmSignOut] = useState(false);
   const dropdownRef = useRef(null);
@@ -159,6 +159,47 @@ export default function ProfileDropdown() {
             {/* Menu Items */}
             {!showConfirmSignOut ? (
               <div style={{ padding: '8px' }}>
+                {/* Library Link (admin only) */}
+                {isAdmin && (
+                  <>
+                    <Link href="/library">
+                      <a
+                        onClick={() => setIsOpen(false)}
+                        style={{
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          padding: '12px',
+                          background: 'transparent',
+                          border: 'none',
+                          borderRadius: '10px',
+                          color: 'rgba(255, 255, 255, 0.9)',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                          transition: 'background 0.2s',
+                          textAlign: 'left',
+                          textDecoration: 'none',
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                        </svg>
+                        Library
+                      </a>
+                    </Link>
+                    <div style={{
+                      height: '1px',
+                      background: 'rgba(255, 255, 255, 0.08)',
+                      margin: '8px 0',
+                    }} />
+                  </>
+                )}
+
                 {/* Settings Link */}
                 <Link href="/settings">
                   <a

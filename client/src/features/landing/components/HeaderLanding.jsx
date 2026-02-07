@@ -8,7 +8,7 @@ export default function HeaderLanding() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showMobileSignOutConfirm, setShowMobileSignOutConfirm] = useState(false);
-  const { isAuthenticated, user, profile, signOut } = useAuth();
+  const { isAuthenticated, isAdmin, user, profile, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,7 +28,10 @@ export default function HeaderLanding() {
     { name: 'About Us', href: '/about-us' },
   ];
 
-  const navigationItems = baseNavigationItems;
+  // Add Library link for admin users
+  const navigationItems = isAuthenticated && isAdmin
+    ? [...baseNavigationItems, { name: 'Library', href: '/library' }]
+    : baseNavigationItems;
 
   const handleAnchorClick = (e, href, onClick) => {
     // Check if it's a hash link (anchor on current page)
