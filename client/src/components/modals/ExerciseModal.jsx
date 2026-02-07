@@ -38,14 +38,24 @@ const MobileSkillPicker = ({
     }
   }, [isOpen, selectedSkillIds, skills]);
 
-  // Prevent body scroll
+  // Prevent body scroll (iOS Safari needs position:fixed to truly lock)
   useEffect(() => {
     if (isOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
       document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+      return () => {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.overflow = '';
+        window.scrollTo(0, scrollY);
+      };
     }
-    return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
   const filteredSkills = useMemo(() => {
@@ -74,6 +84,7 @@ const MobileSkillPicker = ({
       display: 'flex',
       flexDirection: 'column',
       animation: 'slideUpMobile 0.25s ease-out',
+      touchAction: 'none',
     }}>
       {/* Header */}
       <div style={{
@@ -191,6 +202,8 @@ const MobileSkillPicker = ({
         flex: 1,
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
+        overscrollBehavior: 'contain',
+        touchAction: 'pan-y',
       }}>
         {filteredSkills
           ? (
