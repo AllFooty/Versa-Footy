@@ -3,6 +3,7 @@ import { ChevronRight, Edit3, Trash2, Plus, MoreVertical } from 'lucide-react';
 import { IconButton, Badge } from '../ui';
 import SkillItem from './SkillItem';
 import DeleteCategoryModal from '../modals/DeleteCategoryModal';
+import ActionSheet from '../ui/ActionSheet';
 
 /**
  * Single category item with expandable skills
@@ -31,8 +32,10 @@ const CategoryItem = ({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const menuRef = useRef(null);
 
-  // Close menu when clicking outside
+  // Close menu when clicking outside (desktop only)
   useEffect(() => {
+    if (isMobile) return;
+
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setMenuOpen(false);
@@ -47,7 +50,7 @@ const CategoryItem = ({
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('touchstart', handleClickOutside);
     };
-  }, [menuOpen]);
+  }, [menuOpen, isMobile]);
 
   const handleToggle = () => {
     onToggle(category.id);
@@ -82,7 +85,7 @@ const CategoryItem = ({
       <div
         className="tree-category-header touchable"
         onClick={handleToggle}
-        style={{ 
+        style={{
           borderLeft: `3px solid ${category.color}`,
           minHeight: isMobile ? 56 : 'auto',
         }}
@@ -101,8 +104,8 @@ const CategoryItem = ({
 
         {/* Category Icon & Name */}
         <span style={{ fontSize: isMobile ? 22 : 20 }}>{category.icon}</span>
-        <span style={{ 
-          fontWeight: 600, 
+        <span style={{
+          fontWeight: 600,
           flex: 1,
           fontSize: isMobile ? 15 : 14,
         }}>
@@ -116,10 +119,10 @@ const CategoryItem = ({
 
         {/* Kebab Menu */}
         <div ref={menuRef} style={{ position: 'relative' }}>
-          <IconButton 
-            onClick={handleMenuToggle} 
+          <IconButton
+            onClick={handleMenuToggle}
             title="Category options"
-            style={{ 
+            style={{
               minWidth: isMobile ? 44 : 32,
               minHeight: isMobile ? 44 : 32,
             }}
@@ -127,7 +130,7 @@ const CategoryItem = ({
             <MoreVertical size={isMobile ? 18 : 16} />
           </IconButton>
 
-          {menuOpen && (
+          {!isMobile && menuOpen && (
             <div
               style={{
                 position: 'absolute',
@@ -136,10 +139,10 @@ const CategoryItem = ({
                 marginTop: 4,
                 backgroundColor: '#1e1e24',
                 border: '1px solid #2e2e38',
-                borderRadius: isMobile ? 12 : 8,
+                borderRadius: 8,
                 boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
                 zIndex: 50,
-                minWidth: isMobile ? 160 : 140,
+                minWidth: 140,
                 overflow: 'hidden',
               }}
             >
@@ -150,16 +153,16 @@ const CategoryItem = ({
                   alignItems: 'center',
                   gap: 10,
                   width: '100%',
-                  padding: isMobile ? '14px 16px' : '10px 12px',
+                  padding: '10px 12px',
                   backgroundColor: 'transparent',
                   border: 'none',
                   color: '#e4e4e7',
-                  fontSize: isMobile ? 15 : 14,
+                  fontSize: 14,
                   cursor: 'pointer',
                   textAlign: 'left',
                 }}
               >
-                <Edit3 size={isMobile ? 16 : 14} />
+                <Edit3 size={14} />
                 Edit
               </button>
               <button
@@ -169,22 +172,44 @@ const CategoryItem = ({
                   alignItems: 'center',
                   gap: 10,
                   width: '100%',
-                  padding: isMobile ? '14px 16px' : '10px 12px',
+                  padding: '10px 12px',
                   backgroundColor: 'transparent',
                   border: 'none',
                   color: '#ef4444',
-                  fontSize: isMobile ? 15 : 14,
+                  fontSize: 14,
                   cursor: 'pointer',
                   textAlign: 'left',
                 }}
               >
-                <Trash2 size={isMobile ? 16 : 14} />
+                <Trash2 size={14} />
                 Delete
               </button>
             </div>
           )}
         </div>
       </div>
+
+      {/* Mobile Action Sheet */}
+      {isMobile && (
+        <ActionSheet
+          isOpen={menuOpen}
+          onClose={() => setMenuOpen(false)}
+          title={`${category.icon} ${category.name}`}
+          items={[
+            {
+              icon: <Edit3 size={18} />,
+              label: 'Edit Category',
+              onClick: () => onEditCategory(category),
+            },
+            {
+              icon: <Trash2 size={18} />,
+              label: 'Delete Category',
+              onClick: () => setDeleteModalOpen(true),
+              danger: true,
+            },
+          ]}
+        />
+      )}
 
       {/* Delete Confirmation Modal */}
       <DeleteCategoryModal
@@ -202,8 +227,8 @@ const CategoryItem = ({
           {skills.length === 0 ? (
             <div
               className="tree-skill"
-              style={{ 
-                color: '#52525b', 
+              style={{
+                color: '#52525b',
                 fontStyle: 'italic',
                 padding: isMobile ? '16px' : '10px 16px',
               }}
@@ -232,15 +257,15 @@ const CategoryItem = ({
           {/* Add Skill Button */}
           <button
             className="btn-secondary"
-            style={{ 
-              marginLeft: isMobile ? 16 : 32, 
+            style={{
+              marginLeft: isMobile ? 16 : 32,
               marginTop: 8,
               minHeight: isMobile ? 44 : 'auto',
               fontSize: isMobile ? 14 : 13,
             }}
             onClick={() => onAddSkill(category)}
           >
-            <Plus size={isMobile ? 16 : 14} /> 
+            <Plus size={isMobile ? 16 : 14} />
             {isMobile ? 'Add Skill' : `Add Skill to ${category.name}`}
           </button>
         </div>

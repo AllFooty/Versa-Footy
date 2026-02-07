@@ -799,6 +799,13 @@
   }
 }
 
+/* ============ Form Row Responsive ============ */
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+  }
+}
+
 /* ============ Main Content Padding ============ */
 .library-main-content {
   padding: 32px 40px;

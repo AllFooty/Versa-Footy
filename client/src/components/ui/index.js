@@ -13,3 +13,4 @@ export {
   FormField,
   FormRow,
 } from './FormFields';
+export { default as ActionSheet } from './ActionSheet';

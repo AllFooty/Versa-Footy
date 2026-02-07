@@ -108,7 +108,7 @@ export const FormField = ({ label, children, id }) => (
  * Two-column form row
  */
 export const FormRow = ({ children }) => (
-  <div style={{ display: 'flex', gap: 16 }}>
+  <div className="form-row" style={{ display: 'flex', gap: 16 }}>
     {React.Children.map(children, (child) => (
       <div style={{ flex: 1 }}>{child}</div>
     ))}

@@ -6,3 +6,4 @@ export { default as PreviewModal } from './PreviewModal';
 export { default as ProfileEditModal } from './ProfileEditModal';
 export { default as DeleteSkillModal } from './DeleteSkillModal';
 export { default as DeleteCategoryModal } from './DeleteCategoryModal';
+export { default as ConfirmModal } from './ConfirmModal';

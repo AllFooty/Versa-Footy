@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Video, Upload, Trash2, CheckCircle, X, Plus } from 'lucide-react';
 import Modal from './Modal';
+import ConfirmModal from './ConfirmModal';
 import { Input, TextArea, Select, FormField, Label } from '../ui';
 import { DIFFICULTY_OPTIONS, DEFAULTS, EQUIPMENT_OPTIONS } from '../../constants';
 import { normalizeDifficulty } from '../../utils/difficulty';
@@ -27,6 +28,8 @@ const ExerciseModal = ({
   const [deleting, setDeleting] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState(null);
   const [customEquipment, setCustomEquipment] = useState('');
+  const [confirmRemoveVideo, setConfirmRemoveVideo] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Reset form when modal opens/closes or editItem changes
   useEffect(() => {
@@ -52,7 +55,16 @@ const ExerciseModal = ({
     setUploadSuccess(false);
     setDeleting(false);
     setDeleteMessage(null);
+    setConfirmRemoveVideo(false);
   }, [editItem, isOpen, preselectedSkillId]);
+
+  // Detect mobile viewport
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -78,14 +90,14 @@ const ExerciseModal = ({
       if (videoFile) {
         setUploading(true);
         setUploadProgress(0);
-        
+
         const { publicUrl } = await uploadExerciseVideo(
           videoFile,
           editItem?.id || formData.skillId,
           (progress) => setUploadProgress(progress)
         );
         nextVideoUrl = publicUrl;
-        
+
         // Show success briefly before saving
         setUploadSuccess(true);
         setUploadProgress(100);
@@ -114,13 +126,8 @@ const ExerciseModal = ({
 
   const handleRemoveVideo = async () => {
     if (uploading || deleting) return;
-    if (!formData.videoUrl && !videoFile) return;
 
-    const confirmed = window.confirm(
-      'Remove the current video? This will delete the uploaded file and clear the URL.'
-    );
-    if (!confirmed) return;
-
+    setConfirmRemoveVideo(false);
     setDeleting(true);
     setDeleteMessage(null);
     setUploadError(null);
@@ -148,12 +155,12 @@ const ExerciseModal = ({
       onClose={onClose}
       onSave={handleSave}
       saveLabel={
-        uploading 
-          ? `Uploading${uploadProgress > 0 ? ` ${uploadProgress}%` : '...'}` 
-          : deleting 
-            ? 'Removing...' 
-            : editItem 
-              ? 'Update' 
+        uploading
+          ? `Uploading${uploadProgress > 0 ? ` ${uploadProgress}%` : '...'}`
+          : deleting
+            ? 'Removing...'
+            : editItem
+              ? 'Update'
               : 'Save'
       }
       saveDisabled={uploading || deleting}
@@ -238,13 +245,13 @@ const ExerciseModal = ({
                 : `Existing video: ${formData.videoUrl}`}
             </div>
           )}
-          
+
           {/* Upload Progress Bar */}
           {uploading && (
             <div style={{ marginTop: 12 }}>
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
                 marginBottom: 6,
                 fontSize: 13,
                 color: '#a1a1aa'
@@ -267,19 +274,19 @@ const ExerciseModal = ({
                   transition: 'width 0.3s ease',
                 }} />
               </div>
-              <div style={{ 
-                marginTop: 6, 
-                fontSize: 12, 
+              <div style={{
+                marginTop: 6,
+                fontSize: 12,
                 color: '#71717a',
                 textAlign: 'center'
               }}>
-                {uploadProgress < 100 
-                  ? 'Please wait while your video uploads...' 
+                {uploadProgress < 100
+                  ? 'Please wait while your video uploads...'
                   : 'Upload complete! Saving exercise...'}
               </div>
             </div>
           )}
-          
+
           {/* Upload Success Message */}
           {uploadSuccess && !uploading && (
             <div
@@ -300,14 +307,14 @@ const ExerciseModal = ({
               Video uploaded successfully!
             </div>
           )}
-          
+
           {/* Only show Remove button when there's a video to remove */}
           {(videoFile || formData.videoUrl) && (
             <div style={{ display: 'flex', gap: 10, marginTop: 10, flexWrap: 'wrap' }}>
               <button
                 type="button"
                 className="btn-secondary"
-                onClick={handleRemoveVideo}
+                onClick={() => setConfirmRemoveVideo(true)}
                 disabled={uploading || deleting}
                 style={{ display: 'flex', alignItems: 'center', gap: 6 }}
               >
@@ -316,7 +323,17 @@ const ExerciseModal = ({
               </button>
             </div>
           )}
-          
+
+          <ConfirmModal
+            isOpen={confirmRemoveVideo}
+            title="Remove Video"
+            message="Remove the current video? This will delete the uploaded file and clear the URL."
+            confirmLabel="Remove"
+            confirmDanger
+            onConfirm={handleRemoveVideo}
+            onClose={() => setConfirmRemoveVideo(false)}
+          />
+
           {deleteMessage && (
             <div
               style={{
@@ -340,7 +357,7 @@ const ExerciseModal = ({
                 fontSize: 13,
               }}
             >
-              ⚠️ {uploadError}
+              {uploadError}
             </div>
           )}
         </div>
@@ -376,12 +393,12 @@ const ExerciseModal = ({
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: 6,
-                    padding: '5px 10px',
+                    padding: isMobile ? '8px 12px' : '5px 10px',
                     background: 'rgba(59, 130, 246, 0.15)',
                     border: '1px solid rgba(59, 130, 246, 0.3)',
                     borderRadius: 6,
                     color: '#93c5fd',
-                    fontSize: 13,
+                    fontSize: isMobile ? 14 : 13,
                   }}
                 >
                   {item}
@@ -393,12 +410,15 @@ const ExerciseModal = ({
                       border: 'none',
                       color: '#93c5fd',
                       cursor: 'pointer',
-                      padding: 0,
+                      padding: isMobile ? 4 : 0,
                       display: 'flex',
                       alignItems: 'center',
+                      justifyContent: 'center',
+                      minWidth: isMobile ? 28 : 'auto',
+                      minHeight: isMobile ? 28 : 'auto',
                     }}
                   >
-                    <X size={14} />
+                    <X size={isMobile ? 16 : 14} />
                   </button>
                 </span>
               ))}
@@ -408,7 +428,7 @@ const ExerciseModal = ({
           <div style={{
             display: 'flex',
             flexWrap: 'wrap',
-            gap: 6,
+            gap: isMobile ? 8 : 6,
             marginBottom: 10,
           }}>
             {EQUIPMENT_OPTIONS.filter((opt) => !(formData.equipment || []).includes(opt)).map((opt) => (
@@ -419,18 +439,19 @@ const ExerciseModal = ({
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: 4,
-                  padding: '5px 10px',
+                  gap: isMobile ? 6 : 4,
+                  padding: isMobile ? '10px 14px' : '5px 10px',
                   background: 'rgba(255,255,255,0.05)',
                   border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: 6,
+                  borderRadius: isMobile ? 8 : 6,
                   color: '#a1a1aa',
-                  fontSize: 13,
+                  fontSize: isMobile ? 14 : 13,
                   cursor: 'pointer',
                   transition: 'all 0.15s',
+                  minHeight: isMobile ? 44 : 'auto',
                 }}
               >
-                <Plus size={12} />
+                <Plus size={isMobile ? 14 : 12} />
                 {opt}
               </button>
             ))}
@@ -464,7 +485,11 @@ const ExerciseModal = ({
                 setCustomEquipment('');
               }}
               disabled={!customEquipment.trim()}
-              style={{ padding: '8px 14px', fontSize: 13 }}
+              style={{
+                padding: isMobile ? '12px 18px' : '8px 14px',
+                fontSize: isMobile ? 14 : 13,
+                minHeight: isMobile ? 44 : 'auto',
+              }}
             >
               Add
             </button>
