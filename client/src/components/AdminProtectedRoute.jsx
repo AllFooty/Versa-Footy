@@ -54,9 +54,9 @@ export default function AdminProtectedRoute({ children }) {
     );
   }
 
-  // Redirect non-admins to the training app (their home)
+  // Redirect non-admins to the landing page
   if (!isAdmin) {
-    return <Redirect to="/training" />;
+    return <Redirect to="/" />;
   }
 
   // Render protected content for admins

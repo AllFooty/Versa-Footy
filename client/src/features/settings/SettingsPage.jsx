@@ -89,7 +89,7 @@ export default function SettingsPage() {
           padding: '40px 24px 80px',
         }}>
           {/* Back Button */}
-          <Link href="/training">
+          <Link href="/">
             <a style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -104,7 +104,7 @@ export default function SettingsPage() {
             onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'}
             >
               <ArrowLeft size={18} />
-              Back to Training
+              Back to Home
             </a>
           </Link>
 

@@ -137,7 +137,7 @@ export default function Login() {
     if (isAuthenticated && !authLoading) {
       // Small delay to ensure smooth transition
       const timer = setTimeout(() => {
-        setLocation('/training');
+        setLocation('/');
       }, 100);
       return () => clearTimeout(timer);
     }
@@ -167,7 +167,7 @@ export default function Login() {
               Successfully signed in!
             </h2>
             <p style={{ color: '#94a3b8', fontSize: 14, margin: 0 }}>
-              Redirecting you to training...
+              Redirecting...
             </p>
           </div>
         </div>
@@ -343,7 +343,7 @@ export default function Login() {
               Successfully signed in!
             </p>
             <p style={{ color: '#94a3b8', fontSize: 14, margin: '8px 0 0 0' }}>
-              Redirecting you to training...
+              Redirecting...
             </p>
           </div>
         ) : step === 'email' ? (

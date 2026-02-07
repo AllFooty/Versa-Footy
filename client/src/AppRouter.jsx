@@ -9,8 +9,6 @@ import Landing from './features/landing/LandingPage';
 import AboutPage from './features/landing/AboutPage';
 import FaqPage from './features/landing/FaqPage';
 import LibraryApp from './features/library/LibraryApp';
-import TrainingApp from './features/training/TrainingApp';
-import ExerciseSession from './features/training/pages/ExerciseSession';
 import SettingsPage from './features/settings/SettingsPage';
 import Login from './features/auth/Login';
 
@@ -119,20 +117,6 @@ export default function AppRouter() {
 
         <Route path="/faq">
           <FaqPage />
-        </Route>
-
-        {/* Training App - For regular authenticated users */}
-        <Route path="/training">
-          <ProtectedRoute>
-            <TrainingApp />
-          </ProtectedRoute>
-        </Route>
-
-        {/* Training Session - Active exercise session */}
-        <Route path="/training/session">
-          <ProtectedRoute>
-            <ExerciseSession />
-          </ProtectedRoute>
         </Route>
 
         {/* Settings Page - For authenticated users */}

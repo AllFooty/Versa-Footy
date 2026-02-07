@@ -28,10 +28,7 @@ export default function HeaderLanding() {
     { name: 'About Us', href: '/about-us' },
   ];
 
-  // Add Training link only when authenticated
-  const navigationItems = isAuthenticated
-    ? [...baseNavigationItems, { name: 'Start Training', href: '/training' }]
-    : baseNavigationItems;
+  const navigationItems = baseNavigationItems;
 
   const handleAnchorClick = (e, href, onClick) => {
     // Check if it's a hash link (anchor on current page)
