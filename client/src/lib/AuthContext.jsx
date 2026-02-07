@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { supabase } from './supabase';
 
 const AuthContext = createContext({});
@@ -9,15 +9,21 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [profileLoading, setProfileLoading] = useState(false);
+  const profileRef = useRef(null);
 
   // Fetch user profile from profiles table (non-blocking)
   const fetchProfile = async (userId) => {
     if (!userId) {
       setProfile(null);
+      profileRef.current = null;
       return null;
     }
 
-    setProfileLoading(true);
+    // Only show loading spinner on initial load, not background refreshes
+    // This prevents AdminProtectedRoute from unmounting children mid-use
+    if (!profileRef.current) {
+      setProfileLoading(true);
+    }
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -28,14 +34,17 @@ export function AuthProvider({ children }) {
       if (error) {
         console.error('Error fetching profile:', error.message);
         setProfile(null);
+        profileRef.current = null;
         return null;
       }
 
       setProfile(data);
+      profileRef.current = data;
       return data;
     } catch (err) {
       console.error('Error fetching profile:', err);
       setProfile(null);
+      profileRef.current = null;
       return null;
     } finally {
       setProfileLoading(false);
@@ -91,6 +100,7 @@ export function AuthProvider({ children }) {
             fetchProfile(session.user.id);
           } else {
             setProfile(null);
+            profileRef.current = null;
           }
         }
       );
@@ -112,6 +122,7 @@ export function AuthProvider({ children }) {
       console.error('Error signing out:', error.message);
     }
     setProfile(null);
+    profileRef.current = null;
   };
 
   // Update user profile in profiles table
