@@ -485,9 +485,16 @@ export const useData = () => {
       if (searchTerm) {
         const term = normalizeSearchTerm(searchTerm);
         if (term) {
-          result = result.filter((s) =>
-            matchesAnyField([s.name, s.description || ''], term)
-          );
+          result = result.filter((s) => {
+            // Match on skill name/description
+            if (matchesAnyField([s.name, s.description || ''], term)) return true;
+            // Also match if any of the skill's exercises match
+            return exercises
+              .filter((e) => e.skillIds.includes(s.id))
+              .some((e) =>
+                matchesAnyField([e.name, e.description || '', ...(e.equipment || [])], term)
+              );
+          });
         }
       }
 
