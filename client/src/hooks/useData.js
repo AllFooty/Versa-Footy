@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { normalizeDifficulty } from '../utils/difficulty';
+import { normalizeSearchTerm, matchesAnyField, matchesSearch } from '../utils/search';
 import { AGE_GROUPS } from '../constants';
 
 /**
@@ -482,8 +483,12 @@ export const useData = () => {
       }
 
       if (searchTerm) {
-        const term = searchTerm.toLowerCase();
-        result = result.filter((s) => s.name.toLowerCase().includes(term));
+        const term = normalizeSearchTerm(searchTerm);
+        if (term) {
+          result = result.filter((s) =>
+            matchesAnyField([s.name, s.description || ''], term)
+          );
+        }
       }
 
       return result;
@@ -499,13 +504,35 @@ export const useData = () => {
       let result = exercises.filter((e) => e.skillIds.includes(skillId));
 
       if (searchTerm) {
-        const term = searchTerm.toLowerCase();
-        result = result.filter((e) => e.name.toLowerCase().includes(term));
+        const term = normalizeSearchTerm(searchTerm);
+        if (term) {
+          result = result.filter((e) =>
+            matchesAnyField(
+              [e.name, e.description || '', ...(e.equipment || [])],
+              term
+            )
+          );
+        }
       }
 
       return result;
     },
     [exercises]
+  );
+
+  /**
+   * Get category IDs whose names match the search term
+   */
+  const getCategoriesMatchingSearch = useCallback(
+    (searchTerm) => {
+      if (!searchTerm) return new Set();
+      const term = normalizeSearchTerm(searchTerm);
+      if (!term) return new Set();
+      return new Set(
+        categories.filter((c) => matchesSearch(c.name, term)).map((c) => c.id)
+      );
+    },
+    [categories]
   );
 
   // ============ Stats ============
@@ -548,6 +575,7 @@ export const useData = () => {
     getCategoryById,
     getSkillsForCategory,
     getExercisesForSkill,
+    getCategoriesMatchingSearch,
   };
 };
 

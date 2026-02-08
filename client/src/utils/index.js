@@ -10,3 +10,5 @@ export {
 } from './difficulty';
 
 export { getYouTubeEmbedUrl, isYouTubeUrl } from './youtube';
+
+export { normalizeSearchTerm, matchesSearch, matchesAnyField, isSearchActive } from './search';

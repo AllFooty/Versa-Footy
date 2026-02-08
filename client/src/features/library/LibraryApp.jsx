@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useDeferredValue } from 'react';
 
 // Components
 import Header from '../../components/Header';
@@ -48,10 +48,12 @@ export default function LibraryApp() {
     getCategoryById,
     getSkillsForCategory,
     getExercisesForSkill,
+    getCategoriesMatchingSearch,
   } = useData();
 
   // Search & Filter state
   const [searchTerm, setSearchTerm] = useState('');
+  const deferredSearchTerm = useDeferredValue(searchTerm);
   const [filterAgeGroup, setFilterAgeGroup] = useState('');
   const [filterHasExercises, setFilterHasExercises] = useState(false);
   const [exactAgeMatch, setExactAgeMatch] = useState(false);
@@ -207,7 +209,8 @@ export default function LibraryApp() {
             categories={categories}
             getSkillsForCategory={getSkillsForCategory}
             getExercisesForSkill={getExercisesForSkill}
-            searchTerm={searchTerm}
+            getCategoriesMatchingSearch={getCategoriesMatchingSearch}
+            searchTerm={deferredSearchTerm}
             filterAgeGroup={filterAgeGroup}
             filterHasExercises={filterHasExercises}
             exactAgeMatch={exactAgeMatch}

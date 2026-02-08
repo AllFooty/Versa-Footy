@@ -55,10 +55,36 @@ const SearchBar = ({
             type="text"
             placeholder="Search skills, exercises..."
             className="input"
-            style={{ paddingLeft: 44 }}
+            style={{ paddingLeft: 44, paddingRight: searchTerm ? 44 : 16 }}
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
           />
+          {searchTerm && (
+            <button
+              onClick={() => onSearchChange('')}
+              style={{
+                position: 'absolute',
+                right: 8,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'rgba(255, 255, 255, 0.1)',
+                border: 'none',
+                borderRadius: '50%',
+                width: 28,
+                height: 28,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: '#a1a1aa',
+                padding: 0,
+              }}
+              title="Clear search"
+              aria-label="Clear search"
+            >
+              <X size={14} />
+            </button>
+          )}
         </div>
 
         {/* Age Filter */}
@@ -160,15 +186,45 @@ const SearchBar = ({
             }}
           />
           <input
-            type="text"
+            type="search"
+            enterKeyHint="search"
             placeholder="Search skills, exercises..."
             className="input"
-            style={{ paddingLeft: 44 }}
+            style={{ paddingLeft: 44, paddingRight: searchTerm ? 48 : 16 }}
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') e.target.blur();
+            }}
           />
+          {searchTerm && (
+            <button
+              onClick={() => onSearchChange('')}
+              style={{
+                position: 'absolute',
+                right: 6,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'rgba(255, 255, 255, 0.1)',
+                border: 'none',
+                borderRadius: '50%',
+                width: 36,
+                height: 36,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: '#a1a1aa',
+                padding: 0,
+              }}
+              title="Clear search"
+              aria-label="Clear search"
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
-        
+
         {/* Filter Row - Full Width */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Filter size={16} color="#71717a" style={{ flexShrink: 0 }} />

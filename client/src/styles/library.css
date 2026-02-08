@@ -568,7 +568,18 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--color-bg-primary, #0a0f1a);
+  padding-bottom: 12px;
+}
+
+/* Hide native WebKit search clear button (we have our own) */
+.mobile-search-container input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .mobile-search-row {

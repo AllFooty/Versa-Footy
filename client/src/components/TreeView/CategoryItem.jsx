@@ -27,6 +27,7 @@ const CategoryItem = ({
   onDeleteExercise,
   getExercisesForSkill,
   isMobile = false,
+  isSearching = false,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -233,7 +234,7 @@ const CategoryItem = ({
                 padding: isMobile ? '16px' : '10px 16px',
               }}
             >
-              No skills yet. Add one!
+              {isSearching ? 'No matching skills in this category' : 'No skills yet. Add one!'}
             </div>
           ) : (
             skills.map((skill) => (
