@@ -55,7 +55,7 @@ export default function LibraryApp() {
   const [searchTerm, setSearchTerm] = useState('');
   const deferredSearchTerm = useDeferredValue(searchTerm);
   const [filterAgeGroup, setFilterAgeGroup] = useState('');
-  const [filterHasExercises, setFilterHasExercises] = useState(false);
+  const [exerciseFilter, setExerciseFilter] = useState('all');
   const [exactAgeMatch, setExactAgeMatch] = useState(false);
 
   // Modal state
@@ -193,8 +193,8 @@ export default function LibraryApp() {
             onSearchChange={setSearchTerm}
             filterAgeGroup={filterAgeGroup}
             onFilterChange={setFilterAgeGroup}
-            filterHasExercises={filterHasExercises}
-            onFilterHasExercisesChange={setFilterHasExercises}
+            exerciseFilter={exerciseFilter}
+            onExerciseFilterChange={setExerciseFilter}
             exactAgeMatch={exactAgeMatch}
             onExactAgeMatchChange={setExactAgeMatch}
             onAddExercise={() => openExerciseModal()}
@@ -212,7 +212,7 @@ export default function LibraryApp() {
             getCategoriesMatchingSearch={getCategoriesMatchingSearch}
             searchTerm={deferredSearchTerm}
             filterAgeGroup={filterAgeGroup}
-            filterHasExercises={filterHasExercises}
+            exerciseFilter={exerciseFilter}
             exactAgeMatch={exactAgeMatch}
             // Category actions
             onEditCategory={openCategoryModal}

@@ -464,7 +464,7 @@ export const useData = () => {
    * Get skills for a category with optional filtering
    */
   const getSkillsForCategory = useCallback(
-    (categoryId, { searchTerm = '', filterAgeGroup = '', filterHasExercises = false, exactAgeMatch = false } = {}) => {
+    (categoryId, { searchTerm = '', filterAgeGroup = '', exerciseFilter = 'all', exactAgeMatch = false } = {}) => {
       let result = skills.filter((s) => s.categoryId === categoryId);
 
       if (filterAgeGroup) {
@@ -478,8 +478,10 @@ export const useData = () => {
         }
       }
 
-      if (filterHasExercises) {
+      if (exerciseFilter === 'has') {
         result = result.filter((s) => exercises.some((e) => e.skillIds.includes(s.id)));
+      } else if (exerciseFilter === 'none') {
+        result = result.filter((s) => !exercises.some((e) => e.skillIds.includes(s.id)));
       }
 
       if (searchTerm) {

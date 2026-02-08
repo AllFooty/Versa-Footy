@@ -128,6 +128,91 @@
   color: var(--color-red);
 }
 
+/* ============ Filter Chip Styles ============ */
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  line-height: 1;
+}
+
+.filter-chip:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-primary);
+  border-color: var(--border-medium);
+}
+
+.filter-chip--active {
+  background: var(--color-blue);
+  color: white;
+  border-color: var(--color-blue);
+}
+
+.filter-chip--active:hover {
+  background: var(--color-blue-hover);
+  border-color: var(--color-blue-hover);
+}
+
+.filter-chip-group {
+  display: inline-flex;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 22px;
+  padding: 2px;
+  border: 1px solid var(--border-subtle);
+}
+
+.filter-chip-group .filter-chip {
+  border: none;
+  border-radius: 18px;
+  padding: 6px 12px;
+}
+
+.filter-chip-group .filter-chip:hover:not(.filter-chip--active) {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ============ Desktop Toolbar Layout ============ */
+.desktop-search-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.toolbar-row-1 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.toolbar-row-2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 /* ============ Input Styles ============ */
 .input {
   background: rgba(0, 0, 0, 0.3);
@@ -430,6 +515,24 @@
 
   .btn-icon {
     padding: 12px;
+  }
+
+  /* Filter chip mobile sizing */
+  .filter-chip {
+    min-height: 36px;
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .filter-chip-group .filter-chip {
+    padding: 8px 12px;
+  }
+
+  .filter-chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
   }
 
   /* Input styles for mobile */

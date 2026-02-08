@@ -13,7 +13,7 @@ const TreeView = ({
   getCategoriesMatchingSearch,
   searchTerm,
   filterAgeGroup,
-  filterHasExercises,
+  exerciseFilter,
   exactAgeMatch,
   // Category actions
   onEditCategory,
@@ -56,7 +56,7 @@ const TreeView = ({
     }));
   };
 
-  const isSearching = isSearchActive(searchTerm) || !!filterAgeGroup || filterHasExercises;
+  const isSearching = isSearchActive(searchTerm) || !!filterAgeGroup || exerciseFilter !== 'all';
 
   // Pre-compute filtered skills per category
   const categoriesWithResults = useMemo(() => {
@@ -64,12 +64,12 @@ const TreeView = ({
       const filteredSkills = getSkillsForCategory(category.id, {
         searchTerm,
         filterAgeGroup,
-        filterHasExercises,
+        exerciseFilter,
         exactAgeMatch,
       });
       return { category, filteredSkills };
     });
-  }, [categories, getSkillsForCategory, searchTerm, filterAgeGroup, filterHasExercises, exactAgeMatch]);
+  }, [categories, getSkillsForCategory, searchTerm, filterAgeGroup, exerciseFilter, exactAgeMatch]);
 
   // During active search, hide categories with no matching skills
   // (unless the category name itself matches the search)

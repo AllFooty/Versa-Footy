@@ -3,6 +3,20 @@ import { Search, Plus, Filter, X, Video, Zap, FolderOpen } from 'lucide-react';
 import { AGE_GROUPS } from '../constants';
 
 /**
+ * Pill-shaped filter toggle chip
+ */
+const FilterChip = ({ label, active, onClick }) => (
+  <button
+    className={`filter-chip ${active ? 'filter-chip--active' : ''}`}
+    onClick={onClick}
+    type="button"
+    aria-pressed={active}
+  >
+    {label}
+  </button>
+);
+
+/**
  * Search and filter toolbar with action buttons
  * Mobile-responsive with FAB menu
  */
@@ -11,8 +25,8 @@ const SearchBar = ({
   onSearchChange,
   filterAgeGroup,
   onFilterChange,
-  filterHasExercises,
-  onFilterHasExercisesChange,
+  exerciseFilter,
+  onExerciseFilterChange,
   exactAgeMatch,
   onExactAgeMatchChange,
   onAddExercise,
@@ -28,152 +42,125 @@ const SearchBar = ({
 
   return (
     <>
-      {/* Desktop Search Bar */}
-      <div
-        className="desktop-search-bar"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 16,
-          marginBottom: 32,
-          flexWrap: 'wrap',
-        }}
-      >
-        {/* Search Input */}
-        <div style={{ position: 'relative', flex: 1, minWidth: 280 }}>
-          <Search
-            size={18}
-            style={{
-              position: 'absolute',
-              left: 14,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: '#52525b',
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Search skills, exercises..."
-            className="input"
-            style={{ paddingLeft: 44, paddingRight: searchTerm ? 44 : 16 }}
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-          />
-          {searchTerm && (
-            <button
-              onClick={() => onSearchChange('')}
+      {/* Desktop Toolbar */}
+      <div className="desktop-search-bar">
+        {/* Row 1: Search + Action Buttons */}
+        <div className="toolbar-row-1">
+          {/* Search Input */}
+          <div style={{ position: 'relative', flex: 1, minWidth: 280 }}>
+            <Search
+              size={18}
               style={{
                 position: 'absolute',
-                right: 8,
+                left: 14,
                 top: '50%',
                 transform: 'translateY(-50%)',
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: 'none',
-                borderRadius: '50%',
-                width: 28,
-                height: 28,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                color: '#a1a1aa',
-                padding: 0,
-              }}
-              title="Clear search"
-              aria-label="Clear search"
-            >
-              <X size={14} />
-            </button>
-          )}
-        </div>
-
-        {/* Age Filter */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Filter size={16} color="#71717a" />
-          <select
-            className="select"
-            style={{ width: 140 }}
-            value={filterAgeGroup}
-            onChange={(e) => onFilterChange(e.target.value)}
-          >
-            <option value="">All Ages</option>
-            {AGE_GROUPS.map((age) => (
-              <option key={age} value={age}>
-                {age} {!exactAgeMatch && '& below'}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Exact Age Match Filter */}
-        {filterAgeGroup && (
-          <label
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              cursor: 'pointer',
-              color: '#a1a1aa',
-              fontSize: 14,
-              userSelect: 'none',
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={exactAgeMatch}
-              onChange={(e) => onExactAgeMatchChange(e.target.checked)}
-              style={{
-                width: 16,
-                height: 16,
-                accentColor: '#E63946',
-                cursor: 'pointer',
+                color: '#52525b',
               }}
             />
-            Exact age only
-          </label>
-        )}
+            <input
+              type="text"
+              placeholder="Search skills, exercises..."
+              className="input"
+              style={{ paddingLeft: 44, paddingRight: searchTerm ? 44 : 16 }}
+              value={searchTerm}
+              onChange={(e) => onSearchChange(e.target.value)}
+            />
+            {searchTerm && (
+              <button
+                onClick={() => onSearchChange('')}
+                style={{
+                  position: 'absolute',
+                  right: 8,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: 28,
+                  height: 28,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: '#a1a1aa',
+                  padding: 0,
+                }}
+                title="Clear search"
+                aria-label="Clear search"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
 
-        {/* Has Exercises Filter */}
-        <label
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            cursor: 'pointer',
-            color: '#a1a1aa',
-            fontSize: 14,
-            userSelect: 'none',
-          }}
-        >
-          <input
-            type="checkbox"
-            checked={filterHasExercises}
-            onChange={(e) => onFilterHasExercisesChange(e.target.checked)}
-            style={{
-              width: 16,
-              height: 16,
-              accentColor: '#E63946',
-              cursor: 'pointer',
-            }}
-          />
-          Has Exercises
-        </label>
+          {/* Action Buttons */}
+          <div className="toolbar-actions">
+            <button className="btn-primary" onClick={onAddExercise}>
+              <Plus size={18} /> Add Exercise
+            </button>
+            <button className="btn-secondary" onClick={onAddSkill}>
+              <Plus size={16} /> Add Skill
+            </button>
+            <button className="btn-secondary" onClick={onAddCategory}>
+              <Plus size={16} /> Add Category
+            </button>
+          </div>
+        </div>
 
-        {/* Action Buttons */}
-        <button className="btn-primary" onClick={onAddExercise}>
-          <Plus size={18} /> Add Exercise
-        </button>
-        <button className="btn-secondary" onClick={onAddSkill}>
-          <Plus size={16} /> Add Skill
-        </button>
-        <button className="btn-secondary" onClick={onAddCategory}>
-          <Plus size={16} /> Add Category
-        </button>
+        {/* Row 2: Filters */}
+        <div className="toolbar-row-2">
+          {/* Age Filter */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Filter size={16} color="#71717a" />
+            <select
+              className="select"
+              style={{ width: 140 }}
+              value={filterAgeGroup}
+              onChange={(e) => onFilterChange(e.target.value)}
+            >
+              <option value="">All Ages</option>
+              {AGE_GROUPS.map((age) => (
+                <option key={age} value={age}>
+                  {age} {!exactAgeMatch && '& below'}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Exact Age Chip */}
+          {filterAgeGroup && (
+            <FilterChip
+              label="Exact age only"
+              active={exactAgeMatch}
+              onClick={() => onExactAgeMatchChange(!exactAgeMatch)}
+            />
+          )}
+
+          {/* Exercise Filter Chips */}
+          <div className="filter-chip-group">
+            <FilterChip
+              label="All"
+              active={exerciseFilter === 'all'}
+              onClick={() => onExerciseFilterChange('all')}
+            />
+            <FilterChip
+              label="Has Exercises"
+              active={exerciseFilter === 'has'}
+              onClick={() => onExerciseFilterChange('has')}
+            />
+            <FilterChip
+              label="No Exercises"
+              active={exerciseFilter === 'none'}
+              onClick={() => onExerciseFilterChange('none')}
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Mobile Search Bar */}
+      {/* Mobile Toolbar */}
       <div className="mobile-search-container">
-        {/* Search Row */}
+        {/* Row 1: Search Input */}
         <div style={{ position: 'relative', width: '100%' }}>
           <Search
             size={18}
@@ -225,7 +212,7 @@ const SearchBar = ({
           )}
         </div>
 
-        {/* Filter Row - Full Width */}
+        {/* Row 2: Age Filter Dropdown */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Filter size={16} color="#71717a" style={{ flexShrink: 0 }} />
           <select
@@ -233,7 +220,7 @@ const SearchBar = ({
             style={{
               flex: 1,
               minWidth: 0,
-              fontSize: '16px', /* Ensures readable dropdown options on mobile */
+              fontSize: '16px',
             }}
             value={filterAgeGroup}
             onChange={(e) => onFilterChange(e.target.value)}
@@ -247,61 +234,35 @@ const SearchBar = ({
           </select>
         </div>
 
-        {/* Mobile Filter Checkboxes */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
-          {/* Exact Age Match Filter */}
-          {filterAgeGroup && (
-            <label
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                cursor: 'pointer',
-                color: '#a1a1aa',
-                fontSize: 14,
-                userSelect: 'none',
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={exactAgeMatch}
-                onChange={(e) => onExactAgeMatchChange(e.target.checked)}
-                style={{
-                  width: 18,
-                  height: 18,
-                  accentColor: '#E63946',
-                  cursor: 'pointer',
-                }}
-              />
-              Exact age only
-            </label>
-          )}
-
-          {/* Has Exercises Filter */}
-          <label
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              cursor: 'pointer',
-              color: '#a1a1aa',
-              fontSize: 14,
-              userSelect: 'none',
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={filterHasExercises}
-              onChange={(e) => onFilterHasExercisesChange(e.target.checked)}
-              style={{
-                width: 18,
-                height: 18,
-                accentColor: '#E63946',
-                cursor: 'pointer',
-              }}
+        {/* Row 3: Filter Chips */}
+        <div className="filter-chips-row">
+          {/* Exercise Filter Chips */}
+          <div className="filter-chip-group">
+            <FilterChip
+              label="All"
+              active={exerciseFilter === 'all'}
+              onClick={() => onExerciseFilterChange('all')}
             />
-            Has Exercises
-          </label>
+            <FilterChip
+              label="Has Exercises"
+              active={exerciseFilter === 'has'}
+              onClick={() => onExerciseFilterChange('has')}
+            />
+            <FilterChip
+              label="No Exercises"
+              active={exerciseFilter === 'none'}
+              onClick={() => onExerciseFilterChange('none')}
+            />
+          </div>
+
+          {/* Exact Age Chip */}
+          {filterAgeGroup && (
+            <FilterChip
+              label="Exact age only"
+              active={exactAgeMatch}
+              onClick={() => onExactAgeMatchChange(!exactAgeMatch)}
+            />
+          )}
         </div>
       </div>
 
@@ -325,21 +286,21 @@ const SearchBar = ({
 
         {/* FAB Menu Items */}
         <div className={`fab-menu ${fabOpen ? 'open' : ''}`}>
-          <button 
+          <button
             className="fab-menu-item"
             onClick={() => handleFabAction(onAddExercise)}
           >
             <Video size={18} color="#3b82f6" />
             Add Exercise
           </button>
-          <button 
+          <button
             className="fab-menu-item"
             onClick={() => handleFabAction(onAddSkill)}
           >
             <Zap size={18} color="#22c55e" />
             Add Skill
           </button>
-          <button 
+          <button
             className="fab-menu-item"
             onClick={() => handleFabAction(onAddCategory)}
           >
