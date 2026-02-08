@@ -1,8 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { X, Edit3, Play, ChevronRight, Video } from 'lucide-react';
 import { IconButton, Button, SecondaryButton, Badge, AgeBadge } from '../ui';
 import { getYouTubeEmbedUrl } from '../../utils/youtube';
 import { renderDifficultyStars, getDifficultyStyle } from '../../utils/difficulty';
+
+/**
+ * Extracts YouTube video ID from an embed URL
+ */
+const getYouTubeVideoId = (embedUrl) => {
+  if (!embedUrl) return null;
+  const match = embedUrl.match(/\/embed\/([^?#]+)/);
+  return match ? match[1] : null;
+};
 
 /**
  * Modal for previewing exercise details with video
@@ -18,6 +27,8 @@ const PreviewModal = ({
   onEdit,
 }) => {
   const [isMobile, setIsMobile] = useState(false);
+  const [youtubeFullscreen, setYoutubeFullscreen] = useState(false);
+  const videoRef = useRef(null);
 
   // Detect mobile viewport
   useEffect(() => {
@@ -41,9 +52,41 @@ const PreviewModal = ({
     };
   }, [exercise]);
 
+  // Close YouTube fullscreen on ESC
+  useEffect(() => {
+    if (!youtubeFullscreen) return;
+    const handleKey = (e) => {
+      if (e.key === 'Escape') setYoutubeFullscreen(false);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [youtubeFullscreen]);
+
+  const handlePlayDirectVideo = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // iOS Safari uses webkitEnterFullscreen on the video element
+    if (video.webkitEnterFullscreen) {
+      video.play();
+      video.webkitEnterFullscreen();
+      return;
+    }
+
+    const goFullscreen =
+      video.requestFullscreen ||
+      video.webkitRequestFullscreen;
+    if (goFullscreen) {
+      goFullscreen.call(video).then(() => video.play()).catch(() => video.play());
+    } else {
+      video.play();
+    }
+  }, []);
+
   if (!exercise) return null;
 
   const embedUrl = getYouTubeEmbedUrl(exercise.videoUrl);
+  const youtubeVideoId = getYouTubeVideoId(embedUrl);
   const isDirectVideo =
     exercise.videoUrl &&
     !embedUrl &&
@@ -54,7 +97,40 @@ const PreviewModal = ({
     onEdit(exercise);
   };
 
+  const thumbnailHeight = isMobile ? 180 : 200;
+
+  // Play button overlay shared between video types
+  const playOverlay = (
+    <div
+      style={{
+        position: 'absolute',
+        inset: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'rgba(0,0,0,0.35)',
+        pointerEvents: 'none',
+      }}
+    >
+      <div
+        style={{
+          width: 56,
+          height: 56,
+          borderRadius: '50%',
+          background: 'rgba(255,255,255,0.95)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+        }}
+      >
+        <Play size={26} fill="#000" color="#000" style={{ marginLeft: 3 }} />
+      </div>
+    </div>
+  );
+
   return (
+    <>
     <div className="modal-overlay" onClick={onClose}>
       <div
         className="modal modal-large"
@@ -234,54 +310,59 @@ const PreviewModal = ({
             </div>
           )}
 
-          {/* Video Section */}
+          {/* Video Section - Compact Thumbnail */}
           {embedUrl ? (
             <div
+              onClick={() => setYoutubeFullscreen(true)}
               style={{
+                position: 'relative',
                 borderRadius: 12,
                 overflow: 'hidden',
                 marginBottom: isMobile ? 16 : 20,
                 background: '#000',
-                aspectRatio: '16/9',
+                height: thumbnailHeight,
+                cursor: 'pointer',
               }}
             >
-              <iframe
-                src={embedUrl}
-                title={exercise.name}
-                style={{ width: '100%', height: '100%', border: 'none' }}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
+              <img
+                src={`https://img.youtube.com/vi/${youtubeVideoId}/hqdefault.jpg`}
+                alt={exercise.name}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
               />
+              {playOverlay}
             </div>
           ) : isDirectVideo ? (
             <div
+              onClick={handlePlayDirectVideo}
               style={{
+                position: 'relative',
                 borderRadius: 12,
                 overflow: 'hidden',
                 marginBottom: isMobile ? 16 : 20,
                 background: '#000',
-                aspectRatio: isMobile ? '16/9' : '9/16',
-                maxWidth: isMobile ? '100%' : 420,
-                marginInline: 'auto',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                height: thumbnailHeight,
+                cursor: 'pointer',
               }}
             >
               <video
-                controls
+                ref={videoRef}
                 preload="metadata"
                 playsInline
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'contain',
+                  objectFit: 'cover',
                   background: '#000',
                 }}
-                src={exercise.videoUrl}
+                src={`${exercise.videoUrl}#t=0.5`}
               >
                 Your browser does not support the video tag.
               </video>
+              {playOverlay}
             </div>
           ) : exercise.videoUrl ? (
             <a
@@ -386,6 +467,61 @@ const PreviewModal = ({
         </div>
       </div>
     </div>
+
+    {/* YouTube Fullscreen Overlay */}
+    {youtubeFullscreen && embedUrl && (
+      <div
+        onClick={() => setYoutubeFullscreen(false)}
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 10000,
+          background: 'rgba(0,0,0,0.95)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <button
+          onClick={(e) => { e.stopPropagation(); setYoutubeFullscreen(false); }}
+          style={{
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            zIndex: 10001,
+            background: 'rgba(255,255,255,0.1)',
+            border: 'none',
+            borderRadius: '50%',
+            width: 44,
+            height: 44,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            color: '#fff',
+          }}
+        >
+          <X size={24} />
+        </button>
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            width: '90vw',
+            maxWidth: 900,
+            aspectRatio: '16/9',
+          }}
+        >
+          <iframe
+            src={`${embedUrl}?autoplay=1`}
+            title={exercise.name}
+            style={{ width: '100%', height: '100%', border: 'none', borderRadius: 8 }}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+            allowFullScreen
+          />
+        </div>
+      </div>
+    )}
+    </>
   );
 };
 
