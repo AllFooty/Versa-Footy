@@ -209,6 +209,9 @@ export type Database = {
           skill_xp: number
           skill_level: number
           times_practiced: number
+          high_rated_completions: number
+          nailed_completions: number
+          total_rating_sum: number
           status: string
           unlocked_at: string | null
           mastered_at: string | null
@@ -225,6 +228,9 @@ export type Database = {
           skill_xp?: number
           skill_level?: number
           times_practiced?: number
+          high_rated_completions?: number
+          nailed_completions?: number
+          total_rating_sum?: number
           status?: string
           unlocked_at?: string | null
           mastered_at?: string | null
@@ -241,6 +247,9 @@ export type Database = {
           skill_xp?: number
           skill_level?: number
           times_practiced?: number
+          high_rated_completions?: number
+          nailed_completions?: number
+          total_rating_sum?: number
           status?: string
           unlocked_at?: string | null
           mastered_at?: string | null
@@ -331,6 +340,7 @@ export type Database = {
           self_rating: number | null
           xp_earned: number
           is_first_time: boolean
+          duration_seconds: number | null
           created_at: string | null
         }
         Insert: {
@@ -343,6 +353,7 @@ export type Database = {
           self_rating?: number | null
           xp_earned?: number
           is_first_time?: boolean
+          duration_seconds?: number | null
           created_at?: string | null
         }
         Update: {
@@ -355,6 +366,7 @@ export type Database = {
           self_rating?: number | null
           xp_earned?: number
           is_first_time?: boolean
+          duration_seconds?: number | null
           created_at?: string | null
         }
         Relationships: [
@@ -395,6 +407,7 @@ export type Database = {
           activity_date: string
           xp_earned: number
           exercises_completed: number
+          practice_minutes: number
           goal_met: boolean
           created_at: string | null
           updated_at: string | null
@@ -405,6 +418,7 @@ export type Database = {
           activity_date: string
           xp_earned?: number
           exercises_completed?: number
+          practice_minutes?: number
           goal_met?: boolean
           created_at?: string | null
           updated_at?: string | null
@@ -415,6 +429,7 @@ export type Database = {
           activity_date?: string
           xp_earned?: number
           exercises_completed?: number
+          practice_minutes?: number
           goal_met?: boolean
           created_at?: string | null
           updated_at?: string | null
@@ -519,6 +534,42 @@ export type Database = {
           }
         ]
       }
+      exercise_skills: {
+        Row: {
+          id: number
+          exercise_id: number
+          skill_id: number
+          created_at: string | null
+        }
+        Insert: {
+          id?: number
+          exercise_id: number
+          skill_id: number
+          created_at?: string | null
+        }
+        Update: {
+          id?: number
+          exercise_id?: number
+          skill_id?: number
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercise_skills_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exercise_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -571,6 +622,13 @@ export type ExerciseCompletionInsert = Database['public']['Tables']['exercise_co
 export type DailyActivity = Database['public']['Tables']['daily_activity']['Row']
 export type DailyActivityInsert = Database['public']['Tables']['daily_activity']['Insert']
 export type DailyActivityUpdate = Database['public']['Tables']['daily_activity']['Update']
+
+export type ExerciseCompletionUpdate = Database['public']['Tables']['exercise_completions']['Update']
+
+export type DailyActivityRow = Database['public']['Tables']['daily_activity']['Row']
+
+export type ExerciseSkill = Database['public']['Tables']['exercise_skills']['Row']
+export type ExerciseSkillInsert = Database['public']['Tables']['exercise_skills']['Insert']
 
 export type Achievement = Database['public']['Tables']['achievements']['Row']
 export type UserAchievement = Database['public']['Tables']['user_achievements']['Row']
