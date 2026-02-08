@@ -330,7 +330,7 @@ const PreviewModal = ({
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'cover',
+                  objectFit: 'contain',
                 }}
               />
               {playOverlay}
@@ -355,7 +355,7 @@ const PreviewModal = ({
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'cover',
+                  objectFit: 'contain',
                   background: '#000',
                 }}
                 src={`${exercise.videoUrl}#t=0.5`}
