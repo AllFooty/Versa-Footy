@@ -481,16 +481,22 @@ export default function LandingPage() {
                     }}>
                       {item.problem}
                     </p>
-                    <p style={{
+                    <div style={{
                       fontSize: '15px',
                       color: item.borderColor,
                       lineHeight: '1.6',
                       margin: 0,
                       fontWeight: '500',
+                      backgroundColor: `${item.borderColor}12`,
+                      borderRadius: '10px',
+                      padding: '10px 14px',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '8px',
                     }}>
-                      <span style={{ marginRight: '6px' }}>→</span>
-                      {item.solution}
-                    </p>
+                      <span style={{ flexShrink: 0 }}>→</span>
+                      <span>{item.solution}</span>
+                    </div>
                   </motion.div>
                 ))}
               </div>
