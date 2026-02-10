@@ -213,8 +213,8 @@ export default function LandingPage() {
                     <span>Don't Miss Out! Join First!</span>
                   </div>
                   <h1 className={styles.heroTitle}>
-                    Help Your Kid Become a Pro with{' '}
-                    <span className={styles.specialHighlightText}>Science-Based, AI-Powered Training!</span>
+                    Help Your Kid Build Pro Skills with{' '}
+                    <span className={styles.specialHighlightText}>Science-Based AI Training</span>
                   </h1>
                   <p className={styles.heroSubtitle}>
                     Technical ability is made, not born, and the window to develop it closes sooner than you think. Our app gives kids aged 7–14 a science-based path to build it before it's too late.
