@@ -213,12 +213,14 @@ export default function LandingPage() {
                     <span>Don't Miss Out! Join First!</span>
                   </div>
                   <h1 className={styles.heroTitle}>
-                    Help Your Kid Become a{' '}
-                    <span className={styles.specialHighlightText}>Soccer Pro</span> with AI-Powered Training!
+                    Help Your Kid Become a Pro with{' '}
+                    <span className={styles.specialHighlightText}>Science-Based, AI-Powered Training!</span>
                   </h1>
                   <p className={styles.heroSubtitle}>
-                    Your kid deserves the best chance to become a pro soccer player. Maximize their potential with
-                    personalized, science-based AI training app.
+                    Versa Footy is the training app that turns backyard practice into real skill development, for kids aged 7 to 14. Built on the principle that technical ability is made, not born, and the window to build them closes sooner than you think.
+                  </p>
+                  <p className={styles.heroSubtitle} style={{ marginTop: '16px', fontSize: '18px', fontWeight: '600', color: '#ffd166' }}>
+                    170+ skills. 10 categories. One clear path from first touch to total mastery.
                   </p>
                   
                   {/* App Store Buttons */}
