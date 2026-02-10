@@ -103,28 +103,28 @@ const whyVersaFootyData = [
   {
     title: 'Club training alone isn\'t enough',
     problem: '2–3 hours a week covers tactics and scrimmages — not the technical reps that matter.',
-    solution: 'Daily structured training, like the world\'s best young players already do.',
+    solution: 'gives your kid daily structured training — the same approach the world\'s best young players use.',
     icon: '🌉',
     borderColor: '#6366f1',
   },
   {
     title: 'The window is real and closing',
     problem: 'Fine motor skill development peaks in childhood. Miss it, and biology works against you.',
-    solution: 'Age-targeted training that builds the right skills at the right time.',
+    solution: 'delivers age-targeted training that builds the right skills at the right time.',
     icon: '⏱️',
     borderColor: '#22c55e',
   },
   {
     title: 'Your kid doesn\'t need another YouTube playlist',
     problem: 'YouTube has drills. It doesn\'t have structure, progression, or memory.',
-    solution: 'Every session adapts to what your kid has mastered, avoided, or needs next.',
+    solution: 'adapts every session to what your kid has mastered, avoided, or needs next.',
     icon: '📺',
     borderColor: '#8b5cf6',
   },
   {
     title: 'Parents aren\'t coaches',
     problem: 'You want to help but don\'t know what to teach or when.',
-    solution: 'The expert in your pocket — you encourage, it instructs.',
+    solution: 'is the expert in your pocket — you encourage, it instructs.',
     icon: '👨‍👧‍👦',
     borderColor: '#f59e0b',
   },
@@ -483,19 +483,16 @@ export default function LandingPage() {
                     </p>
                     <div style={{
                       fontSize: '15px',
-                      color: item.borderColor,
+                      color: 'rgba(255,255,255,0.85)',
                       lineHeight: '1.6',
                       margin: 0,
-                      fontWeight: '500',
                       backgroundColor: `${item.borderColor}12`,
                       borderRadius: '10px',
                       padding: '10px 14px',
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '8px',
+                      borderLeft: `3px solid ${item.borderColor}`,
                     }}>
-                      <span style={{ flexShrink: 0 }}>→</span>
-                      <span>{item.solution}</span>
+                      <span style={{ fontWeight: '700', color: item.borderColor }}>Versa Footy</span>
+                      {' '}{item.solution}
                     </div>
                   </motion.div>
                 ))}
