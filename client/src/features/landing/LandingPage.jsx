@@ -102,34 +102,30 @@ const howItWorksSteps = [
 const whyVersaFootyData = [
   {
     title: 'Club training alone isn\'t enough',
-    description:
-      'Most kids get 2–3 hours a week with their team. That\'s enough for tactics and scrimmages, not for the technical foundation that separates good from great. The world\'s best young players train on their own every day. Versa Footy gives every kid that same structure.',
+    problem: '2–3 hours a week covers tactics and scrimmages — not the technical reps that matter.',
+    solution: 'Daily structured training, like the world\'s best young players already do.',
     icon: '🌉',
-    bgColor: '#eff6ff',
     borderColor: '#6366f1',
   },
   {
     title: 'The window is real and closing',
-    description:
-      'The ability to develop fine motor skills peaks in childhood. A 10-year-old who masters close control carries it for life. A 16-year-old starting from scratch is fighting biology. This isn\'t pressure. It\'s opportunity.',
+    problem: 'Fine motor skill development peaks in childhood. Miss it, and biology works against you.',
+    solution: 'Age-targeted training that builds the right skills at the right time.',
     icon: '⏱️',
-    bgColor: '#ecfdf5',
     borderColor: '#22c55e',
   },
   {
     title: 'Your kid doesn\'t need another YouTube playlist',
-    description:
-      'YouTube has drills. It doesn\'t have structure, progression, tracking, or memory of what your child did yesterday. Versa Footy knows which skills are overdue, almost mastered, or being avoided. It builds every session around that intelligence.',
+    problem: 'YouTube has drills. It doesn\'t have structure, progression, or memory.',
+    solution: 'Every session adapts to what your kid has mastered, avoided, or needs next.',
     icon: '📺',
-    bgColor: '#faf5ff',
     borderColor: '#8b5cf6',
   },
   {
     title: 'Parents aren\'t coaches',
-    description:
-      'You want to help your child improve, but don\'t know what to teach or in what order. Versa Footy is the expert in your pocket so you can encourage, not instruct.',
+    problem: 'You want to help but don\'t know what to teach or when.',
+    solution: 'The expert in your pocket — you encourage, it instructs.',
     icon: '👨‍👧‍👦',
-    bgColor: '#fffbeb',
     borderColor: '#f59e0b',
   },
 ];
@@ -443,6 +439,7 @@ export default function LandingPage() {
                 {whyVersaFootyData.map((item, index) => (
                   <motion.div
                     key={index}
+                    className={styles.whyVersaFootyCard}
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -453,35 +450,47 @@ export default function LandingPage() {
                       backdropFilter: 'blur(10px)',
                       borderRadius: '20px',
                       padding: '28px',
-                      borderLeft: `4px solid ${item.borderColor}`,
                       border: '1px solid rgba(255,255,255,0.1)',
                       borderLeftWidth: '4px',
                       borderLeftColor: item.borderColor,
-                      transition: 'all 0.3s ease',
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
                       <span
                         style={{
-                          fontSize: '40px',
-                          padding: '16px',
-                          borderRadius: '16px',
+                          fontSize: '32px',
+                          padding: '12px',
+                          borderRadius: '14px',
                           backgroundColor: 'rgba(255,255,255,0.1)',
                           boxShadow: `0 8px 24px ${item.borderColor}30`,
                           flexShrink: 0,
+                          lineHeight: 1,
                         }}
                       >
                         {item.icon}
                       </span>
-                      <div>
-                        <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', marginBottom: '12px' }}>
-                          {item.title}
-                        </h3>
-                        <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.7' }}>
-                          {item.description}
-                        </p>
-                      </div>
+                      <h3 style={{ fontSize: '19px', fontWeight: '700', color: '#ffffff', margin: 0 }}>
+                        {item.title}
+                      </h3>
                     </div>
+                    <p style={{
+                      fontSize: '15px',
+                      color: 'rgba(255,255,255,0.5)',
+                      lineHeight: '1.6',
+                      margin: '0 0 12px 0',
+                    }}>
+                      {item.problem}
+                    </p>
+                    <p style={{
+                      fontSize: '15px',
+                      color: item.borderColor,
+                      lineHeight: '1.6',
+                      margin: 0,
+                      fontWeight: '500',
+                    }}>
+                      <span style={{ marginRight: '6px' }}>→</span>
+                      {item.solution}
+                    </p>
                   </motion.div>
                 ))}
               </div>
