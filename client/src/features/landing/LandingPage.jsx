@@ -217,7 +217,7 @@ export default function LandingPage() {
                     <span className={styles.specialHighlightText}>Science-Based, AI-Powered Training!</span>
                   </h1>
                   <p className={styles.heroSubtitle}>
-                    The AI-powered app that turns backyard practice into real skill development, for kids aged 7 to 14. Built on the principle that technical ability is made, not born, and the window to build them closes sooner than you think.
+                    Technical ability is made, not born, and the window to develop it closes sooner than you think. Our app gives kids aged 7–14 a science-based path to build it before it's too late.
                   </p>
                   <p className={styles.heroSubtitle} style={{ marginTop: '16px', fontSize: '18px', fontWeight: '600', color: '#ffd166' }}>
                     170+ skills. 10 categories. First touch to total mastery.
