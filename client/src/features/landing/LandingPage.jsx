@@ -101,34 +101,34 @@ const howItWorksSteps = [
 
 const whyVersaFootyData = [
   {
-    title: 'Bridge the Training Gap',
+    title: 'Club training alone isn\'t enough',
     description:
-      "Team practices alone aren't enough for optimal development. Versa Footy provides the structured, personalized training time your kid needs between team sessions to truly excel and stand out.",
+      'Most kids get 2–3 hours a week with their team. That\'s enough for tactics and scrimmages, not for the technical foundation that separates good from great. The world\'s best young players train on their own every day. Versa Footy gives every kid that same structure.',
     icon: '🌉',
     bgColor: '#eff6ff',
     borderColor: '#6366f1',
   },
   {
-    title: 'Equal Focus on Both Feet',
+    title: 'The window is real and closing',
     description:
-      'Most players never develop their weaker foot properly, limiting their potential. Our specialized training ensures balanced development of both feet, giving your kid a significant advantage on the field.',
-    icon: '⚖️',
+      'The ability to develop fine motor skills peaks in childhood. A 10-year-old who masters close control carries it for life. A 16-year-old starting from scratch is fighting biology. This isn\'t pressure. It\'s opportunity.',
+    icon: '⏱️',
     bgColor: '#ecfdf5',
     borderColor: '#22c55e',
   },
   {
-    title: 'Maximize Every Practice Minute',
+    title: 'Your kid doesn\'t need another YouTube playlist',
     description:
-      "Quality training time is precious. Our AI ensures every minute counts by adapting exercises to your kid's skill level and available equipment, making practice both efficient and effective.",
-    icon: '⏱️',
+      'YouTube has drills. It doesn\'t have structure, progression, tracking, or memory of what your child did yesterday. Versa Footy knows which skills are overdue, almost mastered, or being avoided. It builds every session around that intelligence.',
+    icon: '📺',
     bgColor: '#faf5ff',
     borderColor: '#8b5cf6',
   },
   {
-    title: 'Remove Training Barriers',
+    title: 'Parents aren\'t coaches',
     description:
-      'Private coaching is expensive and often inaccessible. Versa Footy brings professional-grade training to your home, making elite development affordable and convenient for every aspiring player.',
-    icon: '🚀',
+      'You want to help your child improve, but don\'t know what to teach or in what order. Versa Footy is the expert in your pocket so you can encourage, not instruct.',
+    icon: '👨‍👧‍👦',
     bgColor: '#fffbeb',
     borderColor: '#f59e0b',
   },
