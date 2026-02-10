@@ -216,7 +216,7 @@ export default function LandingPage() {
                     Technical ability is made, not born, and the window to develop it closes sooner than you think. Our app gives kids aged 7–14 a science-based path to build it before it's too late.
                   </p>
                   <p className={styles.heroSubtitle} style={{ marginTop: '16px', fontSize: '18px', fontWeight: '600', color: '#ffd166' }}>
-                    170+ skills. 10 categories. First touch to total mastery.
+                    170+ skills. 10 categories. 1000+ exercises.
                   </p>
                   
                   {/* App Store Buttons */}
