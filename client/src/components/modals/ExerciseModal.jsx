@@ -4,7 +4,7 @@ import { Video, Upload, Trash2, CheckCircle, X, Plus, Check, ChevronDown, Chevro
 import Modal from './Modal';
 import ConfirmModal from './ConfirmModal';
 import { Input, TextArea, Select, FormField, Label } from '../ui';
-import { DIFFICULTY_OPTIONS, DEFAULTS, EQUIPMENT_OPTIONS } from '../../constants';
+import { DIFFICULTY_OPTIONS, DURATION_OPTIONS, DEFAULTS, EQUIPMENT_OPTIONS } from '../../constants';
 import { normalizeDifficulty } from '../../utils/difficulty';
 import { uploadExerciseVideo, deleteExerciseVideo } from '../../lib/storage';
 
@@ -395,6 +395,7 @@ const ExerciseModal = ({
         difficulty: normalizeDifficulty(editItem.difficulty),
         description: editItem.description || '',
         equipment: editItem.equipment || [],
+        minimumDuration: editItem.minimumDuration ?? null,
       });
     } else {
       setFormData({
@@ -491,6 +492,7 @@ const ExerciseModal = ({
           ...formData,
           videoUrl: nextVideoUrl,
           equipment: formData.equipment || [],
+          minimumDuration: formData.minimumDuration,
         },
         editItem?.id
       );
@@ -1041,6 +1043,28 @@ const ExerciseModal = ({
             ))}
           </Select>
         </FormField>
+
+        <div>
+          <FormField label="Minimum Duration" id="exercise-duration">
+            <Select
+              id="exercise-duration"
+              value={formData.minimumDuration === null ? '' : formData.minimumDuration}
+              onChange={(e) => {
+                const val = e.target.value;
+                handleChange('minimumDuration', val === '' ? null : parseInt(val, 10));
+              }}
+            >
+              {DURATION_OPTIONS.map((opt) => (
+                <option key={opt.value === null ? 'auto' : opt.value} value={opt.value === null ? '' : opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </Select>
+          </FormField>
+          <div style={{ marginTop: 4, fontSize: 12, color: '#71717a' }}>
+            Controls how long players must practice before they can finish. 'Auto' calculates based on category and difficulty.
+          </div>
+        </div>
 
         <div>
           <Label>Equipment</Label>

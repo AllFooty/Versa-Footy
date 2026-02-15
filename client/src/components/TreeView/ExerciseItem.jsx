@@ -4,6 +4,7 @@ import { IconButton } from '../ui';
 import ActionSheet from '../ui/ActionSheet';
 import ConfirmModal from '../modals/ConfirmModal';
 import { renderDifficultyStars, getDifficultyStyle } from '../../utils/difficulty';
+import { getDurationLabel } from '../../constants';
 
 /**
  * Single exercise item in the tree view
@@ -161,6 +162,24 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
               {exercise.equipment.length}
             </span>
           )}
+
+          {/* Duration badge */}
+          <span
+            title={`Min duration: ${getDurationLabel(exercise.minimumDuration)}`}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              padding: '3px 8px',
+              background: exercise.minimumDuration != null
+                ? 'rgba(168, 85, 247, 0.12)'
+                : 'rgba(255,255,255,0.04)',
+              borderRadius: 4,
+              color: exercise.minimumDuration != null ? '#c084fc' : '#52525b',
+              fontSize: 11,
+            }}
+          >
+            {getDurationLabel(exercise.minimumDuration)}
+          </span>
 
           {/* Difficulty Stars */}
           <span className="badge" style={getDifficultyStyle(exercise.difficulty)}>
@@ -348,6 +367,22 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
                 {exercise.equipment.length}
               </span>
             )}
+            {/* Duration badge */}
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '4px 8px',
+                background: exercise.minimumDuration != null
+                  ? 'rgba(168, 85, 247, 0.12)'
+                  : 'rgba(255,255,255,0.04)',
+                borderRadius: 4,
+                color: exercise.minimumDuration != null ? '#c084fc' : '#52525b',
+                fontSize: 11,
+              }}
+            >
+              {getDurationLabel(exercise.minimumDuration)}
+            </span>
             {/* Difficulty Stars */}
             <span
               className="badge"

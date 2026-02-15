@@ -29,6 +29,37 @@ export const AGE_GROUPS = [
 ];
 
 /**
+ * Minimum duration options for exercises (seconds → display label)
+ * NULL = Auto (calculated by the iOS app based on category & difficulty)
+ */
+export const DURATION_OPTIONS = [
+  { value: null, label: 'Auto (based on category & difficulty)' },
+  { value: 30, label: '30 seconds' },
+  { value: 45, label: '45 seconds' },
+  { value: 60, label: '1 minute' },
+  { value: 90, label: '1 min 30s' },
+  { value: 120, label: '2 minutes' },
+  { value: 150, label: '2 min 30s' },
+  { value: 180, label: '3 minutes' },
+];
+
+/**
+ * Get the friendly display label for a minimum_duration value
+ * @param {number|null} value - duration in seconds or null
+ * @param {boolean} short - if true, returns compact label for badges
+ */
+export const getDurationLabel = (value, short = false) => {
+  if (value === null || value === undefined) return 'Auto';
+  const option = DURATION_OPTIONS.find((opt) => opt.value === value);
+  if (!option) return 'Auto';
+  if (short) {
+    // Return compact form for list badges
+    return option.label;
+  }
+  return option.label;
+};
+
+/**
  * Common equipment options for exercises
  */
 export const EQUIPMENT_OPTIONS = [
@@ -66,5 +97,6 @@ export const DEFAULTS = {
     difficulty: 1,
     description: '',
     equipment: [],
+    minimumDuration: null,
   },
 };

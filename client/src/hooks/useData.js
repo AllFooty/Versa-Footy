@@ -39,6 +39,7 @@ const transformExercise = (exercise, skillIdsMap) => ({
   difficulty: normalizeDifficulty(exercise.difficulty),
   description: exercise.description,
   equipment: exercise.equipment || [],
+  minimumDuration: exercise.minimum_duration ?? null,
 });
 
 /**
@@ -356,6 +357,7 @@ export const useData = () => {
           difficulty: normalizeDifficulty(exerciseData.difficulty),
           description: exerciseData.description,
           equipment: exerciseData.equipment || [],
+          minimum_duration: exerciseData.minimumDuration ?? null,
         })
         .select()
         .single();
@@ -394,6 +396,7 @@ export const useData = () => {
           difficulty: normalizeDifficulty(exerciseData.difficulty),
           description: exerciseData.description,
           equipment: exerciseData.equipment || [],
+          minimum_duration: exerciseData.minimumDuration ?? null,
           updated_at: new Date().toISOString(),
         })
         .eq('id', id)
