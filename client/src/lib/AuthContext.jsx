@@ -11,6 +11,11 @@ export function AuthProvider({ children }) {
   const [profileLoading, setProfileLoading] = useState(false);
   const profileRef = useRef(null);
 
+  // Organization state
+  const [organizations, setOrganizations] = useState([]);
+  const [activeOrg, setActiveOrg] = useState(null);
+  const [orgsLoading, setOrgsLoading] = useState(false);
+
   // Fetch user profile from profiles table (non-blocking)
   const fetchProfile = async (userId) => {
     if (!userId) {
@@ -51,6 +56,34 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Fetch user's organizations via RPC (non-blocking)
+  const fetchOrganizations = async () => {
+    setOrgsLoading(true);
+    try {
+      const { data, error } = await supabase.rpc('get_my_organizations');
+      if (error) {
+        console.error('Error fetching organizations:', error.message);
+        setOrganizations([]);
+        return;
+      }
+      setOrganizations(data || []);
+      // Set active org to first one if none selected, or keep current if still valid
+      if (data?.length > 0) {
+        setActiveOrg((prev) => {
+          if (prev && data.some((o) => o.id === prev.id)) return prev;
+          return data[0];
+        });
+      } else {
+        setActiveOrg(null);
+      }
+    } catch (err) {
+      console.error('Error fetching organizations:', err);
+      setOrganizations([]);
+    } finally {
+      setOrgsLoading(false);
+    }
+  };
+
   useEffect(() => {
     // Check if supabase.auth is available (handles missing credentials gracefully)
     if (!supabase.auth) {
@@ -74,9 +107,10 @@ export function AuthProvider({ children }) {
         // This allows the UI to render while profile loads in background
         setLoading(false);
         
-        // Fetch profile in background (non-blocking)
+        // Fetch profile and organizations in background (non-blocking)
         if (session?.user) {
           fetchProfile(session.user.id);
+          fetchOrganizations();
         }
       })
       .catch((err) => {
@@ -95,12 +129,15 @@ export function AuthProvider({ children }) {
           setUser(session?.user ?? null);
           setLoading(false);
           
-          // Fetch profile in background (non-blocking)
+          // Fetch profile and organizations in background (non-blocking)
           if (session?.user) {
             fetchProfile(session.user.id);
+            fetchOrganizations();
           } else {
             setProfile(null);
             profileRef.current = null;
+            setOrganizations([]);
+            setActiveOrg(null);
           }
         }
       );
@@ -123,6 +160,8 @@ export function AuthProvider({ children }) {
     }
     setProfile(null);
     profileRef.current = null;
+    setOrganizations([]);
+    setActiveOrg(null);
   };
 
   // Update user profile in profiles table
@@ -167,6 +206,14 @@ export function AuthProvider({ children }) {
     updateProfile,
     isAuthenticated: !!user,
     isAdmin: profile?.is_admin === true,
+    // Organization state
+    organizations,
+    activeOrg,
+    setActiveOrg,
+    orgsLoading,
+    refreshOrganizations: fetchOrganizations,
+    isCoach: organizations.some((o) => ['owner', 'admin', 'coach'].includes(o.role)),
+    isOrgAdmin: organizations.some((o) => ['owner', 'admin'].includes(o.role)),
   };
 
   return (

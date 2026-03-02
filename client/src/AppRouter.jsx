@@ -4,6 +4,7 @@ import { Link, Route, Switch } from 'wouter';
 import { AuthProvider } from './lib/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
+import AcademyProtectedRoute from './components/AcademyProtectedRoute';
 
 import Landing from './features/landing/LandingPage';
 import AboutPage from './features/landing/AboutPage';
@@ -13,6 +14,8 @@ import PrivacyPolicyPage from './features/landing/PrivacyPolicyPage';
 import LibraryApp from './features/library/LibraryApp';
 import SettingsPage from './features/settings/SettingsPage';
 import Login from './features/auth/Login';
+import AcademyDashboard from './features/academy/AcademyDashboard';
+import CreateOrganization from './features/academy/CreateOrganization';
 
 const NotFound = () => (
   <div style={containerStyle}>
@@ -134,6 +137,26 @@ export default function AppRouter() {
           <ProtectedRoute>
             <SettingsPage />
           </ProtectedRoute>
+        </Route>
+
+        {/* Academy - Create/Join Organization */}
+        <Route path="/org/create">
+          <ProtectedRoute>
+            <CreateOrganization />
+          </ProtectedRoute>
+        </Route>
+
+        {/* Academy Dashboard - Requires coach/admin/owner org membership */}
+        <Route path="/academy">
+          <AcademyProtectedRoute>
+            <AcademyDashboard />
+          </AcademyProtectedRoute>
+        </Route>
+
+        <Route path="/academy/:rest*">
+          <AcademyProtectedRoute>
+            <AcademyDashboard />
+          </AcademyProtectedRoute>
         </Route>
 
         {/* Library App - Admin only */}
