@@ -133,11 +133,11 @@ export default function Login() {
   const [message, setMessage] = useState('');
 
   // Redirect if already authenticated
+  // Send to /academy — AcademyProtectedRoute will redirect to /org/create if no org exists
   useEffect(() => {
     if (isAuthenticated && !authLoading) {
-      // Small delay to ensure smooth transition
       const timer = setTimeout(() => {
-        setLocation('/');
+        setLocation('/home');
       }, 100);
       return () => clearTimeout(timer);
     }

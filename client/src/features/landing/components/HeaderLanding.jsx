@@ -31,6 +31,7 @@ export default function HeaderLanding() {
   // Add role-based links
   const navigationItems = (() => {
     const items = [...baseNavigationItems];
+    if (isAuthenticated) items.push({ name: 'Home', href: '/home' });
     if (isAuthenticated && isCoach) items.push({ name: 'Academy', href: '/academy' });
     if (isAuthenticated && isAdmin) items.push({ name: 'Library', href: '/library' });
     return items;

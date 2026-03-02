@@ -7,6 +7,7 @@ import AdminProtectedRoute from './components/AdminProtectedRoute';
 import AcademyProtectedRoute from './components/AcademyProtectedRoute';
 
 import Landing from './features/landing/LandingPage';
+import HomePage from './features/home/HomePage';
 import AboutPage from './features/landing/AboutPage';
 import FaqPage from './features/landing/FaqPage';
 import TermsOfServicePage from './features/landing/TermsOfServicePage';
@@ -136,6 +137,13 @@ export default function AppRouter() {
 
         <Route path="/privacy-policy">
           <PrivacyPolicyPage />
+        </Route>
+
+        {/* Home Hub - Post-login landing for authenticated users */}
+        <Route path="/home">
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
         </Route>
 
         {/* Settings Page - For authenticated users */}

@@ -182,11 +182,11 @@ const technicalSkills = [
   { categoryId: 4, name: 'Trivela Free Kick', ageGroup: 'U-14' },
   { categoryId: 4, name: 'Knuckleball Free Kick', ageGroup: 'U-15+' },
   
-  // Long Passing (category 6)
-  { categoryId: 6, name: 'Driven Pass', ageGroup: 'U-11' },
-  { categoryId: 6, name: 'Lofted Pass', ageGroup: 'U-11' },
-  { categoryId: 6, name: 'Curved Long Pass', ageGroup: 'U-13' },
-  { categoryId: 6, name: 'Long Trivela', ageGroup: 'U-14' },
+  // Crossing & Long Passing (category 5)
+  { categoryId: 5, name: 'Driven Pass', ageGroup: 'U-11' },
+  { categoryId: 5, name: 'Lofted Pass', ageGroup: 'U-11' },
+  { categoryId: 5, name: 'Curved Long Pass', ageGroup: 'U-13' },
+  { categoryId: 5, name: 'Long Trivela', ageGroup: 'U-14' },
   
   // Throw-Ins (category 7)
   { categoryId: 7, name: 'Standing Throw-In', ageGroup: 'U-8' },
@@ -249,8 +249,8 @@ export const initialData = {
     { id: 2, name: 'Dribbling & Skill Moves', icon: '🏃', color: '#F4A261' },
     { id: 3, name: 'Passing & First Touch', icon: '🎯', color: '#2A9D8F' },
     { id: 4, name: 'Shooting & Finishing', icon: '🥅', color: '#E76F51' },
-    { id: 5, name: 'Crossing', icon: '↗️', color: '#264653' },
-    { id: 6, name: 'Long Passing', icon: '📏', color: '#023E8A' },
+    { id: 5, name: 'Crossing & Long Passing', icon: '↗️', color: '#264653' },
+    { id: 6, name: 'Turns', icon: '🔄', color: '#023E8A' },
     { id: 7, name: 'Throw-Ins', icon: '🙌', color: '#6A4C93' },
     { id: 8, name: 'Defending & Tackling', icon: '🛡️', color: '#1D3557' },
     { id: 9, name: 'Heading', icon: '🤕', color: '#457B9D' },

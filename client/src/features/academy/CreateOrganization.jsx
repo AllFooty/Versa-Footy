@@ -23,31 +23,15 @@ export default function CreateOrganization() {
     setError(null);
 
     try {
-      // Create the organization
-      const { data: org, error: orgError } = await supabase
-        .from('organizations')
-        .insert({
-          name: name.trim(),
-          type,
-          region: region.trim() || null,
-          city: city.trim() || null,
-          created_by: user.id,
-        })
-        .select()
-        .single();
+      // Create organization + add owner atomically via RPC
+      const { data: org, error: orgError } = await supabase.rpc('create_organization', {
+        p_name: name.trim(),
+        p_type: type,
+        p_region: region.trim() || null,
+        p_city: city.trim() || null,
+      });
 
       if (orgError) throw orgError;
-
-      // Add creator as owner
-      const { error: memberError } = await supabase
-        .from('organization_members')
-        .insert({
-          organization_id: org.id,
-          user_id: user.id,
-          role: 'owner',
-        });
-
-      if (memberError) throw memberError;
 
       // Refresh org list in context and navigate to dashboard
       await refreshOrganizations();
