@@ -8,6 +8,8 @@ import AdminProtectedRoute from './components/AdminProtectedRoute';
 import Landing from './features/landing/LandingPage';
 import AboutPage from './features/landing/AboutPage';
 import FaqPage from './features/landing/FaqPage';
+import TermsOfServicePage from './features/landing/TermsOfServicePage';
+import PrivacyPolicyPage from './features/landing/PrivacyPolicyPage';
 import LibraryApp from './features/library/LibraryApp';
 import SettingsPage from './features/settings/SettingsPage';
 import Login from './features/auth/Login';
@@ -117,6 +119,14 @@ export default function AppRouter() {
 
         <Route path="/faq">
           <FaqPage />
+        </Route>
+
+        <Route path="/terms-of-service">
+          <TermsOfServicePage />
+        </Route>
+
+        <Route path="/privacy-policy">
+          <PrivacyPolicyPage />
         </Route>
 
         {/* Settings Page - For authenticated users */}
