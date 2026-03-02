@@ -18,6 +18,8 @@ import AcademyDashboard from './features/academy/AcademyDashboard';
 import CreateOrganization from './features/academy/CreateOrganization';
 import InvitationManager from './features/academy/InvitationManager';
 import JoinOrganization from './features/academy/JoinOrganization';
+import PlayerRoster from './features/academy/PlayerRoster';
+import PlayerDetail from './features/academy/PlayerDetail';
 
 const NotFound = () => (
   <div style={containerStyle}>
@@ -159,6 +161,18 @@ export default function AppRouter() {
         <Route path="/academy/invitations">
           <AcademyProtectedRoute>
             <InvitationManager />
+          </AcademyProtectedRoute>
+        </Route>
+
+        <Route path="/academy/players/:id">
+          <AcademyProtectedRoute>
+            <PlayerDetail />
+          </AcademyProtectedRoute>
+        </Route>
+
+        <Route path="/academy/players">
+          <AcademyProtectedRoute>
+            <PlayerRoster />
           </AcademyProtectedRoute>
         </Route>
 
