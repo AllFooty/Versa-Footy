@@ -16,6 +16,8 @@ import SettingsPage from './features/settings/SettingsPage';
 import Login from './features/auth/Login';
 import AcademyDashboard from './features/academy/AcademyDashboard';
 import CreateOrganization from './features/academy/CreateOrganization';
+import InvitationManager from './features/academy/InvitationManager';
+import JoinOrganization from './features/academy/JoinOrganization';
 
 const NotFound = () => (
   <div style={containerStyle}>
@@ -144,6 +146,20 @@ export default function AppRouter() {
           <ProtectedRoute>
             <CreateOrganization />
           </ProtectedRoute>
+        </Route>
+
+        {/* Join via invite code - requires auth only */}
+        <Route path="/join/:code">
+          <ProtectedRoute>
+            <JoinOrganization />
+          </ProtectedRoute>
+        </Route>
+
+        {/* Academy sub-pages (must come before catch-all) */}
+        <Route path="/academy/invitations">
+          <AcademyProtectedRoute>
+            <InvitationManager />
+          </AcademyProtectedRoute>
         </Route>
 
         {/* Academy Dashboard - Requires coach/admin/owner org membership */}
