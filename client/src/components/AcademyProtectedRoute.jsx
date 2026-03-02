@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect } from 'wouter';
 import { useAuth } from '../lib/AuthContext';
+import AcademyLayout from '../features/academy/AcademyLayout';
 
 const loadingContainerStyle = {
   minHeight: '100vh',
@@ -56,5 +57,5 @@ export default function AcademyProtectedRoute({ children }) {
     return <Redirect to="/org/create" />;
   }
 
-  return children;
+  return <AcademyLayout>{children}</AcademyLayout>;
 }
