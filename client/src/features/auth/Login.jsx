@@ -121,12 +121,16 @@ const noteStyle = {
 export default function Login() {
   const [, setLocation] = useLocation();
   const { isAuthenticated, loading: authLoading } = useAuth();
-  
+
   // Form state
   const [email, setEmail] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [step, setStep] = useState('email'); // 'email', 'otp', or 'success'
-  
+
+  // Dev login state
+  const [devPassword, setDevPassword] = useState('');
+  const [showDevLogin, setShowDevLogin] = useState(false);
+
   // UI state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -287,6 +291,31 @@ export default function Login() {
     }
   };
 
+  const handleDevLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    setMessage('');
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: devPassword,
+      });
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+      } else if (data.session) {
+        setStep('success');
+        setMessage('Successfully signed in! Redirecting...');
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+      setLoading(false);
+    }
+  };
+
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
@@ -422,6 +451,49 @@ export default function Login() {
               ← Use different email
             </button>
           </form>
+        )}
+
+        {step !== 'success' && !import.meta.env.PROD && (
+          <div style={{ marginTop: 24, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 16 }}>
+            <button
+              type="button"
+              onClick={() => setShowDevLogin(!showDevLogin)}
+              style={{
+                background: 'none', border: 'none', color: '#f97316',
+                fontSize: 12, cursor: 'pointer', fontWeight: 600,
+                letterSpacing: '0.05em', width: '100%', textAlign: 'center',
+              }}
+            >
+              {showDevLogin ? '▾ HIDE DEV LOGIN' : '▸ DEV LOGIN (PASSWORD)'}
+            </button>
+            {showDevLogin && (
+              <form onSubmit={handleDevLogin} style={{ marginTop: 12 }}>
+                <input
+                  style={inputStyle}
+                  type="email"
+                  placeholder="demo+liam@versafooty.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
+                />
+                <input
+                  style={inputStyle}
+                  type="password"
+                  placeholder="Password"
+                  value={devPassword}
+                  onChange={(e) => setDevPassword(e.target.value)}
+                  disabled={loading}
+                />
+                <button
+                  style={loading ? buttonDisabledStyle : { ...buttonStyle, background: 'linear-gradient(135deg, #f97316, #eab308)' }}
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? 'Signing in...' : 'Dev Sign In'}
+                </button>
+              </form>
+            )}
+          </div>
         )}
 
         {step !== 'success' && (
