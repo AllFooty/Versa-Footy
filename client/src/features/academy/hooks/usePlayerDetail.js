@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabase';
 
+// Age group ordering for roadmap
+const AGE_GROUP_ORDER = ['U-7', 'U-8', 'U-9', 'U-10', 'U-11', 'U-12', 'U-13', 'U-14', 'U-15+'];
+
 export default function usePlayerDetail(playerId) {
   const [profile, setProfile] = useState(null);
   const [skillProgress, setSkillProgress] = useState([]);
+  const [allSkills, setAllSkills] = useState([]);
   const [dailyActivity, setDailyActivity] = useState([]);
   const [recentSessions, setRecentSessions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -16,7 +20,7 @@ export default function usePlayerDetail(playerId) {
 
     try {
       // Fetch all data in parallel
-      const [profileRes, skillsRes, activityRes, sessionsRes] = await Promise.all([
+      const [profileRes, skillsRes, allSkillsRes, activityRes, sessionsRes] = await Promise.all([
         // Player profile + base profile for name
         supabase
           .from('player_profiles')
@@ -29,6 +33,12 @@ export default function usePlayerDetail(playerId) {
           .from('skill_progress')
           .select('*, skills(name, age_group, categories(name, color, icon))')
           .eq('user_id', playerId),
+
+        // All skills in the system (for full roadmap including not-started)
+        supabase
+          .from('skills')
+          .select('id, name, age_group, category_id, categories(name, color, icon)')
+          .order('id', { ascending: true }),
 
         // Daily activity for last 180 days (for heatmap + trends)
         supabase
@@ -50,6 +60,7 @@ export default function usePlayerDetail(playerId) {
       if (profileRes.error) throw profileRes.error;
       setProfile(profileRes.data);
       setSkillProgress(skillsRes.data || []);
+      setAllSkills(allSkillsRes.data || []);
       setDailyActivity(activityRes.data || []);
       setRecentSessions(sessionsRes.data || []);
     } catch (err) {
@@ -68,15 +79,18 @@ export default function usePlayerDetail(playerId) {
   const categoryRadar = computeCategoryRadar(skillProgress);
   const weeklyTrends = computeWeeklyTrends(dailyActivity);
   const skillsByCategory = groupSkillsByCategory(skillProgress);
+  const roadmap = computeRoadmap(profile, allSkills, skillProgress);
 
   return {
     profile,
     skillProgress,
+    allSkills,
     dailyActivity,
     recentSessions,
     categoryRadar,
     weeklyTrends,
     skillsByCategory,
+    roadmap,
     loading,
     error,
   };
@@ -141,4 +155,103 @@ function groupSkillsByCategory(skills) {
     groups[catName].skills.push(sp);
   });
   return Object.values(groups);
+}
+
+function computeRoadmap(profile, allSkills, progressRecords) {
+  if (!profile || allSkills.length === 0) {
+    return { playerAgeGroup: null, totalSkillsToMaster: 0, masteredCount: 0, progressPercent: 0, skillsByAge: [], categorySummary: [] };
+  }
+
+  const playerAgeGroup = profile.age_group || 'U-12';
+  const playerAgeIndex = AGE_GROUP_ORDER.indexOf(playerAgeGroup);
+
+  // Build a lookup of progress by skill_id
+  const progressMap = {};
+  progressRecords.forEach((sp) => {
+    progressMap[sp.skill_id] = sp;
+  });
+
+  // Filter skills to those the player should master (their age group and below)
+  const relevantSkills = allSkills.filter((skill) => {
+    const skillAgeIndex = AGE_GROUP_ORDER.indexOf(skill.age_group);
+    return skillAgeIndex >= 0 && skillAgeIndex <= playerAgeIndex;
+  });
+
+  // Merge skills with progress
+  const skillsWithProgress = allSkills.map((skill) => {
+    const progress = progressMap[skill.id];
+    const timesPracticed = progress?.times_practiced || 0;
+    const highRated = progress?.high_rated_completions || 0;
+    const totalRatingSum = progress?.total_rating_sum || 0;
+    const avgRating = timesPracticed > 0 ? totalRatingSum / timesPracticed : 0;
+    const isMastered = progress?.status === 'mastered';
+
+    // Mastery progress: weighted 50% completion (out of 10) + 50% rating (toward 4.5)
+    const completionProgress = Math.min(1, timesPracticed / 10);
+    const ratingProgress = Math.min(1, avgRating / 4.5);
+    const masteryProgress = isMastered ? 1 : (completionProgress * 0.5 + ratingProgress * 0.5);
+
+    return {
+      id: skill.id,
+      name: skill.name,
+      ageGroup: skill.age_group,
+      category: skill.categories?.name || 'Unknown',
+      categoryColor: skill.categories?.color || '#3b82f6',
+      categoryIcon: skill.categories?.icon || '',
+      isMastered,
+      status: progress?.status || 'not_started',
+      timesPracticed,
+      highRatedCompletions: highRated,
+      avgRating,
+      masteryProgress,
+      isCloseToMastering: !isMastered && masteryProgress >= 0.75,
+    };
+  });
+
+  // Group by age
+  const byAge = {};
+  AGE_GROUP_ORDER.forEach((ag) => { byAge[ag] = []; });
+  skillsWithProgress.forEach((s) => {
+    if (byAge[s.ageGroup]) byAge[s.ageGroup].push(s);
+  });
+
+  const skillsByAge = AGE_GROUP_ORDER
+    .filter((ag) => byAge[ag].length > 0)
+    .map((ag) => {
+      const skills = byAge[ag];
+      const mastered = skills.filter((s) => s.isMastered).length;
+      const isRelevant = AGE_GROUP_ORDER.indexOf(ag) <= playerAgeIndex;
+      return { ageGroup: ag, skills, mastered, total: skills.length, isRelevant };
+    });
+
+  // Overall stats (only for relevant age groups)
+  const totalSkillsToMaster = relevantSkills.length;
+  const masteredCount = relevantSkills.filter((s) => progressMap[s.id]?.status === 'mastered').length;
+  const progressPercent = totalSkillsToMaster > 0 ? Math.round((masteredCount / totalSkillsToMaster) * 100) : 0;
+
+  // Category summary across relevant skills
+  const catMap = {};
+  relevantSkills.forEach((skill) => {
+    const catName = skill.categories?.name || 'Unknown';
+    if (!catMap[catName]) {
+      catMap[catName] = {
+        name: catName,
+        color: skill.categories?.color || '#3b82f6',
+        icon: skill.categories?.icon || '',
+        total: 0,
+        mastered: 0,
+      };
+    }
+    catMap[catName].total++;
+    if (progressMap[skill.id]?.status === 'mastered') catMap[catName].mastered++;
+  });
+
+  return {
+    playerAgeGroup,
+    totalSkillsToMaster,
+    masteredCount,
+    progressPercent,
+    skillsByAge,
+    categorySummary: Object.values(catMap),
+  };
 }

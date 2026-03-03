@@ -7,17 +7,17 @@ import {
 } from 'recharts';
 import usePlayerDetail from './hooks/usePlayerDetail';
 
-const TABS = ['Overview', 'Skills', 'Training History', 'Trends'];
+const TABS = ['Overview', 'Skill Roadmap', 'Training History', 'Trends'];
 
 export default function PlayerDetail() {
   const { id } = useParams();
   const {
     profile, skillProgress, dailyActivity, recentSessions,
-    categoryRadar, weeklyTrends, skillsByCategory,
+    categoryRadar, weeklyTrends, roadmap,
     loading, error,
   } = usePlayerDetail(id);
   const [activeTab, setActiveTab] = useState(0);
-  const [skillFilter, setSkillFilter] = useState('all');
+  const [roadmapCategoryFilter, setRoadmapCategoryFilter] = useState('all');
 
   if (loading) {
     return (
@@ -89,10 +89,10 @@ export default function PlayerDetail() {
           />
         )}
         {activeTab === 1 && (
-          <SkillsTab
-            skillsByCategory={skillsByCategory}
-            filter={skillFilter}
-            setFilter={setSkillFilter}
+          <SkillRoadmapTab
+            roadmap={roadmap}
+            categoryFilter={roadmapCategoryFilter}
+            setCategoryFilter={setRoadmapCategoryFilter}
           />
         )}
         {activeTab === 2 && <HistoryTab sessions={recentSessions} />}
@@ -156,56 +156,119 @@ function OverviewTab({ categoryRadar, dailyActivity }) {
   );
 }
 
-// ─── Tab: Skills ───────────────────────────────────────────────────────────────
+// ─── Tab: Skill Roadmap ───────────────────────────────────────────────────────
 
-function SkillsTab({ skillsByCategory, filter, setFilter }) {
+function SkillRoadmapTab({ roadmap, categoryFilter, setCategoryFilter }) {
+  if (!roadmap || roadmap.totalSkillsToMaster === 0) {
+    return <p style={emptyStyle}>No skill data available</p>;
+  }
+
+  // Unique categories for filter chips
+  const categories = roadmap.categorySummary || [];
+
   return (
     <div>
-      <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
-        {['all', 'mastered', 'in_progress', 'not_started'].map((f) => (
+      {/* Roadmap Header */}
+      <div style={roadmapHeaderStyle}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
+          <div>
+            <h3 style={{ fontSize: 16, fontWeight: 700, margin: '0 0 4px', color: '#e4e4e7' }}>
+              Skill Roadmap — {roadmap.playerAgeGroup}
+            </h3>
+            <p style={{ fontSize: 13, color: '#9ca3af', margin: 0 }}>
+              {roadmap.masteredCount} of {roadmap.totalSkillsToMaster} skills mastered
+            </p>
+          </div>
+          <div style={roadmapPercentStyle}>
+            <span style={{ fontSize: 28, fontWeight: 800, color: getRoadmapColor(roadmap.progressPercent) }}>
+              {roadmap.progressPercent}%
+            </span>
+          </div>
+        </div>
+        <div style={{ ...progressBarBgStyle, height: 8, borderRadius: 4, marginTop: 12 }}>
+          <div style={{
+            height: '100%', borderRadius: 4, transition: 'width 0.5s ease',
+            width: `${roadmap.progressPercent}%`,
+            background: `linear-gradient(90deg, ${getRoadmapColor(roadmap.progressPercent)}, ${getRoadmapColor(roadmap.progressPercent)}cc)`,
+          }} />
+        </div>
+
+        {/* Category mini-summary */}
+        <div style={categorySummaryRowStyle}>
+          {categories.map((cat) => (
+            <div key={cat.name} style={categorySummaryChipStyle}>
+              <span style={{ fontSize: 12 }}>{cat.icon}</span>
+              <span style={{ fontSize: 11, color: '#9ca3af' }}>{cat.name}</span>
+              <span style={{ fontSize: 11, fontWeight: 600, color: cat.mastered === cat.total ? '#22c55e' : '#e4e4e7' }}>
+                {cat.mastered}/{cat.total}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Category filter chips */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 16, flexWrap: 'wrap' }}>
+        <button
+          onClick={() => setCategoryFilter('all')}
+          style={categoryFilter === 'all' ? activeChipStyle : chipStyle}
+        >
+          All
+        </button>
+        {categories.map((cat) => (
           <button
-            key={f}
-            onClick={() => setFilter(f)}
-            style={filter === f ? activeChipStyle : chipStyle}
+            key={cat.name}
+            onClick={() => setCategoryFilter(cat.name)}
+            style={categoryFilter === cat.name ? { ...activeChipStyle, borderColor: cat.color + '55', color: cat.color } : chipStyle}
           >
-            {f === 'all' ? 'All' : f === 'in_progress' ? 'In Progress' : f === 'not_started' ? 'Not Started' : 'Mastered'}
+            {cat.icon} {cat.name}
           </button>
         ))}
       </div>
 
-      {skillsByCategory.map((cat) => {
-        const filtered = cat.skills.filter((s) => {
-          if (filter === 'all') return true;
-          if (filter === 'mastered') return s.status === 'mastered';
-          if (filter === 'in_progress') return s.times_practiced > 0 && s.status !== 'mastered';
-          return s.times_practiced === 0;
-        });
-        if (filtered.length === 0) return null;
+      {/* Skills grouped by age */}
+      {roadmap.skillsByAge.map((group) => {
+        const filteredSkills = categoryFilter === 'all'
+          ? group.skills
+          : group.skills.filter((s) => s.category === categoryFilter);
+        if (filteredSkills.length === 0) return null;
+
+        const mastered = filteredSkills.filter((s) => s.isMastered).length;
+        const total = filteredSkills.length;
+        const allMastered = mastered === total;
 
         return (
-          <div key={cat.name} style={{ marginBottom: 20 }}>
-            <h4 style={{ fontSize: 14, fontWeight: 600, color: cat.color, margin: '0 0 8px' }}>
-              {cat.icon} {cat.name} ({filtered.length})
-            </h4>
+          <div key={group.ageGroup} style={{ marginBottom: 24 }}>
+            {/* Age group header */}
+            <div style={ageGroupHeaderStyle}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{
+                  ...ageGroupBadgeStyle,
+                  background: group.isRelevant
+                    ? (allMastered ? 'rgba(34,197,94,0.15)' : 'rgba(59,130,246,0.15)')
+                    : 'rgba(255,255,255,0.04)',
+                  color: group.isRelevant
+                    ? (allMastered ? '#22c55e' : '#60a5fa')
+                    : '#71717a',
+                }}>
+                  {group.ageGroup}
+                </span>
+                <span style={{ fontSize: 13, color: '#9ca3af' }}>
+                  {mastered}/{total} mastered
+                </span>
+                {allMastered && <span style={{ fontSize: 14 }}>&#10003;</span>}
+              </div>
+              {group.isRelevant && !allMastered && (
+                <span style={{ fontSize: 11, color: '#eab308', fontWeight: 500 }}>
+                  Should master
+                </span>
+              )}
+            </div>
+
+            {/* Skills grid */}
             <div style={skillGridStyle}>
-              {filtered.map((sp) => (
-                <div key={sp.id} style={skillCardStyle}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                    <span style={{ fontSize: 13, fontWeight: 500 }}>{sp.skills?.name}</span>
-                    {sp.status === 'mastered' && <span style={masteredBadge}>Mastered</span>}
-                  </div>
-                  <div style={progressBarBgStyle}>
-                    <div style={{ ...progressBarFillStyle, width: `${getProgressPercent(sp)}%`, background: cat.color }} />
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
-                    <span style={{ fontSize: 11, color: '#71717a' }}>
-                      Practiced {sp.times_practiced}x
-                    </span>
-                    <span style={{ fontSize: 11, color: '#71717a' }}>
-                      {sp.skills?.age_group}
-                    </span>
-                  </div>
-                </div>
+              {filteredSkills.map((skill) => (
+                <SkillRoadmapCard key={skill.id} skill={skill} />
               ))}
             </div>
           </div>
@@ -215,10 +278,52 @@ function SkillsTab({ skillsByCategory, filter, setFilter }) {
   );
 }
 
-function getProgressPercent(sp) {
-  if (sp.status === 'mastered') return 100;
-  // Based on completions needed (8 high-rated for mastery)
-  return Math.min(100, Math.round((sp.high_rated_completions / 8) * 100));
+function SkillRoadmapCard({ skill }) {
+  const progressPercent = Math.round(skill.masteryProgress * 100);
+
+  return (
+    <div style={{
+      ...skillCardStyle,
+      borderLeft: `3px solid ${skill.isMastered ? '#22c55e' : skill.isCloseToMastering ? '#eab308' : skill.timesPracticed > 0 ? skill.categoryColor : 'rgba(255,255,255,0.06)'}`,
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: 1, minWidth: 0 }}>
+          <span style={{ fontSize: 12, flexShrink: 0 }}>{skill.categoryIcon}</span>
+          <span style={{ fontSize: 13, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {skill.name}
+          </span>
+        </div>
+        {skill.isMastered && <span style={masteredBadge}>Mastered</span>}
+        {skill.isCloseToMastering && <span style={almostBadge}>Almost</span>}
+      </div>
+
+      <div style={progressBarBgStyle}>
+        <div style={{
+          ...progressBarFillStyle,
+          width: `${progressPercent}%`,
+          background: skill.isMastered ? '#22c55e' : skill.isCloseToMastering ? '#eab308' : skill.categoryColor,
+        }} />
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
+        <span style={{ fontSize: 11, color: '#71717a' }}>
+          {skill.timesPracticed > 0 ? `${skill.timesPracticed}/10 completions` : 'Not started'}
+        </span>
+        {skill.timesPracticed > 0 && (
+          <span style={{ fontSize: 11, color: skill.avgRating >= 4.5 ? '#22c55e' : '#71717a' }}>
+            {skill.avgRating.toFixed(1)}&#9733;
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function getRoadmapColor(percent) {
+  if (percent >= 80) return '#22c55e';
+  if (percent >= 50) return '#3b82f6';
+  if (percent >= 25) return '#eab308';
+  return '#ef4444';
 }
 
 // ─── Tab: Training History ─────────────────────────────────────────────────────
@@ -446,3 +551,42 @@ const thStyle = {
 };
 
 const tdStyle = { padding: '10px', whiteSpace: 'nowrap' };
+
+// ─── Roadmap-specific styles ────────────────────────────────────────────────
+
+const roadmapHeaderStyle = {
+  background: 'rgba(15, 23, 42, 0.6)',
+  border: '1px solid rgba(255, 255, 255, 0.08)',
+  borderRadius: 14, padding: '20px 20px 16px',
+  marginBottom: 16,
+};
+
+const roadmapPercentStyle = {
+  textAlign: 'right',
+};
+
+const categorySummaryRowStyle = {
+  display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14,
+};
+
+const categorySummaryChipStyle = {
+  display: 'flex', alignItems: 'center', gap: 4,
+  padding: '4px 8px', borderRadius: 6,
+  background: 'rgba(255, 255, 255, 0.04)',
+  border: '1px solid rgba(255, 255, 255, 0.06)',
+};
+
+const ageGroupHeaderStyle = {
+  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+  marginBottom: 10, padding: '0 2px',
+};
+
+const ageGroupBadgeStyle = {
+  padding: '3px 10px', borderRadius: 6,
+  fontSize: 12, fontWeight: 700,
+};
+
+const almostBadge = {
+  padding: '2px 6px', borderRadius: 4, fontSize: 10, fontWeight: 600,
+  background: 'rgba(234, 179, 8, 0.15)', color: '#eab308',
+};
