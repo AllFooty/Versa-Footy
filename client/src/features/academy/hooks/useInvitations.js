@@ -128,41 +128,22 @@ export async function lookupInviteCode(code) {
   return { invitation: data, error: null };
 }
 
-// Accept an invitation (used in join flow)
-export async function acceptInvitation(invitation) {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error('Not authenticated');
+// Accept an invitation atomically via server-side RPC.
+// The RPC handles all 3 steps in one transaction:
+//   1. INSERT into organization_members
+//   2. INSERT into team_members (if team specified)
+//   3. UPDATE invitations status to 'accepted'
+export async function acceptInvitation(inviteCode) {
+  const { data, error } = await supabase.rpc('accept_invitation', {
+    p_invite_code: inviteCode,
+  });
 
-  // Add user to organization
-  const { error: memberError } = await supabase
-    .from('organization_members')
-    .insert({
-      organization_id: invitation.organization_id,
-      user_id: user.id,
-      role: invitation.role,
-      invited_by: invitation.invited_by,
-    });
-
-  if (memberError) {
-    if (memberError.code === '23505') {
-      throw new Error('You are already a member of this organization');
+  if (error) {
+    if (error.message?.includes('Invalid or expired')) {
+      throw new Error('Invalid or expired invite code');
     }
-    throw memberError;
+    throw error;
   }
 
-  // If team is specified, add to team
-  if (invitation.team_id) {
-    await supabase
-      .from('team_members')
-      .insert({
-        team_id: invitation.team_id,
-        player_id: user.id,
-      });
-  }
-
-  // Mark invitation as accepted
-  await supabase
-    .from('invitations')
-    .update({ status: 'accepted', accepted_by: user.id })
-    .eq('id', invitation.id);
+  return data;
 }

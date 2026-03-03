@@ -38,7 +38,7 @@ export default function JoinOrganization() {
     setError(null);
 
     try {
-      await acceptInvitation(invitation);
+      await acceptInvitation(code);
       setAccepted(true);
       await refreshOrganizations();
       // Redirect after a short delay
