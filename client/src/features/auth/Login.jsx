@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/AuthContext';
 
@@ -119,6 +120,7 @@ const noteStyle = {
 };
 
 export default function Login() {
+  const { t } = useTranslation();
   const [, setLocation] = useLocation();
   const { isAuthenticated, loading: authLoading } = useAuth();
 
@@ -168,10 +170,10 @@ export default function Login() {
               </svg>
             </div>
             <h2 style={{ color: '#f1f5f9', fontSize: 20, margin: '0 0 8px 0' }}>
-              Successfully signed in!
+              {t('auth.successMessage')}
             </h2>
             <p style={{ color: '#94a3b8', fontSize: 14, margin: 0 }}>
-              Redirecting...
+              {t('common.redirecting')}
             </p>
           </div>
         </div>
@@ -185,14 +187,14 @@ export default function Login() {
     setMessage('');
     
     if (!email.trim()) {
-      setError('Please enter your email address');
+      setError(t('errors.enterEmail'));
       return;
     }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address');
+      setError(t('errors.invalidEmail'));
       return;
     }
 
@@ -209,11 +211,11 @@ export default function Login() {
       if (error) {
         setError(error.message);
       } else {
-        setMessage('Check your email for the login code!');
+        setMessage(t('auth.checkEmailMessage'));
         setStep('otp');
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
+      setError(t('errors.generic'));
     } finally {
       setLoading(false);
     }
@@ -225,12 +227,12 @@ export default function Login() {
     setMessage('');
 
     if (!otpCode.trim()) {
-      setError('Please enter the code from your email');
+      setError(t('errors.enterOtp'));
       return;
     }
 
     if (otpCode.length !== 6) {
-      setError('Please enter the 6-digit code');
+      setError(t('errors.enterOtp6Digit'));
       return;
     }
 
@@ -250,11 +252,11 @@ export default function Login() {
         // Show success state - the useEffect will handle redirect
         // when isAuthenticated updates
         setStep('success');
-        setMessage('Successfully signed in! Redirecting...');
+        setMessage(`${t('auth.successMessage')} ${t('common.redirecting')}`);
         // Don't set loading to false - keep showing loading state until redirect
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
+      setError(t('errors.generic'));
       setLoading(false);
     }
   };
@@ -282,10 +284,10 @@ export default function Login() {
       if (error) {
         setError(error.message);
       } else {
-        setMessage('A new code has been sent to your email!');
+        setMessage(t('auth.newCodeSentMessage'));
       }
     } catch (err) {
-      setError('Failed to resend code. Please try again.');
+      setError(t('errors.resendFailed'));
     } finally {
       setLoading(false);
     }
@@ -308,10 +310,10 @@ export default function Login() {
         setLoading(false);
       } else if (data.session) {
         setStep('success');
-        setMessage('Successfully signed in! Redirecting...');
+        setMessage(`${t('auth.successMessage')} ${t('common.redirecting')}`);
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
+      setError(t('errors.generic'));
       setLoading(false);
     }
   };
@@ -328,11 +330,11 @@ export default function Login() {
               margin: 0, 
               color: '#64748b' 
             }}>
-              {step === 'email' ? 'Sign In' : 'Verify'}
+              {step === 'email' ? t('auth.signInLabel') : t('auth.verifyLabel')}
             </p>
             
             <h1 style={{ margin: '8px 0 8px 0', fontSize: 24, color: '#f1f5f9' }}>
-              {step === 'email' ? 'Welcome to Versa Footy' : 'Enter your code'}
+              {step === 'email' ? t('auth.welcomeTitle') : t('auth.enterCodeTitle')}
             </h1>
             
             <p style={{ 
@@ -341,9 +343,9 @@ export default function Login() {
               marginBottom: 24, 
               lineHeight: 1.5 
             }}>
-              {step === 'email' 
-                ? 'Enter your email and we\'ll send you a code to sign in.'
-                : `We sent a 6-digit code to ${email}`
+              {step === 'email'
+                ? t('auth.emailPrompt')
+                : t('auth.otpPrompt', { email })
               }
             </p>
           </>
@@ -369,23 +371,23 @@ export default function Login() {
               </svg>
             </div>
             <p style={{ color: '#86efac', fontSize: 15, margin: 0, fontWeight: 500 }}>
-              Successfully signed in!
+              {t('auth.successMessage')}
             </p>
             <p style={{ color: '#94a3b8', fontSize: 14, margin: '8px 0 0 0' }}>
-              Redirecting...
+              {t('common.redirecting')}
             </p>
           </div>
         ) : step === 'email' ? (
           <form onSubmit={handleSendOtp}>
             <label style={labelStyle} htmlFor="email">
-              Email address
+              {t('auth.emailLabel')}
             </label>
             <input
               style={inputStyle}
               id="email"
               name="email"
               type="email"
-              placeholder="coach@example.com"
+              placeholder={t('auth.emailPlaceholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
@@ -398,13 +400,13 @@ export default function Login() {
               type="submit"
               disabled={loading}
             >
-              {loading ? 'Sending code...' : 'Send code'}
+              {loading ? t('auth.sendingCodeButton') : t('auth.sendCodeButton')}
             </button>
           </form>
         ) : (
           <form onSubmit={handleVerifyOtp}>
             <label style={labelStyle} htmlFor="otp">
-              6-digit code
+              {t('auth.otpLabel')}
             </label>
             <input
               style={otpInputStyle}
@@ -412,7 +414,7 @@ export default function Login() {
               name="otp"
               type="text"
               inputMode="numeric"
-              placeholder="000000"
+              placeholder={t('auth.otpPlaceholder')}
               value={otpCode}
               onChange={(e) => {
                 // Only allow digits
@@ -430,7 +432,7 @@ export default function Login() {
               type="submit"
               disabled={loading}
             >
-              {loading ? 'Verifying...' : 'Sign in'}
+              {loading ? t('auth.verifyingButton') : t('auth.signInButton')}
             </button>
 
             <button 
@@ -439,7 +441,7 @@ export default function Login() {
               onClick={handleResendCode}
               disabled={loading}
             >
-              Resend code
+              {t('auth.resendCodeButton')}
             </button>
 
             <button 
@@ -448,7 +450,7 @@ export default function Login() {
               onClick={handleBackToEmail}
               disabled={loading}
             >
-              ← Use different email
+              {t('auth.useDifferentEmail')}
             </button>
           </form>
         )}
@@ -464,7 +466,7 @@ export default function Login() {
                 letterSpacing: '0.05em', width: '100%', textAlign: 'center',
               }}
             >
-              {showDevLogin ? '▾ HIDE DEV LOGIN' : '▸ DEV LOGIN (PASSWORD)'}
+              {showDevLogin ? `▾ ${t('auth.devLoginHide')}` : `▸ ${t('auth.devLoginShow')}`}
             </button>
             {showDevLogin && (
               <form onSubmit={handleDevLogin} style={{ marginTop: 12 }}>
@@ -479,7 +481,7 @@ export default function Login() {
                 <input
                   style={inputStyle}
                   type="password"
-                  placeholder="Password"
+                  placeholder={t('auth.devPasswordPlaceholder')}
                   value={devPassword}
                   onChange={(e) => setDevPassword(e.target.value)}
                   disabled={loading}
@@ -489,7 +491,7 @@ export default function Login() {
                   type="submit"
                   disabled={loading}
                 >
-                  {loading ? 'Signing in...' : 'Dev Sign In'}
+                  {loading ? t('auth.devSigningIn') : t('auth.devSignInButton')}
                 </button>
               </form>
             )}
@@ -499,7 +501,7 @@ export default function Login() {
         {step !== 'success' && (
           <p style={noteStyle}>
             <Link href="/" style={{ color: '#60a5fa', textDecoration: 'none' }}>
-              ← Back to home
+              {t('auth.backToHome')}
             </Link>
           </p>
         )}

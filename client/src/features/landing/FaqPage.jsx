@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import HeaderLanding from './components/HeaderLanding';
 import FooterLanding from './components/FooterLanding';
 import FAQSection from './components/FAQSection';
@@ -9,6 +10,7 @@ import './styles/landing-globals.css';
 
 const FaqPage = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 300);
@@ -39,10 +41,10 @@ const FaqPage = () => {
                 transition={{ duration: 0.6 }}
               >
                 <h1 className={styles.heroTitle} style={{ marginBottom: '16px' }}>
-                  Frequently Asked Questions
+                  {t('faq.pageTitle')}
                 </h1>
                 <p className={styles.heroSubtitle} style={{ margin: '0 auto', textAlign: 'center' }}>
-                  Find answers to common questions about Versa Footy and how it can help your kid excel in soccer.
+                  {t('faq.pageSubtitle')}
                 </p>
               </motion.div>
             </div>
@@ -76,4 +78,3 @@ const FaqPage = () => {
 };
 
 export default FaqPage;
-

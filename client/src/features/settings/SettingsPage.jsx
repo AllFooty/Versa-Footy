@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import { User, Mail, Check, ArrowLeft, Save } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 
@@ -9,6 +10,7 @@ import FooterLanding from '../landing/components/FooterLanding';
 import All4FootyFamilyBar from '../landing/components/All4FootyFamilyBar';
 
 export default function SettingsPage() {
+  const { t } = useTranslation();
   const [, setLocation] = useLocation();
   const { user, profile, updateProfile, profileLoading, isAuthenticated } = useAuth();
   const [fullName, setFullName] = useState('');
@@ -49,7 +51,7 @@ export default function SettingsPage() {
     e.preventDefault();
     
     if (!fullName.trim()) {
-      setError('Please enter your name');
+      setError(t('errors.enterName'));
       return;
     }
 
@@ -63,7 +65,7 @@ export default function SettingsPage() {
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
-      setError(err.message || 'Failed to update profile');
+      setError(err.message || t('errors.profileUpdateFailed'));
     } finally {
       setSaving(false);
     }
@@ -104,7 +106,7 @@ export default function SettingsPage() {
             onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'}
             >
               <ArrowLeft size={18} />
-              Back to Home
+              {t('settings.backToHome')}
             </a>
           </Link>
 
@@ -115,14 +117,14 @@ export default function SettingsPage() {
             marginBottom: '8px',
             fontFamily: "'Space Grotesk', sans-serif",
           }}>
-            Settings
+            {t('settings.pageTitle')}
           </h1>
           <p style={{
             color: 'rgba(255, 255, 255, 0.5)',
             fontSize: '15px',
             marginBottom: '32px',
           }}>
-            Manage your account settings and profile information
+            {t('settings.pageSubtitle')}
           </p>
 
           {/* Profile Section */}
@@ -141,7 +143,7 @@ export default function SettingsPage() {
               gap: '10px',
             }}>
               <User size={20} />
-              Profile Information
+              {t('settings.profileInfo')}
             </h2>
 
             {/* Avatar Preview */}
@@ -176,7 +178,7 @@ export default function SettingsPage() {
                   fontWeight: '600',
                   marginBottom: '4px',
                 }}>
-                  {fullName || 'Your Name'}
+                  {fullName || t('settings.yourName')}
                 </div>
                 <div style={{
                   fontSize: '14px',
@@ -201,13 +203,13 @@ export default function SettingsPage() {
                   marginBottom: '8px',
                 }}>
                   <User size={16} />
-                  Full Name
+                  {t('settings.fullNameLabel')}
                 </label>
                 <input
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Enter your full name"
+                  placeholder={t('settings.fullNamePlaceholder')}
                   style={{
                     background: 'rgba(0, 0, 0, 0.3)',
                     border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -237,7 +239,7 @@ export default function SettingsPage() {
                   marginBottom: '8px',
                 }}>
                   <Mail size={16} />
-                  Email Address
+                  {t('settings.emailLabel')}
                 </label>
                 <input
                   type="email"
@@ -261,7 +263,7 @@ export default function SettingsPage() {
                   marginTop: '6px',
                   marginBottom: '0',
                 }}>
-                  Email address cannot be changed
+                  {t('settings.emailCannotChange')}
                 </p>
               </div>
 
@@ -295,7 +297,7 @@ export default function SettingsPage() {
                   gap: '8px',
                 }}>
                   <Check size={16} />
-                  Profile updated successfully!
+                  {t('errors.profileUpdated')}
                 </div>
               )}
 
@@ -331,12 +333,12 @@ export default function SettingsPage() {
                       borderRadius: '50%',
                       animation: 'spin 1s linear infinite',
                     }} />
-                    Saving...
+                    {t('common.saving')}
                   </>
                 ) : (
                   <>
                     <Save size={18} />
-                    Save Changes
+                    {t('settings.saveChanges')}
                   </>
                 )}
               </button>

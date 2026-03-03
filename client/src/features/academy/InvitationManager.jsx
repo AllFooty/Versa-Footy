@@ -1,29 +1,28 @@
 import React, { useState } from 'react';
 import { Link } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../lib/AuthContext';
 import useInvitations from './hooks/useInvitations';
 
-const TABS = ['Invite by Email', 'Invite by Code', 'All Invitations'];
-const ROLE_OPTIONS = [
-  { value: 'player', label: 'Player' },
-  { value: 'coach', label: 'Coach' },
-  { value: 'parent', label: 'Parent' },
-];
+const ROLE_OPTIONS_KEYS = ['player', 'coach', 'parent'];
 
 export default function InvitationManager() {
+  const { t } = useTranslation();
   const { activeOrg } = useAuth();
   const { invitations, loading, inviteByEmail, inviteByCode, revokeInvitation } =
     useInvitations(activeOrg?.id);
   const [activeTab, setActiveTab] = useState(0);
 
+  const TABS = [t('academy.invitations.tabEmail'), t('academy.invitations.tabCode'), t('academy.invitations.tabAll')];
+
   return (
     <div style={containerStyle}>
       <div style={headerStyle}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Link href="/academy" style={backLinkStyle}>&larr; Dashboard</Link>
+          <Link href="/academy" style={backLinkStyle}>&larr; {t('nav.dashboard')}</Link>
         </div>
-        <h1 style={titleStyle}>Invitations</h1>
-        <p style={subtitleStyle}>Invite players, coaches, and parents to {activeOrg?.name}</p>
+        <h1 style={titleStyle}>{t('academy.invitations.title')}</h1>
+        <p style={subtitleStyle}>{t('academy.invitations.subtitle', { orgName: activeOrg?.name })}</p>
       </div>
 
       {/* Tabs */}
@@ -65,10 +64,17 @@ export default function InvitationManager() {
 // ─── Tab 1: Invite by Email ────────────────────────────────────────────────────
 
 function EmailInviteTab({ inviteByEmail }) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('player');
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null);
+
+  const ROLE_OPTIONS = [
+    { value: 'player', label: t('academy.invitations.rolePlayer') },
+    { value: 'coach', label: t('academy.invitations.roleCoach') },
+    { value: 'parent', label: t('academy.invitations.roleParent') },
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,7 +84,7 @@ function EmailInviteTab({ inviteByEmail }) {
     setMessage(null);
     try {
       await inviteByEmail({ email, role });
-      setMessage({ type: 'success', text: `Invitation sent to ${email}` });
+      setMessage({ type: 'success', text: t('academy.invitations.invitationSentTo', { email }) });
       setEmail('');
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
@@ -89,26 +95,26 @@ function EmailInviteTab({ inviteByEmail }) {
 
   return (
     <div style={cardStyle}>
-      <h2 style={cardTitleStyle}>Invite by Email</h2>
+      <h2 style={cardTitleStyle}>{t('academy.invitations.emailInviteTitle')}</h2>
       <p style={cardDescStyle}>
-        Send a direct invitation to a specific person. They'll be able to join once they log in.
+        {t('academy.invitations.emailInviteDescription')}
       </p>
 
       <form onSubmit={handleSubmit}>
         <div style={fieldStyle}>
-          <label style={labelStyle}>Email Address *</label>
+          <label style={labelStyle}>{t('academy.invitations.emailLabel')}</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="player@example.com"
+            placeholder={t('academy.invitations.emailPlaceholder')}
             style={inputStyle}
             required
           />
         </div>
 
         <div style={fieldStyle}>
-          <label style={labelStyle}>Role</label>
+          <label style={labelStyle}>{t('academy.invitations.roleLabel')}</label>
           <select value={role} onChange={(e) => setRole(e.target.value)} style={inputStyle}>
             {ROLE_OPTIONS.map((r) => (
               <option key={r.value} value={r.value}>{r.label}</option>
@@ -123,7 +129,7 @@ function EmailInviteTab({ inviteByEmail }) {
         )}
 
         <button type="submit" disabled={submitting || !email.trim()} style={primaryButtonStyle}>
-          {submitting ? 'Sending...' : 'Send Invitation'}
+          {submitting ? t('academy.invitations.sending') : t('academy.invitations.sendInvitation')}
         </button>
       </form>
     </div>
@@ -133,11 +139,18 @@ function EmailInviteTab({ inviteByEmail }) {
 // ─── Tab 2: Invite by Code ─────────────────────────────────────────────────────
 
 function CodeInviteTab({ inviteByCode }) {
+  const { t } = useTranslation();
   const [role, setRole] = useState('player');
   const [generatedCode, setGeneratedCode] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState(null);
+
+  const ROLE_OPTIONS = [
+    { value: 'player', label: t('academy.invitations.rolePlayer') },
+    { value: 'coach', label: t('academy.invitations.roleCoach') },
+    { value: 'parent', label: t('academy.invitations.roleParent') },
+  ];
 
   const handleGenerate = async () => {
     setSubmitting(true);
@@ -177,13 +190,13 @@ function CodeInviteTab({ inviteByCode }) {
 
   return (
     <div style={cardStyle}>
-      <h2 style={cardTitleStyle}>Invite by Code</h2>
+      <h2 style={cardTitleStyle}>{t('academy.invitations.codeInviteTitle')}</h2>
       <p style={cardDescStyle}>
-        Generate a shareable code that anyone can use to join your organization. Share it with a group of players or post it in your academy's chat.
+        {t('academy.invitations.codeInviteDescription')}
       </p>
 
       <div style={fieldStyle}>
-        <label style={labelStyle}>Role for Invitees</label>
+        <label style={labelStyle}>{t('academy.invitations.roleForInvitees')}</label>
         <select value={role} onChange={(e) => setRole(e.target.value)} style={inputStyle}>
           {ROLE_OPTIONS.map((r) => (
             <option key={r.value} value={r.value}>{r.label}</option>
@@ -195,35 +208,35 @@ function CodeInviteTab({ inviteByCode }) {
 
       {!generatedCode ? (
         <button onClick={handleGenerate} disabled={submitting} style={primaryButtonStyle}>
-          {submitting ? 'Generating...' : 'Generate Invite Code'}
+          {submitting ? t('academy.invitations.generating') : t('academy.invitations.generateInviteCode')}
         </button>
       ) : (
         <div style={codeDisplayStyle}>
           <div style={codeBoxStyle}>
             <span style={codeTextStyle}>{generatedCode}</span>
             <button onClick={() => handleCopy(generatedCode)} style={copyButtonStyle}>
-              {copied ? 'Copied!' : 'Copy'}
+              {copied ? t('common.copied') : t('common.copy')}
             </button>
           </div>
           <div style={{ marginTop: 12 }}>
-            <p style={{ fontSize: 12, color: '#71717a', marginBottom: 4 }}>Share link:</p>
+            <p style={{ fontSize: 12, color: '#71717a', marginBottom: 4 }}>{t('academy.invitations.shareLink')}</p>
             <div style={codeBoxStyle}>
               <span style={{ fontSize: 13, color: '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
                 {joinUrl}
               </span>
               <button onClick={() => handleCopy(joinUrl)} style={copyButtonStyle}>
-                Copy
+                {t('common.copy')}
               </button>
             </div>
           </div>
           <p style={{ fontSize: 12, color: '#71717a', marginTop: 12 }}>
-            Expires in 30 days. Code can be used multiple times.
+            {t('academy.invitations.expiresIn30Days')}
           </p>
           <button
             onClick={() => { setGeneratedCode(null); setCopied(false); }}
             style={{ ...secondaryButtonStyle, marginTop: 12 }}
           >
-            Generate Another
+            {t('academy.invitations.generateAnother')}
           </button>
         </div>
       )}
@@ -234,6 +247,7 @@ function CodeInviteTab({ inviteByCode }) {
 // ─── Tab 3: All Invitations ────────────────────────────────────────────────────
 
 function InvitationsListTab({ invitations, loading, onRevoke }) {
+  const { t } = useTranslation();
   const [revoking, setRevoking] = useState(null);
 
   const handleRevoke = async (id) => {
@@ -248,29 +262,29 @@ function InvitationsListTab({ invitations, loading, onRevoke }) {
   };
 
   if (loading) {
-    return <p style={{ color: '#71717a', textAlign: 'center', padding: 32 }}>Loading invitations...</p>;
+    return <p style={{ color: '#71717a', textAlign: 'center', padding: 32 }}>{t('academy.invitations.loadingInvitations')}</p>;
   }
 
   if (invitations.length === 0) {
     return (
       <div style={{ ...cardStyle, textAlign: 'center' }}>
-        <p style={{ color: '#71717a', fontSize: 14 }}>No invitations yet. Send one using the tabs above.</p>
+        <p style={{ color: '#71717a', fontSize: 14 }}>{t('academy.invitations.noInvitationsYet')}</p>
       </div>
     );
   }
 
   return (
     <div style={cardStyle}>
-      <h2 style={cardTitleStyle}>All Invitations</h2>
+      <h2 style={cardTitleStyle}>{t('academy.invitations.allInvitationsTitle')}</h2>
       <div style={tableWrapStyle}>
         <table style={tableStyle}>
           <thead>
             <tr>
-              <th style={thStyle}>Recipient</th>
-              <th style={thStyle}>Role</th>
-              <th style={thStyle}>Status</th>
-              <th style={thStyle}>Created</th>
-              <th style={thStyle}>Action</th>
+              <th style={thStyle}>{t('academy.invitations.columnRecipient')}</th>
+              <th style={thStyle}>{t('academy.invitations.columnRole')}</th>
+              <th style={thStyle}>{t('academy.invitations.columnStatus')}</th>
+              <th style={thStyle}>{t('academy.invitations.columnCreated')}</th>
+              <th style={thStyle}>{t('academy.invitations.columnAction')}</th>
             </tr>
           </thead>
           <tbody>
@@ -279,7 +293,7 @@ function InvitationsListTab({ invitations, loading, onRevoke }) {
                 <td style={tdStyle}>
                   {inv.email || (
                     <span style={{ fontFamily: 'monospace', fontSize: 13 }}>
-                      Code: {inv.invite_code}
+                      {t('academy.invitations.codePrefix', { code: inv.invite_code })}
                     </span>
                   )}
                 </td>
@@ -299,7 +313,7 @@ function InvitationsListTab({ invitations, loading, onRevoke }) {
                       disabled={revoking === inv.id}
                       style={revokeButtonStyle}
                     >
-                      {revoking === inv.id ? '...' : 'Revoke'}
+                      {revoking === inv.id ? '...' : t('academy.invitations.revoke')}
                     </button>
                   )}
                 </td>

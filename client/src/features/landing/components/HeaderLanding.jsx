@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../lib/AuthContext';
 import ProfileDropdown from '../../../components/ProfileDropdown';
+import LanguageSwitcher from '../../../components/LanguageSwitcher';
 
 export default function HeaderLanding() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showMobileSignOutConfirm, setShowMobileSignOutConfirm] = useState(false);
+  const { t } = useTranslation();
   const { isAuthenticated, isAdmin, isCoach, user, profile, signOut } = useAuth();
 
   useEffect(() => {
@@ -20,20 +23,20 @@ export default function HeaderLanding() {
 
   // Base navigation items (always visible)
   const baseNavigationItems = [
-    { name: 'How It Works', href: '/#how-it-works' },
-    { name: 'Features', href: '/#features' },
-    { name: 'Why Us', href: '/#why-versa-footy' },
-    { name: 'Testimonials', href: '/#testimonials' },
-    { name: 'FAQ', href: '/faq' },
-    { name: 'About Us', href: '/about-us' },
+    { name: t('nav.howItWorks'), href: '/#how-it-works' },
+    { name: t('nav.features'), href: '/#features' },
+    { name: t('nav.whyUs'), href: '/#why-versa-footy' },
+    { name: t('nav.testimonials'), href: '/#testimonials' },
+    { name: t('nav.faq'), href: '/faq' },
+    { name: t('nav.aboutUs'), href: '/about-us' },
   ];
 
   // Add role-based links
   const navigationItems = (() => {
     const items = [...baseNavigationItems];
-    if (isAuthenticated) items.push({ name: 'Home', href: '/home' });
-    if (isAuthenticated && isCoach) items.push({ name: 'Academy', href: '/academy' });
-    if (isAuthenticated && isAdmin) items.push({ name: 'Library', href: '/library' });
+    if (isAuthenticated) items.push({ name: t('nav.home'), href: '/home' });
+    if (isAuthenticated && isCoach) items.push({ name: t('nav.academy'), href: '/academy' });
+    if (isAuthenticated && isAdmin) items.push({ name: t('nav.library'), href: '/library' });
     return items;
   })();
 
@@ -154,10 +157,10 @@ export default function HeaderLanding() {
             />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ fontSize: '20px', fontWeight: '700', lineHeight: '1.2' }}>
-                Versa Footy
+                {t('common.versaFooty')}
               </span>
               <span style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                AI Soccer Training
+                {t('common.tagline')}
               </span>
             </div>
           </a>
@@ -178,17 +181,18 @@ export default function HeaderLanding() {
 
         {/* CTA Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <LanguageSwitcher />
           {isAuthenticated ? (
             <div className="desktop-cta">
               <ProfileDropdown />
             </div>
           ) : (
             <Link href="/login">
-              <a 
-                style={buttonStyle} 
+              <a
+                style={buttonStyle}
                 className="desktop-cta"
               >
-                <span>Sign In</span>
+                <span>{t('common.signIn')}</span>
                 <svg style={{ width: '16px', height: '16px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -311,7 +315,7 @@ export default function HeaderLanding() {
                           color: 'white',
                           marginBottom: '2px',
                         }}>
-                          {profile?.full_name || 'Set your name'}
+                          {profile?.full_name || t('common.setYourName')}
                         </div>
                         <div style={{
                           fontSize: '12px',
@@ -349,7 +353,7 @@ export default function HeaderLanding() {
                             <circle cx="12" cy="12" r="3" />
                             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                           </svg>
-                          Settings
+                          {t('nav.settings')}
                         </a>
                       </Link>
                       <button
@@ -375,7 +379,7 @@ export default function HeaderLanding() {
                           <polyline points="16 17 21 12 16 7" />
                           <line x1="21" y1="12" x2="9" y2="12" />
                         </svg>
-                        Sign Out
+                        {t('common.signOut')}
                       </button>
                     </div>
                   </motion.div>
@@ -396,7 +400,7 @@ export default function HeaderLanding() {
                       }}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      <span>Sign In</span>
+                      <span>{t('common.signIn')}</span>
                       <svg style={{ width: '16px', height: '16px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
@@ -487,14 +491,14 @@ export default function HeaderLanding() {
                 color: 'white',
                 margin: '0 0 8px 0',
               }}>
-                Sign out?
+                {t('common.signOutConfirmTitle')}
               </h3>
               <p style={{
                 fontSize: '14px',
                 color: 'rgba(255, 255, 255, 0.6)',
                 margin: '0 0 24px 0',
               }}>
-                Are you sure you want to sign out of your account?
+                {t('common.signOutConfirmMessageFull')}
               </p>
               <div style={{ display: 'flex', gap: '12px' }}>
                 <button
@@ -511,7 +515,7 @@ export default function HeaderLanding() {
                     cursor: 'pointer',
                   }}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </button>
                 <button
                   onClick={() => {
@@ -531,7 +535,7 @@ export default function HeaderLanding() {
                     cursor: 'pointer',
                   }}
                 >
-                  Sign Out
+                  {t('common.signOut')}
                 </button>
               </div>
             </motion.div>

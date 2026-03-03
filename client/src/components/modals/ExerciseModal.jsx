@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { Video, Upload, Trash2, CheckCircle, X, Plus, Check, ChevronDown, ChevronRight, Search } from 'lucide-react';
 import Modal from './Modal';
 import ConfirmModal from './ConfirmModal';
@@ -21,6 +22,7 @@ const MobileSkillPicker = ({
   selectedSkillIds,
   onToggleSkill,
 }) => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [expandedCategories, setExpandedCategories] = useState({});
 
@@ -120,11 +122,11 @@ const MobileSkillPicker = ({
             color: '#e4e4e7',
             fontFamily: "'Space Grotesk', sans-serif",
           }}>
-            Select Skills
+            {t('modals.exercise.selectSkills')}
           </div>
           {selectedCount > 0 && (
             <div style={{ fontSize: 13, color: '#71717a', marginTop: 2 }}>
-              {selectedCount} selected{selectedCount > 1 ? ' (Combo)' : ''}
+              {selectedCount} {selectedCount > 1 ? t('modals.exercise.selectedCombo') : ''}
             </div>
           )}
         </div>
@@ -143,7 +145,7 @@ const MobileSkillPicker = ({
             minHeight: 44,
           }}
         >
-          Done
+          {t('modals.exercise.doneButton')}
         </button>
       </div>
 
@@ -165,7 +167,7 @@ const MobileSkillPicker = ({
           <Search size={18} color="#71717a" />
           <input
             type="text"
-            placeholder="Search skills..."
+            placeholder={t('modals.exercise.searchSkills')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             autoFocus
@@ -216,7 +218,7 @@ const MobileSkillPicker = ({
                   color: '#52525b',
                   fontSize: 15,
                 }}>
-                  No skills found for "{search}"
+                  {t('modals.exercise.noSkillsFound', { search })}
                 </div>
               )
               : filteredSkills.map((skill) => {
@@ -241,7 +243,7 @@ const MobileSkillPicker = ({
                       color: isSelected ? (cat?.color || '#8b5cf6') : '#d4d4d8',
                       fontSize: 15,
                       cursor: 'pointer',
-                      textAlign: 'left',
+                      textAlign: 'start',
                       minHeight: 48,
                     }}
                   >
@@ -284,7 +286,7 @@ const MobileSkillPicker = ({
                       fontSize: 15,
                       fontWeight: 600,
                       cursor: 'pointer',
-                      textAlign: 'left',
+                      textAlign: 'start',
                       minHeight: 48,
                     }}
                   >
@@ -292,12 +294,12 @@ const MobileSkillPicker = ({
                       ? <ChevronDown size={16} color="#71717a" />
                       : <ChevronRight size={16} color="#71717a" />}
                     <span>{cat.icon} {cat.name}</span>
-                    <span style={{ fontSize: 12, color: '#52525b', fontWeight: 400, marginLeft: 4 }}>
+                    <span style={{ fontSize: 12, color: '#52525b', fontWeight: 400, marginInlineStart: 4 }}>
                       {categorySkills.length}
                     </span>
                     {catSelectedCount > 0 && (
                       <span style={{
-                        marginLeft: 'auto',
+                        marginInlineStart: 'auto',
                         padding: '2px 8px',
                         background: `${cat.color || '#8b5cf6'}25`,
                         borderRadius: 10,
@@ -331,7 +333,7 @@ const MobileSkillPicker = ({
                           color: isSelected ? (cat.color || '#8b5cf6') : '#a1a1aa',
                           fontSize: 15,
                           cursor: 'pointer',
-                          textAlign: 'left',
+                          textAlign: 'start',
                           minHeight: 48,
                         }}
                       >
@@ -371,6 +373,7 @@ const ExerciseModal = ({
   skills = [],
   preselectedSkillId = null,
 }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState(DEFAULTS.exercise);
   const [videoFile, setVideoFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -525,7 +528,7 @@ const ExerciseModal = ({
       }
       setFormData((prev) => ({ ...prev, videoUrl: '' }));
       setVideoFile(null);
-      setDeleteMessage('Video removed. Save to confirm.');
+      setDeleteMessage(t('modals.exercise.videoRemoved'));
     } catch (err) {
       setUploadError(err.message || 'Failed to remove video.');
     } finally {
@@ -551,10 +554,10 @@ const ExerciseModal = ({
       return (
         <div>
           <Label>
-            Associated Skills
+            {t('modals.exercise.associatedSkills')}
             {selectedIds.length > 1 && (
               <span style={{
-                marginLeft: 8,
+                marginInlineStart: 8,
                 padding: '2px 8px',
                 background: 'rgba(251, 191, 36, 0.15)',
                 borderRadius: 4,
@@ -562,7 +565,7 @@ const ExerciseModal = ({
                 fontSize: 11,
                 fontWeight: 600,
               }}>
-                Combo
+                {t('modals.exercise.combo')}
               </span>
             )}
           </Label>
@@ -645,13 +648,13 @@ const ExerciseModal = ({
           >
             <Plus size={18} />
             {selectedIds.length === 0
-              ? 'Select Skills'
-              : 'Add / Remove Skills'}
+              ? t('modals.exercise.selectSkills')
+              : t('modals.exercise.addRemoveSkills')}
           </button>
 
           {selectedIds.length === 0 && (
             <div style={{ marginTop: 6, fontSize: 12, color: '#71717a' }}>
-              Tap to browse skills by category. Multiple skills = Combo Exercise.
+              {t('modals.exercise.skillPickerHint')}
             </div>
           )}
 
@@ -675,10 +678,10 @@ const ExerciseModal = ({
     return (
       <div>
         <Label>
-          Associated Skills
+          {t('modals.exercise.associatedSkills')}
           {selectedIds.length > 1 && (
             <span style={{
-              marginLeft: 8,
+              marginInlineStart: 8,
               padding: '2px 8px',
               background: 'rgba(251, 191, 36, 0.15)',
               borderRadius: 4,
@@ -686,7 +689,7 @@ const ExerciseModal = ({
               fontSize: 11,
               fontWeight: 600,
             }}>
-              Combo
+              {t('modals.exercise.combo')}
             </span>
           )}
         </Label>
@@ -778,7 +781,7 @@ const ExerciseModal = ({
                     fontSize: 13,
                     fontWeight: 600,
                     cursor: 'pointer',
-                    textAlign: 'left',
+                    textAlign: 'start',
                   }}
                 >
                   {isExpanded
@@ -787,7 +790,7 @@ const ExerciseModal = ({
                   <span>{cat.icon} {cat.name}</span>
                   {selectedCount > 0 && (
                     <span style={{
-                      marginLeft: 'auto',
+                      marginInlineStart: 'auto',
                       padding: '1px 7px',
                       background: `${cat.color || '#8b5cf6'}30`,
                       borderRadius: 10,
@@ -824,7 +827,7 @@ const ExerciseModal = ({
                               : '#a1a1aa',
                             fontSize: 13,
                             cursor: 'pointer',
-                            textAlign: 'left',
+                            textAlign: 'start',
                             transition: 'all 0.15s',
                           }}
                         >
@@ -847,7 +850,7 @@ const ExerciseModal = ({
 
         {selectedIds.length === 0 && (
           <div style={{ marginTop: 6, fontSize: 12, color: '#71717a' }}>
-            Select at least one skill. Multiple skills create a Combo Exercise.
+            {t('modals.exercise.skillPickerRequired')}
           </div>
         )}
       </div>
@@ -856,26 +859,26 @@ const ExerciseModal = ({
 
   return (
     <Modal
-      title={editItem ? 'Edit Exercise' : 'Add Exercise'}
+      title={editItem ? t('modals.exercise.editTitle') : t('modals.exercise.addTitle')}
       isOpen={isOpen}
       onClose={onClose}
       onSave={handleSave}
       saveLabel={
         uploading
-          ? `Uploading${uploadProgress > 0 ? ` ${uploadProgress}%` : '...'}`
+          ? `${t('modals.exercise.uploading')}${uploadProgress > 0 ? ` ${uploadProgress}%` : ''}`
           : deleting
-            ? 'Removing...'
+            ? t('modals.exercise.removing')
             : editItem
-              ? 'Update'
-              : 'Save'
+              ? t('modals.exercise.updateButton')
+              : t('modals.exercise.saveButton')
       }
       saveDisabled={uploading || deleting}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 16 : 20 }}>
-        <FormField label="Exercise Name" id="exercise-name">
+        <FormField label={t('modals.exercise.nameLabel')} id="exercise-name">
           <Input
             id="exercise-name"
-            placeholder="e.g., Basic Toe Tap Drill"
+            placeholder={t('modals.exercise.namePlaceholder')}
             value={formData.name}
             onChange={(e) => handleChange('name', e.target.value)}
           />
@@ -886,13 +889,13 @@ const ExerciseModal = ({
         {/* Video section - compact on mobile */}
         <div>
           <Label htmlFor="exercise-video">
-            <Video size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-            Video {isMobile ? '' : 'URL'}
+            <Video size={14} style={{ marginInlineEnd: 6, verticalAlign: 'middle' }} />
+            {isMobile ? t('modals.exercise.videoLabel') : t('modals.exercise.videoUrlLabel')}
           </Label>
           <Input
             id="exercise-video"
             type="url"
-            placeholder="https://youtube.com/watch?v=..."
+            placeholder={t('modals.exercise.videoUrlPlaceholder')}
             value={formData.videoUrl}
             onChange={(e) => handleChange('videoUrl', e.target.value)}
           />
@@ -919,8 +922,8 @@ const ExerciseModal = ({
               {videoFile
                 ? `${videoFile.name} (${(videoFile.size / (1024 * 1024)).toFixed(1)} MB)`
                 : formData.videoUrl
-                  ? 'Replace with file upload'
-                  : 'Or upload a video file'}
+                  ? t('modals.exercise.replaceWithUpload')
+                  : t('modals.exercise.orUploadVideo')}
             </label>
             <input
               id="exercise-video-file"
@@ -941,7 +944,7 @@ const ExerciseModal = ({
                 fontSize: 12,
                 color: '#a1a1aa'
               }}>
-                <span>Uploading...</span>
+                <span>{t('modals.exercise.uploading')}</span>
                 <span style={{ fontWeight: 600, color: '#60a5fa' }}>{uploadProgress}%</span>
               </div>
               <div style={{
@@ -976,7 +979,7 @@ const ExerciseModal = ({
               gap: 8,
             }}>
               <CheckCircle size={14} />
-              Video uploaded!
+              {t('modals.exercise.videoUploaded')}
             </div>
           )}
 
@@ -996,15 +999,15 @@ const ExerciseModal = ({
               }}
             >
               <Trash2 size={14} />
-              {deleting ? 'Removing...' : 'Remove video'}
+              {deleting ? t('modals.exercise.removing') : t('modals.exercise.removeVideo')}
             </button>
           )}
 
           <ConfirmModal
             isOpen={confirmRemoveVideo}
-            title="Remove Video"
-            message="Remove the current video? This will delete the uploaded file and clear the URL."
-            confirmLabel="Remove"
+            title={t('modals.exercise.removeVideoTitle')}
+            message={t('modals.exercise.removeVideoConfirm')}
+            confirmLabel={t('modals.exercise.removeButton')}
             confirmDanger
             onConfirm={handleRemoveVideo}
             onClose={() => setConfirmRemoveVideo(false)}
@@ -1030,7 +1033,7 @@ const ExerciseModal = ({
           )}
         </div>
 
-        <FormField label={isMobile ? 'Difficulty' : 'Difficulty (1 easy → 5 hard)'} id="exercise-difficulty">
+        <FormField label={isMobile ? t('modals.exercise.difficultyLabel') : t('modals.exercise.difficultyScale')} id="exercise-difficulty">
           <Select
             id="exercise-difficulty"
             value={formData.difficulty}
@@ -1045,7 +1048,7 @@ const ExerciseModal = ({
         </FormField>
 
         <div>
-          <FormField label="Minimum Duration" id="exercise-duration">
+          <FormField label={t('modals.exercise.minDurationLabel')} id="exercise-duration">
             <Select
               id="exercise-duration"
               value={formData.minimumDuration === null ? '' : formData.minimumDuration}
@@ -1062,12 +1065,12 @@ const ExerciseModal = ({
             </Select>
           </FormField>
           <div style={{ marginTop: 4, fontSize: 12, color: '#71717a' }}>
-            Controls how long players must practice before they can finish. 'Auto' calculates based on category and difficulty.
+            {t('modals.exercise.minDurationHint')}
           </div>
         </div>
 
         <div>
-          <Label>Equipment</Label>
+          <Label>{t('modals.exercise.equipmentLabel')}</Label>
           {/* Selected equipment tags */}
           {formData.equipment && formData.equipment.length > 0 && (
             <div style={{
@@ -1149,7 +1152,7 @@ const ExerciseModal = ({
           {/* Custom equipment input */}
           <div style={{ display: 'flex', gap: 8 }}>
             <Input
-              placeholder="Add custom..."
+              placeholder={t('modals.exercise.addCustomPlaceholder')}
               value={customEquipment}
               onChange={(e) => setCustomEquipment(e.target.value)}
               onKeyDown={(e) => {
@@ -1181,15 +1184,15 @@ const ExerciseModal = ({
                 minHeight: isMobile ? 44 : 'auto',
               }}
             >
-              Add
+              {t('modals.exercise.addButton')}
             </button>
           </div>
         </div>
 
-        <FormField label="Description" id="exercise-description">
+        <FormField label={t('modals.exercise.descriptionLabel')} id="exercise-description">
           <TextArea
             id="exercise-description"
-            placeholder="Detailed instructions for this exercise..."
+            placeholder={t('modals.exercise.descriptionPlaceholder')}
             value={formData.description}
             onChange={(e) => handleChange('description', e.target.value)}
             rows={isMobile ? 3 : 4}

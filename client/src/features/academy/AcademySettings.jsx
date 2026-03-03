@@ -1,11 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../lib/AuthContext';
 import { supabase } from '../../lib/supabase';
 
 const ROLE_OPTIONS = ['owner', 'admin', 'coach', 'player', 'parent'];
 
 export default function AcademySettings() {
+  const { t } = useTranslation();
   const { activeOrg, refreshOrganizations } = useAuth();
+
+  const ROLE_LABELS = {
+    owner: t('academy.settings.roleOwner'),
+    admin: t('academy.settings.roleAdmin'),
+    coach: t('academy.settings.roleCoach'),
+    player: t('academy.settings.rolePlayer'),
+    parent: t('academy.settings.roleParent'),
+  };
 
   // Org info form
   const [name, setName] = useState('');
@@ -92,7 +102,7 @@ export default function AcademySettings() {
     if (error) {
       setSaveMsg({ type: 'error', text: error.message });
     } else {
-      setSaveMsg({ type: 'success', text: 'Organization updated' });
+      setSaveMsg({ type: 'success', text: t('academy.settings.orgUpdated') });
       refreshOrganizations();
     }
     setSaving(false);
@@ -112,7 +122,7 @@ export default function AcademySettings() {
   };
 
   const handleRemoveMember = async (memberId, memberName) => {
-    if (!confirm(`Remove ${memberName || 'this member'} from the organization?`)) return;
+    if (!confirm(t('academy.settings.removeConfirm', { name: memberName || t('common.unknown') }))) return;
     const { error } = await supabase
       .from('organization_members')
       .delete()
@@ -128,17 +138,17 @@ export default function AcademySettings() {
   return (
     <div style={containerStyle}>
       <div style={headerStyle}>
-        <h1 style={titleStyle}>Settings</h1>
-        <p style={subtitleStyle}>Manage your organization</p>
+        <h1 style={titleStyle}>{t('academy.settings.title')}</h1>
+        <p style={subtitleStyle}>{t('academy.settings.subtitle')}</p>
       </div>
 
       {/* Organization Info */}
       <div style={sectionStyle}>
         <div style={cardStyle}>
-          <h2 style={cardTitleStyle}>Organization Details</h2>
+          <h2 style={cardTitleStyle}>{t('academy.settings.orgDetailsTitle')}</h2>
           <form onSubmit={handleSaveOrg}>
             <div style={fieldStyle}>
-              <label style={labelStyle}>Name *</label>
+              <label style={labelStyle}>{t('academy.settings.nameLabel')}</label>
               <input
                 type="text"
                 value={name}
@@ -149,27 +159,27 @@ export default function AcademySettings() {
             </div>
             <div style={rowStyle}>
               <div style={{ ...fieldStyle, flex: 1 }}>
-                <label style={labelStyle}>Type</label>
+                <label style={labelStyle}>{t('academy.settings.typeLabel')}</label>
                 <select value={type} onChange={(e) => setType(e.target.value)} style={inputStyle}>
-                  <option value="academy">Academy</option>
-                  <option value="school">School</option>
-                  <option value="club">Club</option>
-                  <option value="federation">Federation</option>
-                  <option value="ministry">Ministry</option>
+                  <option value="academy">{t('academy.createOrg.typeAcademy')}</option>
+                  <option value="school">{t('academy.createOrg.typeSchool')}</option>
+                  <option value="club">{t('academy.createOrg.typeClub')}</option>
+                  <option value="federation">{t('academy.createOrg.typeFederation')}</option>
+                  <option value="ministry">{t('academy.createOrg.typeMinistry')}</option>
                 </select>
               </div>
               <div style={{ ...fieldStyle, flex: 1 }}>
-                <label style={labelStyle}>Region</label>
+                <label style={labelStyle}>{t('academy.settings.regionLabel')}</label>
                 <input
                   type="text"
                   value={region}
                   onChange={(e) => setRegion(e.target.value)}
-                  placeholder="e.g. Riyadh"
+                  placeholder={t('academy.settings.regionPlaceholder')}
                   style={inputStyle}
                 />
               </div>
               <div style={{ ...fieldStyle, flex: 1 }}>
-                <label style={labelStyle}>City</label>
+                <label style={labelStyle}>{t('academy.settings.cityLabel')}</label>
                 <input
                   type="text"
                   value={city}
@@ -186,7 +196,7 @@ export default function AcademySettings() {
             )}
 
             <button type="submit" disabled={saving || !name.trim()} style={primaryBtnStyle}>
-              {saving ? 'Saving...' : 'Save Changes'}
+              {saving ? t('academy.settings.saving') : t('academy.settings.saveChanges')}
             </button>
           </form>
         </div>
@@ -195,13 +205,13 @@ export default function AcademySettings() {
       {/* Members */}
       <div style={sectionStyle}>
         <div style={cardStyle}>
-          <h2 style={cardTitleStyle}>Members</h2>
+          <h2 style={cardTitleStyle}>{t('academy.settings.membersTitle')}</h2>
           <p style={{ fontSize: 13, color: '#71717a', margin: '0 0 16px' }}>
-            {members.length} member{members.length !== 1 ? 's' : ''} in this organization
+            {t('academy.settings.memberCount', { count: members.length })}
           </p>
 
           {membersLoading ? (
-            <p style={{ color: '#71717a', fontSize: 13 }}>Loading members...</p>
+            <p style={{ color: '#71717a', fontSize: 13 }}>{t('academy.settings.loadingMembers')}</p>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {members.map((m) => (
@@ -211,7 +221,7 @@ export default function AcademySettings() {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>
-                      {m.full_name || 'Unknown'}
+                      {m.full_name || t('common.unknown')}
                     </p>
                     <p style={{ fontSize: 12, color: '#71717a', margin: 0 }}>
                       {m.email || m.user_id.slice(0, 8)}
@@ -223,7 +233,7 @@ export default function AcademySettings() {
                     style={roleSelectStyle}
                   >
                     {ROLE_OPTIONS.map((r) => (
-                      <option key={r} value={r}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>
+                      <option key={r} value={r}>{ROLE_LABELS[r]}</option>
                     ))}
                   </select>
                   {m.role !== 'owner' && (
@@ -231,7 +241,7 @@ export default function AcademySettings() {
                       onClick={() => handleRemoveMember(m.id, m.full_name)}
                       style={removeBtnStyle}
                     >
-                      Remove
+                      {t('common.remove')}
                     </button>
                   )}
                 </div>

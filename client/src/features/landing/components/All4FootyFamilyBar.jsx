@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const products = [
-  { name: 'VERSA Footy', url: 'https://versafooty.com', accentColor: '#22c55e', isActive: true },
-  { name: 'FAIR Footy', url: 'https://fairfooty.com', accentColor: '#ec4899' },
-  { name: 'TRACK Footy', url: 'https://trackfooty.com', accentColor: '#f97316' },
-  { name: 'KAAS Footy', url: 'https://kaasfooty.com', accentColor: '#22d3ee' },
-  { name: 'JUGGLE Footy', url: 'https://jugglefooty.com', accentColor: '#3b82f6' },
+  { name: 'VERSA Footy', url: 'https://versafooty.com', accentColor: '#22c55e', isActive: true, titleKey: 'all4FootyBar.visitVersaFooty' },
+  { name: 'FAIR Footy', url: 'https://fairfooty.com', accentColor: '#ec4899', titleKey: 'all4FootyBar.visitFairFooty' },
+  { name: 'TRACK Footy', url: 'https://trackfooty.com', accentColor: '#f97316', titleKey: 'all4FootyBar.visitTrackFooty' },
+  { name: 'KAAS Footy', url: 'https://kaasfooty.com', accentColor: '#22d3ee', titleKey: 'all4FootyBar.visitKaasFooty' },
+  { name: 'JUGGLE Footy', url: 'https://jugglefooty.com', accentColor: '#3b82f6', titleKey: 'all4FootyBar.visitJuggleFooty' },
 ];
 
 export default function All4FootyFamilyBar() {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className="all4footy-family-bar">
@@ -19,7 +21,7 @@ export default function All4FootyFamilyBar() {
           target="_blank"
           rel="noopener noreferrer"
           className="family-brand"
-          title="Visit All4Footy"
+          title={t('all4FootyBar.visitAll4Footy')}
         >
           <svg
             className="family-logo"
@@ -30,8 +32,8 @@ export default function All4FootyFamilyBar() {
             <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
             <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
-          <span className="family-brand-text">All4Footy</span>
-          <span className="family-tagline">Family</span>
+          <span className="family-brand-text">{t('all4FootyBar.all4Footy')}</span>
+          <span className="family-tagline">{t('all4FootyBar.family')}</span>
         </a>
 
         <div className="family-products-desktop">
@@ -43,7 +45,7 @@ export default function All4FootyFamilyBar() {
               rel="noopener noreferrer"
               className={`family-product-link ${product.isActive ? 'active' : ''}`}
               style={{ '--product-color': product.accentColor }}
-              title={`Visit ${product.name}`}
+              title={t(product.titleKey)}
             >
               <span className="product-indicator" />
               {product.name}
@@ -54,9 +56,9 @@ export default function All4FootyFamilyBar() {
         <button
           className="family-mobile-toggle"
           onClick={() => setIsExpanded(!isExpanded)}
-          aria-label="Toggle product navigation"
+          aria-label={t('all4FootyBar.ourProducts')}
         >
-          <span>Our Products</span>
+          <span>{t('all4FootyBar.ourProducts')}</span>
           <svg
             className={`toggle-icon ${isExpanded ? 'expanded' : ''}`}
             viewBox="0 0 24 24"
@@ -235,4 +237,3 @@ export default function All4FootyFamilyBar() {
     </div>
   );
 }
-

@@ -1,24 +1,14 @@
 import React from 'react';
 import { Link } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../lib/AuthContext';
 import usePlayerRoster, { getPlayerStatus } from './hooks/usePlayerRoster';
 
 const STATUS_OPTIONS = ['', 'active', 'idle', 'inactive'];
 const AGE_GROUPS = ['', 'U-7', 'U-8', 'U-9', 'U-10', 'U-11', 'U-12', 'U-13', 'U-14', 'U-15+'];
 
-const COLUMNS = [
-  { key: 'display_name', label: 'Player' },
-  { key: 'age_group', label: 'Age' },
-  { key: 'current_level', label: 'Level' },
-  { key: 'total_xp', label: 'XP' },
-  { key: 'xp_this_week', label: 'Week XP' },
-  { key: 'skills_mastered', label: 'Mastered' },
-  { key: 'current_streak', label: 'Streak' },
-  { key: 'avg_self_rating', label: 'Avg Rating' },
-  { key: 'last_practice_date', label: 'Last Active' },
-];
-
 export default function PlayerRoster() {
+  const { t } = useTranslation();
   const { activeOrg } = useAuth();
   const {
     players, loading, sortField, sortDir, toggleSort,
@@ -26,12 +16,31 @@ export default function PlayerRoster() {
     filterStatus, setFilterStatus,
   } = usePlayerRoster(activeOrg?.id);
 
+  const COLUMNS = [
+    { key: 'display_name', label: t('academy.roster.columnPlayer') },
+    { key: 'age_group', label: t('academy.roster.columnAge') },
+    { key: 'current_level', label: t('academy.roster.columnLevel') },
+    { key: 'total_xp', label: t('academy.roster.columnXP') },
+    { key: 'xp_this_week', label: t('academy.roster.columnWeekXP') },
+    { key: 'skills_mastered', label: t('academy.roster.columnMastered') },
+    { key: 'current_streak', label: t('academy.roster.columnStreak') },
+    { key: 'avg_self_rating', label: t('academy.roster.columnAvgRating') },
+    { key: 'last_practice_date', label: t('academy.roster.columnLastActive') },
+  ];
+
+  const STATUS_LABELS = {
+    '': t('academy.roster.allStatus'),
+    active: t('academy.roster.active'),
+    idle: t('academy.roster.idle'),
+    inactive: t('academy.roster.inactive'),
+  };
+
   return (
     <div style={containerStyle}>
       <div style={headerStyle}>
-        <Link href="/academy" style={backLinkStyle}>&larr; Dashboard</Link>
-        <h1 style={titleStyle}>Player Roster</h1>
-        <p style={subtitleStyle}>{players.length} players</p>
+        <Link href="/academy" style={backLinkStyle}>&larr; {t('nav.dashboard')}</Link>
+        <h1 style={titleStyle}>{t('academy.roster.title')}</h1>
+        <p style={subtitleStyle}>{t('academy.roster.playerCount', { count: players.length })}</p>
       </div>
 
       {/* Filters */}
@@ -40,18 +49,18 @@ export default function PlayerRoster() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name..."
+          placeholder={t('academy.roster.searchPlaceholder')}
           style={searchInputStyle}
         />
         <select value={filterAgeGroup} onChange={(e) => setFilterAgeGroup(e.target.value)} style={filterSelectStyle}>
-          <option value="">All Ages</option>
+          <option value="">{t('academy.roster.allAges')}</option>
           {AGE_GROUPS.slice(1).map((ag) => (
             <option key={ag} value={ag}>{ag}</option>
           ))}
         </select>
         <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} style={filterSelectStyle}>
           {STATUS_OPTIONS.map((s) => (
-            <option key={s} value={s}>{s ? s.charAt(0).toUpperCase() + s.slice(1) : 'All Status'}</option>
+            <option key={s} value={s}>{STATUS_LABELS[s]}</option>
           ))}
         </select>
       </div>
@@ -61,12 +70,12 @@ export default function PlayerRoster() {
         {loading ? (
           <div style={{ textAlign: 'center', padding: 48 }}>
             <div style={spinnerStyle} />
-            <p style={{ marginTop: 16, color: '#71717a' }}>Loading players...</p>
+            <p style={{ marginTop: 16, color: '#71717a' }}>{t('academy.roster.loadingPlayers')}</p>
           </div>
         ) : players.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 48 }}>
-            <p style={{ color: '#71717a', fontSize: 14 }}>No players found. Invite players to get started.</p>
-            <Link href="/academy/invitations" style={{ color: '#3b82f6', fontSize: 14 }}>Invite Players</Link>
+            <p style={{ color: '#71717a', fontSize: 14 }}>{t('academy.roster.noPlayersFound')}</p>
+            <Link href="/academy/invitations" style={{ color: '#3b82f6', fontSize: 14 }}>{t('academy.roster.invitePlayers')}</Link>
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
@@ -81,11 +90,11 @@ export default function PlayerRoster() {
                     >
                       {col.label}
                       {sortField === col.key && (
-                        <span style={{ marginLeft: 4 }}>{sortDir === 'asc' ? '↑' : '↓'}</span>
+                        <span style={{ marginLeft: 4 }}>{sortDir === 'asc' ? '\u2191' : '\u2193'}</span>
                       )}
                     </th>
                   ))}
-                  <th style={thStyle}>Status</th>
+                  <th style={thStyle}>{t('academy.roster.columnStatus')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -96,24 +105,24 @@ export default function PlayerRoster() {
                       <td style={tdStyle}>
                         <Link href={`/academy/players/${p.player_id}`} style={playerLinkStyle}>
                           <div style={avatarStyle}>{(p.display_name || '?')[0].toUpperCase()}</div>
-                          {p.display_name || 'Unknown'}
+                          {p.display_name || t('common.unknown')}
                         </Link>
                       </td>
-                      <td style={tdStyle}>{p.age_group || '—'}</td>
+                      <td style={tdStyle}>{p.age_group || '\u2014'}</td>
                       <td style={tdStyle}>{p.current_level}</td>
                       <td style={tdStyle}>{p.total_xp?.toLocaleString()}</td>
                       <td style={tdStyle}>{p.xp_this_week?.toLocaleString()}</td>
                       <td style={tdStyle}>{p.skills_mastered}</td>
                       <td style={tdStyle}>
-                        {p.current_streak > 0 ? `${p.current_streak}d` : '—'}
+                        {p.current_streak > 0 ? `${p.current_streak}d` : '\u2014'}
                       </td>
                       <td style={tdStyle}>
-                        {p.avg_self_rating > 0 ? `${p.avg_self_rating}★` : '—'}
+                        {p.avg_self_rating > 0 ? `${p.avg_self_rating}\u2605` : '\u2014'}
                       </td>
                       <td style={tdStyle}>
                         {p.last_practice_date
-                          ? formatRelativeDate(p.last_practice_date)
-                          : 'Never'}
+                          ? formatRelativeDate(p.last_practice_date, t)
+                          : t('common.never')}
                       </td>
                       <td style={tdStyle}>
                         <span style={statusBadgeStyle(status)}>{status}</span>
@@ -130,11 +139,11 @@ export default function PlayerRoster() {
   );
 }
 
-function formatRelativeDate(dateStr) {
+function formatRelativeDate(dateStr, t) {
   const days = Math.floor((Date.now() - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24));
-  if (days === 0) return 'Today';
-  if (days === 1) return 'Yesterday';
-  if (days < 7) return `${days}d ago`;
+  if (days === 0) return t('common.today');
+  if (days === 1) return t('common.yesterday');
+  if (days < 7) return t('common.daysAgo', { days });
   return new Date(dateStr).toLocaleDateString();
 }
 

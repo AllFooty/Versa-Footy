@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 
 /**
  * Error Boundary component to catch React rendering errors
@@ -24,6 +25,7 @@ class ErrorBoundary extends React.Component {
   };
 
   render() {
+    const { t } = this.props;
     if (this.state.hasError) {
       return (
         <div
@@ -50,11 +52,10 @@ class ErrorBoundary extends React.Component {
           >
             <div style={{ fontSize: 48, marginBottom: 16 }}>⚠️</div>
             <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>
-              Something went wrong
+              {t('errors.somethingWentWrong')}
             </h2>
             <p style={{ fontSize: 14, color: '#9ca3af', marginBottom: 24, lineHeight: 1.6 }}>
-              The app encountered an error. This can happen due to network issues or browser settings.
-              Please try refreshing the page.
+              {t('errors.errorDescription')}
             </p>
             <button
               onClick={this.handleRetry}
@@ -69,7 +70,7 @@ class ErrorBoundary extends React.Component {
                 cursor: 'pointer',
               }}
             >
-              Refresh Page
+              {t('errors.refreshPage')}
             </button>
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <pre
@@ -96,4 +97,4 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-export default ErrorBoundary;
+export default withTranslation()(ErrorBoundary);

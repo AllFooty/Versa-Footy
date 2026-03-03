@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/AuthContext';
 
 const ORG_TYPES = ['academy', 'school', 'club', 'federation', 'ministry'];
 
 export default function CreateOrganization() {
+  const { t } = useTranslation();
   const { user, refreshOrganizations } = useAuth();
   const [, navigate] = useLocation();
   const [name, setName] = useState('');
@@ -14,6 +16,14 @@ export default function CreateOrganization() {
   const [city, setCity] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  const ORG_TYPE_LABELS = {
+    academy: t('academy.createOrg.typeAcademy'),
+    school: t('academy.createOrg.typeSchool'),
+    club: t('academy.createOrg.typeClub'),
+    federation: t('academy.createOrg.typeFederation'),
+    ministry: t('academy.createOrg.typeMinistry'),
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,53 +57,53 @@ export default function CreateOrganization() {
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
-        <h1 style={titleStyle}>Create Your Academy</h1>
+        <h1 style={titleStyle}>{t('academy.createOrg.title')}</h1>
         <p style={subtitleStyle}>
-          Set up your organization to start tracking player progress.
+          {t('academy.createOrg.subtitle')}
         </p>
 
         <form onSubmit={handleSubmit}>
           <div style={fieldStyle}>
-            <label style={labelStyle}>Organization Name *</label>
+            <label style={labelStyle}>{t('academy.createOrg.nameLabel')}</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Riyadh Football Academy"
+              placeholder={t('academy.createOrg.namePlaceholder')}
               style={inputStyle}
               required
             />
           </div>
 
           <div style={fieldStyle}>
-            <label style={labelStyle}>Type</label>
+            <label style={labelStyle}>{t('academy.createOrg.typeLabel')}</label>
             <select value={type} onChange={(e) => setType(e.target.value)} style={inputStyle}>
-              {ORG_TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {t.charAt(0).toUpperCase() + t.slice(1)}
+              {ORG_TYPES.map((orgType) => (
+                <option key={orgType} value={orgType}>
+                  {ORG_TYPE_LABELS[orgType]}
                 </option>
               ))}
             </select>
           </div>
 
           <div style={fieldStyle}>
-            <label style={labelStyle}>Region</label>
+            <label style={labelStyle}>{t('academy.createOrg.regionLabel')}</label>
             <input
               type="text"
               value={region}
               onChange={(e) => setRegion(e.target.value)}
-              placeholder="e.g. Riyadh"
+              placeholder={t('academy.createOrg.regionPlaceholder')}
               style={inputStyle}
             />
           </div>
 
           <div style={fieldStyle}>
-            <label style={labelStyle}>City</label>
+            <label style={labelStyle}>{t('academy.createOrg.cityLabel')}</label>
             <input
               type="text"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              placeholder="e.g. Riyadh"
+              placeholder={t('academy.createOrg.cityPlaceholder')}
               style={inputStyle}
             />
           </div>
@@ -101,7 +111,7 @@ export default function CreateOrganization() {
           {error && <p style={errorStyle}>{error}</p>}
 
           <button type="submit" disabled={submitting || !name.trim()} style={buttonStyle}>
-            {submitting ? 'Creating...' : 'Create Organization'}
+            {submitting ? t('academy.createOrg.creating') : t('academy.createOrg.createButton')}
           </button>
         </form>
       </div>

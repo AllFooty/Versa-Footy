@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Trash2, AlertTriangle, X } from 'lucide-react';
 import { IconButton } from '../ui';
 
@@ -8,6 +9,7 @@ import { IconButton } from '../ui';
  * preventing accidental removals.
  */
 const DeleteSkillModal = ({ isOpen, skill, exerciseCount, onConfirm, onClose }) => {
+  const { t } = useTranslation();
   const [typedName, setTypedName] = useState('');
 
   useEffect(() => {
@@ -59,7 +61,7 @@ const DeleteSkillModal = ({ isOpen, skill, exerciseCount, onConfirm, onClose }) 
                 color: '#ef4444',
               }}
             >
-              Delete Skill
+              {t('modals.deleteSkill.title')}
             </h2>
           </div>
           <IconButton onClick={onClose}>
@@ -78,17 +80,17 @@ const DeleteSkillModal = ({ isOpen, skill, exerciseCount, onConfirm, onClose }) 
           }}
         >
           <p style={{ margin: 0, fontSize: 14, color: '#fca5a5', lineHeight: 1.6 }}>
-            You are about to permanently delete the skill{' '}
+            {t('modals.deleteSkill.warningPrefix')}{' '}
             <strong style={{ color: '#fff' }}>"{skill.name}"</strong>
             {exerciseCount > 0 && (
               <>
-                {' '}along with its{' '}
+                {' '}{t('modals.deleteSkill.alongWith')}{' '}
                 <strong style={{ color: '#fff' }}>
-                  {exerciseCount} exercise{exerciseCount === 1 ? '' : 's'}
+                  {exerciseCount === 1 ? t('modals.deleteSkill.exerciseCount', { count: exerciseCount }) : t('modals.deleteSkill.exerciseCountPlural', { count: exerciseCount })}
                 </strong>
               </>
             )}
-            . This action <strong style={{ color: '#fff' }}>cannot be undone</strong>.
+            . {t('modals.deleteSkill.cannotBeUndone')}
           </p>
         </div>
 
@@ -102,7 +104,7 @@ const DeleteSkillModal = ({ isOpen, skill, exerciseCount, onConfirm, onClose }) 
               marginBottom: 8,
             }}
           >
-            Type <strong style={{ color: '#e4e4e7' }}>{skill.name}</strong> to confirm:
+            {t('modals.deleteSkill.typeToConfirm', { name: skill.name })}
           </label>
           <input
             type="text"
@@ -149,7 +151,7 @@ const DeleteSkillModal = ({ isOpen, skill, exerciseCount, onConfirm, onClose }) 
               cursor: 'pointer',
             }}
           >
-            Cancel
+            {t('modals.deleteSkill.cancelButton')}
           </button>
           <button
             onClick={handleConfirm}
@@ -171,7 +173,7 @@ const DeleteSkillModal = ({ isOpen, skill, exerciseCount, onConfirm, onClose }) 
             }}
           >
             <Trash2 size={14} />
-            Delete Skill
+            {t('modals.deleteSkill.deleteButton')}
           </button>
         </div>
       </div>

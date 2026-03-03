@@ -1,10 +1,13 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 /**
  * App header with logo and stats display
  * Now with mobile-responsive design
  */
 const Header = ({ stats }) => {
+  const { t } = useTranslation();
   const { totalCategories, totalSkills, totalExercises } = stats;
 
   return (
@@ -59,19 +62,20 @@ const Header = ({ stats }) => {
                   WebkitTextFillColor: 'transparent',
                 }}
               >
-                Versa Footy Library
+                {t('library.headerTitle')}
               </h1>
               <p style={{ margin: 0, fontSize: 13, color: '#71717a' }}>
-                Football Skills & Drills Management
+                {t('library.headerSubtitle')}
               </p>
             </div>
           </div>
 
           {/* Stats */}
-          <div style={{ display: 'flex', gap: 24 }}>
-            <StatItem value={totalCategories} label="Categories" color="#3b82f6" />
-            <StatItem value={totalSkills} label="Skills" color="#22c55e" />
-            <StatItem value={totalExercises} label="Exercises" color="#f97316" />
+          <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+            <StatItem value={totalCategories} label={t('library.statCategories')} color="#3b82f6" />
+            <StatItem value={totalSkills} label={t('library.statSkills')} color="#22c55e" />
+            <StatItem value={totalExercises} label={t('library.statExercises')} color="#f97316" />
+            <LanguageSwitcher />
           </div>
         </div>
       </header>
@@ -124,10 +128,10 @@ const Header = ({ stats }) => {
                   WebkitTextFillColor: 'transparent',
                 }}
               >
-                Versa Footy
+                {t('common.versaFooty')}
               </h1>
               <p style={{ margin: 0, fontSize: 10, color: '#71717a' }}>
-                Library
+                {t('nav.library')}
               </p>
             </div>
           </div>
@@ -136,9 +140,9 @@ const Header = ({ stats }) => {
 
         {/* Mobile Stats Bar */}
         <div className="mobile-stats-bar" style={{ marginTop: 12 }}>
-          <MobileStatItem value={totalCategories} label="Categories" color="#3b82f6" />
-          <MobileStatItem value={totalSkills} label="Skills" color="#22c55e" />
-          <MobileStatItem value={totalExercises} label="Exercises" color="#f97316" />
+          <MobileStatItem value={totalCategories} label={t('library.statCategories')} color="#3b82f6" />
+          <MobileStatItem value={totalSkills} label={t('library.statSkills')} color="#22c55e" />
+          <MobileStatItem value={totalExercises} label={t('library.statExercises')} color="#f97316" />
         </div>
       </header>
     </>

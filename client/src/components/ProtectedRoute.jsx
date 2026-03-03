@@ -1,5 +1,6 @@
 import React from 'react';
 import { Redirect } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/AuthContext';
 
 const loadingContainerStyle = {
@@ -22,6 +23,7 @@ const spinnerStyle = {
 };
 
 export default function ProtectedRoute({ children }) {
+  const { t } = useTranslation();
   const { isAuthenticated, loading } = useAuth();
 
   // Show loading state while checking session (this should be fast now)
@@ -30,7 +32,7 @@ export default function ProtectedRoute({ children }) {
       <div style={loadingContainerStyle}>
         <div style={{ textAlign: 'center' }}>
           <div style={spinnerStyle} />
-          <p style={{ marginTop: 16, color: '#71717a' }}>Loading...</p>
+          <p style={{ marginTop: 16, color: '#71717a' }}>{t('common.loading')}</p>
         </div>
       </div>
     );

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../lib/AuthContext';
 import { AGE_GROUPS } from '../../constants';
 import useTeams from './hooks/useTeams';
 import usePlayerRoster from './hooks/usePlayerRoster';
 
 export default function TeamManagement() {
+  const { t } = useTranslation();
   const { activeOrg } = useAuth();
   const { teams, loading, createTeam, deleteTeam, getTeamMembers, addPlayer, removePlayer } =
     useTeams(activeOrg?.id);
@@ -22,7 +24,7 @@ export default function TeamManagement() {
   const [membersLoading, setMembersLoading] = useState(false);
   const [addPlayerId, setAddPlayerId] = useState('');
 
-  const selectedTeam = teams.find((t) => t.id === selectedTeamId);
+  const selectedTeam = teams.find((tm) => tm.id === selectedTeamId);
 
   useEffect(() => {
     if (!selectedTeamId) return;
@@ -55,7 +57,7 @@ export default function TeamManagement() {
   };
 
   const handleDelete = async (teamId) => {
-    if (!confirm('Delete this team? Players will not be removed from the organization.')) return;
+    if (!confirm(t('academy.teams.deleteConfirm'))) return;
     try {
       await deleteTeam(teamId);
       if (selectedTeamId === teamId) {
@@ -85,12 +87,18 @@ export default function TeamManagement() {
     }
   };
 
+  const getPlayerCountText = (count) => {
+    return count !== 1
+      ? t('academy.teams.playerCountPlural', { count })
+      : t('academy.teams.playerCount', { count });
+  };
+
   return (
     <div style={containerStyle}>
       <div style={headerStyle}>
-        <h1 style={titleStyle}>Teams</h1>
+        <h1 style={titleStyle}>{t('academy.teams.title')}</h1>
         <p style={subtitleStyle}>
-          Organize players into teams for {activeOrg?.name}
+          {t('academy.teams.subtitle', { orgName: activeOrg?.name })}
         </p>
       </div>
 
@@ -98,17 +106,17 @@ export default function TeamManagement() {
       <div style={sectionStyle}>
         {!showCreate ? (
           <button onClick={() => setShowCreate(true)} style={createBtnStyle}>
-            + Create New Team
+            {t('academy.teams.createNewTeam')}
           </button>
         ) : (
           <div style={createCardStyle}>
-            <h3 style={{ fontSize: 15, fontWeight: 600, margin: '0 0 12px' }}>New Team</h3>
+            <h3 style={{ fontSize: 15, fontWeight: 600, margin: '0 0 12px' }}>{t('academy.teams.newTeam')}</h3>
             <form onSubmit={handleCreate} style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               <input
                 type="text"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                placeholder="Team name"
+                placeholder={t('academy.teams.teamNamePlaceholder')}
                 style={{ ...inputStyle, flex: '1 1 200px' }}
                 autoFocus
               />
@@ -117,16 +125,16 @@ export default function TeamManagement() {
                 onChange={(e) => setNewAgeGroup(e.target.value)}
                 style={{ ...inputStyle, flex: '0 0 120px' }}
               >
-                <option value="">Age Group</option>
+                <option value="">{t('academy.teams.ageGroupLabel')}</option>
                 {AGE_GROUPS.map((ag) => (
                   <option key={ag} value={ag}>{ag}</option>
                 ))}
               </select>
               <button type="submit" disabled={creating || !newName.trim()} style={primaryBtnStyle}>
-                {creating ? 'Creating...' : 'Create'}
+                {creating ? t('academy.teams.creating') : t('academy.teams.createButton')}
               </button>
               <button type="button" onClick={() => setShowCreate(false)} style={cancelBtnStyle}>
-                Cancel
+                {t('academy.teams.cancelButton')}
               </button>
             </form>
             {error && <p style={{ color: '#ef4444', fontSize: 13, marginTop: 8 }}>{error}</p>}
@@ -141,12 +149,12 @@ export default function TeamManagement() {
           {loading ? (
             <div style={{ textAlign: 'center', padding: 48 }}>
               <div style={spinnerStyle} />
-              <p style={{ marginTop: 16, color: '#71717a' }}>Loading teams...</p>
+              <p style={{ marginTop: 16, color: '#71717a' }}>{t('academy.teams.loadingTeams')}</p>
             </div>
           ) : teams.length === 0 ? (
             <div style={{ textAlign: 'center', padding: 48 }}>
               <p style={{ color: '#71717a', fontSize: 14 }}>
-                No teams yet. Create one to organize your players.
+                {t('academy.teams.noTeamsYet')}
               </p>
             </div>
           ) : (
@@ -163,13 +171,13 @@ export default function TeamManagement() {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={teamNameStyle}>{team.name}</p>
                     <p style={teamMetaStyle}>
-                      {team.age_group || 'All ages'} &middot; {team.player_count} player{team.player_count !== 1 ? 's' : ''}
+                      {team.age_group || t('academy.teams.allAges')} &middot; {getPlayerCountText(team.player_count)}
                     </p>
                   </div>
                   <button
                     onClick={(e) => { e.stopPropagation(); handleDelete(team.id); }}
                     style={deleteIconStyle}
-                    title="Delete team"
+                    title={t('academy.teams.deleteTeamTooltip')}
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                       <polyline points="3 6 5 6 21 6" />
@@ -186,14 +194,14 @@ export default function TeamManagement() {
         <div style={detailPanelStyle}>
           {!selectedTeam ? (
             <div style={{ textAlign: 'center', padding: 48, color: '#71717a' }}>
-              <p style={{ fontSize: 14 }}>Select a team to manage its players</p>
+              <p style={{ fontSize: 14 }}>{t('academy.teams.selectTeamPrompt')}</p>
             </div>
           ) : (
             <>
               <div style={{ marginBottom: 20 }}>
                 <h2 style={{ fontSize: 18, fontWeight: 600, margin: '0 0 4px' }}>{selectedTeam.name}</h2>
                 <p style={{ fontSize: 13, color: '#71717a', margin: 0 }}>
-                  {selectedTeam.age_group || 'All ages'} &middot; {selectedTeam.player_count} player{selectedTeam.player_count !== 1 ? 's' : ''}
+                  {selectedTeam.age_group || t('academy.teams.allAges')} &middot; {getPlayerCountText(selectedTeam.player_count)}
                 </p>
               </div>
 
@@ -204,10 +212,10 @@ export default function TeamManagement() {
                   onChange={(e) => setAddPlayerId(e.target.value)}
                   style={{ ...inputStyle, flex: 1 }}
                 >
-                  <option value="">Add a player...</option>
+                  <option value="">{t('academy.teams.addPlayerPlaceholder')}</option>
                   {availablePlayers.map((p) => (
                     <option key={p.player_id} value={p.player_id}>
-                      {p.display_name} ({p.age_group || 'no age'})
+                      {p.display_name} ({p.age_group || t('common.noAge')})
                     </option>
                   ))}
                 </select>
@@ -216,16 +224,16 @@ export default function TeamManagement() {
                   disabled={!addPlayerId}
                   style={primaryBtnStyle}
                 >
-                  Add
+                  {t('academy.teams.addButton')}
                 </button>
               </div>
 
               {/* Members list */}
               {membersLoading ? (
-                <p style={{ color: '#71717a', fontSize: 13 }}>Loading members...</p>
+                <p style={{ color: '#71717a', fontSize: 13 }}>{t('academy.teams.loadingMembers')}</p>
               ) : teamMembers.length === 0 ? (
                 <p style={{ color: '#71717a', fontSize: 13 }}>
-                  No players in this team yet. Use the dropdown above to add players.
+                  {t('academy.teams.noPlayersInTeam')}
                 </p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -235,16 +243,16 @@ export default function TeamManagement() {
                         {(m.display_name || '?')[0].toUpperCase()}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>{m.display_name || 'Unknown'}</p>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>{m.display_name || t('common.unknown')}</p>
                         <p style={{ fontSize: 11, color: '#71717a', margin: 0 }}>
-                          {m.age_group || 'No age'} &middot; Level {m.current_level} &middot; {m.total_xp?.toLocaleString()} XP
+                          {m.age_group || t('common.noAge')} &middot; {t('common.level')} {m.current_level} &middot; {m.total_xp?.toLocaleString()} {t('common.xp')}
                         </p>
                       </div>
                       <button
                         onClick={() => handleRemovePlayer(m.id)}
                         style={removeBtnStyle}
                       >
-                        Remove
+                        {t('academy.teams.removeButton')}
                       </button>
                     </div>
                   ))}

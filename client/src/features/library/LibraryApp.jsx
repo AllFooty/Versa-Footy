@@ -1,4 +1,5 @@
 import React, { useState, useDeferredValue } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Components
 import Header from '../../components/Header';
@@ -28,6 +29,8 @@ import '../landing/styles/landing-globals.css';
  * This was the former top-level App component; now namespaced under features/library.
  */
 export default function LibraryApp() {
+  const { t } = useTranslation();
+
   // Data management via custom hook
   const {
     categories,
@@ -165,7 +168,7 @@ export default function LibraryApp() {
                   margin: '0 auto 16px',
                 }}
               />
-              <p>Loading data from Supabase...</p>
+              <p>{t('library.loadingData')}</p>
             </div>
           </div>
         )}
@@ -182,7 +185,7 @@ export default function LibraryApp() {
               color: '#fca5a5',
             }}
           >
-            <strong>Error loading data:</strong> {error}
+            <strong>{t('library.errorLoading')}</strong> {error}
           </div>
         )}
 

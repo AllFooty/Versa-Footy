@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import HeaderLanding from './components/HeaderLanding';
 import FooterLanding from './components/FooterLanding';
 import All4FootyFamilyBar from './components/All4FootyFamilyBar';
@@ -7,6 +8,8 @@ import styles from './styles/LandingPage.module.css';
 import './styles/landing-globals.css';
 
 const PrivacyPolicyPage = () => {
+  const { t } = useTranslation();
+
   const containerStyle = {
     maxWidth: '880px',
     margin: '0 auto',
@@ -74,6 +77,9 @@ const PrivacyPolicyPage = () => {
     verticalAlign: 'top',
   };
 
+  const tableHeaders = t('privacyPolicy.section2TableHeaders', { returnObjects: true }) || [];
+  const tableRows = t('privacyPolicy.section2TableRows', { returnObjects: true }) || [];
+
   return (
     <>
       <All4FootyFamilyBar />
@@ -90,10 +96,10 @@ const PrivacyPolicyPage = () => {
                 transition={{ duration: 0.6 }}
               >
                 <h1 className={styles.heroTitle} style={{ marginBottom: '16px' }}>
-                  Privacy Policy
+                  {t('privacyPolicy.pageTitle')}
                 </h1>
                 <p className={styles.heroSubtitle} style={{ margin: '0 auto', textAlign: 'center' }}>
-                  Last updated: March 2, 2026
+                  {t('privacyPolicy.lastUpdated')}
                 </p>
               </motion.div>
             </div>
@@ -104,195 +110,187 @@ const PrivacyPolicyPage = () => {
 
               <div style={sectionStyle}>
                 <p style={paragraphStyle}>
-                  Versa Footy ("we," "us," or "our"), part of the All4Footy Family, is committed to protecting your privacy and the privacy of your children. This Privacy Policy explains how we collect, use, store, and protect information when you use our website at versafooty.com and our web application (collectively, the "Service").
+                  {t('privacyPolicy.introParagraph1')}
                 </p>
                 <p style={paragraphStyle}>
-                  Because our platform is designed for youth soccer players ages 5–14, we take children's privacy especially seriously. We encourage parents and legal guardians to read this policy carefully and to supervise their child's use of the Service.
-                </p>
-              </div>
-
-              <div style={sectionStyle}>
-                <h2 style={headingStyle}>1. Information We Collect</h2>
-
-                <h3 style={subHeadingStyle}>1.1 Account Information</h3>
-                <p style={paragraphStyle}>
-                  When you create an account, we collect:
-                </p>
-                <ul style={listStyle}>
-                  <li style={listItemStyle}><strong>Email address</strong> — used for authentication via one-time password (OTP) login</li>
-                  <li style={listItemStyle}><strong>Full name</strong> — optionally provided for your profile</li>
-                </ul>
-
-                <h3 style={subHeadingStyle}>1.2 Player Profile Information</h3>
-                <p style={paragraphStyle}>
-                  To personalize the training experience, we collect:
-                </p>
-                <ul style={listStyle}>
-                  <li style={listItemStyle}><strong>Age group</strong> — used to tailor exercises and skill progressions to the appropriate developmental stage</li>
-                </ul>
-
-                <h3 style={subHeadingStyle}>1.3 Training and Activity Data</h3>
-                <p style={paragraphStyle}>
-                  As you use the Service, we automatically collect data about your training activity, including:
-                </p>
-                <ul style={listStyle}>
-                  <li style={listItemStyle}>Training sessions (type, start time, completion time, status)</li>
-                  <li style={listItemStyle}>Exercise completions and self-ratings (1–5 scale)</li>
-                  <li style={listItemStyle}>Skill progress and mastery levels</li>
-                  <li style={listItemStyle}>XP earned, current level, and achievements unlocked</li>
-                  <li style={listItemStyle}>Daily activity metrics (exercises completed, practice minutes)</li>
-                  <li style={listItemStyle}>Streak data (current streak, longest streak)</li>
-                </ul>
-
-                <h3 style={subHeadingStyle}>1.4 Technical Data</h3>
-                <p style={paragraphStyle}>
-                  We may collect basic technical data necessary to operate the Service, such as session tokens stored in your browser's local storage. We do not use third-party analytics, advertising trackers, or cookies for marketing purposes.
+                  {t('privacyPolicy.introParagraph2')}
                 </p>
               </div>
 
               <div style={sectionStyle}>
-                <h2 style={headingStyle}>2. How We Use Your Information</h2>
+                <h2 style={headingStyle}>{t('privacyPolicy.section1Title')}</h2>
+
+                <h3 style={subHeadingStyle}>{t('privacyPolicy.section1Sub1Title')}</h3>
                 <p style={paragraphStyle}>
-                  We use the information we collect for the following purposes:
+                  {t('privacyPolicy.section1Sub1Text')}
+                </p>
+                <ul style={listStyle}>
+                  {(t('privacyPolicy.section1Sub1List', { returnObjects: true }) || []).map((item, i) => (
+                    <li key={i} style={listItemStyle} dangerouslySetInnerHTML={{ __html: item }} />
+                  ))}
+                </ul>
+
+                <h3 style={subHeadingStyle}>{t('privacyPolicy.section1Sub2Title')}</h3>
+                <p style={paragraphStyle}>
+                  {t('privacyPolicy.section1Sub2Text')}
+                </p>
+                <ul style={listStyle}>
+                  {(t('privacyPolicy.section1Sub2List', { returnObjects: true }) || []).map((item, i) => (
+                    <li key={i} style={listItemStyle} dangerouslySetInnerHTML={{ __html: item }} />
+                  ))}
+                </ul>
+
+                <h3 style={subHeadingStyle}>{t('privacyPolicy.section1Sub3Title')}</h3>
+                <p style={paragraphStyle}>
+                  {t('privacyPolicy.section1Sub3Text')}
+                </p>
+                <ul style={listStyle}>
+                  {(t('privacyPolicy.section1Sub3List', { returnObjects: true }) || []).map((item, i) => (
+                    <li key={i} style={listItemStyle}>{item}</li>
+                  ))}
+                </ul>
+
+                <h3 style={subHeadingStyle}>{t('privacyPolicy.section1Sub4Title')}</h3>
+                <p style={paragraphStyle}>
+                  {t('privacyPolicy.section1Sub4Text')}
+                </p>
+              </div>
+
+              <div style={sectionStyle}>
+                <h2 style={headingStyle}>{t('privacyPolicy.section2Title')}</h2>
+                <p style={paragraphStyle}>
+                  {t('privacyPolicy.section2Text')}
                 </p>
                 <table style={tableStyle}>
                   <thead>
                     <tr>
-                      <th style={thStyle}>Purpose</th>
-                      <th style={thStyle}>Data Used</th>
+                      {tableHeaders.map((header, i) => (
+                        <th key={i} style={thStyle}>{header}</th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td style={tdStyle}>Account authentication</td>
-                      <td style={tdStyle}>Email address</td>
-                    </tr>
-                    <tr>
-                      <td style={tdStyle}>Personalizing training programs</td>
-                      <td style={tdStyle}>Age group, skill progress, exercise history</td>
-                    </tr>
-                    <tr>
-                      <td style={tdStyle}>Tracking progress and achievements</td>
-                      <td style={tdStyle}>Training data, XP, levels, streaks</td>
-                    </tr>
-                    <tr>
-                      <td style={tdStyle}>Improving the Service</td>
-                      <td style={tdStyle}>Aggregated, anonymized usage patterns</td>
-                    </tr>
-                    <tr>
-                      <td style={tdStyle}>Communicating with you</td>
-                      <td style={tdStyle}>Email address (service-related messages only)</td>
-                    </tr>
+                    {tableRows.map((row, i) => (
+                      <tr key={i}>
+                        {row.map((cell, j) => (
+                          <td key={j} style={tdStyle}>{cell}</td>
+                        ))}
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
                 <p style={paragraphStyle}>
-                  We do not sell, rent, or share your personal information with third parties for their marketing purposes.
+                  {t('privacyPolicy.section2NoSell')}
                 </p>
               </div>
 
               <div style={sectionStyle}>
-                <h2 style={headingStyle}>3. Children's Privacy</h2>
+                <h2 style={headingStyle}>{t('privacyPolicy.section3Title')}</h2>
                 <p style={paragraphStyle}>
-                  Versa Footy is committed to protecting the privacy of children. Our platform is intended for use by children ages 5–14 under the supervision of a parent or legal guardian.
+                  {t('privacyPolicy.section3Text')}
                 </p>
                 <ul style={listStyle}>
-                  <li style={listItemStyle}>We require parental consent for accounts created for children under 13, in compliance with the Children's Online Privacy Protection Act (COPPA).</li>
-                  <li style={listItemStyle}>We collect only the minimum information necessary to provide the training experience.</li>
-                  <li style={listItemStyle}>We do not display targeted advertising to any users, including children.</li>
-                  <li style={listItemStyle}>We do not collect precise geolocation data.</li>
-                  <li style={listItemStyle}>Parents and guardians may review, update, or request deletion of their child's data at any time by contacting us at info@versafooty.com.</li>
+                  {(t('privacyPolicy.section3List', { returnObjects: true }) || []).map((item, i) => (
+                    <li key={i} style={listItemStyle}>{item}</li>
+                  ))}
                 </ul>
               </div>
 
               <div style={sectionStyle}>
-                <h2 style={headingStyle}>4. Data Storage and Security</h2>
-                <h3 style={subHeadingStyle}>4.1 Where We Store Your Data</h3>
+                <h2 style={headingStyle}>{t('privacyPolicy.section4Title')}</h2>
+                <h3 style={subHeadingStyle}>{t('privacyPolicy.section4Sub1Title')}</h3>
                 <p style={paragraphStyle}>
-                  Your data is stored securely using Supabase, our backend infrastructure provider. Supabase provides a PostgreSQL database with built-in security features including row-level security (RLS) policies, ensuring that users can only access their own data.
+                  {t('privacyPolicy.section4Sub1Text')}
                 </p>
 
-                <h3 style={subHeadingStyle}>4.2 How We Protect Your Data</h3>
+                <h3 style={subHeadingStyle}>{t('privacyPolicy.section4Sub2Title')}</h3>
                 <p style={paragraphStyle}>
-                  We implement appropriate technical and organizational measures to protect your personal information, including:
+                  {t('privacyPolicy.section4Sub2Text')}
                 </p>
                 <ul style={listStyle}>
-                  <li style={listItemStyle}>Passwordless authentication via email OTP, eliminating risks associated with stored passwords</li>
-                  <li style={listItemStyle}>Row-level security policies on all database tables, ensuring data isolation between users</li>
-                  <li style={listItemStyle}>Encrypted data transmission using HTTPS</li>
-                  <li style={listItemStyle}>Privacy-conscious session storage with fallback mechanisms for browsers with strict privacy settings</li>
+                  {(t('privacyPolicy.section4Sub2List', { returnObjects: true }) || []).map((item, i) => (
+                    <li key={i} style={listItemStyle}>{item}</li>
+                  ))}
                 </ul>
               </div>
 
               <div style={sectionStyle}>
-                <h2 style={headingStyle}>5. Third-Party Services</h2>
+                <h2 style={headingStyle}>{t('privacyPolicy.section5Title')}</h2>
                 <p style={paragraphStyle}>
-                  We use the following third-party service to operate the platform:
+                  {t('privacyPolicy.section5Text')}
                 </p>
                 <ul style={listStyle}>
-                  <li style={listItemStyle}>
-                    <strong>Supabase</strong> — provides our database, authentication, and backend infrastructure. Supabase processes data on our behalf and is bound by their own privacy commitments. You can review the <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-color, #6366f1)', textDecoration: 'underline' }}>Supabase Privacy Policy</a> for more information.
-                  </li>
+                  {(t('privacyPolicy.section5List', { returnObjects: true }) || []).map((item, i) => (
+                    <li key={i} style={listItemStyle}>
+                      {item}
+                      {i === 0 && (
+                        <>
+                          {' '}<a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-color, #6366f1)', textDecoration: 'underline' }}>
+                            Supabase Privacy Policy
+                          </a>
+                        </>
+                      )}
+                    </li>
+                  ))}
                 </ul>
                 <p style={paragraphStyle}>
-                  We do not use third-party analytics services, advertising networks, or social media tracking pixels.
+                  {t('privacyPolicy.section5NoTrackers')}
                 </p>
               </div>
 
               <div style={sectionStyle}>
-                <h2 style={headingStyle}>6. Data Retention</h2>
+                <h2 style={headingStyle}>{t('privacyPolicy.section6Title')}</h2>
                 <p style={paragraphStyle}>
-                  We retain your personal information for as long as your account is active or as needed to provide the Service. Training and progress data is retained to maintain your historical performance records and enable the AI-powered personalization features.
+                  {t('privacyPolicy.section6Text1')}
                 </p>
                 <p style={paragraphStyle}>
-                  If you request account deletion, we will remove your personal data within a reasonable timeframe. Some aggregated, anonymized data may be retained for service improvement purposes, but this data cannot be used to identify you.
+                  {t('privacyPolicy.section6Text2')}
                 </p>
               </div>
 
               <div style={sectionStyle}>
-                <h2 style={headingStyle}>7. Your Rights</h2>
+                <h2 style={headingStyle}>{t('privacyPolicy.section7Title')}</h2>
                 <p style={paragraphStyle}>
-                  Depending on your jurisdiction, you may have the following rights regarding your personal data:
+                  {t('privacyPolicy.section7Text')}
                 </p>
                 <ul style={listStyle}>
-                  <li style={listItemStyle}><strong>Access</strong> — request a copy of the personal data we hold about you</li>
-                  <li style={listItemStyle}><strong>Correction</strong> — request that we correct inaccurate or incomplete data</li>
-                  <li style={listItemStyle}><strong>Deletion</strong> — request that we delete your personal data</li>
-                  <li style={listItemStyle}><strong>Data Portability</strong> — request your data in a structured, commonly used format</li>
-                  <li style={listItemStyle}><strong>Withdraw Consent</strong> — withdraw consent for processing where applicable</li>
+                  {(t('privacyPolicy.section7List', { returnObjects: true }) || []).map((item, i) => (
+                    <li key={i} style={listItemStyle} dangerouslySetInnerHTML={{ __html: item }} />
+                  ))}
                 </ul>
                 <p style={paragraphStyle}>
-                  To exercise any of these rights, please contact us at info@versafooty.com. We will respond to your request within 30 days.
+                  {t('privacyPolicy.section7ContactText')}
                 </p>
               </div>
 
               <div style={sectionStyle}>
-                <h2 style={headingStyle}>8. International Users</h2>
+                <h2 style={headingStyle}>{t('privacyPolicy.section8Title')}</h2>
                 <p style={paragraphStyle}>
-                  If you access the Service from outside the country where our servers are located, your information may be transferred across international borders. By using the Service, you consent to the transfer and processing of your information in accordance with this Privacy Policy.
+                  {t('privacyPolicy.section8Text')}
                 </p>
               </div>
 
               <div style={sectionStyle}>
-                <h2 style={headingStyle}>9. Changes to This Policy</h2>
+                <h2 style={headingStyle}>{t('privacyPolicy.section9Title')}</h2>
                 <p style={paragraphStyle}>
-                  We may update this Privacy Policy from time to time. When we make changes, we will update the "Last updated" date at the top of this page. We encourage you to review this policy periodically. Your continued use of the Service after any changes constitutes your acceptance of the updated policy.
+                  {t('privacyPolicy.section9Text1')}
                 </p>
                 <p style={paragraphStyle}>
-                  For material changes that affect how we handle children's data, we will make reasonable efforts to notify parents or guardians directly via email.
+                  {t('privacyPolicy.section9Text2')}
                 </p>
               </div>
 
               <div style={sectionStyle}>
-                <h2 style={headingStyle}>10. Contact Us</h2>
+                <h2 style={headingStyle}>{t('privacyPolicy.section10Title')}</h2>
                 <p style={paragraphStyle}>
-                  If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:
+                  {t('privacyPolicy.section10Text')}
                 </p>
                 <ul style={listStyle}>
-                  <li style={listItemStyle}>Email: info@versafooty.com</li>
-                  <li style={listItemStyle}>Website: versafooty.com</li>
+                  <li style={listItemStyle}>{t('privacyPolicy.section10Email')}</li>
+                  <li style={listItemStyle}>{t('privacyPolicy.section10Website')}</li>
                 </ul>
                 <p style={paragraphStyle}>
-                  For questions specifically about your child's data, please include "Children's Privacy" in your email subject line.
+                  {t('privacyPolicy.section10ChildrenNote')}
                 </p>
               </div>
 

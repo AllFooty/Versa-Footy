@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../lib/AuthContext';
 
 const containerStyle = {
@@ -143,11 +144,12 @@ const Chevron = () => (
 );
 
 export default function HomePage() {
+  const { t } = useTranslation();
   const [, setLocation] = useLocation();
   const { user, profile, organizations, orgsLoading, isCoach, isAdmin, signOut } = useAuth();
 
   const firstName = profile?.full_name?.split(' ')[0];
-  const greeting = firstName ? `Welcome back, ${firstName}` : 'Welcome to Versa Footy';
+  const greeting = firstName ? t('home.welcomeBack', { firstName }) : t('home.welcomeGeneric');
 
   const hasOrgs = organizations.length > 0;
 
@@ -161,7 +163,7 @@ export default function HomePage() {
       <div style={containerStyle}>
         <div style={{ textAlign: 'center' }}>
           <div style={spinnerStyle} />
-          <p style={{ marginTop: 16, color: '#71717a' }}>Loading...</p>
+          <p style={{ marginTop: 16, color: '#71717a' }}>{t('common.loading')}</p>
         </div>
         <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -171,9 +173,9 @@ export default function HomePage() {
   return (
     <div style={containerStyle}>
       <div style={contentWrapperStyle}>
-        <p style={eyebrowStyle}>Home</p>
+        <p style={eyebrowStyle}>{t('home.eyebrow')}</p>
         <h1 style={titleStyle}>{greeting}</h1>
-        <p style={subtitleStyle}>Where would you like to go?</p>
+        <p style={subtitleStyle}>{t('home.whereToGo')}</p>
 
         <div style={cardsContainerStyle}>
           {/* Primary action: Academy Dashboard or Create Academy */}
@@ -189,8 +191,8 @@ export default function HomePage() {
                 </svg>
               </div>
               <div>
-                <div style={cardTitleStyle}>Academy Dashboard</div>
-                <div style={cardDescStyle}>Manage your players, teams, and training</div>
+                <div style={cardTitleStyle}>{t('home.academyDashboard')}</div>
+                <div style={cardDescStyle}>{t('home.academyDescription')}</div>
               </div>
               <Chevron />
             </Link>
@@ -204,8 +206,8 @@ export default function HomePage() {
                 </svg>
               </div>
               <div>
-                <div style={cardTitleStyle}>Create Your Academy</div>
-                <div style={cardDescStyle}>Set up an organization to start tracking players</div>
+                <div style={cardTitleStyle}>{t('home.createAcademy')}</div>
+                <div style={cardDescStyle}>{t('home.createAcademyDescription')}</div>
               </div>
               <Chevron />
             </Link>
@@ -219,7 +221,7 @@ export default function HomePage() {
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
               </svg>
-              <span>Exercise Library</span>
+              <span>{t('home.exerciseLibrary')}</span>
               <Chevron />
             </Link>
           )}
@@ -231,7 +233,7 @@ export default function HomePage() {
               <circle cx="12" cy="12" r="3" />
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
             </svg>
-            <span>Settings</span>
+            <span>{t('home.settings')}</span>
             <Chevron />
           </Link>
         </div>
@@ -239,11 +241,11 @@ export default function HomePage() {
         {/* Bottom actions */}
         <div style={bottomActionsStyle}>
           <Link href="/" style={textLinkStyle}>
-            Back to landing page
+            {t('nav.backToLanding')}
           </Link>
           <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
           <button onClick={handleSignOut} style={signOutButtonStyle}>
-            Sign out
+            {t('common.signOut')}
           </button>
         </div>
       </div>

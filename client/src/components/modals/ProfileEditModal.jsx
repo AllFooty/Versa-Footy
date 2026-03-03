@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Save, User, Mail, Check } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 import { IconButton, Button, SecondaryButton } from '../ui';
@@ -8,6 +9,7 @@ import { IconButton, Button, SecondaryButton } from '../ui';
  * Allows users to update their name and view their email
  */
 export default function ProfileEditModal({ isOpen, onClose }) {
+  const { t } = useTranslation();
   const { user, profile, updateProfile, profileLoading } = useAuth();
   const [fullName, setFullName] = useState('');
   const [saving, setSaving] = useState(false);
@@ -37,7 +39,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
 
   const handleSave = async () => {
     if (!fullName.trim()) {
-      setError('Please enter your name');
+      setError(t('errors.enterName'));
       return;
     }
 
@@ -52,7 +54,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
         setSuccess(false);
       }, 1000);
     } catch (err) {
-      setError(err.message || 'Failed to update profile');
+      setError(err.message || t('errors.profileUpdateFailed'));
     } finally {
       setSaving(false);
     }
@@ -116,7 +118,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
               color: 'white',
             }}
           >
-            Edit Profile
+            {t('modals.profileEdit.title')}
           </h2>
           <IconButton onClick={onClose}>
             <X size={20} />
@@ -165,13 +167,13 @@ export default function ProfileEditModal({ isOpen, onClose }) {
               marginBottom: 8,
             }}>
               <User size={16} />
-              Full Name
+              {t('modals.profileEdit.fullNameLabel')}
             </label>
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Enter your full name"
+              placeholder={t('modals.profileEdit.fullNamePlaceholder')}
               style={{
                 background: 'rgba(0, 0, 0, 0.3)',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -201,7 +203,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
               marginBottom: 8,
             }}>
               <Mail size={16} />
-              Email Address
+              {t('modals.profileEdit.emailLabel')}
             </label>
             <input
               type="email"
@@ -225,7 +227,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
               marginTop: 6,
               marginBottom: 0,
             }}>
-              Email cannot be changed
+              {t('modals.profileEdit.emailCannotChange')}
             </p>
           </div>
 
@@ -259,7 +261,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
               gap: 8,
             }}>
               <Check size={16} />
-              Profile updated successfully!
+              {t('errors.profileUpdated')}
             </div>
           )}
         </div>
@@ -273,7 +275,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
             marginTop: 24,
           }}
         >
-          <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
+          <SecondaryButton onClick={onClose}>{t('modals.profileEdit.cancelButton')}</SecondaryButton>
           <Button onClick={handleSave} disabled={saving || profileLoading || success}>
             {saving ? (
               <>
@@ -285,17 +287,17 @@ export default function ProfileEditModal({ isOpen, onClose }) {
                   borderRadius: '50%',
                   animation: 'spin 1s linear infinite',
                 }} />
-                Saving...
+                {t('modals.profileEdit.savingButton')}
               </>
             ) : success ? (
               <>
                 <Check size={16} />
-                Saved!
+                {t('modals.profileEdit.savedButton')}
               </>
             ) : (
               <>
                 <Save size={16} />
-                Save Changes
+                {t('modals.profileEdit.saveButton')}
               </>
             )}
           </Button>

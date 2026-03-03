@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'wouter';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import HeaderLanding from './components/HeaderLanding';
 import FooterLanding from './components/FooterLanding';
 import WengerQuote from './components/WengerQuote';
@@ -10,150 +11,148 @@ import All4FootyFamilyBar from './components/All4FootyFamilyBar';
 import styles from './styles/LandingPage.module.css';
 import './styles/landing-globals.css';
 
-const featuresData = [
-  {
-    title: 'AI-Powered Personalization',
-    description: "Our AI tailors every session to your kid's needs:",
-    bulletPoints: [
-      'Smart skill assessments with instant adjustments',
-      'Dynamic training that evolves with progress',
-      'Personalized feedback and recommendations',
-    ],
-    imageSrc: '/images/mockups/ai_personalization.png',
-    icon: '🤖',
-  },
-  {
-    title: 'Comprehensive Training Library',
-    description: 'Access a complete development program:',
-    bulletPoints: [
-      '1,000+ exercises for ages 5-14',
-      'Both-feet training methodology',
-      'Progressive drills across 100 technical skills',
-    ],
-    imageSrc: '/images/mockups/skill_development.png',
-    icon: '📚',
-  },
-  {
-    title: 'Smart Progress Tracking',
-    description: 'Monitor development with precision:',
-    bulletPoints: [
-      'Real-time performance analytics',
-      'Clear progress visualization',
-      'Achievement milestones and badges',
-    ],
-    imageSrc: '/images/mockups/progress_tracking.png',
-    icon: '📊',
-  },
-  {
-    title: 'Flexible Training System',
-    description: 'Train anywhere, anytime:',
-    bulletPoints: [
-      'Quick, adaptable practice sessions',
-      'Minimal equipment requirements',
-      'Fun, engaging exercises that prevent burnout',
-    ],
-    imageSrc: '/images/mockups/flexible_training.png',
-    icon: '⚡',
-  },
-  {
-    title: 'Expert-Backed Methods',
-    description: 'Training rooted in sports science:',
-    bulletPoints: [
-      'Age-appropriate development focus',
-      'Pro coach-designed curriculum',
-      'Research-based training methods',
-    ],
-    imageSrc: '/images/mockups/science_backed.png',
-    icon: '🎓',
-  },
-];
-
-const howItWorksSteps = [
-  {
-    step: 1,
-    title: 'Pick Your Level',
-    icon: '🎯',
-    description: 'Tell us your age. We build a personalized roadmap showing which skills to master and when, based on proven youth development science.',
-    color: '#ff4b4b',
-  },
-  {
-    step: 2,
-    title: 'Train Daily',
-    icon: '⚽',
-    description: 'Sessions tailored from 1000+ exercises focus on what your kid needs: recently neglected skills and age-critical techniques.',
-    color: '#6366f1',
-  },
-  {
-    step: 3,
-    title: 'Rate & Track',
-    icon: '📊',
-    description: 'Rate each exercise. Our AI tracks progress, calculates mastery levels, and recommends what to work on next.',
-    color: '#22c55e',
-  },
-  {
-    step: 4,
-    title: 'Level Up',
-    icon: '⭐',
-    description: 'Every session earns XP. Better performance earns more. Daily streaks multiply rewards. It feels like a game with real on-pitch results.',
-    color: '#ffd166',
-  },
-];
-
-const whyVersaFootyData = [
-  {
-    title: 'Club training alone isn\'t enough',
-    problem: '2–3 hours a week covers tactics and scrimmages — not the technical reps that matter.',
-    solution: 'gives your kid daily structured training — the same approach the world\'s best young players use.',
-    icon: '🌉',
-    borderColor: '#6366f1',
-  },
-  {
-    title: 'The window is real and closing',
-    problem: 'Fine motor skill development peaks in childhood. Miss it, and biology works against you.',
-    solution: 'delivers age-targeted training that builds the right skills at the right time.',
-    icon: '⏱️',
-    borderColor: '#22c55e',
-  },
-  {
-    title: 'Your kid doesn\'t need another YouTube playlist',
-    problem: 'YouTube has drills. It doesn\'t have structure, progression, or memory.',
-    solution: 'adapts every session to what your kid has mastered, avoided, or needs next.',
-    icon: '📺',
-    borderColor: '#8b5cf6',
-  },
-  {
-    title: 'Parents aren\'t coaches',
-    problem: 'You want to help but don\'t know what to teach or when.',
-    solution: 'is the expert in your pocket — you encourage, it instructs.',
-    icon: '👨‍👧‍👦',
-    borderColor: '#f59e0b',
-  },
-];
-
-const testimonials = [
-  {
-    quote:
-      'Versa Footy helped my son improve his weak foot skills significantly in just three months! [Sample Testimonial]',
-    author: 'Happy Parent',
-    avatar: '/images/avatars/alex-dad.jpg',
-  },
-  {
-    quote:
-      'The personalized training helped my daughter make it to the regional team. It is like having a private coach available 24/7. [This is placeholder content]',
-    author: 'Satisfied Parent',
-    avatar: '/images/avatars/sarah-mom.jpg',
-  },
-  {
-    quote:
-      "I love how my kid can train anytime, anywhere. It fits perfectly with our busy family schedule. [Real testimonials coming soon!]",
-    author: 'Busy Parent',
-    avatar: '/images/avatars/emma-mom.jpg',
-  },
-];
-
 export default function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { scrollY } = useScroll();
+  const { t } = useTranslation();
+
+  const featuresData = [
+    {
+      title: t('landing.features.feature1Title'),
+      description: t('landing.features.feature1Description'),
+      bulletPoints: [
+        t('landing.features.feature1Bullet1'),
+        t('landing.features.feature1Bullet2'),
+        t('landing.features.feature1Bullet3'),
+      ],
+      imageSrc: '/images/mockups/ai_personalization.png',
+      icon: '\u{1F916}',
+    },
+    {
+      title: t('landing.features.feature2Title'),
+      description: t('landing.features.feature2Description'),
+      bulletPoints: [
+        t('landing.features.feature2Bullet1'),
+        t('landing.features.feature2Bullet2'),
+        t('landing.features.feature2Bullet3'),
+      ],
+      imageSrc: '/images/mockups/skill_development.png',
+      icon: '\u{1F4DA}',
+    },
+    {
+      title: t('landing.features.feature3Title'),
+      description: t('landing.features.feature3Description'),
+      bulletPoints: [
+        t('landing.features.feature3Bullet1'),
+        t('landing.features.feature3Bullet2'),
+        t('landing.features.feature3Bullet3'),
+      ],
+      imageSrc: '/images/mockups/progress_tracking.png',
+      icon: '\u{1F4CA}',
+    },
+    {
+      title: t('landing.features.feature4Title'),
+      description: t('landing.features.feature4Description'),
+      bulletPoints: [
+        t('landing.features.feature4Bullet1'),
+        t('landing.features.feature4Bullet2'),
+        t('landing.features.feature4Bullet3'),
+      ],
+      imageSrc: '/images/mockups/flexible_training.png',
+      icon: '\u26A1',
+    },
+    {
+      title: t('landing.features.feature5Title'),
+      description: t('landing.features.feature5Description'),
+      bulletPoints: [
+        t('landing.features.feature5Bullet1'),
+        t('landing.features.feature5Bullet2'),
+        t('landing.features.feature5Bullet3'),
+      ],
+      imageSrc: '/images/mockups/science_backed.png',
+      icon: '\u{1F393}',
+    },
+  ];
+
+  const howItWorksSteps = [
+    {
+      step: 1,
+      title: t('landing.howItWorks.step1Title'),
+      icon: '\u{1F3AF}',
+      description: t('landing.howItWorks.step1Description'),
+      color: '#ff4b4b',
+    },
+    {
+      step: 2,
+      title: t('landing.howItWorks.step2Title'),
+      icon: '\u26BD',
+      description: t('landing.howItWorks.step2Description'),
+      color: '#6366f1',
+    },
+    {
+      step: 3,
+      title: t('landing.howItWorks.step3Title'),
+      icon: '\u{1F4CA}',
+      description: t('landing.howItWorks.step3Description'),
+      color: '#22c55e',
+    },
+    {
+      step: 4,
+      title: t('landing.howItWorks.step4Title'),
+      icon: '\u2B50',
+      description: t('landing.howItWorks.step4Description'),
+      color: '#ffd166',
+    },
+  ];
+
+  const whyVersaFootyData = [
+    {
+      title: t('landing.whyVersaFooty.card1Title'),
+      problem: t('landing.whyVersaFooty.card1Problem'),
+      solution: t('landing.whyVersaFooty.card1Solution'),
+      icon: '\u{1F309}',
+      borderColor: '#6366f1',
+    },
+    {
+      title: t('landing.whyVersaFooty.card2Title'),
+      problem: t('landing.whyVersaFooty.card2Problem'),
+      solution: t('landing.whyVersaFooty.card2Solution'),
+      icon: '\u23F1\uFE0F',
+      borderColor: '#22c55e',
+    },
+    {
+      title: t('landing.whyVersaFooty.card3Title'),
+      problem: t('landing.whyVersaFooty.card3Problem'),
+      solution: t('landing.whyVersaFooty.card3Solution'),
+      icon: '\u{1F4FA}',
+      borderColor: '#8b5cf6',
+    },
+    {
+      title: t('landing.whyVersaFooty.card4Title'),
+      problem: t('landing.whyVersaFooty.card4Problem'),
+      solution: t('landing.whyVersaFooty.card4Solution'),
+      icon: '\u{1F468}\u200D\u{1F467}\u200D\u{1F466}',
+      borderColor: '#f59e0b',
+    },
+  ];
+
+  const testimonials = [
+    {
+      quote: t('landing.testimonials.quote1'),
+      author: t('landing.testimonials.author1'),
+      avatar: '/images/avatars/alex-dad.jpg',
+    },
+    {
+      quote: t('landing.testimonials.quote2'),
+      author: t('landing.testimonials.author2'),
+      avatar: '/images/avatars/sarah-mom.jpg',
+    },
+    {
+      quote: t('landing.testimonials.quote3'),
+      author: t('landing.testimonials.author3'),
+      avatar: '/images/avatars/emma-mom.jpg',
+    },
+  ];
 
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.95]);
 
@@ -205,30 +204,30 @@ export default function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.2 }}
                 >
                   <div className={styles.tagline}>
-                    <span>🚀</span>
-                    <span>Don't Miss Out! Join First!</span>
+                    <span>{'\u{1F680}'}</span>
+                    <span>{t('landing.hero.tagline')}</span>
                   </div>
                   <h1 className={styles.heroTitle}>
-                    Help Your Kid Build Pro Skills with{' '}
-                    <span className={styles.specialHighlightText}>Science-Based AI Training</span>
+                    {t('landing.hero.title')}{' '}
+                    <span className={styles.specialHighlightText}>{t('landing.hero.titleHighlight')}</span>
                   </h1>
                   <p className={styles.heroSubtitle}>
-                    Technical ability is made, not born, and the window to develop it closes sooner than you think. Our app gives kids aged 7–14 a science-based path to build it before it's too late.
+                    {t('landing.hero.subtitle')}
                   </p>
                   <p className={styles.heroSubtitle} style={{ marginTop: '16px', fontSize: '18px', fontWeight: '600', color: '#ffd166' }}>
-                    170+ skills. 10 categories. 1000+ exercises.
+                    {t('landing.hero.statsLine')}
                   </p>
-                  
+
                   {/* App Store Buttons */}
-                  <div style={{ 
-                    display: 'flex', 
+                  <div style={{
+                    display: 'flex',
                     gap: '16px',
                     flexWrap: 'wrap',
                   }}>
                     <a
                       href="#"
                       onClick={(e) => { e.preventDefault(); setIsModalOpen(true); }}
-                      style={{ 
+                      style={{
                         display: 'inline-block',
                         width: '160px',
                         transition: 'transform 0.3s ease',
@@ -238,14 +237,14 @@ export default function LandingPage() {
                     >
                       <img
                         src="/images/download/Download_on_the_App_Store_Badge.svg.png"
-                        alt="Download on the App Store"
+                        alt={t('landing.hero.appStoreAlt')}
                         style={{ width: '160px', height: 'auto', display: 'block' }}
                       />
                     </a>
                     <a
                       href="#"
                       onClick={(e) => { e.preventDefault(); setIsModalOpen(true); }}
-                      style={{ 
+                      style={{
                         display: 'inline-block',
                         width: '160px',
                         transition: 'transform 0.3s ease',
@@ -255,7 +254,7 @@ export default function LandingPage() {
                     >
                       <img
                         src="/images/download/Download_on_the_Google_Play_Badge.svg.png"
-                        alt="Get it on Google Play"
+                        alt={t('landing.hero.playStoreAlt')}
                         style={{ width: '160px', height: 'auto', display: 'block' }}
                       />
                     </a>
@@ -272,12 +271,12 @@ export default function LandingPage() {
                   <div className={styles.appMockupsContainer}>
                     <img
                       src="/images/mockups/Versa_Footy_Mockup_1.png"
-                      alt="Versa Footy app"
+                      alt={t('landing.hero.mockupAlt')}
                       className={`${styles.appMockup} ${styles.mockup1}`}
                     />
                     <img
                       src="/images/mockups/Versa_Footy_Mockup_2.png"
-                      alt="Versa Footy app"
+                      alt={t('landing.hero.mockupAlt')}
                       className={`${styles.appMockup} ${styles.mockup2}`}
                     />
                   </div>
@@ -300,14 +299,14 @@ export default function LandingPage() {
           >
             <div style={containerStyle}>
               <motion.div style={{ textAlign: 'center', marginBottom: '64px' }} variants={fadeInUp}>
-                <h2 className={styles.sectionTitle}>How It Works</h2>
+                <h2 className={styles.sectionTitle}>{t('landing.howItWorks.sectionTitle')}</h2>
                 <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.7)', maxWidth: '640px', margin: '16px auto 0' }}>
-                  Get started in minutes and watch your child's skills improve week after week
+                  {t('landing.howItWorks.sectionSubtitle')}
                 </p>
               </motion.div>
-              
-              <div style={{ 
-                display: 'grid', 
+
+              <div style={{
+                display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
                 gap: '24px',
               }}>
@@ -387,16 +386,16 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <h2 style={{ 
-                  fontSize: '36px', 
-                  fontWeight: '800', 
+                <h2 style={{
+                  fontSize: '36px',
+                  fontWeight: '800',
                   color: 'white',
                   marginBottom: '16px',
                 }}>
-                  See Versa Footy in Action
+                  {t('landing.videoShowcase.sectionTitle')}
                 </h2>
                 <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.8)', maxWidth: '640px', margin: '0 auto' }}>
-                  Watch how Versa Footy is revolutionizing youth soccer training with AI-powered personalized programs.
+                  {t('landing.videoShowcase.sectionSubtitle')}
                 </p>
               </motion.div>
               <motion.div
@@ -429,12 +428,12 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <h2 className={styles.sectionTitle}>Why Versa Footy?</h2>
+                <h2 className={styles.sectionTitle}>{t('landing.whyVersaFooty.sectionTitle')}</h2>
                 <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.7)', marginTop: '8px' }}>
-                  Closing the Gap in Youth Soccer Development
+                  {t('landing.whyVersaFooty.sectionSubtitle')}
                 </p>
               </motion.div>
-              
+
               <div className={styles.whyVersaFootyGrid}>
                 {whyVersaFootyData.map((item, index) => (
                   <motion.div
@@ -491,7 +490,7 @@ export default function LandingPage() {
                       padding: '10px 14px',
                       borderLeft: `3px solid ${item.borderColor}`,
                     }}>
-                      <span style={{ fontWeight: '700', color: item.borderColor }}>Versa Footy</span>
+                      <span style={{ fontWeight: '700', color: item.borderColor }}>{t('common.versaFooty')}</span>
                       {' '}{item.solution}
                     </div>
                   </motion.div>
@@ -503,18 +502,18 @@ export default function LandingPage() {
           {/* Features Section */}
           <section id="features" className={styles.featuresSection}>
             <div style={containerStyle}>
-              <motion.div 
+              <motion.div
                 style={{ textAlign: 'center', marginBottom: '64px' }}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
               >
-                <h2 className={styles.sectionTitle}>Powerful Features</h2>
+                <h2 className={styles.sectionTitle}>{t('landing.features.sectionTitle')}</h2>
                 <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.7)', maxWidth: '640px', margin: '16px auto 0' }}>
-                  Everything your child needs to develop professional-level skills
+                  {t('landing.features.sectionSubtitle')}
                 </p>
               </motion.div>
-              
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: '80px' }}>
                 {featuresData.map((feature, index) => (
                   <motion.div
@@ -539,12 +538,12 @@ export default function LandingPage() {
                       <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.8)', marginBottom: '24px' }}>{feature.description}</p>
                       <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                         {feature.bulletPoints.map((point) => (
-                          <li 
-                            key={point} 
-                            style={{ 
-                              display: 'flex', 
-                              alignItems: 'flex-start', 
-                              gap: '12px', 
+                          <li
+                            key={point}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'flex-start',
+                              gap: '12px',
                               marginBottom: '12px',
                               color: 'rgba(255,255,255,0.85)',
                               fontSize: '16px',
@@ -576,10 +575,10 @@ export default function LandingPage() {
                         whileHover={{ scale: 1.02 }}
                         style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
                       >
-                        <img 
-                          src={feature.imageSrc} 
-                          alt={feature.title} 
-                          style={{ width: '100%', height: 'auto', display: 'block' }} 
+                        <img
+                          src={feature.imageSrc}
+                          alt={feature.title}
+                          style={{ width: '100%', height: 'auto', display: 'block' }}
                         />
                       </motion.div>
                     </div>
@@ -592,18 +591,18 @@ export default function LandingPage() {
           {/* Testimonials Section */}
           <section id="testimonials" className={styles.testimonialsSection}>
             <div style={containerStyle}>
-              <motion.div 
+              <motion.div
                 style={{ textAlign: 'center', marginBottom: '64px' }}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
               >
-                <h2 className={styles.sectionTitle}>Success Stories</h2>
+                <h2 className={styles.sectionTitle}>{t('landing.testimonials.sectionTitle')}</h2>
                 <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.7)', maxWidth: '640px', margin: '16px auto 0' }}>
-                  Join thousands of parents who are helping their kids reach their full potential
+                  {t('landing.testimonials.sectionSubtitle')}
                 </p>
               </motion.div>
-              
+
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
@@ -631,19 +630,19 @@ export default function LandingPage() {
                     <svg style={{ width: '40px', height: '40px', color: '#ff6b6b', marginBottom: '16px' }} fill="currentColor" viewBox="0 0 24 24">
                       <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                     </svg>
-                    <p style={{ 
-                      fontSize: '16px', 
-                      color: 'rgba(255,255,255,0.9)', 
-                      fontStyle: 'italic', 
+                    <p style={{
+                      fontSize: '16px',
+                      color: 'rgba(255,255,255,0.9)',
+                      fontStyle: 'italic',
                       lineHeight: '1.7',
                       flex: '1',
                       marginBottom: '20px',
                     }}>
                       "{testimonial.quote}"
                     </p>
-                    <div style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
                       gap: '16px',
                       paddingTop: '16px',
                       borderTop: '1px solid rgba(255,255,255,0.1)',
@@ -672,12 +671,12 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <h2 className={styles.sectionTitle} style={{ marginBottom: '16px' }}>Still Have Questions?</h2>
+                <h2 className={styles.sectionTitle} style={{ marginBottom: '16px' }}>{t('landing.faqCta.sectionTitle')}</h2>
                 <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.7)', marginBottom: '32px', maxWidth: '640px', margin: '0 auto 32px' }}>
-                  Find answers to common questions about Versa Footy and how it can help your kid excel in soccer.
+                  {t('landing.faqCta.sectionSubtitle')}
                 </p>
                 <Link href="/faq">
-                  <a className={styles.button}>View FAQ</a>
+                  <a className={styles.button}>{t('landing.faqCta.viewFaqButton')}</a>
                 </Link>
               </motion.div>
             </div>
@@ -687,16 +686,16 @@ export default function LandingPage() {
           <section className={styles.ctaSection}>
             <div style={{ ...containerStyle, textAlign: 'center', padding: '80px 24px', position: 'relative', zIndex: 1 }}>
               <h2 style={{ fontSize: '36px', fontWeight: '800', color: 'white', marginBottom: '16px' }}>
-                Ready to Give Your Kid a Competitive Edge?
+                {t('landing.cta.title')}
               </h2>
               <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.9)', marginBottom: '40px', maxWidth: '640px', margin: '0 auto 40px' }}>
-                Download the app and watch your kid's confidence and skills take off.
+                {t('landing.cta.subtitle')}
               </p>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
                 <a
                   href="#"
                   onClick={(e) => { e.preventDefault(); setIsModalOpen(true); }}
-                  style={{ 
+                  style={{
                     display: 'inline-block',
                     width: '180px',
                     transition: 'transform 0.3s ease',
@@ -706,14 +705,14 @@ export default function LandingPage() {
                 >
                   <img
                     src="/images/download/Download_on_the_App_Store_Badge.svg.png"
-                    alt="Download on the App Store"
+                    alt={t('landing.hero.appStoreAlt')}
                     style={{ width: '180px', height: 'auto', display: 'block' }}
                   />
                 </a>
                 <a
                   href="#"
                   onClick={(e) => { e.preventDefault(); setIsModalOpen(true); }}
-                  style={{ 
+                  style={{
                     display: 'inline-block',
                     width: '180px',
                     transition: 'transform 0.3s ease',
@@ -723,7 +722,7 @@ export default function LandingPage() {
                 >
                   <img
                     src="/images/download/Download_on_the_Google_Play_Badge.svg.png"
-                    alt="Get it on Google Play"
+                    alt={t('landing.hero.playStoreAlt')}
                     style={{ width: '180px', height: 'auto', display: 'block' }}
                   />
                 </a>
@@ -741,13 +740,13 @@ export default function LandingPage() {
                 transition={{ duration: 0.6 }}
               >
                 <h2 style={{ fontSize: '36px', fontWeight: '800', color: 'white', marginBottom: '16px' }}>
-                  Be the First to Know!
+                  {t('landing.earlyAccess.title')}
                 </h2>
                 <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.9)', marginBottom: '32px' }}>
-                  Join our waitlist to get exclusive early access and updates.
+                  {t('landing.earlyAccess.subtitle')}
                 </p>
                 <button className={styles.button} onClick={() => setIsModalOpen(true)}>
-                  Join the Waitlist
+                  {t('landing.earlyAccess.joinButton')}
                 </button>
               </motion.div>
             </div>

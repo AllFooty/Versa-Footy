@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AlertTriangle } from 'lucide-react';
 
 /**
@@ -7,13 +8,18 @@ import { AlertTriangle } from 'lucide-react';
  */
 const ConfirmModal = ({
   isOpen,
-  title = 'Confirm',
+  title,
   message,
-  confirmLabel = 'Confirm',
+  confirmLabel,
   confirmDanger = false,
   onConfirm,
   onClose,
 }) => {
+  const { t } = useTranslation();
+
+  const resolvedTitle = title || t('modals.confirm.defaultTitle');
+  const resolvedConfirmLabel = confirmLabel || t('modals.confirm.defaultTitle');
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -76,7 +82,7 @@ const ConfirmModal = ({
             fontSize: 18,
             fontWeight: 600,
           }}>
-            {title}
+            {resolvedTitle}
           </h2>
         </div>
 
@@ -98,7 +104,7 @@ const ConfirmModal = ({
           }}
         >
           <button className="btn-secondary" onClick={onClose}>
-            Cancel
+            {t('modals.confirm.defaultCancel')}
           </button>
           <button
             className="btn-primary"
@@ -111,7 +117,7 @@ const ConfirmModal = ({
               boxShadow: 'none',
             } : {}}
           >
-            {confirmLabel}
+            {resolvedConfirmLabel}
           </button>
         </div>
       </div>

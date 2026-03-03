@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Modal from './Modal';
 import { Input, TextArea, Select, FormField, FormRow } from '../ui';
 import { AGE_GROUPS, DEFAULTS } from '../../constants';
@@ -14,6 +15,7 @@ const SkillModal = ({
   categories = [],
   preselectedCategoryId = null,
 }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState(DEFAULTS.skill);
 
   // Reset form when modal opens/closes or editItem changes
@@ -45,30 +47,30 @@ const SkillModal = ({
 
   return (
     <Modal
-      title={editItem ? 'Edit Skill' : 'Add Skill'}
+      title={editItem ? t('modals.skill.editTitle') : t('modals.skill.addTitle')}
       isOpen={isOpen}
       onClose={onClose}
       onSave={handleSave}
-      saveLabel={editItem ? 'Update' : 'Save'}
+      saveLabel={editItem ? t('modals.skill.updateButton') : t('modals.skill.saveButton')}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-        <FormField label="Skill Name" id="skill-name">
+        <FormField label={t('modals.skill.nameLabel')} id="skill-name">
           <Input
             id="skill-name"
-            placeholder="e.g., Toe Taps"
+            placeholder={t('modals.skill.namePlaceholder')}
             value={formData.name}
             onChange={(e) => handleChange('name', e.target.value)}
           />
         </FormField>
 
         <FormRow>
-          <FormField label="Category" id="skill-category">
+          <FormField label={t('modals.skill.categoryLabel')} id="skill-category">
             <Select
               id="skill-category"
               value={formData.categoryId}
               onChange={(e) => handleChange('categoryId', e.target.value)}
             >
-              <option value="">Select Category</option>
+              <option value="">{t('modals.skill.selectCategory')}</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.icon} {cat.name}
@@ -77,7 +79,7 @@ const SkillModal = ({
             </Select>
           </FormField>
 
-          <FormField label="Age Group" id="skill-age">
+          <FormField label={t('modals.skill.ageGroupLabel')} id="skill-age">
             <Select
               id="skill-age"
               value={formData.ageGroup}
@@ -92,10 +94,10 @@ const SkillModal = ({
           </FormField>
         </FormRow>
 
-        <FormField label="Description" id="skill-description">
+        <FormField label={t('modals.skill.descriptionLabel')} id="skill-description">
           <TextArea
             id="skill-description"
-            placeholder="Brief description of this skill..."
+            placeholder={t('modals.skill.descriptionPlaceholder')}
             value={formData.description}
             onChange={(e) => handleChange('description', e.target.value)}
             rows={3}

@@ -1,7 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 const WengerQuote = () => {
+  const { t } = useTranslation();
+
   return (
     <section className="wenger-quote-section">
       {/* Background decoration */}
@@ -34,7 +37,7 @@ const WengerQuote = () => {
             <div className="wenger-image-wrapper">
               <img
                 src="/images/wenger.jpg"
-                alt="Arsène Wenger"
+                alt={t('landing.wengerQuote.author')}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             </div>
@@ -55,19 +58,14 @@ const WengerQuote = () => {
 
             {/* Quote Text */}
             <p className="wenger-quote-text">
-              You build a player like you build a house. First comes the basement; the base of the
-              player is the technique. You get that between seven and fourteen years of age.
-              <span className="wenger-highlight">
-                If you have no technical skill at fourteen, you can forget it; you can never be a
-                football player.
-              </span>
+              {t('landing.wengerQuote.quote')}
             </p>
 
             {/* Author Info */}
             <footer className="wenger-author-container">
-              <div className="wenger-author-name">Arsène Wenger</div>
+              <div className="wenger-author-name">{t('landing.wengerQuote.author')}</div>
               <div className="wenger-author-title">
-                Former Arsenal Manager & FIFA Chief of Global Football Development
+                {t('landing.wengerQuote.role')}
               </div>
             </footer>
           </motion.blockquote>
@@ -82,24 +80,24 @@ const WengerQuote = () => {
           position: relative;
           overflow: hidden;
         }
-        
+
         .wenger-container {
           max-width: 1100px;
           margin: 0 auto;
         }
-        
+
         .wenger-flex-container {
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: 32px;
         }
-        
+
         .wenger-image-container {
           position: relative;
           flex-shrink: 0;
         }
-        
+
         .wenger-image-wrapper {
           width: 160px;
           height: 160px;
@@ -108,20 +106,20 @@ const WengerQuote = () => {
           box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
           border: 3px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .wenger-quote-container {
           text-align: center;
           flex: 1;
           margin: 0;
         }
-        
+
         .wenger-quote-icon {
           width: 36px;
           height: 36px;
           color: rgba(255, 209, 102, 0.8);
           margin-bottom: 16px;
         }
-        
+
         .wenger-quote-text {
           font-size: 18px;
           line-height: 1.7;
@@ -130,7 +128,7 @@ const WengerQuote = () => {
           font-weight: 400;
           margin: 0 0 16px 0;
         }
-        
+
         .wenger-highlight {
           color: #ffd166;
           font-weight: 600;
@@ -139,21 +137,21 @@ const WengerQuote = () => {
           margin-top: 12px;
           text-shadow: 0 0 20px rgba(255, 209, 102, 0.3);
         }
-        
+
         .wenger-author-container {
           margin-top: 20px;
           padding-top: 16px;
           border-top: 2px solid rgba(255, 209, 102, 0.2);
           display: inline-block;
         }
-        
+
         .wenger-author-name {
           font-size: 18px;
           font-weight: 700;
           color: white;
           margin-bottom: 4px;
         }
-        
+
         .wenger-author-title {
           font-size: 12px;
           font-weight: 500;
@@ -161,56 +159,56 @@ const WengerQuote = () => {
           text-transform: uppercase;
           letter-spacing: 0.05em;
         }
-        
+
         @media (min-width: 768px) {
           .wenger-quote-section {
             padding: 60px 32px;
           }
-          
+
           .wenger-flex-container {
             flex-direction: row;
             align-items: center;
             gap: 48px;
           }
-          
+
           .wenger-image-wrapper {
             width: 180px;
             height: 180px;
           }
-          
+
           .wenger-quote-container {
             text-align: left;
           }
-          
+
           .wenger-quote-icon {
             width: 40px;
             height: 40px;
           }
-          
+
           .wenger-quote-text {
             font-size: 20px;
           }
-          
+
           .wenger-highlight {
             font-size: 21px;
           }
-          
+
           .wenger-author-container {
             display: block;
           }
         }
-        
+
         @media (min-width: 1024px) {
           .wenger-image-wrapper {
             width: 200px;
             height: 200px;
           }
-          
+
           .wenger-quote-text {
             font-size: 22px;
             line-height: 1.8;
           }
-          
+
           .wenger-highlight {
             font-size: 23px;
           }

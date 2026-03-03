@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import SocialIcon from './SocialIcons';
 import { useAuth } from '../../../lib/AuthContext';
 
 const FooterLanding = () => {
   const { isAuthenticated } = useAuth();
+  const { t } = useTranslation();
 
   const LinkEl = ({ href, children, style }) => {
     const isExternal = href.startsWith('http');
@@ -24,21 +26,21 @@ const FooterLanding = () => {
 
   // Base quick links
   const baseQuickLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Features', href: '/#features' },
-    { name: 'Testimonials', href: '/#testimonials' },
-    { name: 'FAQ', href: '/faq' },
-    { name: 'About Us', href: '/about-us' },
+    { name: t('nav.home'), href: '/' },
+    { name: t('nav.features'), href: '/#features' },
+    { name: t('nav.testimonials'), href: '/#testimonials' },
+    { name: t('nav.faq'), href: '/faq' },
+    { name: t('nav.aboutUs'), href: '/about-us' },
   ];
 
   // Add Library link only when authenticated
   const quickLinks = isAuthenticated
-    ? [...baseQuickLinks, { name: 'Library', href: '/library' }]
+    ? [...baseQuickLinks, { name: t('nav.library'), href: '/library' }]
     : baseQuickLinks;
 
   const legalLinks = [
-    { name: 'Terms of Service', href: '/terms-of-service' },
-    { name: 'Privacy Policy', href: '/privacy-policy' },
+    { name: t('footer.termsOfService'), href: '/terms-of-service' },
+    { name: t('footer.privacyPolicy'), href: '/privacy-policy' },
   ];
 
   const productLinks = [
@@ -94,14 +96,14 @@ const FooterLanding = () => {
             <div style={{ marginBottom: '24px' }}>
               <img
                 src="/images/Versa Footy Icon.png"
-                alt="Versa Footy Logo"
+                alt={t('common.appName')}
                 style={{ width: '80px', height: '80px', borderRadius: '16px', marginBottom: '16px' }}
               />
               <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#ffd166', margin: '0 0 8px 0' }}>
-                Versa Footy
+                {t('common.versaFooty')}
               </h3>
               <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.6)', margin: 0 }}>
-                AI-Powered Soccer Training for Young Athletes
+                {t('footer.brandSubtitle')}
               </p>
             </div>
             <div style={{ display: 'flex', gap: '16px' }}>
@@ -113,7 +115,7 @@ const FooterLanding = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 style={headingStyle}>Quick Links</h4>
+            <h4 style={headingStyle}>{t('footer.quickLinks')}</h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {quickLinks.map((link) => (
                 <li key={link.name} style={{ marginBottom: '12px' }}>
@@ -128,7 +130,7 @@ const FooterLanding = () => {
 
           {/* Legal */}
           <div>
-            <h4 style={headingStyle}>Legal</h4>
+            <h4 style={headingStyle}>{t('footer.legal')}</h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {legalLinks.map((link) => (
                 <li key={link.name} style={{ marginBottom: '12px' }}>
@@ -143,7 +145,7 @@ const FooterLanding = () => {
 
           {/* Contact */}
           <div>
-            <h4 style={headingStyle}>Contact</h4>
+            <h4 style={headingStyle}>{t('footer.contact')}</h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               <li style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'rgba(255, 255, 255, 0.7)', marginBottom: '16px' }}>
                 <svg style={{ width: '20px', height: '20px', color: '#6366f1', flexShrink: 0 }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -172,7 +174,7 @@ const FooterLanding = () => {
                   <svg style={{ width: '16px', height: '16px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
-                  Join Waitlist
+                  {t('footer.joinWaitlist')}
                 </LinkEl>
               </li>
             </ul>
@@ -184,7 +186,7 @@ const FooterLanding = () => {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.5)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                Part of the
+                {t('footer.partOfThe')}
               </span>
               <a
                 href="https://all4footy.com"
@@ -214,21 +216,21 @@ const FooterLanding = () => {
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
                 }}>
-                  All4Footy
+                  {t('footer.all4Footy')}
                 </span>
                 <span style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '14px', fontWeight: '500' }}>
-                  Family
+                  {t('footer.family')}
                 </span>
               </a>
               <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.5)', textAlign: 'center', maxWidth: '400px', marginTop: '8px' }}>
-                Empowering the soccer community with innovative software solutions
+                {t('footer.empoweringSoccer')}
               </p>
             </div>
 
             {/* Product Links */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '100%', paddingTop: '16px' }}>
               <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.4)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '500' }}>
-                Explore Our Products
+                {t('footer.exploreProducts')}
               </span>
               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '12px' }}>
                 {productLinks.map((product) => (
@@ -277,18 +279,18 @@ const FooterLanding = () => {
           fontSize: '14px',
           color: 'rgba(255, 255, 255, 0.5)',
         }}>
-          <p style={{ margin: 0 }}>© {new Date().getFullYear()} Versa Footy. All rights reserved.</p>
+          <p style={{ margin: 0 }}>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
           <p style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span>An</span>
+            <span>{t('footer.an')}</span>
             <a
               href="https://all4footy.com"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: '#6366f1', fontWeight: '500', textDecoration: 'none' }}
             >
-              All4Footy
+              {t('footer.all4Footy')}
             </a>
-            <span>Product</span>
+            <span>{t('footer.product')}</span>
           </p>
         </div>
       </div>

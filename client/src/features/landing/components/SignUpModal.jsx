@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const overlayStyle = {
   position: 'fixed',
@@ -20,20 +21,22 @@ const modalStyle = {
 };
 
 const SignUpModal = ({ onClose }) => {
+  const { t } = useTranslation();
+
   return (
     <div style={overlayStyle} onClick={onClose} role="presentation">
       <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
-        <h2 style={{ fontSize: 20, marginBottom: 12 }}>Join the waitlist</h2>
+        <h2 style={{ fontSize: 20, marginBottom: 12 }}>{t('signUpModal.title')}</h2>
         <p style={{ marginBottom: 16, color: '#475569' }}>
-          This is a placeholder modal. We will connect this to your signup backend or email service.
+          {t('signUpModal.description')}
         </p>
         <label htmlFor="email" style={{ display: 'block', marginBottom: 8, fontWeight: 600 }}>
-          Email
+          {t('signUpModal.emailLabel')}
         </label>
         <input
           id="email"
           type="email"
-          placeholder="you@example.com"
+          placeholder={t('signUpModal.emailPlaceholder')}
           style={{
             width: '100%',
             padding: '10px 12px',
@@ -56,7 +59,7 @@ const SignUpModal = ({ onClose }) => {
           }}
           onClick={onClose}
         >
-          Submit
+          {t('signUpModal.submitButton')}
         </button>
         <button
           type="button"
@@ -71,7 +74,7 @@ const SignUpModal = ({ onClose }) => {
             cursor: 'pointer',
           }}
         >
-          Close
+          {t('signUpModal.closeButton')}
         </button>
       </div>
     </div>
@@ -79,4 +82,3 @@ const SignUpModal = ({ onClose }) => {
 };
 
 export default SignUpModal;
-

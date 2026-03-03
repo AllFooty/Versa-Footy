@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link, Route, Switch } from 'wouter';
+import { useTranslation } from 'react-i18next';
 
 import { AuthProvider } from './lib/AuthContext';
+import { LanguageProvider } from './lib/LanguageContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import AcademyProtectedRoute from './components/AcademyProtectedRoute';
@@ -24,23 +26,26 @@ import PlayerDetail from './features/academy/PlayerDetail';
 import TeamManagement from './features/academy/TeamManagement';
 import AcademySettings from './features/academy/AcademySettings';
 
-const NotFound = () => (
-  <div style={containerStyle}>
-    <div style={cardStyle}>
-      <p style={eyebrowStyle}>404</p>
-      <h1 style={titleStyle}>Page not found</h1>
-      <p style={bodyStyle}>Try heading back to the landing page.</p>
-      <div style={actionsStyle}>
-        <Link href="/">
-          <a style={primaryButtonStyle}>Go home</a>
-        </Link>
-        <Link href="/library">
-          <a style={ghostButtonStyle}>Library</a>
-        </Link>
+const NotFound = () => {
+  const { t } = useTranslation();
+  return (
+    <div style={containerStyle}>
+      <div style={cardStyle}>
+        <p style={eyebrowStyle}>{t('errors.notFound.code')}</p>
+        <h1 style={titleStyle}>{t('errors.notFound.title')}</h1>
+        <p style={bodyStyle}>{t('errors.notFound.description')}</p>
+        <div style={actionsStyle}>
+          <Link href="/">
+            <a style={primaryButtonStyle}>{t('errors.notFound.goHome')}</a>
+          </Link>
+          <Link href="/library">
+            <a style={ghostButtonStyle}>{t('errors.notFound.library')}</a>
+          </Link>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const containerStyle = {
   minHeight: '100vh',
@@ -112,6 +117,7 @@ const ghostButtonStyle = {
 };
 
 function DevBanner() {
+  const { t } = useTranslation();
   if (import.meta.env.PROD) return null;
   return (
     <div style={{
@@ -121,13 +127,14 @@ function DevBanner() {
       padding: '2px 12px', borderRadius: '0 0 6px 6px',
       fontFamily: "'Inter', system-ui, sans-serif",
     }}>
-      DEV ENVIRONMENT
+      {t('common.devEnvironment')}
     </div>
   );
 }
 
 export default function AppRouter() {
   return (
+    <LanguageProvider>
     <AuthProvider>
       <DevBanner />
       <Switch>
@@ -245,5 +252,6 @@ export default function AppRouter() {
         </Route>
       </Switch>
     </AuthProvider>
+    </LanguageProvider>
   );
 }

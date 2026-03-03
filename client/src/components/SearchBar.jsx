@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Search, Plus, Filter, X, Video, Zap, FolderOpen } from 'lucide-react';
 import { AGE_GROUPS } from '../constants';
 
@@ -33,6 +34,7 @@ const SearchBar = ({
   onAddSkill,
   onAddCategory,
 }) => {
+  const { t } = useTranslation();
   const [fabOpen, setFabOpen] = useState(false);
 
   const handleFabAction = (action) => {
@@ -52,7 +54,7 @@ const SearchBar = ({
               size={18}
               style={{
                 position: 'absolute',
-                left: 14,
+                insetInlineStart: 14,
                 top: '50%',
                 transform: 'translateY(-50%)',
                 color: '#52525b',
@@ -60,9 +62,9 @@ const SearchBar = ({
             />
             <input
               type="text"
-              placeholder="Search skills, exercises..."
+              placeholder={t('library.searchPlaceholder')}
               className="input"
-              style={{ paddingLeft: 44, paddingRight: searchTerm ? 44 : 16 }}
+              style={{ paddingInlineStart: 44, paddingInlineEnd: searchTerm ? 44 : 16 }}
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
             />
@@ -71,7 +73,7 @@ const SearchBar = ({
                 onClick={() => onSearchChange('')}
                 style={{
                   position: 'absolute',
-                  right: 8,
+                  insetInlineEnd: 8,
                   top: '50%',
                   transform: 'translateY(-50%)',
                   background: 'rgba(255, 255, 255, 0.1)',
@@ -86,8 +88,8 @@ const SearchBar = ({
                   color: '#a1a1aa',
                   padding: 0,
                 }}
-                title="Clear search"
-                aria-label="Clear search"
+                title={t('library.clearSearch')}
+                aria-label={t('library.clearSearch')}
               >
                 <X size={14} />
               </button>
@@ -97,13 +99,13 @@ const SearchBar = ({
           {/* Action Buttons */}
           <div className="toolbar-actions">
             <button className="btn-primary" onClick={onAddExercise}>
-              <Plus size={18} /> Add Exercise
+              <Plus size={18} /> {t('library.addExercise')}
             </button>
             <button className="btn-secondary" onClick={onAddSkill}>
-              <Plus size={16} /> Add Skill
+              <Plus size={16} /> {t('library.addSkill')}
             </button>
             <button className="btn-secondary" onClick={onAddCategory}>
-              <Plus size={16} /> Add Category
+              <Plus size={16} /> {t('library.addCategory')}
             </button>
           </div>
         </div>
@@ -119,10 +121,10 @@ const SearchBar = ({
               value={filterAgeGroup}
               onChange={(e) => onFilterChange(e.target.value)}
             >
-              <option value="">All Ages</option>
+              <option value="">{t('library.allAges')}</option>
               {AGE_GROUPS.map((age) => (
                 <option key={age} value={age}>
-                  {age} {!exactAgeMatch && '& below'}
+                  {age} {!exactAgeMatch && t('library.andBelow')}
                 </option>
               ))}
             </select>
@@ -131,7 +133,7 @@ const SearchBar = ({
           {/* Exact Age Chip */}
           {filterAgeGroup && (
             <FilterChip
-              label="Exact age only"
+              label={t('library.exactAgeOnly')}
               active={exactAgeMatch}
               onClick={() => onExactAgeMatchChange(!exactAgeMatch)}
             />
@@ -140,17 +142,17 @@ const SearchBar = ({
           {/* Exercise Filter Chips */}
           <div className="filter-chip-group">
             <FilterChip
-              label="All"
+              label={t('library.filterAll')}
               active={exerciseFilter === 'all'}
               onClick={() => onExerciseFilterChange('all')}
             />
             <FilterChip
-              label="Has Exercises"
+              label={t('library.filterHasExercises')}
               active={exerciseFilter === 'has'}
               onClick={() => onExerciseFilterChange('has')}
             />
             <FilterChip
-              label="No Exercises"
+              label={t('library.filterNoExercises')}
               active={exerciseFilter === 'none'}
               onClick={() => onExerciseFilterChange('none')}
             />
@@ -166,7 +168,7 @@ const SearchBar = ({
             size={18}
             style={{
               position: 'absolute',
-              left: 14,
+              insetInlineStart: 14,
               top: '50%',
               transform: 'translateY(-50%)',
               color: '#52525b',
@@ -175,9 +177,9 @@ const SearchBar = ({
           <input
             type="search"
             enterKeyHint="search"
-            placeholder="Search skills, exercises..."
+            placeholder={t('library.searchPlaceholder')}
             className="input"
-            style={{ paddingLeft: 44, paddingRight: searchTerm ? 48 : 16 }}
+            style={{ paddingInlineStart: 44, paddingInlineEnd: searchTerm ? 48 : 16 }}
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             onKeyDown={(e) => {
@@ -189,7 +191,7 @@ const SearchBar = ({
               onClick={() => onSearchChange('')}
               style={{
                 position: 'absolute',
-                right: 6,
+                insetInlineEnd: 6,
                 top: '50%',
                 transform: 'translateY(-50%)',
                 background: 'rgba(255, 255, 255, 0.1)',
@@ -204,8 +206,8 @@ const SearchBar = ({
                 color: '#a1a1aa',
                 padding: 0,
               }}
-              title="Clear search"
-              aria-label="Clear search"
+              title={t('library.clearSearch')}
+              aria-label={t('library.clearSearch')}
             >
               <X size={16} />
             </button>
@@ -225,10 +227,10 @@ const SearchBar = ({
             value={filterAgeGroup}
             onChange={(e) => onFilterChange(e.target.value)}
           >
-            <option value="">All Age Groups</option>
+            <option value="">{t('library.allAgeGroups')}</option>
             {AGE_GROUPS.map((age) => (
               <option key={age} value={age}>
-                {age} {!exactAgeMatch && '& below'}
+                {age} {!exactAgeMatch && t('library.andBelow')}
               </option>
             ))}
           </select>
@@ -239,17 +241,17 @@ const SearchBar = ({
           {/* Exercise Filter Chips */}
           <div className="filter-chip-group">
             <FilterChip
-              label="All"
+              label={t('library.filterAll')}
               active={exerciseFilter === 'all'}
               onClick={() => onExerciseFilterChange('all')}
             />
             <FilterChip
-              label="Has Exercises"
+              label={t('library.filterHasExercises')}
               active={exerciseFilter === 'has'}
               onClick={() => onExerciseFilterChange('has')}
             />
             <FilterChip
-              label="No Exercises"
+              label={t('library.filterNoExercises')}
               active={exerciseFilter === 'none'}
               onClick={() => onExerciseFilterChange('none')}
             />
@@ -258,7 +260,7 @@ const SearchBar = ({
           {/* Exact Age Chip */}
           {filterAgeGroup && (
             <FilterChip
-              label="Exact age only"
+              label={t('library.exactAgeOnly')}
               active={exactAgeMatch}
               onClick={() => onExactAgeMatchChange(!exactAgeMatch)}
             />
@@ -291,21 +293,21 @@ const SearchBar = ({
             onClick={() => handleFabAction(onAddExercise)}
           >
             <Video size={18} color="#3b82f6" />
-            Add Exercise
+            {t('library.addExercise')}
           </button>
           <button
             className="fab-menu-item"
             onClick={() => handleFabAction(onAddSkill)}
           >
             <Zap size={18} color="#22c55e" />
-            Add Skill
+            {t('library.addSkill')}
           </button>
           <button
             className="fab-menu-item"
             onClick={() => handleFabAction(onAddCategory)}
           >
             <FolderOpen size={18} color="#f97316" />
-            Add Category
+            {t('library.addCategory')}
           </button>
         </div>
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'wouter';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import HeaderLanding from './components/HeaderLanding';
 import FooterLanding from './components/FooterLanding';
 import All4FootyFamilyBar from './components/All4FootyFamilyBar';
@@ -14,6 +15,31 @@ const LinkedInIcon = () => (
 );
 
 const AboutPage = () => {
+  const { t } = useTranslation();
+
+  const coreValues = [
+    { value: t('about.integrity'), description: t('about.integrityText'), icon: '\u{1F517}' },
+    { value: t('about.excellence'), description: t('about.excellenceText'), icon: '\u2B50' },
+    { value: t('about.innovation'), description: t('about.innovationText'), icon: '\u{1F680}' },
+  ];
+
+  const leaders = [
+    {
+      name: t('about.leader1Name'),
+      role: t('about.leader1Role'),
+      image: '/images/team/mubdu-alali.jpg',
+      bio: t('about.leader1Bio'),
+      linkedin: 'https://www.linkedin.com/in/mubdualali/',
+    },
+    {
+      name: t('about.leader2Name'),
+      role: t('about.leader2Role'),
+      image: '/images/team/hussain-bin-ahmad.jpg',
+      bio: t('about.leader2Bio'),
+      linkedin: 'https://www.linkedin.com/in/hussainbahmed/',
+    },
+  ];
+
   return (
     <>
       <All4FootyFamilyBar />
@@ -24,26 +50,23 @@ const AboutPage = () => {
         <section className={`${styles.heroSection} py-20 text-center`}>
           <div className="container mx-auto px-4">
             <h1 className={`${styles.heroTitle} mb-6 font-bold`}>
-              About <span className={styles.specialHighlightText}>Versa Footy</span>
+              {t('about.heroTitle')} <span className={styles.specialHighlightText}>{t('about.heroTitleHighlight')}</span>
             </h1>
             <div className="flex justify-center items-center mb-8">
-              <img src="/images/Versa Footy Icon.png" alt="Versa Footy Logo" width={150} height={150} />
+              <img src="/images/Versa Footy Icon.png" alt={t('common.appName')} width={150} height={150} />
             </div>
             <p className={`${styles.heroSubtitle} max-w-3xl mx-auto`}>
-              Empowering the Next Generation of Soccer Stars with AI-Driven Soccer Training
+              {t('about.heroSubtitle')}
             </p>
           </div>
         </section>
 
         <section className={`${styles.featuresSection} py-16 text-center`}>
           <div className="container mx-auto px-4">
-            <h2 className={`${styles.sectionTitle} mb-12 font-bold`}>Our Story</h2>
+            <h2 className={`${styles.sectionTitle} mb-12 font-bold`}>{t('about.ourStory')}</h2>
             <div className={`${styles.featureCard} p-8 rounded-lg shadow-lg`}>
               <p className={styles.featureDescription}>
-                Founded in 2024, Versa Footy was born from a shared passion for soccer and a vision to revolutionize youth soccer training. We believe every young
-                athlete deserves access to top level training, no matter where they live. Our team came together with a single goal: to create the ultimate soccer
-                training solution for youth players that bridges the gap between talent and opportunity. The result? An AI-powered app that delivers pro-level,
-                personalized training to young players, putting them on a track to have a real chance to become pro soccer players.
+                {t('about.ourStoryText')}
               </p>
             </div>
           </div>
@@ -51,22 +74,18 @@ const AboutPage = () => {
 
         <section className={`${styles.featuresSection} py-16 text-center`}>
           <div className="container mx-auto px-4">
-            <h2 className={`${styles.sectionTitle} mb-12 font-bold`}>Our Mission &amp; Vision</h2>
+            <h2 className={`${styles.sectionTitle} mb-12 font-bold`}>{t('about.missionVision')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className={`${styles.featureCard} p-8 rounded-lg shadow-lg`}>
-                <h3 className={`${styles.stepTitle} mb-4 font-bold`}>Our Mission</h3>
+                <h3 className={`${styles.stepTitle} mb-4 font-bold`}>{t('about.ourMission')}</h3>
                 <p className={styles.stepDescription}>
-                  At Versa Footy, our mission is to redefine youth soccer training through innovative AI technology. We aim to give every young player access to
-                  high-quality training once reserved for elite academies. By combining smart algorithms with sports science, we empower kids aged 5-14 to master
-                  the game and unlock their full potential.
+                  {t('about.ourMissionText')}
                 </p>
               </div>
               <div className={`${styles.featureCard} p-8 rounded-lg shadow-lg`}>
-                <h3 className={`${styles.stepTitle} mb-4 font-bold`}>Our Vision</h3>
+                <h3 className={`${styles.stepTitle} mb-4 font-bold`}>{t('about.ourVision')}</h3>
                 <p className={styles.stepDescription}>
-                  We envision a world where aspiring soccer stars can access personalized, pro-level training that grows with them. Our platform offers over 1,000
-                  unique drills, focusing on 100 essential technical skills. With Versa Footy, young athletes are not just training; they are building confidence,
-                  nurturing their passion, and setting themselves on a path to success.
+                  {t('about.ourVisionText')}
                 </p>
               </div>
             </div>
@@ -75,13 +94,9 @@ const AboutPage = () => {
 
         <section className={`${styles.featuresSection} py-16 text-center`}>
           <div className="container mx-auto px-4">
-            <h2 className={`${styles.sectionTitle} mb-12 font-bold`}>Our Core Values</h2>
+            <h2 className={`${styles.sectionTitle} mb-12 font-bold`}>{t('about.coreValues')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                { value: 'Integrity', description: 'We uphold the highest standards of integrity in our technology, our training methods.', icon: '🔗' },
-                { value: 'Excellence', description: 'We strive for excellence in everything we do, from our AI algorithms to our training programs.', icon: '⭐' },
-                { value: 'Innovation', description: 'We embrace continuous innovation, leveraging technology and science to revolutionize youth soccer training.', icon: '🚀' },
-              ].map((item) => (
+              {coreValues.map((item) => (
                 <div key={item.value} className={`${styles.featureCard} p-6 rounded-lg shadow-lg`}>
                   <div className="flex flex-col items-center">
                     <span className="text-4xl mb-4">{item.icon}</span>
@@ -96,12 +111,10 @@ const AboutPage = () => {
 
         <section className={`${styles.featuresSection} py-16 bg-gray-100 text-center`}>
           <div className="container mx-auto px-4">
-            <h2 className={`${styles.sectionTitle} mb-12 font-bold`}>Our Big Hairy Audacious Goal (BHAG)</h2>
+            <h2 className={`${styles.sectionTitle} mb-12 font-bold`}>{t('about.bhag')}</h2>
             <div className={`${styles.featureCard} p-8 rounded-lg shadow-lg`}>
               <p className={`${styles.stepDescription} text-lg font-semibold`}>
-                By 2034, Versa Footy aims to have transformed the lives of over 1 million young soccer players worldwide. We strive to ensure that at least 1,000 of
-                these players sign professional contracts before the age of 19, revolutionizing the global soccer talent pipeline and democratizing access to
-                elite-level training.
+                {t('about.bhagText')}
               </p>
             </div>
           </div>
@@ -109,24 +122,9 @@ const AboutPage = () => {
 
         <section className={`${styles.testimonialsSection} py-16 bg-gray-50 text-center`}>
           <div className="container mx-auto px-4">
-            <h2 className={`${styles.sectionTitle} mb-12 font-bold`}>Meet Our Leadership</h2>
+            <h2 className={`${styles.sectionTitle} mb-12 font-bold`}>{t('about.leadership')}</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {[
-                {
-                  name: 'Mubdu Alali',
-                  role: 'Co-founder | CEO',
-                  image: '/images/team/mubdu-alali.jpg',
-                  bio: 'A visionary entrepreneur and Top 30 Under 30 Innovator, he brings extensive experience in sports technology and startup development to Versa Footy. His passion for social entrepreneurship and youth development drives the company and its mission to empower young athletes through AI-powered training.',
-                  linkedin: 'https://www.linkedin.com/in/mubdualali/',
-                },
-                {
-                  name: 'Hussain Bin Ahmed',
-                  role: 'Co-founder | COO',
-                  image: '/images/team/hussain-bin-ahmad.jpg',
-                  bio: 'Hussain combines his expertise as a physiotherapist with his experience as a media content creator to drive Versa Footy, its operations and content strategy. His background in sports training and rehabilitation informs the company and its science-based methodology for holistic athlete development.',
-                  linkedin: 'https://www.linkedin.com/in/hussainbahmed/',
-                },
-              ].map((leader) => (
+              {leaders.map((leader) => (
                 <motion.div
                   key={leader.name}
                   className={`${styles.testimonialCard} p-8 rounded-lg shadow-lg flex flex-col items-center text-center bg-white`}
@@ -166,12 +164,12 @@ const AboutPage = () => {
 
         <section className={`${styles.ctaSection} py-16 text-center`}>
           <div className="container mx-auto px-4">
-            <h2 className={`${styles.sectionTitle} text-white mb-8 font-bold`}>Join Our Mission</h2>
+            <h2 className={`${styles.sectionTitle} text-white mb-8 font-bold`}>{t('about.joinMission')}</h2>
             <p className={`${styles.heroSubtitle} text-white mb-8 max-w-2xl mx-auto`}>
-              Be part of the revolution in youth soccer training. Download Versa Footy today and start your journey towards soccer excellence.
+              {t('about.joinMissionText')}
             </p>
             <Link href="/#early-access">
-              <a className={`${styles.button} px-8 py-3 rounded-full text-lg font-semibold inline-block`}>Get Early Access</a>
+              <a className={`${styles.button} px-8 py-3 rounded-full text-lg font-semibold inline-block`}>{t('about.getEarlyAccess')}</a>
             </Link>
           </div>
         </section>
@@ -184,4 +182,3 @@ const AboutPage = () => {
 };
 
 export default AboutPage;
-

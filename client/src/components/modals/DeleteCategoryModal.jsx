@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Trash2, AlertTriangle, X } from 'lucide-react';
 import { IconButton } from '../ui';
 
@@ -8,6 +9,7 @@ import { IconButton } from '../ui';
  * preventing accidental removals.
  */
 const DeleteCategoryModal = ({ isOpen, category, skillCount, exerciseCount, onConfirm, onClose }) => {
+  const { t } = useTranslation();
   const [typedName, setTypedName] = useState('');
 
   useEffect(() => {
@@ -59,7 +61,7 @@ const DeleteCategoryModal = ({ isOpen, category, skillCount, exerciseCount, onCo
                 color: '#ef4444',
               }}
             >
-              Delete Category
+              {t('modals.deleteCategory.title')}
             </h2>
           </div>
           <IconButton onClick={onClose}>
@@ -78,27 +80,27 @@ const DeleteCategoryModal = ({ isOpen, category, skillCount, exerciseCount, onCo
           }}
         >
           <p style={{ margin: 0, fontSize: 14, color: '#fca5a5', lineHeight: 1.6 }}>
-            You are about to permanently delete the category{' '}
+            {t('modals.deleteCategory.warningPrefix')}{' '}
             <strong style={{ color: '#fff' }}>"{category.name}"</strong>.
             {(skillCount > 0 || exerciseCount > 0) && (
               <>
-                {' '}This will also delete:
+                {' '}{t('modals.deleteCategory.willAlsoDelete')}
                 <br />
                 {skillCount > 0 && (
                   <>
-                    {' '}&bull; <strong style={{ color: '#fff' }}>{skillCount} skill{skillCount === 1 ? '' : 's'}</strong>
+                    {' '}&bull; <strong style={{ color: '#fff' }}>{skillCount === 1 ? t('modals.deleteCategory.skillCount', { count: skillCount }) : t('modals.deleteCategory.skillCountPlural', { count: skillCount })}</strong>
                     <br />
                   </>
                 )}
                 {exerciseCount > 0 && (
                   <>
-                    {' '}&bull; <strong style={{ color: '#fff' }}>{exerciseCount} exercise{exerciseCount === 1 ? '' : 's'}</strong>
+                    {' '}&bull; <strong style={{ color: '#fff' }}>{exerciseCount === 1 ? t('modals.deleteCategory.exerciseCount', { count: exerciseCount }) : t('modals.deleteCategory.exerciseCountPlural', { count: exerciseCount })}</strong>
                     <br />
                   </>
                 )}
               </>
             )}
-            This action <strong style={{ color: '#fff' }}>cannot be undone</strong>.
+            {t('modals.deleteCategory.cannotBeUndone')}
           </p>
         </div>
 
@@ -112,7 +114,7 @@ const DeleteCategoryModal = ({ isOpen, category, skillCount, exerciseCount, onCo
               marginBottom: 8,
             }}
           >
-            Type <strong style={{ color: '#e4e4e7' }}>{category.name}</strong> to confirm:
+            {t('modals.deleteCategory.typeToConfirm', { name: category.name })}
           </label>
           <input
             type="text"
@@ -159,7 +161,7 @@ const DeleteCategoryModal = ({ isOpen, category, skillCount, exerciseCount, onCo
               cursor: 'pointer',
             }}
           >
-            Cancel
+            {t('modals.deleteCategory.cancelButton')}
           </button>
           <button
             onClick={handleConfirm}
@@ -181,7 +183,7 @@ const DeleteCategoryModal = ({ isOpen, category, skillCount, exerciseCount, onCo
             }}
           >
             <Trash2 size={14} />
-            Delete Category
+            {t('modals.deleteCategory.deleteButton')}
           </button>
         </div>
       </div>

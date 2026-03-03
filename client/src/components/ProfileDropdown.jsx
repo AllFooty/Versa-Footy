@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/AuthContext';
 
 /**
@@ -8,6 +9,7 @@ import { useAuth } from '../lib/AuthContext';
  * Shows user info, settings link, and sign out with confirmation
  */
 export default function ProfileDropdown() {
+  const { t } = useTranslation();
   const { user, profile, isAdmin, isCoach, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [showConfirmSignOut, setShowConfirmSignOut] = useState(false);
@@ -83,7 +85,7 @@ export default function ProfileDropdown() {
           e.currentTarget.style.transform = 'scale(1)';
           e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
         }}
-        aria-label="Open profile menu"
+        aria-label={t('modals.profileDropdown.openMenu')}
       >
         {getInitials()}
       </button>
@@ -141,7 +143,7 @@ export default function ProfileDropdown() {
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                   }}>
-                    {profile?.full_name || 'Set your name'}
+                    {profile?.full_name || t('common.setYourName')}
                   </div>
                   <div style={{
                     fontSize: '13px',
@@ -190,7 +192,7 @@ export default function ProfileDropdown() {
                         <rect x="14" y="14" width="7" height="7" />
                         <rect x="3" y="14" width="7" height="7" />
                       </svg>
-                      Academy
+                      {t('nav.academy')}
                     </a>
                   </Link>
                 )}
@@ -224,7 +226,7 @@ export default function ProfileDropdown() {
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                       </svg>
-                      Library
+                      {t('nav.library')}
                     </a>
                   </Link>
                 )}
@@ -265,7 +267,7 @@ export default function ProfileDropdown() {
                       <circle cx="12" cy="12" r="3" />
                       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                     </svg>
-                    Settings
+                    {t('nav.settings')}
                   </a>
                 </Link>
 
@@ -303,7 +305,7 @@ export default function ProfileDropdown() {
                     <polyline points="16 17 21 12 16 7" />
                     <line x1="21" y1="12" x2="9" y2="12" />
                   </svg>
-                  Sign Out
+                  {t('common.signOut')}
                 </button>
               </div>
             ) : (
@@ -335,13 +337,13 @@ export default function ProfileDropdown() {
                     color: 'white',
                     marginBottom: '4px',
                   }}>
-                    Sign out?
+                    {t('common.signOutConfirmTitle')}
                   </div>
                   <div style={{
                     fontSize: '13px',
                     color: 'rgba(255, 255, 255, 0.5)',
                   }}>
-                    Are you sure you want to sign out?
+                    {t('common.signOutConfirmMessage')}
                   </div>
                 </div>
                 <div style={{
@@ -365,7 +367,7 @@ export default function ProfileDropdown() {
                     onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
                     onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)'}
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </button>
                   <button
                     onClick={handleConfirmSignOut}
@@ -384,7 +386,7 @@ export default function ProfileDropdown() {
                     onMouseEnter={(e) => e.currentTarget.style.background = '#dc2626'}
                     onMouseLeave={(e) => e.currentTarget.style.background = '#ef4444'}
                   >
-                    Sign Out
+                    {t('common.signOut')}
                   </button>
                 </div>
               </div>

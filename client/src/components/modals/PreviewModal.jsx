@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Edit3, Play, ChevronRight, Video } from 'lucide-react';
 import { IconButton, Button, SecondaryButton, Badge, AgeBadge } from '../ui';
 import { getYouTubeEmbedUrl } from '../../utils/youtube';
@@ -26,6 +27,7 @@ const PreviewModal = ({
   onClose,
   onEdit,
 }) => {
+  const { t } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
   const [youtubeFullscreen, setYoutubeFullscreen] = useState(false);
   const videoRef = useRef(null);
@@ -124,7 +126,7 @@ const PreviewModal = ({
           boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
         }}
       >
-        <Play size={26} fill="#000" color="#000" style={{ marginLeft: 3 }} />
+        <Play size={26} fill="#000" color="#000" style={{ marginInlineStart: 3 }} />
       </div>
     </div>
   );
@@ -159,7 +161,7 @@ const PreviewModal = ({
             marginBottom: isMobile ? 16 : 24,
           }}
         >
-          <div style={{ flex: 1, marginRight: 12 }}>
+          <div style={{ flex: 1, marginInlineEnd: 12 }}>
             <h2
               style={{
                 margin: 0,
@@ -189,7 +191,7 @@ const PreviewModal = ({
                   fontSize: 11,
                   fontWeight: 600,
                 }}>
-                  Combo
+                  {t('modals.preview.combo')}
                 </span>
               )}
               {previewSkills.length > 0
@@ -260,7 +262,7 @@ const PreviewModal = ({
               flexWrap: 'wrap',
             }}
           >
-            <span style={{ color: '#71717a', fontSize: isMobile ? 13 : 14 }}>Difficulty:</span>
+            <span style={{ color: '#71717a', fontSize: isMobile ? 13 : 14 }}>{t('modals.preview.difficulty')}</span>
             <span
               style={{
                 fontSize: isMobile ? 16 : 20,
@@ -289,7 +291,7 @@ const PreviewModal = ({
                 flexWrap: 'wrap',
               }}
             >
-              <span style={{ color: '#71717a', fontSize: isMobile ? 13 : 14 }}>Equipment:</span>
+              <span style={{ color: '#71717a', fontSize: isMobile ? 13 : 14 }}>{t('modals.preview.equipment')}</span>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {exercise.equipment.map((item) => (
                   <span
@@ -360,7 +362,7 @@ const PreviewModal = ({
                 }}
                 src={`${exercise.videoUrl}#t=0.5`}
               >
-                Your browser does not support the video tag.
+                {t('modals.preview.videoNotSupported')}
               </video>
               {playOverlay}
             </div>
@@ -385,7 +387,7 @@ const PreviewModal = ({
               }}
             >
               <Play size={isMobile ? 22 : 20} />
-              <span style={{ flex: 1, fontSize: isMobile ? 15 : 14 }}>Watch Video</span>
+              <span style={{ flex: 1, fontSize: isMobile ? 15 : 14 }}>{t('modals.preview.watchVideo')}</span>
               <ChevronRight size={isMobile ? 18 : 16} />
             </a>
           ) : (
@@ -404,7 +406,7 @@ const PreviewModal = ({
               }}
             >
               <Video size={isMobile ? 20 : 24} />
-              <span style={{ fontSize: isMobile ? 13 : 14 }}>No video available</span>
+              <span style={{ fontSize: isMobile ? 13 : 14 }}>{t('modals.preview.noVideoAvailable')}</span>
             </div>
           )}
 
@@ -421,7 +423,7 @@ const PreviewModal = ({
                   letterSpacing: 1,
                 }}
               >
-                Description
+                {t('modals.preview.description')}
               </h3>
               <div
                 style={{
@@ -452,17 +454,17 @@ const PreviewModal = ({
             paddingTop: isMobile ? 16 : 24,
           }}
         >
-          <SecondaryButton 
+          <SecondaryButton
             onClick={onClose}
             style={isMobile ? { width: '100%', justifyContent: 'center', minHeight: 48 } : {}}
           >
-            Close
+            {t('modals.preview.closeButton')}
           </SecondaryButton>
-          <Button 
+          <Button
             onClick={handleEdit}
             style={isMobile ? { width: '100%', justifyContent: 'center', minHeight: 48 } : {}}
           >
-            <Edit3 size={16} /> Edit Exercise
+            <Edit3 size={16} /> {t('modals.preview.editExercise')}
           </Button>
         </div>
       </div>
@@ -487,7 +489,7 @@ const PreviewModal = ({
           style={{
             position: 'absolute',
             top: 16,
-            right: 16,
+            insetInlineEnd: 16,
             zIndex: 10001,
             background: 'rgba(255,255,255,0.1)',
             border: 'none',

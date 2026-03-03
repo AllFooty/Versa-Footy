@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../lib/AuthContext';
 import { lookupInviteCode, acceptInvitation } from './hooks/useInvitations';
 
 export default function JoinOrganization() {
+  const { t } = useTranslation();
   const { code } = useParams();
   const [, navigate] = useLocation();
   const { isAuthenticated, refreshOrganizations } = useAuth();
@@ -17,7 +19,7 @@ export default function JoinOrganization() {
   // Look up the invite code on mount
   useEffect(() => {
     if (!code) {
-      setError('No invite code provided');
+      setError(t('academy.join.noInviteCode'));
       setLoading(false);
       return;
     }
@@ -67,45 +69,44 @@ export default function JoinOrganization() {
         {loading ? (
           <div style={{ textAlign: 'center', padding: 24 }}>
             <div style={spinnerStyle} />
-            <p style={{ marginTop: 16, color: '#71717a' }}>Looking up invite...</p>
+            <p style={{ marginTop: 16, color: '#71717a' }}>{t('academy.join.lookingUpInvite')}</p>
           </div>
         ) : error && !invitation ? (
           <>
             <div style={iconCircleStyle('#ef4444')}>!</div>
-            <h1 style={titleStyle}>Invalid Invite</h1>
+            <h1 style={titleStyle}>{t('academy.join.invalidInvite')}</h1>
             <p style={descStyle}>{error}</p>
             <button onClick={() => navigate('/')} style={primaryButtonStyle}>
-              Go Home
+              {t('academy.join.goHome')}
             </button>
           </>
         ) : accepted ? (
           <>
             <div style={iconCircleStyle('#22c55e')}>&#10003;</div>
-            <h1 style={titleStyle}>You're In!</h1>
+            <h1 style={titleStyle}>{t('academy.join.youreIn')}</h1>
             <p style={descStyle}>
-              You've joined <strong>{invitation.organizations?.name}</strong> as a {invitation.role}.
-              Redirecting...
+              {t('academy.join.joinedAs', { orgName: invitation.organizations?.name, role: invitation.role })}
             </p>
           </>
         ) : (
           <>
             <div style={iconCircleStyle('#3b82f6')}>&#9734;</div>
-            <h1 style={titleStyle}>You've Been Invited</h1>
+            <h1 style={titleStyle}>{t('academy.join.youveBeenInvited')}</h1>
             <div style={orgInfoStyle}>
               <p style={orgNameStyle}>{invitation.organizations?.name}</p>
               <p style={orgTypeStyle}>{invitation.organizations?.type}</p>
             </div>
             <p style={descStyle}>
-              You'll be joining as a <strong style={{ color: '#e4e4e7' }}>{invitation.role}</strong>.
+              {t('academy.join.joiningAs', { role: invitation.role })}
             </p>
 
             {error && <p style={{ color: '#ef4444', fontSize: 13, marginBottom: 12 }}>{error}</p>}
 
             <button onClick={handleAccept} disabled={accepting} style={primaryButtonStyle}>
-              {accepting ? 'Joining...' : 'Accept Invitation'}
+              {accepting ? t('academy.join.joining') : t('academy.join.acceptInvitation')}
             </button>
             <button onClick={() => navigate('/')} style={secondaryButtonStyle}>
-              Decline
+              {t('academy.join.decline')}
             </button>
           </>
         )}
