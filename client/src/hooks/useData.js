@@ -527,6 +527,14 @@ export const useData = () => {
         }
       }
 
+      // Sort by difficulty (easiest first), nulls last
+      result.sort((a, b) => {
+        if (a.difficulty == null && b.difficulty == null) return 0;
+        if (a.difficulty == null) return 1;
+        if (b.difficulty == null) return -1;
+        return a.difficulty - b.difficulty;
+      });
+
       return result;
     },
     [exercises]
