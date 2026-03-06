@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import CategoryItem from './CategoryItem';
-import { isSearchActive, normalizeSearchTerm } from '../../utils/search';
+import { isAnyFilterActive } from '../../utils/search';
 
 /**
  * Main tree view container for categories, skills, and exercises
@@ -11,10 +11,7 @@ const TreeView = ({
   getSkillsForCategory,
   getExercisesForSkill,
   getCategoriesMatchingSearch,
-  searchTerm,
-  filterAgeGroup,
-  exerciseFilter,
-  exactAgeMatch,
+  filters = {},
   // Category actions
   onEditCategory,
   onDeleteCategory,
@@ -56,26 +53,26 @@ const TreeView = ({
     }));
   };
 
-  const isSearching = isSearchActive(searchTerm) || !!filterAgeGroup || exerciseFilter !== 'all';
+  const isSearching = isAnyFilterActive(filters);
+
+  // Apply category-level filtering
+  const filteredCategories = filters.categoryIds?.length > 0
+    ? categories.filter((c) => filters.categoryIds.includes(c.id))
+    : categories;
 
   // Pre-compute filtered skills per category
   const categoriesWithResults = useMemo(() => {
-    return categories.map((category) => {
-      const filteredSkills = getSkillsForCategory(category.id, {
-        searchTerm,
-        filterAgeGroup,
-        exerciseFilter,
-        exactAgeMatch,
-      });
+    return filteredCategories.map((category) => {
+      const filteredSkills = getSkillsForCategory(category.id, filters);
       return { category, filteredSkills };
     });
-  }, [categories, getSkillsForCategory, searchTerm, filterAgeGroup, exerciseFilter, exactAgeMatch]);
+  }, [filteredCategories, getSkillsForCategory, filters]);
 
   // During active search, hide categories with no matching skills
   // (unless the category name itself matches the search)
   const categoryNameMatches = useMemo(
-    () => getCategoriesMatchingSearch(searchTerm),
-    [getCategoriesMatchingSearch, searchTerm]
+    () => getCategoriesMatchingSearch(filters.searchTerm || ''),
+    [getCategoriesMatchingSearch, filters.searchTerm]
   );
 
   const visibleCategories = isSearching
@@ -93,11 +90,11 @@ const TreeView = ({
     for (const { filteredSkills } of visibleCategories) {
       totalSkills += filteredSkills.length;
       for (const skill of filteredSkills) {
-        totalExercises += getExercisesForSkill(skill.id, { searchTerm }).length;
+        totalExercises += getExercisesForSkill(skill.id, filters).length;
       }
     }
     return { totalSkills, totalExercises, totalCategories: visibleCategories.length };
-  }, [isSearching, visibleCategories, getExercisesForSkill, searchTerm]);
+  }, [isSearching, visibleCategories, getExercisesForSkill, filters]);
 
   return (
     <div
@@ -183,7 +180,7 @@ const TreeView = ({
                 onEditExercise={onEditExercise}
                 onDeleteExercise={onDeleteExercise}
                 getExercisesForSkill={(skillId) =>
-                  getExercisesForSkill(skillId, { searchTerm })
+                  getExercisesForSkill(skillId, filters)
                 }
                 isMobile={isMobile}
               />

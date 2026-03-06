@@ -783,6 +783,29 @@
     "saveChanges": "حفظ التغييرات"
   },
 
+  "filters": {
+    "title": "الفلاتر",
+    "clearAll": "مسح الكل",
+    "showResults": "عرض النتائج",
+    "difficulty": "الصعوبة",
+    "ageGroup": "الفئة العمرية",
+    "equipment": "المعدات",
+    "noEquipment": "بدون معدات",
+    "duration": "المدة",
+    "video": "فيديو",
+    "hasVideo": "يحتوي فيديو",
+    "noVideo": "بدون فيديو",
+    "exerciseType": "نوع التمرين",
+    "exerciseStatus": "حالة التمارين",
+    "singleSkill": "مهارة واحدة",
+    "combo": "مركب",
+    "either": "الكل",
+    "categories": "الفئات",
+    "min": "الحد الأدنى",
+    "max": "الحد الأقصى",
+    "exact": "تحديد"
+  },
+
   "constants": {
     "difficulty": {
       "star1": "نجمة واحدة - الأسهل",

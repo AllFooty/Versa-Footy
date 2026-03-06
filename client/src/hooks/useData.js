@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { normalizeDifficulty } from '../utils/difficulty';
-import { normalizeSearchTerm, matchesAnyField, matchesSearch } from '../utils/search';
+import { normalizeSearchTerm, matchesAnyField, matchesSearch, filterExercises } from '../utils/search';
 import { AGE_GROUPS } from '../constants';
 
 /**
@@ -464,36 +464,46 @@ export const useData = () => {
   );
 
   /**
-   * Get skills for a category with optional filtering
+   * Get skills for a category with optional filtering.
+   * Accepts the unified filters object from DEFAULT_FILTERS.
    */
   const getSkillsForCategory = useCallback(
-    (categoryId, { searchTerm = '', filterAgeGroup = '', exerciseFilter = 'all', exactAgeMatch = false } = {}) => {
+    (categoryId, filters = {}) => {
       let result = skills.filter((s) => s.categoryId === categoryId);
 
-      if (filterAgeGroup) {
+      // Age group filtering
+      const ageGroup = filters.ageGroup || filters.filterAgeGroup || '';
+      const exactAgeMatch = filters.exactAgeMatch || false;
+      if (ageGroup) {
         if (exactAgeMatch) {
-          // Exact match: only show skills for the selected age
-          result = result.filter((s) => s.ageGroup === filterAgeGroup);
+          result = result.filter((s) => s.ageGroup === ageGroup);
         } else {
-          // Cumulative: show all skills up to and including the selected age
-          const maxIndex = AGE_GROUPS.indexOf(filterAgeGroup);
+          const maxIndex = AGE_GROUPS.indexOf(ageGroup);
           result = result.filter((s) => AGE_GROUPS.indexOf(s.ageGroup) <= maxIndex);
         }
       }
 
+      // Exercise status filter — now considers all exercise-level filters
+      const exerciseFilter = filters.exerciseFilter || 'all';
       if (exerciseFilter === 'has') {
-        result = result.filter((s) => exercises.some((e) => e.skillIds.includes(s.id)));
+        result = result.filter((s) => {
+          const skillExercises = exercises.filter((e) => e.skillIds.includes(s.id));
+          return filterExercises(skillExercises, filters).length > 0;
+        });
       } else if (exerciseFilter === 'none') {
-        result = result.filter((s) => !exercises.some((e) => e.skillIds.includes(s.id)));
+        result = result.filter((s) => {
+          const skillExercises = exercises.filter((e) => e.skillIds.includes(s.id));
+          return filterExercises(skillExercises, filters).length === 0;
+        });
       }
 
+      // Text search
+      const searchTerm = filters.searchTerm || '';
       if (searchTerm) {
         const term = normalizeSearchTerm(searchTerm);
         if (term) {
           result = result.filter((s) => {
-            // Match on skill name/description
             if (matchesAnyField([s.name, s.description || ''], term)) return true;
-            // Also match if any of the skill's exercises match
             return exercises
               .filter((e) => e.skillIds.includes(s.id))
               .some((e) =>
@@ -509,23 +519,13 @@ export const useData = () => {
   );
 
   /**
-   * Get exercises for a skill with optional filtering
+   * Get exercises for a skill with optional filtering.
+   * Accepts the unified filters object from DEFAULT_FILTERS.
    */
   const getExercisesForSkill = useCallback(
-    (skillId, { searchTerm = '' } = {}) => {
-      let result = exercises.filter((e) => e.skillIds.includes(skillId));
-
-      if (searchTerm) {
-        const term = normalizeSearchTerm(searchTerm);
-        if (term) {
-          result = result.filter((e) =>
-            matchesAnyField(
-              [e.name, e.description || '', ...(e.equipment || [])],
-              term
-            )
-          );
-        }
-      }
+    (skillId, filters = {}) => {
+      const skillExercises = exercises.filter((e) => e.skillIds.includes(skillId));
+      let result = filterExercises(skillExercises, filters);
 
       // Sort by difficulty (easiest first), nulls last
       result.sort((a, b) => {

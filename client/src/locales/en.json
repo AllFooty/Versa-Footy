@@ -783,6 +783,29 @@
     "saveChanges": "Save Changes"
   },
 
+  "filters": {
+    "title": "Filters",
+    "clearAll": "Clear All",
+    "showResults": "Show Results",
+    "difficulty": "Difficulty",
+    "ageGroup": "Age Group",
+    "equipment": "Equipment",
+    "noEquipment": "No Equipment",
+    "duration": "Duration",
+    "video": "Video",
+    "hasVideo": "Has Video",
+    "noVideo": "No Video",
+    "exerciseType": "Exercise Type",
+    "exerciseStatus": "Exercise Status",
+    "singleSkill": "Single Skill",
+    "combo": "Combo",
+    "either": "Either",
+    "categories": "Categories",
+    "min": "Min",
+    "max": "Max",
+    "exact": "exact"
+  },
+
   "constants": {
     "difficulty": {
       "star1": "1 Star - Easiest",

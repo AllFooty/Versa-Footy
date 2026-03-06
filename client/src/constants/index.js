@@ -76,6 +76,25 @@ export const EQUIPMENT_OPTIONS = [
 ];
 
 /**
+ * Default filter state for the advanced search/filter system
+ */
+export const DEFAULT_FILTERS = {
+  searchTerm: '',
+  ageGroup: '',
+  exactAgeMatch: false,
+  exerciseFilter: 'all',       // 'all' | 'has' | 'none'
+  difficultyMin: null,          // 1-5 or null
+  difficultyMax: null,          // 1-5 or null
+  equipment: [],                // selected equipment strings (AND logic)
+  noEquipment: false,           // true = only exercises with empty equipment
+  durationMin: null,            // seconds or null
+  durationMax: null,            // seconds or null
+  hasVideo: null,               // null=either, true=yes, false=no
+  comboFilter: 'either',       // 'either' | 'single' | 'combo'
+  categoryIds: [],              // empty = all categories
+};
+
+/**
  * Default values for new items
  */
 export const DEFAULTS = {

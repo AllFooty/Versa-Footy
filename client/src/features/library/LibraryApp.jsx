@@ -1,9 +1,11 @@
-import React, { useState, useDeferredValue } from 'react';
+import React, { useState, useCallback, useMemo, useDeferredValue } from 'react';
 import { useTranslation } from 'react-i18next';
 
 // Components
 import Header from '../../components/Header';
 import SearchBar from '../../components/SearchBar';
+import AdvancedFilterPanel from '../../components/AdvancedFilterPanel';
+import ActiveFilterChips from '../../components/ActiveFilterChips';
 import { TreeView } from '../../components/TreeView';
 import {
   CategoryModal,
@@ -19,6 +21,9 @@ import All4FootyFamilyBar from '../landing/components/All4FootyFamilyBar';
 
 // Hooks
 import { useData } from '../../hooks/useData';
+
+// Constants
+import { DEFAULT_FILTERS } from '../../constants';
 
 // Styles
 import '../../styles/library.css';
@@ -54,12 +59,37 @@ export default function LibraryApp() {
     getCategoriesMatchingSearch,
   } = useData();
 
-  // Search & Filter state
-  const [searchTerm, setSearchTerm] = useState('');
-  const deferredSearchTerm = useDeferredValue(searchTerm);
-  const [filterAgeGroup, setFilterAgeGroup] = useState('');
-  const [exerciseFilter, setExerciseFilter] = useState('all');
-  const [exactAgeMatch, setExactAgeMatch] = useState(false);
+  // Search & Filter state (unified)
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const deferredSearchTerm = useDeferredValue(filters.searchTerm);
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
+
+  const updateFilter = useCallback((key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  }, []);
+
+  const clearAllFilters = useCallback(() => {
+    setFilters(DEFAULT_FILTERS);
+  }, []);
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (filters.ageGroup) count++;
+    if (filters.exerciseFilter !== 'all') count++;
+    if (filters.difficultyMin != null || filters.difficultyMax != null) count++;
+    if (filters.equipment.length > 0 || filters.noEquipment) count++;
+    if (filters.durationMin != null || filters.durationMax != null) count++;
+    if (filters.hasVideo != null) count++;
+    if (filters.comboFilter !== 'either') count++;
+    if (filters.categoryIds.length > 0) count++;
+    return count;
+  }, [filters]);
+
+  // Build the filters object with deferred search term for tree view
+  const deferredFilters = useMemo(
+    () => ({ ...filters, searchTerm: deferredSearchTerm }),
+    [filters, deferredSearchTerm]
+  );
 
   // Modal state
   const [categoryModal, setCategoryModal] = useState({ open: false, item: null });
@@ -191,19 +221,33 @@ export default function LibraryApp() {
 
         {/* Search & Action Bar */}
         {!loading && (
-          <SearchBar
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            filterAgeGroup={filterAgeGroup}
-            onFilterChange={setFilterAgeGroup}
-            exerciseFilter={exerciseFilter}
-            onExerciseFilterChange={setExerciseFilter}
-            exactAgeMatch={exactAgeMatch}
-            onExactAgeMatchChange={setExactAgeMatch}
-            onAddExercise={() => openExerciseModal()}
-            onAddSkill={() => openSkillModal()}
-            onAddCategory={() => openCategoryModal()}
-          />
+          <>
+            <SearchBar
+              searchTerm={filters.searchTerm}
+              onSearchChange={(val) => updateFilter('searchTerm', val)}
+              activeFilterCount={activeFilterCount}
+              isFilterPanelOpen={isFilterPanelOpen}
+              onToggleFilters={() => setIsFilterPanelOpen((v) => !v)}
+              onAddExercise={() => openExerciseModal()}
+              onAddSkill={() => openSkillModal()}
+              onAddCategory={() => openCategoryModal()}
+            />
+            <AdvancedFilterPanel
+              filters={filters}
+              updateFilter={updateFilter}
+              clearAllFilters={clearAllFilters}
+              categories={categories}
+              isOpen={isFilterPanelOpen}
+              onClose={() => setIsFilterPanelOpen(false)}
+            />
+            <ActiveFilterChips
+              filters={filters}
+              updateFilter={updateFilter}
+              clearAllFilters={clearAllFilters}
+              categories={categories}
+              activeFilterCount={activeFilterCount}
+            />
+          </>
         )}
 
         {/* Tree View */}
@@ -213,10 +257,7 @@ export default function LibraryApp() {
             getSkillsForCategory={getSkillsForCategory}
             getExercisesForSkill={getExercisesForSkill}
             getCategoriesMatchingSearch={getCategoriesMatchingSearch}
-            searchTerm={deferredSearchTerm}
-            filterAgeGroup={filterAgeGroup}
-            exerciseFilter={exerciseFilter}
-            exactAgeMatch={exactAgeMatch}
+            filters={deferredFilters}
             // Category actions
             onEditCategory={openCategoryModal}
             onDeleteCategory={deleteCategory}

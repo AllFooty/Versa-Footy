@@ -1,35 +1,17 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Search, Plus, Filter, X, Video, Zap, FolderOpen } from 'lucide-react';
-import { AGE_GROUPS } from '../constants';
+import { Search, Plus, Filter, X, Video, Zap, FolderOpen, SlidersHorizontal } from 'lucide-react';
 
 /**
- * Pill-shaped filter toggle chip
- */
-const FilterChip = ({ label, active, onClick }) => (
-  <button
-    className={`filter-chip ${active ? 'filter-chip--active' : ''}`}
-    onClick={onClick}
-    type="button"
-    aria-pressed={active}
-  >
-    {label}
-  </button>
-);
-
-/**
- * Search and filter toolbar with action buttons
- * Mobile-responsive with FAB menu
+ * Search toolbar with filter toggle and action buttons.
+ * Mobile-responsive with FAB menu.
  */
 const SearchBar = ({
   searchTerm,
   onSearchChange,
-  filterAgeGroup,
-  onFilterChange,
-  exerciseFilter,
-  onExerciseFilterChange,
-  exactAgeMatch,
-  onExactAgeMatchChange,
+  activeFilterCount,
+  isFilterPanelOpen,
+  onToggleFilters,
   onAddExercise,
   onAddSkill,
   onAddCategory,
@@ -46,7 +28,6 @@ const SearchBar = ({
     <>
       {/* Desktop Toolbar */}
       <div className="desktop-search-bar">
-        {/* Row 1: Search + Action Buttons */}
         <div className="toolbar-row-1">
           {/* Search Input */}
           <div style={{ position: 'relative', flex: 1, minWidth: 280 }}>
@@ -96,6 +77,21 @@ const SearchBar = ({
             )}
           </div>
 
+          {/* Filter Toggle Button */}
+          <button
+            className={`btn-filter-toggle ${isFilterPanelOpen ? 'btn-filter-toggle--active' : ''}`}
+            onClick={onToggleFilters}
+            type="button"
+            title={t('filters.title', 'Filters')}
+            aria-label={t('filters.title', 'Filters')}
+            aria-expanded={isFilterPanelOpen}
+          >
+            <SlidersHorizontal size={18} />
+            {activeFilterCount > 0 && (
+              <span className="filter-badge">{activeFilterCount}</span>
+            )}
+          </button>
+
           {/* Action Buttons */}
           <div className="toolbar-actions">
             <button className="btn-primary" onClick={onAddExercise}>
@@ -109,168 +105,81 @@ const SearchBar = ({
             </button>
           </div>
         </div>
-
-        {/* Row 2: Filters */}
-        <div className="toolbar-row-2">
-          {/* Age Filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Filter size={16} color="#71717a" />
-            <select
-              className="select"
-              style={{ width: 140 }}
-              value={filterAgeGroup}
-              onChange={(e) => onFilterChange(e.target.value)}
-            >
-              <option value="">{t('library.allAges')}</option>
-              {AGE_GROUPS.map((age) => (
-                <option key={age} value={age}>
-                  {age} {!exactAgeMatch && t('library.andBelow')}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Exact Age Chip */}
-          {filterAgeGroup && (
-            <FilterChip
-              label={t('library.exactAgeOnly')}
-              active={exactAgeMatch}
-              onClick={() => onExactAgeMatchChange(!exactAgeMatch)}
-            />
-          )}
-
-          {/* Exercise Filter Chips */}
-          <div className="filter-chip-group">
-            <FilterChip
-              label={t('library.filterAll')}
-              active={exerciseFilter === 'all'}
-              onClick={() => onExerciseFilterChange('all')}
-            />
-            <FilterChip
-              label={t('library.filterHasExercises')}
-              active={exerciseFilter === 'has'}
-              onClick={() => onExerciseFilterChange('has')}
-            />
-            <FilterChip
-              label={t('library.filterNoExercises')}
-              active={exerciseFilter === 'none'}
-              onClick={() => onExerciseFilterChange('none')}
-            />
-          </div>
-        </div>
       </div>
 
       {/* Mobile Toolbar */}
       <div className="mobile-search-container">
-        {/* Row 1: Search Input */}
-        <div style={{ position: 'relative', width: '100%' }}>
-          <Search
-            size={18}
-            style={{
-              position: 'absolute',
-              insetInlineStart: 14,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: '#52525b',
-            }}
-          />
-          <input
-            type="search"
-            enterKeyHint="search"
-            placeholder={t('library.searchPlaceholder')}
-            className="input"
-            style={{ paddingInlineStart: 44, paddingInlineEnd: searchTerm ? 48 : 16 }}
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') e.target.blur();
-            }}
-          />
-          {searchTerm && (
-            <button
-              onClick={() => onSearchChange('')}
+        <div className="mobile-search-row">
+          {/* Search Input */}
+          <div style={{ position: 'relative', flex: 1 }}>
+            <Search
+              size={18}
               style={{
                 position: 'absolute',
-                insetInlineEnd: 6,
+                insetInlineStart: 14,
                 top: '50%',
                 transform: 'translateY(-50%)',
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: 'none',
-                borderRadius: '50%',
-                width: 36,
-                height: 36,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                color: '#a1a1aa',
-                padding: 0,
+                color: '#52525b',
               }}
-              title={t('library.clearSearch')}
-              aria-label={t('library.clearSearch')}
-            >
-              <X size={16} />
-            </button>
-          )}
-        </div>
-
-        {/* Row 2: Age Filter Dropdown */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Filter size={16} color="#71717a" style={{ flexShrink: 0 }} />
-          <select
-            className="select"
-            style={{
-              flex: 1,
-              minWidth: 0,
-              fontSize: '16px',
-            }}
-            value={filterAgeGroup}
-            onChange={(e) => onFilterChange(e.target.value)}
-          >
-            <option value="">{t('library.allAgeGroups')}</option>
-            {AGE_GROUPS.map((age) => (
-              <option key={age} value={age}>
-                {age} {!exactAgeMatch && t('library.andBelow')}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Row 3: Filter Chips */}
-        <div className="filter-chips-row">
-          {/* Exercise Filter Chips */}
-          <div className="filter-chip-group">
-            <FilterChip
-              label={t('library.filterAll')}
-              active={exerciseFilter === 'all'}
-              onClick={() => onExerciseFilterChange('all')}
             />
-            <FilterChip
-              label={t('library.filterHasExercises')}
-              active={exerciseFilter === 'has'}
-              onClick={() => onExerciseFilterChange('has')}
+            <input
+              type="search"
+              enterKeyHint="search"
+              placeholder={t('library.searchPlaceholder')}
+              className="input"
+              style={{ paddingInlineStart: 44, paddingInlineEnd: searchTerm ? 48 : 16 }}
+              value={searchTerm}
+              onChange={(e) => onSearchChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') e.target.blur();
+              }}
             />
-            <FilterChip
-              label={t('library.filterNoExercises')}
-              active={exerciseFilter === 'none'}
-              onClick={() => onExerciseFilterChange('none')}
-            />
+            {searchTerm && (
+              <button
+                onClick={() => onSearchChange('')}
+                style={{
+                  position: 'absolute',
+                  insetInlineEnd: 6,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: 36,
+                  height: 36,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: '#a1a1aa',
+                  padding: 0,
+                }}
+                title={t('library.clearSearch')}
+                aria-label={t('library.clearSearch')}
+              >
+                <X size={16} />
+              </button>
+            )}
           </div>
 
-          {/* Exact Age Chip */}
-          {filterAgeGroup && (
-            <FilterChip
-              label={t('library.exactAgeOnly')}
-              active={exactAgeMatch}
-              onClick={() => onExactAgeMatchChange(!exactAgeMatch)}
-            />
-          )}
+          {/* Filter Toggle Button (Mobile) */}
+          <button
+            className={`btn-filter-toggle ${isFilterPanelOpen ? 'btn-filter-toggle--active' : ''}`}
+            onClick={onToggleFilters}
+            type="button"
+            aria-label={t('filters.title', 'Filters')}
+            aria-expanded={isFilterPanelOpen}
+          >
+            <SlidersHorizontal size={18} />
+            {activeFilterCount > 0 && (
+              <span className="filter-badge">{activeFilterCount}</span>
+            )}
+          </button>
         </div>
       </div>
 
       {/* Floating Action Button (Mobile) */}
       <div className="fab-container">
-        {/* Backdrop for FAB menu */}
         {fabOpen && (
           <div
             style={{
@@ -286,7 +195,6 @@ const SearchBar = ({
           />
         )}
 
-        {/* FAB Menu Items */}
         <div className={`fab-menu ${fabOpen ? 'open' : ''}`}>
           <button
             className="fab-menu-item"
@@ -311,7 +219,6 @@ const SearchBar = ({
           </button>
         </div>
 
-        {/* FAB Button */}
         <button
           className="fab-button"
           onClick={() => setFabOpen(!fabOpen)}
