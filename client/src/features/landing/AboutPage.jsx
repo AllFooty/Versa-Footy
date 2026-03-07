@@ -168,8 +168,8 @@ const AboutPage = () => {
             <p className={`${styles.heroSubtitle} text-white mb-8 max-w-2xl mx-auto`}>
               {t('about.joinMissionText')}
             </p>
-            <Link href="/#early-access">
-              <a className={`${styles.button} px-8 py-3 rounded-full text-lg font-semibold inline-block`}>{t('about.getEarlyAccess')}</a>
+            <Link href="/login">
+              <a className={`${styles.button} px-8 py-3 rounded-full text-lg font-semibold inline-block`}>{t('about.getStarted')}</a>
             </Link>
           </div>
         </section>

@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'wouter';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import HeaderLanding from './components/HeaderLanding';
 import FooterLanding from './components/FooterLanding';
 import WengerQuote from './components/WengerQuote';
 import VideoPlayer from './components/VideoPlayer';
-import SignUpModal from './components/SignUpModal';
 import All4FootyFamilyBar from './components/All4FootyFamilyBar';
 import styles from './styles/LandingPage.module.css';
 import './styles/landing-globals.css';
 
 export default function LandingPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { scrollY } = useScroll();
   const { t } = useTranslation();
 
@@ -218,46 +216,17 @@ export default function LandingPage() {
                     {t('landing.hero.statsLine')}
                   </p>
 
-                  {/* App Store Buttons */}
+                  {/* CTA Button */}
                   <div style={{
                     display: 'flex',
                     gap: '16px',
                     flexWrap: 'wrap',
                   }}>
-                    <a
-                      href="#"
-                      onClick={(e) => { e.preventDefault(); setIsModalOpen(true); }}
-                      style={{
-                        display: 'inline-block',
-                        width: '160px',
-                        transition: 'transform 0.3s ease',
-                      }}
-                      onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
-                      onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                    >
-                      <img
-                        src="/images/download/Download_on_the_App_Store_Badge.svg.png"
-                        alt={t('landing.hero.appStoreAlt')}
-                        style={{ width: '160px', height: 'auto', display: 'block' }}
-                      />
-                    </a>
-                    <a
-                      href="#"
-                      onClick={(e) => { e.preventDefault(); setIsModalOpen(true); }}
-                      style={{
-                        display: 'inline-block',
-                        width: '160px',
-                        transition: 'transform 0.3s ease',
-                      }}
-                      onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
-                      onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                    >
-                      <img
-                        src="/images/download/Download_on_the_Google_Play_Badge.svg.png"
-                        alt={t('landing.hero.playStoreAlt')}
-                        style={{ width: '160px', height: 'auto', display: 'block' }}
-                      />
-                    </a>
+                    <Link href="/login">
+                      <a className={styles.button}>
+                        {t('landing.hero.getStarted')}
+                      </a>
+                    </Link>
                   </div>
                 </motion.div>
 
@@ -692,82 +661,20 @@ export default function LandingPage() {
                 {t('landing.cta.subtitle')}
               </p>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                <a
-                  href="#"
-                  onClick={(e) => { e.preventDefault(); setIsModalOpen(true); }}
-                  style={{
-                    display: 'inline-block',
-                    width: '180px',
-                    transition: 'transform 0.3s ease',
-                  }}
-                  onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
-                  onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                >
-                  <img
-                    src="/images/download/Download_on_the_App_Store_Badge.svg.png"
-                    alt={t('landing.hero.appStoreAlt')}
-                    style={{ width: '180px', height: 'auto', display: 'block' }}
-                  />
-                </a>
-                <a
-                  href="#"
-                  onClick={(e) => { e.preventDefault(); setIsModalOpen(true); }}
-                  style={{
-                    display: 'inline-block',
-                    width: '180px',
-                    transition: 'transform 0.3s ease',
-                  }}
-                  onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
-                  onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                >
-                  <img
-                    src="/images/download/Download_on_the_Google_Play_Badge.svg.png"
-                    alt={t('landing.hero.playStoreAlt')}
-                    style={{ width: '180px', height: 'auto', display: 'block' }}
-                  />
-                </a>
+                <Link href="/login">
+                  <a className={styles.button} style={{ fontSize: '18px', padding: '14px 32px' }}>
+                    {t('landing.hero.getStarted')}
+                  </a>
+                </Link>
               </div>
             </div>
           </section>
 
-          {/* Early Access Section */}
-          <section className={styles.earlyAccessSection} id="early-access">
-            <div style={{ ...containerStyle, textAlign: 'center', padding: '80px 24px', position: 'relative', zIndex: 1 }}>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                <h2 style={{ fontSize: '36px', fontWeight: '800', color: 'white', marginBottom: '16px' }}>
-                  {t('landing.earlyAccess.title')}
-                </h2>
-                <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.9)', marginBottom: '32px' }}>
-                  {t('landing.earlyAccess.subtitle')}
-                </p>
-                <button className={styles.button} onClick={() => setIsModalOpen(true)}>
-                  {t('landing.earlyAccess.joinButton')}
-                </button>
-              </motion.div>
-            </div>
-          </section>
         </main>
 
         <FooterLanding />
       </div>
 
-      <AnimatePresence>
-        {isModalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <SignUpModal onClose={() => setIsModalOpen(false)} />
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 }

@@ -71,7 +71,8 @@
 
   "landing": {
     "hero": {
-      "tagline": "Don't Miss Out! Join First!",
+      "tagline": "AI-Powered Soccer Training",
+      "getStarted": "Get Started Free",
       "title": "Help Your Kid Build Pro Skills with",
       "titleHighlight": "Science-Based AI Training",
       "subtitle": "Technical ability is made, not born, and the window to develop it closes sooner than you think. Our app gives kids aged 7\u201314 a science-based path to build it before it's too late.",
@@ -144,11 +145,11 @@
     "testimonials": {
       "sectionTitle": "Success Stories",
       "sectionSubtitle": "Join thousands of parents who are helping their kids reach their full potential",
-      "quote1": "Versa Footy helped my son improve his weak foot skills significantly in just three months! [Sample Testimonial]",
+      "quote1": "Versa Footy helped my son improve his weak foot skills significantly in just three months!",
       "author1": "Happy Parent",
-      "quote2": "The personalized training helped my daughter make it to the regional team. It is like having a private coach available 24/7. [This is placeholder content]",
+      "quote2": "The personalized training helped my daughter make it to the regional team. It is like having a private coach available 24/7.",
       "author2": "Satisfied Parent",
-      "quote3": "I love how my kid can train anytime, anywhere. It fits perfectly with our busy family schedule. [Real testimonials coming soon!]",
+      "quote3": "I love how my kid can train anytime, anywhere. It fits perfectly with our busy family schedule.",
       "author3": "Busy Parent"
     },
     "faqCta": {
@@ -161,9 +162,9 @@
       "subtitle": "Download the app and watch your kid's confidence and skills take off."
     },
     "earlyAccess": {
-      "title": "Be the First to Know!",
-      "subtitle": "Join our waitlist to get exclusive early access and updates.",
-      "joinButton": "Join the Waitlist"
+      "title": "Start Training Today!",
+      "subtitle": "Sign up and give your kid the edge with AI-powered soccer training.",
+      "joinButton": "Get Started Free"
     },
     "wengerQuote": {
       "quote": "We do not sufficiently work on the individual development of players, on building them up. The most important period is between the ages of 6 and 14, where you need to develop their technique.",
@@ -202,7 +203,7 @@
     "leader2Bio": "Hussain combines his expertise as a physiotherapist with his experience as a media content creator to drive Versa Footy, its operations and content strategy. His background in sports training and rehabilitation informs the company and its science-based methodology for holistic athlete development.",
     "joinMission": "Join Our Mission",
     "joinMissionText": "Be part of the revolution in youth soccer training. Download Versa Footy today and start your journey towards soccer excellence.",
-    "getEarlyAccess": "Get Early Access"
+    "getStarted": "Get Started Free"
   },
 
   "faq": {
@@ -353,7 +354,7 @@
     "brandSubtitle": "AI-Powered Soccer Training for Young Athletes",
     "termsOfService": "Terms of Service",
     "privacyPolicy": "Privacy Policy",
-    "joinWaitlist": "Join Waitlist",
+    "getStarted": "Get Started",
     "partOfThe": "Part of the",
     "family": "Family",
     "all4Footy": "All4Footy",
@@ -366,8 +367,8 @@
   },
 
   "signUpModal": {
-    "title": "Join the waitlist",
-    "description": "This is a placeholder modal. We will connect this to your signup backend or email service.",
+    "title": "Get Started",
+    "description": "Create your account to start training.",
     "emailLabel": "Email",
     "emailPlaceholder": "you@example.com",
     "submitButton": "Submit",
