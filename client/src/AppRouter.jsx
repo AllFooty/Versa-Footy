@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Link, Route, Switch } from 'wouter';
 import { useTranslation } from 'react-i18next';
 
@@ -8,23 +8,23 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import AcademyProtectedRoute from './components/AcademyProtectedRoute';
 
-import Landing from './features/landing/LandingPage';
-import HomePage from './features/home/HomePage';
-import AboutPage from './features/landing/AboutPage';
-import FaqPage from './features/landing/FaqPage';
-import TermsOfServicePage from './features/landing/TermsOfServicePage';
-import PrivacyPolicyPage from './features/landing/PrivacyPolicyPage';
-import LibraryApp from './features/library/LibraryApp';
-import SettingsPage from './features/settings/SettingsPage';
-import Login from './features/auth/Login';
-import AcademyDashboard from './features/academy/AcademyDashboard';
-import CreateOrganization from './features/academy/CreateOrganization';
-import InvitationManager from './features/academy/InvitationManager';
-import JoinOrganization from './features/academy/JoinOrganization';
-import PlayerRoster from './features/academy/PlayerRoster';
-import PlayerDetail from './features/academy/PlayerDetail';
-import TeamManagement from './features/academy/TeamManagement';
-import AcademySettings from './features/academy/AcademySettings';
+const Landing = React.lazy(() => import('./features/landing/LandingPage'));
+const HomePage = React.lazy(() => import('./features/home/HomePage'));
+const AboutPage = React.lazy(() => import('./features/landing/AboutPage'));
+const FaqPage = React.lazy(() => import('./features/landing/FaqPage'));
+const TermsOfServicePage = React.lazy(() => import('./features/landing/TermsOfServicePage'));
+const PrivacyPolicyPage = React.lazy(() => import('./features/landing/PrivacyPolicyPage'));
+const LibraryApp = React.lazy(() => import('./features/library/LibraryApp'));
+const SettingsPage = React.lazy(() => import('./features/settings/SettingsPage'));
+const Login = React.lazy(() => import('./features/auth/Login'));
+const AcademyDashboard = React.lazy(() => import('./features/academy/AcademyDashboard'));
+const CreateOrganization = React.lazy(() => import('./features/academy/CreateOrganization'));
+const InvitationManager = React.lazy(() => import('./features/academy/InvitationManager'));
+const JoinOrganization = React.lazy(() => import('./features/academy/JoinOrganization'));
+const PlayerRoster = React.lazy(() => import('./features/academy/PlayerRoster'));
+const PlayerDetail = React.lazy(() => import('./features/academy/PlayerDetail'));
+const TeamManagement = React.lazy(() => import('./features/academy/TeamManagement'));
+const AcademySettings = React.lazy(() => import('./features/academy/AcademySettings'));
 
 const NotFound = () => {
   const { t } = useTranslation();
@@ -116,6 +116,16 @@ const ghostButtonStyle = {
   border: '1px solid rgba(255,255,255,0.08)',
 };
 
+const LoadingFallback = () => (
+  <div style={{
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'radial-gradient(circle at 20% 20%, #111827, #0b1020 45%, #050910)',
+  }} />
+);
+
 function DevBanner() {
   const { t } = useTranslation();
   if (import.meta.env.PROD) return null;
@@ -137,6 +147,7 @@ export default function AppRouter() {
     <LanguageProvider>
     <AuthProvider>
       <DevBanner />
+      <Suspense fallback={<LoadingFallback />}>
       <Switch>
         <Route path="/">
           <Landing />
@@ -251,6 +262,7 @@ export default function AppRouter() {
           <NotFound />
         </Route>
       </Switch>
+      </Suspense>
     </AuthProvider>
     </LanguageProvider>
   );
