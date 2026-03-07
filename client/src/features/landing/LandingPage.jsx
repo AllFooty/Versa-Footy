@@ -547,7 +547,6 @@ export default function LandingPage() {
                         <img
                           src={feature.imageSrc}
                           alt={feature.title}
-                          loading="lazy"
                           style={{ width: '100%', height: 'auto', display: 'block' }}
                         />
                       </motion.div>
@@ -620,7 +619,6 @@ export default function LandingPage() {
                       <img
                         src={testimonial.avatar}
                         alt={testimonial.author}
-                        loading="lazy"
                         style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }}
                       />
                       <p style={{ fontWeight: '600', color: '#ffd166' }}>— {testimonial.author}</p>
