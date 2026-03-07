@@ -27,14 +27,14 @@ const AboutPage = () => {
     {
       name: t('about.leader1Name'),
       role: t('about.leader1Role'),
-      image: '/images/team/mubdu-alali.jpg',
+      image: '/images/team/mubdu-alali.webp',
       bio: t('about.leader1Bio'),
       linkedin: 'https://www.linkedin.com/in/mubdualali/',
     },
     {
       name: t('about.leader2Name'),
       role: t('about.leader2Role'),
-      image: '/images/team/hussain-bin-ahmad.jpg',
+      image: '/images/team/hussain-bin-ahmad.webp',
       bio: t('about.leader2Bio'),
       linkedin: 'https://www.linkedin.com/in/hussainbahmed/',
     },
@@ -53,7 +53,7 @@ const AboutPage = () => {
               {t('about.heroTitle')} <span className={styles.specialHighlightText}>{t('about.heroTitleHighlight')}</span>
             </h1>
             <div className="flex justify-center items-center mb-8">
-              <img src="/images/Versa Footy Icon.png" alt={t('common.appName')} width={150} height={150} />
+              <img src="/images/Versa Footy Icon.webp" alt={t('common.appName')} width={150} height={150} />
             </div>
             <p className={`${styles.heroSubtitle} max-w-3xl mx-auto`}>
               {t('about.heroSubtitle')}

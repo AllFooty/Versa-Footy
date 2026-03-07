@@ -36,7 +36,7 @@ const WengerQuote = () => {
           >
             <div className="wenger-image-wrapper">
               <img
-                src="/images/wenger.jpg"
+                src="/images/wenger.webp"
                 alt={t('landing.wengerQuote.author')}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />

@@ -95,7 +95,7 @@ const FooterLanding = () => {
           <div>
             <div style={{ marginBottom: '24px' }}>
               <img
-                src="/images/Versa Footy Icon.png"
+                src="/images/Versa Footy Icon.webp"
                 alt={t('common.appName')}
                 style={{ width: '80px', height: '80px', borderRadius: '16px', marginBottom: '16px' }}
               />

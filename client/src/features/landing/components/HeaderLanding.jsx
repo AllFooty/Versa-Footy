@@ -151,7 +151,7 @@ export default function HeaderLanding() {
         <Link href="/">
           <a style={logoStyle}>
             <img
-              src="/images/Versa Footy Icon.png"
+              src="/images/Versa Footy Icon.webp"
               alt="Versa Footy Logo"
               style={{ width: '44px', height: '44px', borderRadius: '10px' }}
             />

@@ -23,7 +23,7 @@ export default function LandingPage() {
         t('landing.features.feature1Bullet2'),
         t('landing.features.feature1Bullet3'),
       ],
-      imageSrc: '/images/mockups/ai_personalization.png',
+      imageSrc: '/images/mockups/ai_personalization.webp',
       icon: '\u{1F916}',
     },
     {
@@ -34,7 +34,7 @@ export default function LandingPage() {
         t('landing.features.feature2Bullet2'),
         t('landing.features.feature2Bullet3'),
       ],
-      imageSrc: '/images/mockups/skill_development.png',
+      imageSrc: '/images/mockups/skill_development.webp',
       icon: '\u{1F4DA}',
     },
     {
@@ -45,7 +45,7 @@ export default function LandingPage() {
         t('landing.features.feature3Bullet2'),
         t('landing.features.feature3Bullet3'),
       ],
-      imageSrc: '/images/mockups/progress_tracking.png',
+      imageSrc: '/images/mockups/progress_tracking.webp',
       icon: '\u{1F4CA}',
     },
     {
@@ -56,7 +56,7 @@ export default function LandingPage() {
         t('landing.features.feature4Bullet2'),
         t('landing.features.feature4Bullet3'),
       ],
-      imageSrc: '/images/mockups/flexible_training.png',
+      imageSrc: '/images/mockups/flexible_training.webp',
       icon: '\u26A1',
     },
     {
@@ -67,7 +67,7 @@ export default function LandingPage() {
         t('landing.features.feature5Bullet2'),
         t('landing.features.feature5Bullet3'),
       ],
-      imageSrc: '/images/mockups/science_backed.png',
+      imageSrc: '/images/mockups/science_backed.webp',
       icon: '\u{1F393}',
     },
   ];
@@ -138,17 +138,17 @@ export default function LandingPage() {
     {
       quote: t('landing.testimonials.quote1'),
       author: t('landing.testimonials.author1'),
-      avatar: '/images/avatars/alex-dad.jpg',
+      avatar: '/images/avatars/alex-dad.webp',
     },
     {
       quote: t('landing.testimonials.quote2'),
       author: t('landing.testimonials.author2'),
-      avatar: '/images/avatars/sarah-mom.jpg',
+      avatar: '/images/avatars/sarah-mom.webp',
     },
     {
       quote: t('landing.testimonials.quote3'),
       author: t('landing.testimonials.author3'),
-      avatar: '/images/avatars/emma-mom.jpg',
+      avatar: '/images/avatars/emma-mom.webp',
     },
   ];
 
@@ -239,12 +239,12 @@ export default function LandingPage() {
                 >
                   <div className={styles.appMockupsContainer}>
                     <img
-                      src="/images/mockups/Versa_Footy_Mockup_1.png"
+                      src="/images/mockups/Versa_Footy_Mockup_1.webp"
                       alt={t('landing.hero.mockupAlt')}
                       className={`${styles.appMockup} ${styles.mockup1}`}
                     />
                     <img
-                      src="/images/mockups/Versa_Footy_Mockup_2.png"
+                      src="/images/mockups/Versa_Footy_Mockup_2.webp"
                       alt={t('landing.hero.mockupAlt')}
                       className={`${styles.appMockup} ${styles.mockup2}`}
                     />
@@ -547,6 +547,7 @@ export default function LandingPage() {
                         <img
                           src={feature.imageSrc}
                           alt={feature.title}
+                          loading="lazy"
                           style={{ width: '100%', height: 'auto', display: 'block' }}
                         />
                       </motion.div>
@@ -619,6 +620,7 @@ export default function LandingPage() {
                       <img
                         src={testimonial.avatar}
                         alt={testimonial.author}
+                        loading="lazy"
                         style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }}
                       />
                       <p style={{ fontWeight: '600', color: '#ffd166' }}>— {testimonial.author}</p>
