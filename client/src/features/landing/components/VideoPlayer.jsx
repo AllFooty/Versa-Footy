@@ -38,20 +38,23 @@ const VideoPlayer = ({ videoId }) => {
   if (!hasValidVideo) {
     return (
       <div
-        className="relative w-full h-full overflow-hidden rounded-lg shadow-lg"
         style={{
+          position: 'relative',
+          width: '100%',
+          overflow: 'hidden',
+          borderRadius: '12px',
           background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
           aspectRatio: '16 / 9',
         }}
       >
-        {/* Decorative football field lines */}
+        {/* Subtle grid pattern */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          opacity: 0.06,
+          opacity: 0.05,
           backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)
+            linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)
           `,
           backgroundSize: '60px 60px',
         }} />
@@ -61,43 +64,54 @@ const VideoPlayer = ({ videoId }) => {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: '200px',
-          height: '200px',
-          border: '1px solid rgba(255,255,255,0.06)',
+          width: '280px',
+          height: '280px',
+          border: '1px solid rgba(255,255,255,0.05)',
           borderRadius: '50%',
         }} />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-          {/* Play icon */}
+        {/* Centered content */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          padding: '24px',
+        }}>
           <div style={{
-            width: '80px',
-            height: '80px',
+            width: '72px',
+            height: '72px',
             borderRadius: '50%',
-            border: '2px solid rgba(255,255,255,0.3)',
+            border: '2px solid rgba(255,255,255,0.2)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginBottom: '24px',
+            marginBottom: '20px',
             background: 'rgba(255,255,255,0.05)',
+            backdropFilter: 'blur(4px)',
           }}>
-            <svg className="w-10 h-10" fill="white" viewBox="0 0 24 24" style={{ opacity: 0.6, marginLeft: '4px' }}>
+            <svg width="28" height="28" fill="white" viewBox="0 0 24 24" style={{ opacity: 0.5, marginLeft: '3px' }}>
               <path d="M8 5v14l11-7z" />
             </svg>
           </div>
           <p style={{
-            fontSize: '20px',
-            fontWeight: '700',
-            color: 'white',
-            marginBottom: '8px',
-            letterSpacing: '0.5px',
+            fontSize: '18px',
+            fontWeight: '600',
+            color: 'rgba(255,255,255,0.7)',
+            margin: '0 0 6px 0',
+            letterSpacing: '0.3px',
           }}>
             Video Coming Soon
           </p>
           <p style={{
             fontSize: '14px',
-            color: 'rgba(255,255,255,0.5)',
-            maxWidth: '360px',
+            color: 'rgba(255,255,255,0.35)',
+            margin: 0,
+            maxWidth: '320px',
           }}>
-            We're putting the finishing touches on our demo video. Stay tuned!
+            We're putting the finishing touches on our demo video.
           </p>
         </div>
       </div>
