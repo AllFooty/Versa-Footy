@@ -172,6 +172,17 @@ const PreviewModal = ({
               }}
             >
               {exercise.name}
+              {exercise.id && (
+                <span style={{
+                  marginInlineStart: 8,
+                  fontSize: isMobile ? 11 : 12,
+                  fontWeight: 500,
+                  color: '#71717a',
+                  verticalAlign: 'middle',
+                }}>
+                  #{exercise.id}
+                </span>
+              )}
             </h2>
             <div
               style={{
