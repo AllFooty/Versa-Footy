@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
+import { uploadExerciseVideo } from '../lib/storage';
 import { normalizeDifficulty } from '../utils/difficulty';
 import { normalizeSearchTerm, matchesAnyField, matchesSearch, filterExercises } from '../utils/search';
 import { AGE_GROUPS } from '../constants';
@@ -343,11 +344,11 @@ export const useData = () => {
   /**
    * Add a new exercise with multi-skill support
    */
-  const addExercise = useCallback(async (exerciseData) => {
+  const addExercise = useCallback(async (exerciseData, videoFile, onProgress) => {
     try {
       const skillIds = exerciseData.skillIds.map((id) => parseInt(id, 10));
 
-      // Insert exercise (skill_id = first skill for backward compat)
+      // Insert exercise first (without video) to get the real exercise ID
       const { data, error } = await supabase
         .from('exercises')
         .insert({
@@ -371,8 +372,16 @@ export const useData = () => {
 
       if (junctionError) throw junctionError;
 
+      // Upload video using the real exercise ID, then update the row
+      let finalVideoUrl = data.video_url;
+      if (videoFile) {
+        const { publicUrl } = await uploadExerciseVideo(videoFile, data.id, onProgress);
+        finalVideoUrl = publicUrl;
+        await supabase.from('exercises').update({ video_url: finalVideoUrl }).eq('id', data.id);
+      }
+
       const skillIdsMap = new Map([[data.id, skillIds]]);
-      setExercises((prev) => [...prev, transformExercise(data, skillIdsMap)]);
+      setExercises((prev) => [...prev, transformExercise({ ...data, video_url: finalVideoUrl }, skillIdsMap)]);
     } catch (err) {
       console.error('Error adding exercise:', err);
       throw err;
@@ -382,9 +391,16 @@ export const useData = () => {
   /**
    * Update an existing exercise with multi-skill support
    */
-  const updateExercise = useCallback(async (id, exerciseData) => {
+  const updateExercise = useCallback(async (id, exerciseData, videoFile, onProgress) => {
     try {
       const skillIds = exerciseData.skillIds.map((sid) => parseInt(sid, 10));
+
+      // Upload video first if provided (we already have the exercise ID)
+      let videoUrl = exerciseData.videoUrl || null;
+      if (videoFile) {
+        const { publicUrl } = await uploadExerciseVideo(videoFile, id, onProgress);
+        videoUrl = publicUrl;
+      }
 
       // Update exercise table (skill_id = first skill for backward compat)
       const { data, error } = await supabase
@@ -392,7 +408,7 @@ export const useData = () => {
         .update({
           skill_id: skillIds[0],
           name: exerciseData.name,
-          video_url: exerciseData.videoUrl || null,
+          video_url: videoUrl,
           difficulty: normalizeDifficulty(exerciseData.difficulty),
           description: exerciseData.description,
           equipment: exerciseData.equipment || [],

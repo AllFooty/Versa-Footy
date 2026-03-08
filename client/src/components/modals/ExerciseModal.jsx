@@ -7,7 +7,7 @@ import ConfirmModal from './ConfirmModal';
 import { Input, TextArea, Select, FormField, Label } from '../ui';
 import { DIFFICULTY_OPTIONS, DURATION_OPTIONS, DEFAULTS, EQUIPMENT_OPTIONS } from '../../constants';
 import { normalizeDifficulty } from '../../utils/difficulty';
-import { uploadExerciseVideo, deleteExerciseVideo } from '../../lib/storage';
+import { deleteExerciseVideo } from '../../lib/storage';
 
 /**
  * Full-screen skill picker overlay for mobile.
@@ -384,6 +384,7 @@ const ExerciseModal = ({
   const [deleteMessage, setDeleteMessage] = useState(null);
   const [customEquipment, setCustomEquipment] = useState('');
   const [confirmRemoveVideo, setConfirmRemoveVideo] = useState(false);
+  const [confirmRenameWithVideo, setConfirmRenameWithVideo] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState({});
   const [skillPickerOpen, setSkillPickerOpen] = useState(false);
@@ -414,6 +415,7 @@ const ExerciseModal = ({
     setDeleting(false);
     setDeleteMessage(null);
     setConfirmRemoveVideo(false);
+    setConfirmRenameWithVideo(false);
     setSkillPickerOpen(false);
 
     // Auto-expand categories that have selected skills (desktop)
@@ -466,50 +468,59 @@ const ExerciseModal = ({
     setUploadSuccess(false);
   };
 
-  const handleSave = async () => {
-    if (uploading || deleting) return;
-    if (!formData.name.trim() || !formData.skillIds || formData.skillIds.length === 0) return;
-
+  const executeSave = async () => {
     try {
       setUploadError(null);
       setUploadSuccess(false);
-      let nextVideoUrl = formData.videoUrl;
 
       if (videoFile) {
         setUploading(true);
         setUploadProgress(0);
-
-        const { publicUrl } = await uploadExerciseVideo(
-          videoFile,
-          editItem?.id || formData.skillIds[0],
-          (progress) => setUploadProgress(progress)
-        );
-        nextVideoUrl = publicUrl;
-
-        setUploadSuccess(true);
-        setUploadProgress(100);
       }
 
       await onSave(
         {
           ...formData,
-          videoUrl: nextVideoUrl,
           equipment: formData.equipment || [],
           minimumDuration: formData.minimumDuration,
         },
-        editItem?.id
+        editItem?.id,
+        videoFile,
+        (progress) => setUploadProgress(progress)
       );
+
+      if (videoFile) {
+        setUploadSuccess(true);
+        setUploadProgress(100);
+      }
 
       onClose();
       setVideoFile(null);
       setDeleteMessage(null);
       setUploadSuccess(false);
     } catch (err) {
-      setUploadError(err.message || 'Failed to upload video.');
+      setUploadError(err.message || 'Failed to save exercise.');
       console.error('Video upload/save error:', err);
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleSave = async () => {
+    if (uploading || deleting) return;
+    if (!formData.name.trim() || !formData.skillIds || formData.skillIds.length === 0) return;
+
+    // Warn if renaming an exercise that has an existing video without replacing it
+    const nameChanged = editItem && editItem.name.trim() !== formData.name.trim();
+    const hasExistingVideo = !!formData.videoUrl;
+    const isReplacingVideo = !!videoFile;
+
+    if (nameChanged && hasExistingVideo && !isReplacingVideo) {
+      setConfirmRenameWithVideo(true);
+      return;
+    }
+
+    await executeSave();
   };
 
   const handleRemoveVideo = async () => {
@@ -1011,6 +1022,18 @@ const ExerciseModal = ({
             confirmDanger
             onConfirm={handleRemoveVideo}
             onClose={() => setConfirmRemoveVideo(false)}
+          />
+
+          <ConfirmModal
+            isOpen={confirmRenameWithVideo}
+            title={t('modals.exercise.renameVideoWarningTitle', 'Video may not match')}
+            message={t('modals.exercise.renameVideoWarningMessage', 'You renamed this exercise but kept the existing video. The video may no longer show the correct drill. Are you sure you want to save without updating the video?')}
+            confirmLabel={t('modals.exercise.saveAnyway', 'Save anyway')}
+            onConfirm={() => {
+              setConfirmRenameWithVideo(false);
+              executeSave();
+            }}
+            onClose={() => setConfirmRenameWithVideo(false)}
           />
 
           {deleteMessage && (

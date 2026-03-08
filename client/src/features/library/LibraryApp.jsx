@@ -137,11 +137,11 @@ export default function LibraryApp() {
     }
   };
 
-  const handleSaveExercise = (formData, editId) => {
+  const handleSaveExercise = async (formData, editId, videoFile, onProgress) => {
     if (editId) {
-      updateExercise(editId, formData);
+      await updateExercise(editId, formData, videoFile, onProgress);
     } else {
-      addExercise(formData);
+      await addExercise(formData, videoFile, onProgress);
     }
   };
 
