@@ -3,6 +3,34 @@
  */
 
 /**
+ * XP Calculation Formula (must match iOS XPCalculator.swift)
+ *
+ * Base XP by difficulty:
+ *   1 (Beginner) = 10 XP
+ *   2 (Easy)     = 15 XP
+ *   3 (Medium)   = 20 XP
+ *   4 (Hard)     = 30 XP
+ *   5 (Expert)   = 50 XP
+ *
+ * Rating multiplier (self-assessment 1-5):
+ *   1 (Tough!)    = 0.5x
+ *   2 (Tricky)    = 0.75x
+ *   3 (OK)        = 1.0x
+ *   4 (Good!)     = 1.25x
+ *   5 (Nailed it) = 1.5x
+ *
+ * Bonuses:
+ *   First-time completion = +50%
+ *   Streak bonus = +5% per consecutive day (max +50%)
+ *
+ * Mastery:
+ *   Requires 10+ completions with avg rating >= 4.5
+ *   Mastery bonus = 500 XP
+ *
+ * Streak shields: max 5, earn 1 every 7 consecutive days
+ */
+
+/**
  * Difficulty level options for exercises
  */
 export const DIFFICULTY_OPTIONS = [

@@ -6,7 +6,7 @@
 
 -- ============================================
 -- 1. SKILL_PROGRESS — Add iOS mastery tracking columns
--- iOS mastery criteria: 8+ completions with avg rating >= 4.5
+-- iOS mastery criteria: 10+ completions with avg rating >= 4.5
 -- ============================================
 ALTER TABLE public.skill_progress
   ADD COLUMN IF NOT EXISTS high_rated_completions INTEGER DEFAULT 0 NOT NULL,
