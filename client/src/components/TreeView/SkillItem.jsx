@@ -13,6 +13,7 @@ import ActionSheet from '../ui/ActionSheet';
 const SkillItem = ({
   skill,
   exercises,
+  categoryName,
   isExpanded = false,
   onToggle,
   onAddExercise,
@@ -236,6 +237,7 @@ const SkillItem = ({
             <ExerciseItem
               key={exercise.id}
               exercise={exercise}
+              categoryName={categoryName}
               onPreview={onPreviewExercise}
               onEdit={onEditExercise}
               onDelete={onDeleteExercise}

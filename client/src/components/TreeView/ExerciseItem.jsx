@@ -5,12 +5,14 @@ import ActionSheet from '../ui/ActionSheet';
 import ConfirmModal from '../modals/ConfirmModal';
 import { renderDifficultyStars, getDifficultyStyle } from '../../utils/difficulty';
 import { getDurationLabel } from '../../constants';
+import { TIMER_PRESETS } from '../../constants/timerPresets';
 
 /**
  * Single exercise item in the tree view
  * Mobile-responsive with touch-friendly interactions
  */
-const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false }) => {
+const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isMobile = false }) => {
+  const timerMode = categoryName && TIMER_PRESETS[categoryName]?.mode;
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const menuRef = useRef(null);
@@ -140,6 +142,27 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
               }}
             >
               Combo
+            </span>
+          )}
+
+          {/* Timer mode badge */}
+          {timerMode && (
+            <span
+              title={timerMode === 'interval' ? 'Interval timer (work/rest)' : 'Rep counter (tap to count)'}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '3px 8px',
+                background: timerMode === 'interval'
+                  ? 'rgba(34, 197, 94, 0.12)'
+                  : 'rgba(249, 115, 22, 0.12)',
+                borderRadius: 4,
+                color: timerMode === 'interval' ? '#4ade80' : '#fb923c',
+                fontSize: 11,
+                fontWeight: 600,
+              }}
+            >
+              {timerMode === 'interval' ? 'Interval' : 'Reps'}
             </span>
           )}
 
@@ -332,6 +355,25 @@ const ExerciseItem = ({ exercise, onPreview, onEdit, onDelete, isMobile = false 
             </span>
           )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+            {/* Timer mode badge */}
+            {timerMode && (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '4px 8px',
+                  background: timerMode === 'interval'
+                    ? 'rgba(34, 197, 94, 0.12)'
+                    : 'rgba(249, 115, 22, 0.12)',
+                  borderRadius: 4,
+                  color: timerMode === 'interval' ? '#4ade80' : '#fb923c',
+                  fontSize: 11,
+                  fontWeight: 600,
+                }}
+              >
+                {timerMode === 'interval' ? 'Interval' : 'Reps'}
+              </span>
+            )}
             {/* Combo badge */}
             {exercise.skillIds && exercise.skillIds.length > 1 && (
               <span

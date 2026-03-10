@@ -6,6 +6,7 @@ import Modal from './Modal';
 import ConfirmModal from './ConfirmModal';
 import { Input, TextArea, Select, FormField, Label } from '../ui';
 import { DIFFICULTY_OPTIONS, DURATION_OPTIONS, DEFAULTS, EQUIPMENT_OPTIONS } from '../../constants';
+import { getTimerDescription, TIMER_PRESETS } from '../../constants/timerPresets';
 import { normalizeDifficulty } from '../../utils/difficulty';
 import { deleteExerciseVideo } from '../../lib/storage';
 
@@ -1090,6 +1091,25 @@ const ExerciseModal = ({
           <div style={{ marginTop: 4, fontSize: 12, color: '#71717a' }}>
             {t('modals.exercise.minDurationHint')}
           </div>
+          {/* Timer mode info based on category */}
+          {(() => {
+            const firstSkillId = formData.skillIds?.[0];
+            if (!firstSkillId) return null;
+            const skill = skills.find((s) => s.id === firstSkillId);
+            if (!skill) return null;
+            const category = categories.find((c) => c.id === skill.categoryId);
+            if (!category || !TIMER_PRESETS[category.name]) return null;
+            return (
+              <div style={{
+                marginTop: 8, padding: '8px 12px', fontSize: 12,
+                background: 'rgba(37, 99, 235, 0.08)', borderRadius: 8,
+                color: '#60a5fa', lineHeight: 1.5,
+              }}>
+                <span style={{ fontWeight: 600 }}>Training timer:</span>{' '}
+                {getTimerDescription(category.name, 'U-10')}
+              </div>
+            );
+          })()}
         </div>
 
         <div>
