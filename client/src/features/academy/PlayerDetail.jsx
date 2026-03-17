@@ -525,7 +525,7 @@ const emptyStyle = { color: '#71717a', fontSize: 14, textAlign: 'center', paddin
 const chipStyle = {
   padding: '6px 12px', background: 'rgba(255,255,255,0.04)',
   border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8,
-  color: '#9ca3af', fontSize: 12, fontWeight: 500, cursor: 'pointer',
+  color: '#3b82f6', fontSize: 12, fontWeight: 500, cursor: 'pointer',
 };
 const activeChipStyle = {
   ...chipStyle,
