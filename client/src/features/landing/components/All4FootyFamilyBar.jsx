@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 const products = [
   { name: 'VERSA Footy', url: 'https://versafooty.com', accentColor: '#22c55e', isActive: true, titleKey: 'all4FootyBar.visitVersaFooty' },
   { name: 'FAIR Footy', url: 'https://fairfooty.com', accentColor: '#ec4899', titleKey: 'all4FootyBar.visitFairFooty' },
-  { name: 'TRACK Footy', url: 'https://trackfooty.com', accentColor: '#f97316', titleKey: 'all4FootyBar.visitTrackFooty' },
   { name: 'KAAS Footy', url: 'https://kaasfooty.com', accentColor: '#22d3ee', titleKey: 'all4FootyBar.visitKaasFooty' },
   { name: 'JUGGLE Footy', url: 'https://jugglefooty.com', accentColor: '#3b82f6', titleKey: 'all4FootyBar.visitJuggleFooty' },
 ];

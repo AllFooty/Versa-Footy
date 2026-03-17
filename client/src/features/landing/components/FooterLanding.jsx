@@ -46,7 +46,6 @@ const FooterLanding = () => {
   const productLinks = [
     { name: 'VERSA Footy', href: 'https://versafooty.com', color: '#22c55e', active: true },
     { name: 'FAIR Footy', href: 'https://fairfooty.com', color: '#ec4899' },
-    { name: 'TRACK Footy', href: 'https://trackfooty.com', color: '#f97316' },
     { name: 'KAAS Footy', href: 'https://kaasfooty.com', color: '#22d3ee' },
     { name: 'JUGGLE Footy', href: 'https://jugglefooty.com', color: '#3b82f6' },
   ];
