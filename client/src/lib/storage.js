@@ -52,69 +52,65 @@ export const uploadExerciseVideo = async (file, exerciseId = null, onProgress = 
 /**
  * Upload file with progress tracking using XMLHttpRequest
  */
-const uploadWithProgress = (file, path, onProgress) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // Get the upload URL from Supabase
-      const { data: sessionData } = await supabase.auth.getSession();
-      const accessToken = sessionData?.session?.access_token;
-      
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-      
-      const uploadUrl = `${supabaseUrl}/storage/v1/object/exercise-videos/${path}`;
-      
-      const xhr = new XMLHttpRequest();
-      
-      xhr.upload.addEventListener('progress', (event) => {
-        if (event.lengthComputable) {
-          const percentComplete = Math.round((event.loaded / event.total) * 100);
-          onProgress(percentComplete);
+const uploadWithProgress = async (file, path, onProgress) => {
+  // Get the upload URL from Supabase
+  const { data: sessionData } = await supabase.auth.getSession();
+  const accessToken = sessionData?.session?.access_token;
+
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+  const uploadUrl = `${supabaseUrl}/storage/v1/object/exercise-videos/${path}`;
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.upload.addEventListener('progress', (event) => {
+      if (event.lengthComputable) {
+        const percentComplete = Math.round((event.loaded / event.total) * 100);
+        onProgress(percentComplete);
+      }
+    });
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        // Get public URL
+        const { data: publicData } = supabase.storage
+          .from('exercise-videos')
+          .getPublicUrl(path);
+
+        resolve({
+          path,
+          publicUrl: publicData?.publicUrl,
+        });
+      } else {
+        let errorMessage = 'Upload failed';
+        try {
+          const response = JSON.parse(xhr.responseText);
+          errorMessage = response.message || response.error || errorMessage;
+        } catch (e) {
+          // ignore parse error
         }
-      });
-      
-      xhr.addEventListener('load', () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          // Get public URL
-          const { data: publicData } = supabase.storage
-            .from('exercise-videos')
-            .getPublicUrl(path);
-          
-          resolve({
-            path,
-            publicUrl: publicData?.publicUrl,
-          });
-        } else {
-          let errorMessage = 'Upload failed';
-          try {
-            const response = JSON.parse(xhr.responseText);
-            errorMessage = response.message || response.error || errorMessage;
-          } catch (e) {
-            // ignore parse error
-          }
-          reject(new Error(errorMessage));
-        }
-      });
-      
-      xhr.addEventListener('error', () => {
-        reject(new Error('Network error during upload'));
-      });
-      
-      xhr.addEventListener('abort', () => {
-        reject(new Error('Upload cancelled'));
-      });
-      
-      xhr.open('POST', uploadUrl, true);
-      xhr.setRequestHeader('Authorization', `Bearer ${accessToken || supabaseAnonKey}`);
-      xhr.setRequestHeader('apikey', supabaseAnonKey);
-      xhr.setRequestHeader('Content-Type', file.type || 'video/mp4');
-      xhr.setRequestHeader('x-upsert', 'true');
-      xhr.setRequestHeader('Cache-Control', '3600');
-      
-      xhr.send(file);
-    } catch (err) {
-      reject(err);
-    }
+        reject(new Error(errorMessage));
+      }
+    });
+
+    xhr.addEventListener('error', () => {
+      reject(new Error('Network error during upload'));
+    });
+
+    xhr.addEventListener('abort', () => {
+      reject(new Error('Upload cancelled'));
+    });
+
+    xhr.open('POST', uploadUrl, true);
+    xhr.setRequestHeader('Authorization', `Bearer ${accessToken || supabaseAnonKey}`);
+    xhr.setRequestHeader('apikey', supabaseAnonKey);
+    xhr.setRequestHeader('Content-Type', file.type || 'video/mp4');
+    xhr.setRequestHeader('x-upsert', 'true');
+    xhr.setRequestHeader('Cache-Control', '3600');
+
+    xhr.send(file);
   });
 };
 

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { supabase } from './supabase';
 
-const AuthContext = createContext({});
+const AuthContext = createContext(undefined);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -212,8 +212,8 @@ export function AuthProvider({ children }) {
     setActiveOrg,
     orgsLoading,
     refreshOrganizations: fetchOrganizations,
-    isCoach: organizations.some((o) => ['owner', 'admin', 'coach'].includes(o.role)),
-    isOrgAdmin: organizations.some((o) => ['owner', 'admin'].includes(o.role)),
+    isCoach: activeOrg ? ['owner', 'admin', 'coach'].includes(activeOrg.role) : false,
+    isOrgAdmin: activeOrg ? ['owner', 'admin'].includes(activeOrg.role) : false,
   };
 
   return (
