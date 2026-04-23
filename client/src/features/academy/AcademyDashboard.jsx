@@ -8,6 +8,7 @@ import {
 import { useAuth } from '../../lib/AuthContext';
 import useAcademyDashboard from './hooks/useAcademyDashboard';
 import usePlayerRoster, { getPlayerStatus } from './hooks/usePlayerRoster';
+import { SkeletonCard, SkeletonChart } from '../../components/ui/Skeleton';
 
 export default function AcademyDashboard() {
   const { t } = useTranslation();
@@ -18,6 +19,7 @@ export default function AcademyDashboard() {
   const atRiskPlayers = allPlayers
     .filter((p) => getPlayerStatus(p) === 'inactive')
     .sort((a, b) => {
+      if (!a.last_practice_date && !b.last_practice_date) return 0;
       if (!a.last_practice_date) return -1;
       if (!b.last_practice_date) return 1;
       return new Date(a.last_practice_date) - new Date(b.last_practice_date);
@@ -25,16 +27,17 @@ export default function AcademyDashboard() {
     .slice(0, 5);
 
   return (
-    <div style={containerStyle}>
+    <div className="academy-container" style={containerStyle}>
       {/* Header */}
       <div style={headerStyle}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <div>
-            <h1 style={titleStyle}>{activeOrg?.name || t('academy.dashboard.fallbackName')}</h1>
-            <p style={subtitleStyle}>{activeOrg?.type} {t('academy.dashboard.dashboardSuffix')}</p>
+            <h1 className="academy-title" style={titleStyle}>{activeOrg?.name || t('academy.dashboard.fallbackName')}</h1>
+            <p className="academy-subtitle" style={subtitleStyle}>{activeOrg?.type} {t('academy.dashboard.dashboardSuffix')}</p>
           </div>
           {organizations.length > 1 && (
             <select
+              className="academy-org-switcher"
               value={activeOrg?.id || ''}
               onChange={(e) => {
                 const org = organizations.find((o) => o.id === e.target.value);
@@ -50,21 +53,26 @@ export default function AcademyDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div style={quickActionsStyle}>
-          <Link href="/academy/invitations" style={actionLinkStyle}>{t('academy.dashboard.invitePlayers')}</Link>
-          <Link href="/academy/players" style={actionLinkStyle}>{t('academy.dashboard.viewAllPlayers')}</Link>
+        <div className="academy-quick-actions" style={quickActionsStyle}>
+          <Link href="/academy/invitations" className="academy-action-link" style={actionLinkStyle}>{t('academy.dashboard.invitePlayers')}</Link>
+          <Link href="/academy/players" className="academy-action-link" style={actionLinkStyle}>{t('academy.dashboard.viewAllPlayers')}</Link>
         </div>
       </div>
 
       {loading && !stats ? (
-        <div style={loadingStyle}>
-          <div style={spinnerStyle} />
-          <p style={{ marginTop: 16, color: '#71717a' }}>{t('academy.dashboard.loadingDashboard')}</p>
-        </div>
+        <>
+          <div className="academy-kpi-grid" style={kpiGridStyle}>
+            {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
+          </div>
+          <div className="academy-charts-grid" style={chartsGridStyle}>
+            <SkeletonChart />
+            <SkeletonChart />
+          </div>
+        </>
       ) : (
         <>
           {/* KPI Cards */}
-          <div style={kpiGridStyle}>
+          <div className="academy-kpi-grid" style={kpiGridStyle}>
             <KPICard label={t('academy.dashboard.totalPlayers')} value={stats?.total_players ?? 0} color="#3b82f6" />
             <KPICard
               label={t('academy.dashboard.activeThisWeek')}
@@ -79,15 +87,15 @@ export default function AcademyDashboard() {
           </div>
 
           {/* Charts */}
-          <div style={chartsGridStyle}>
+          <div className="academy-charts-grid" style={chartsGridStyle}>
             <div style={chartCardStyle}>
               <h3 style={chartTitleStyle}>{t('academy.dashboard.weeklyActivePlayers')}</h3>
               <div style={{ height: 240 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={weeklyActivity}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                    <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
-                    <YAxis tick={{ fill: '#71717a', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 12 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
+                    <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} allowDecimals={false} />
                     <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#e4e4e7' }} />
                     <Line type="monotone" dataKey="activePlayers" name={t('academy.dashboard.activePlayers')} stroke="#3b82f6" strokeWidth={2} dot={{ r: 3, fill: '#3b82f6' }} activeDot={{ r: 5 }} />
                   </LineChart>
@@ -101,8 +109,8 @@ export default function AcademyDashboard() {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={weeklyActivity}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                    <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
-                    <YAxis tick={{ fill: '#71717a', fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 12 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
+                    <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} />
                     <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#e4e4e7' }} />
                     <Bar dataKey="totalXp" name={t('common.xp')} fill="#8b5cf6" radius={[4, 4, 0, 0]} />
                   </BarChart>
@@ -115,17 +123,35 @@ export default function AcademyDashboard() {
           {atRiskPlayers.length > 0 && (
             <div style={sectionStyle}>
               <h3 style={sectionTitleStyle}>{t('academy.dashboard.atRiskPlayers')}</h3>
-              <p style={sectionDescStyle}>{t('academy.dashboard.atRiskDescription')}</p>
+              <p className="academy-muted-text" style={sectionDescStyle}>{t('academy.dashboard.atRiskDescription')}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {atRiskPlayers.map((p) => (
-                  <Link key={p.player_id} href={`/academy/players/${p.player_id}`} style={{ textDecoration: 'none' }}>
-                    <div style={atRiskCardStyle}>
+                {atRiskPlayers.map((p) => {
+                  const name = p.display_name || t('common.unknown');
+                  const daysAgoValue = p.last_practice_date ? daysSince(p.last_practice_date) : null;
+                  const ariaLabel = daysAgoValue != null
+                    ? t('academy.dashboard.atRiskAria', {
+                        defaultValue: '{{name}}, last trained {{days}} days ago',
+                        name,
+                        days: daysAgoValue,
+                      })
+                    : t('academy.dashboard.atRiskAriaNever', {
+                        defaultValue: '{{name}}, never trained',
+                        name,
+                      });
+                  return (
+                  <Link
+                    key={p.player_id}
+                    href={`/academy/players/${p.player_id}`}
+                    style={{ textDecoration: 'none' }}
+                    aria-label={ariaLabel}
+                  >
+                    <div className="academy-at-risk-card" style={atRiskCardStyle}>
                       <div style={atRiskAvatarStyle}>
-                        {(p.display_name || '?')[0].toUpperCase()}
+                        {(name[0] || '?').toUpperCase()}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 2px', color: '#e4e4e7' }}>{p.display_name || t('common.unknown')}</p>
-                        <p style={{ fontSize: 12, color: '#71717a', margin: 0 }}>{p.age_group || t('common.noAgeGroup')} &middot; {t('common.level')} {p.current_level}</p>
+                        <p className="academy-muted-text" style={{ fontSize: 12, color: '#71717a', margin: 0 }}>{p.age_group || t('common.noAgeGroup')} &middot; {t('common.level')} {p.current_level}</p>
                       </div>
                       <div style={{ textAlign: 'right' }}>
                         <p style={{ fontSize: 13, fontWeight: 600, color: '#ef4444', margin: '0 0 2px' }}>
@@ -137,7 +163,8 @@ export default function AcademyDashboard() {
                       </div>
                     </div>
                   </Link>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -149,10 +176,10 @@ export default function AcademyDashboard() {
 
 function KPICard({ label, value, suffix, color }) {
   return (
-    <div style={kpiCardStyle}>
+    <div className="academy-kpi-card" style={kpiCardStyle}>
       <div style={{ ...kpiIndicatorStyle, background: color }} />
-      <p style={kpiValueStyle}>{value}{suffix && <span style={{ fontSize: 14, fontWeight: 400, color: '#71717a' }}> {suffix}</span>}</p>
-      <p style={kpiLabelStyle}>{label}</p>
+      <p className="academy-kpi-value" style={kpiValueStyle}>{value}{suffix && <span style={{ fontSize: 14, fontWeight: 400, color: '#9ca3af' }}> {suffix}</span>}</p>
+      <p className="academy-kpi-label" style={kpiLabelStyle}>{label}</p>
     </div>
   );
 }
@@ -200,14 +227,6 @@ const actionLinkStyle = {
   fontSize: 13,
   fontWeight: 500,
   textDecoration: 'none',
-};
-
-const loadingStyle = { maxWidth: 1200, margin: '0 auto', textAlign: 'center', padding: 64 };
-
-const spinnerStyle = {
-  width: 40, height: 40,
-  border: '3px solid #27272a', borderTopColor: '#E63946',
-  borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto',
 };
 
 const kpiGridStyle = {

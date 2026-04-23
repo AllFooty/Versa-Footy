@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
-import { uploadExerciseVideo } from '../lib/storage';
+import { uploadExerciseVideo, deleteExerciseVideo } from '../lib/storage';
 import { normalizeDifficulty } from '../utils/difficulty';
 import { normalizeSearchTerm, matchesAnyField, matchesSearch, filterExercises } from '../utils/search';
 import { AGE_GROUPS } from '../constants';
@@ -342,13 +342,16 @@ export const useData = () => {
   // ============ Exercise CRUD Operations ============
 
   /**
-   * Add a new exercise with multi-skill support
+   * Add a new exercise with multi-skill support.
+   * Atomic: on any failure, rolls back the inserted row and any uploaded video
+   * so we never leave an exercise without its intended video or vice versa.
    */
   const addExercise = useCallback(async (exerciseData, videoFile, onProgress) => {
-    try {
-      const skillIds = exerciseData.skillIds.map((id) => parseInt(id, 10));
+    const skillIds = exerciseData.skillIds.map((id) => parseInt(id, 10));
+    let createdRowId = null;
+    let uploadedUrl = null;
 
-      // Insert exercise first (without video) to get the real exercise ID
+    try {
       const { data, error } = await supabase
         .from('exercises')
         .insert({
@@ -364,51 +367,70 @@ export const useData = () => {
         .single();
 
       if (error) throw error;
+      createdRowId = data.id;
 
-      // Insert junction rows
       const { error: junctionError } = await supabase
         .from('exercise_skills')
         .insert(skillIds.map((sid) => ({ exercise_id: data.id, skill_id: sid })));
 
       if (junctionError) throw junctionError;
 
-      // Upload video using the real exercise ID, then update the row
       let finalVideoUrl = data.video_url;
       if (videoFile) {
         const { publicUrl } = await uploadExerciseVideo(videoFile, data.id, onProgress);
+        uploadedUrl = publicUrl;
+        const { error: updateError } = await supabase
+          .from('exercises')
+          .update({ video_url: publicUrl })
+          .eq('id', data.id);
+        if (updateError) throw updateError;
         finalVideoUrl = publicUrl;
-        await supabase.from('exercises').update({ video_url: finalVideoUrl }).eq('id', data.id);
       }
 
       const skillIdsMap = new Map([[data.id, skillIds]]);
       setExercises((prev) => [...prev, transformExercise({ ...data, video_url: finalVideoUrl }, skillIdsMap)]);
     } catch (err) {
+      if (uploadedUrl) {
+        await deleteExerciseVideo(uploadedUrl).catch(() => {});
+      }
+      if (createdRowId != null) {
+        await supabase.from('exercise_skills').delete().eq('exercise_id', createdRowId).then(() => {}, () => {});
+        await supabase.from('exercises').delete().eq('id', createdRowId).then(() => {}, () => {});
+      }
       console.error('Error adding exercise:', err);
       throw err;
     }
   }, []);
 
   /**
-   * Update an existing exercise with multi-skill support
+   * Update an existing exercise with multi-skill support.
+   * Atomic: rolls back a newly uploaded video if the row update fails, and
+   * deletes the previously attached video once the row update succeeds so we
+   * never accumulate orphans and never leave a stale URL pointing at the
+   * wrong file.
    */
   const updateExercise = useCallback(async (id, exerciseData, videoFile, onProgress) => {
-    try {
-      const skillIds = exerciseData.skillIds.map((sid) => parseInt(sid, 10));
+    const skillIds = exerciseData.skillIds.map((sid) => parseInt(sid, 10));
+    const previous = exercises.find((e) => e.id === id);
+    const previousVideoUrl = previous?.videoUrl || null;
 
-      // Upload video first if provided (we already have the exercise ID)
-      let videoUrl = exerciseData.videoUrl || null;
+    let uploadedUrl = null;
+    try {
+      let videoUrl = exerciseData.videoUrl !== undefined ? exerciseData.videoUrl : previousVideoUrl;
       if (videoFile) {
         const { publicUrl } = await uploadExerciseVideo(videoFile, id, onProgress);
+        uploadedUrl = publicUrl;
         videoUrl = publicUrl;
       }
 
-      // Update exercise table (skill_id = first skill for backward compat)
       const { data, error } = await supabase
         .from('exercises')
         .update({
           skill_id: skillIds[0],
           name: exerciseData.name,
-          video_url: videoUrl,
+          // coerce falsy (empty string / undefined) to null so "no video"
+          // is one canonical state in the DB, not two
+          video_url: videoUrl || null,
           difficulty: normalizeDifficulty(exerciseData.difficulty),
           description: exerciseData.description,
           equipment: exerciseData.equipment || [],
@@ -421,7 +443,6 @@ export const useData = () => {
 
       if (error) throw error;
 
-      // Replace junction rows: delete all, re-insert
       const { error: deleteError } = await supabase
         .from('exercise_skills')
         .delete()
@@ -433,14 +454,70 @@ export const useData = () => {
         .insert(skillIds.map((sid) => ({ exercise_id: id, skill_id: sid })));
       if (insertError) throw insertError;
 
+      if (
+        previousVideoUrl &&
+        previousVideoUrl !== videoUrl &&
+        previousVideoUrl.includes('/exercise-videos/')
+      ) {
+        await deleteExerciseVideo(previousVideoUrl).catch(() => {});
+      }
+
       const skillIdsMap = new Map([[id, skillIds]]);
       setExercises((prev) =>
         prev.map((e) => (e.id === id ? transformExercise(data, skillIdsMap) : e))
       );
     } catch (err) {
+      if (uploadedUrl) {
+        await deleteExerciseVideo(uploadedUrl).catch(() => {});
+      }
       console.error('Error updating exercise:', err);
       throw err;
     }
+  }, [exercises]);
+
+  /**
+   * Set which of an exercise's stored video files is the one end users see.
+   * Does not touch storage — spare candidates stay in the folder.
+   */
+  const setActiveExerciseVideo = useCallback(async (id, newVideoUrl) => {
+    const { data, error } = await supabase
+      .from('exercises')
+      .update({ video_url: newVideoUrl || null, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+    if (error) throw error;
+    const previous = exercises.find((e) => e.id === id);
+    const skillIds = previous?.skillIds || (previous?.skillId ? [previous.skillId] : []);
+    const skillIdsMap = new Map([[id, skillIds]]);
+    setExercises((prev) =>
+      prev.map((e) => (e.id === id ? transformExercise(data, skillIdsMap) : e))
+    );
+  }, [exercises]);
+
+  /**
+   * Delete one specific storage file for an exercise (by full path).
+   * If the deleted file is the currently active video, clear video_url too.
+   */
+  const deleteExerciseVideoCandidate = useCallback(async (id, storagePath, publicUrl) => {
+    const { error: removeError } = await supabase.storage
+      .from('exercise-videos')
+      .remove([storagePath]);
+    if (removeError) throw removeError;
+
+    const previous = exercises.find((e) => e.id === id);
+    if (previous?.videoUrl && publicUrl && previous.videoUrl === publicUrl) {
+      await setActiveExerciseVideo(id, null);
+    }
+  }, [exercises, setActiveExerciseVideo]);
+
+  /**
+   * Upload an additional candidate video for an exercise WITHOUT replacing
+   * the active one. Used by the multi-video pane inside ExerciseModal.
+   */
+  const addExerciseVideoCandidate = useCallback(async (id, file, onProgress) => {
+    const { publicUrl } = await uploadExerciseVideo(file, id, onProgress);
+    return publicUrl;
   }, []);
 
   /**
@@ -448,18 +525,25 @@ export const useData = () => {
    */
   const deleteExercise = useCallback(async (id) => {
     try {
+      const exercise = exercises.find((e) => e.id === id);
+
       const { error } = await supabase
         .from('exercises')
         .delete()
         .eq('id', id);
 
       if (error) throw error;
+
+      if (exercise?.videoUrl && exercise.videoUrl.includes('/exercise-videos/')) {
+        await deleteExerciseVideo(exercise.videoUrl).catch(() => {});
+      }
+
       setExercises((prev) => prev.filter((e) => e.id !== id));
     } catch (err) {
       console.error('Error deleting exercise:', err);
       throw err;
     }
-  }, []);
+  }, [exercises]);
 
   // ============ Query Helpers ============
 
@@ -605,6 +689,9 @@ export const useData = () => {
     addExercise,
     updateExercise,
     deleteExercise,
+    setActiveExerciseVideo,
+    deleteExerciseVideoCandidate,
+    addExerciseVideoCandidate,
 
     // Query helpers
     getSkillById,

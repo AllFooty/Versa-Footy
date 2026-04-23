@@ -10,7 +10,7 @@ import { useAuth } from '../lib/AuthContext';
  */
 export default function ProfileDropdown() {
   const { t } = useTranslation();
-  const { user, profile, isAdmin, isCoach, signOut } = useAuth();
+  const { user, profile, isAdmin, isCoach, activeOrg, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [showConfirmSignOut, setShowConfirmSignOut] = useState(false);
   const dropdownRef = useRef(null);
@@ -154,6 +154,43 @@ export default function ProfileDropdown() {
                   }}>
                     {user?.email}
                   </div>
+                  {activeOrg && (
+                    <div style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 5,
+                      marginTop: 5,
+                      background: 'rgba(59, 130, 246, 0.12)',
+                      border: '1px solid rgba(59, 130, 246, 0.25)',
+                      borderRadius: 6,
+                      padding: '2px 8px',
+                      maxWidth: '100%',
+                      overflow: 'hidden',
+                    }}>
+                      <span style={{
+                        fontSize: 11,
+                        color: '#93c5fd',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}>
+                        {activeOrg.is_primary && (
+                          <span style={{ color: '#facc15', marginRight: 3 }} title="Primary academy">★</span>
+                        )}
+                        {activeOrg.name}
+                      </span>
+                      <span style={{
+                        fontSize: 10,
+                        fontWeight: 600,
+                        color: '#60a5fa',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.04em',
+                        flexShrink: 0,
+                      }}>
+                        · {activeOrg.role}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

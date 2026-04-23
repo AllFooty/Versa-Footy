@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { supabase } from './supabase';
+import { setPrimaryOrganization as rpcSetPrimaryOrganization } from '../features/academy/hooks/useInvitations';
 
 const AuthContext = createContext(undefined);
 
@@ -14,7 +15,14 @@ export function AuthProvider({ children }) {
   // Organization state
   const [organizations, setOrganizations] = useState([]);
   const [activeOrg, setActiveOrg] = useState(null);
-  const [orgsLoading, setOrgsLoading] = useState(false);
+  const [orgsLoading, setOrgsLoading] = useState(true);
+
+  // Persist activeOrg selection across page refreshes
+  useEffect(() => {
+    if (activeOrg?.id) {
+      localStorage.setItem('activeOrgId', activeOrg.id);
+    }
+  }, [activeOrg?.id]);
 
   // Fetch user profile from profiles table (non-blocking)
   const fetchProfile = async (userId) => {
@@ -67,14 +75,22 @@ export function AuthProvider({ children }) {
         return;
       }
       setOrganizations(data || []);
-      // Set active org to first one if none selected, or keep current if still valid
+      // Selection order: prior selection → localStorage override → server primary → first
       if (data?.length > 0) {
         setActiveOrg((prev) => {
-          if (prev && data.some((o) => o.id === prev.id)) return prev;
-          return data[0];
+          if (prev) {
+            const refreshed = data.find((o) => o.id === prev.id);
+            if (refreshed) return refreshed;
+          }
+          const savedId = localStorage.getItem('activeOrgId');
+          const saved = savedId && data.find((o) => o.id === savedId);
+          if (saved) return saved;
+          const primary = data.find((o) => o.is_primary);
+          return primary || data[0];
         });
       } else {
         setActiveOrg(null);
+        localStorage.removeItem('activeOrgId');
       }
     } catch (err) {
       console.error('Error fetching organizations:', err);
@@ -111,6 +127,8 @@ export function AuthProvider({ children }) {
         if (session?.user) {
           fetchProfile(session.user.id);
           fetchOrganizations();
+        } else {
+          setOrgsLoading(false);
         }
       })
       .catch((err) => {
@@ -138,6 +156,7 @@ export function AuthProvider({ children }) {
             profileRef.current = null;
             setOrganizations([]);
             setActiveOrg(null);
+            setOrgsLoading(false);
           }
         }
       );
@@ -162,6 +181,14 @@ export function AuthProvider({ children }) {
     profileRef.current = null;
     setOrganizations([]);
     setActiveOrg(null);
+    setOrgsLoading(false);
+    localStorage.removeItem('activeOrgId');
+  };
+
+  const deleteAccount = async () => {
+    const { error } = await supabase.rpc('delete_user_account');
+    if (error) throw error;
+    // onAuthStateChange fires when auth.users is deleted, cleaning up state
   };
 
   // Update user profile in profiles table
@@ -203,6 +230,7 @@ export function AuthProvider({ children }) {
     loading,
     profileLoading,
     signOut,
+    deleteAccount,
     updateProfile,
     isAuthenticated: !!user,
     isAdmin: profile?.is_admin === true,
@@ -212,6 +240,10 @@ export function AuthProvider({ children }) {
     setActiveOrg,
     orgsLoading,
     refreshOrganizations: fetchOrganizations,
+    setPrimaryOrganization: async (orgId) => {
+      await rpcSetPrimaryOrganization(orgId);
+      await fetchOrganizations();
+    },
     isCoach: activeOrg ? ['owner', 'admin', 'coach'].includes(activeOrg.role) : false,
     isOrgAdmin: activeOrg ? ['owner', 'admin'].includes(activeOrg.role) : false,
   };

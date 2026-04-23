@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import {
@@ -7,14 +7,16 @@ import {
   Tooltip, ResponsiveContainer,
 } from 'recharts';
 import usePlayerDetail from './hooks/usePlayerDetail';
+import { SkeletonCard, SkeletonChart } from '../../components/ui/Skeleton';
 
 export default function PlayerDetail() {
   const { t } = useTranslation();
   const { id } = useParams();
   const {
     profile, skillProgress, dailyActivity, recentSessions,
+    levelProgress,
     categoryRadar, weeklyTrends, roadmap,
-    loading, error,
+    loading, error, sectionErrors,
   } = usePlayerDetail(id);
   const [activeTab, setActiveTab] = useState(0);
   const [roadmapCategoryFilter, setRoadmapCategoryFilter] = useState('all');
@@ -29,9 +31,23 @@ export default function PlayerDetail() {
   if (loading) {
     return (
       <div style={containerStyle}>
-        <div style={{ textAlign: 'center', padding: 64 }}>
-          <div style={spinnerStyle} />
-          <p style={{ marginTop: 16, color: '#71717a' }}>{t('academy.playerDetail.loadingPlayer')}</p>
+        <div style={headerStyle}>
+          <Link href="/academy/players" style={backLinkStyle}>&larr; {t('academy.roster.title')}</Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 12 }}>
+            <SkeletonCard style={{ width: 52, height: 52, borderRadius: '50%', padding: 0 }} />
+            <div style={{ flex: 1 }}>
+              <SkeletonCard style={{ padding: '8px 12px' }} />
+            </div>
+          </div>
+          <div style={{ ...miniKpiRowStyle }}>
+            {[...Array(6)].map((_, i) => (
+              <SkeletonCard key={i} style={{ minWidth: 80, padding: '10px 14px' }} />
+            ))}
+          </div>
+        </div>
+        <div style={{ ...contentStyle, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: 16 }}>
+          <SkeletonChart />
+          <SkeletonChart />
         </div>
       </div>
     );
@@ -71,28 +87,50 @@ export default function PlayerDetail() {
         <div style={miniKpiRowStyle}>
           <MiniKPI label={t('academy.playerDetail.kpiLevel')} value={profile.current_level} />
           <MiniKPI label={t('academy.playerDetail.kpiTotalXP')} value={profile.total_xp?.toLocaleString()} />
-          <MiniKPI label={t('academy.playerDetail.kpiStreak')} value={`${profile.current_streak}d`} />
-          <MiniKPI label={t('academy.playerDetail.kpiBestStreak')} value={`${profile.longest_streak}d`} />
+          <MiniKPI label={t('academy.playerDetail.kpiStreak')} value={profile.current_streak > 0 ? `${profile.current_streak}d` : '—'} />
+          <MiniKPI label={t('academy.playerDetail.kpiBestStreak')} value={profile.longest_streak > 0 ? `${profile.longest_streak}d` : '—'} />
           <MiniKPI label={t('academy.playerDetail.kpiMastered')} value={skillsMastered} />
           <MiniKPI label={t('academy.playerDetail.kpiPracticed')} value={skillsPracticed} />
         </div>
+
+        {/* Level progress bar (XP until next level) */}
+        <LevelProgressBar levelProgress={levelProgress} />
       </div>
 
       {/* Tabs */}
-      <div style={tabBarStyle}>
-        {TABS.map((tab, i) => (
-          <button key={tab} onClick={() => setActiveTab(i)} style={activeTab === i ? activeTabBtnStyle : tabBtnStyle}>
-            {tab}
-          </button>
-        ))}
+      <div style={tabBarStyle} role="tablist" aria-label={t('academy.playerDetail.tabsLabel', { defaultValue: 'Player sections' })}>
+        {TABS.map((tab, i) => {
+          const selected = activeTab === i;
+          return (
+            <button
+              key={tab}
+              id={`player-tab-${i}`}
+              role="tab"
+              aria-selected={selected}
+              aria-controls={`player-tabpanel-${i}`}
+              tabIndex={selected ? 0 : -1}
+              onClick={() => setActiveTab(i)}
+              style={selected ? activeTabBtnStyle : tabBtnStyle}
+            >
+              {tab}
+            </button>
+          );
+        })}
       </div>
 
       {/* Tab Content */}
-      <div style={contentStyle}>
+      <div
+        id={`player-tabpanel-${activeTab}`}
+        role="tabpanel"
+        aria-labelledby={`player-tab-${activeTab}`}
+        style={contentStyle}
+      >
         {activeTab === 0 && (
           <OverviewTab
             categoryRadar={categoryRadar}
             dailyActivity={dailyActivity}
+            skillsError={sectionErrors?.skillProgress}
+            activityError={sectionErrors?.dailyActivity}
           />
         )}
         {activeTab === 1 && (
@@ -100,10 +138,61 @@ export default function PlayerDetail() {
             roadmap={roadmap}
             categoryFilter={roadmapCategoryFilter}
             setCategoryFilter={setRoadmapCategoryFilter}
+            errorMessage={sectionErrors?.allSkills || sectionErrors?.skillProgress}
           />
         )}
-        {activeTab === 2 && <HistoryTab sessions={recentSessions} />}
-        {activeTab === 3 && <TrendsTab weeklyTrends={weeklyTrends} />}
+        {activeTab === 2 && (
+          <HistoryTab sessions={recentSessions} errorMessage={sectionErrors?.recentSessions} />
+        )}
+        {activeTab === 3 && (
+          <TrendsTab weeklyTrends={weeklyTrends} errorMessage={sectionErrors?.dailyActivity} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Level progress bar ───────────────────────────────────────────────────────
+
+function LevelProgressBar({ levelProgress }) {
+  const { t } = useTranslation();
+  if (!levelProgress) return null;
+
+  const inLevel = Math.max(0, levelProgress.xp_in_current_level || 0);
+  const required = Math.max(1, levelProgress.xp_required_for_next_level || 1);
+  const remaining = Math.max(0, required - inLevel);
+  const pct = Math.min(100, Math.round((inLevel / required) * 100));
+  const nextLevel = (levelProgress.current_level || 0) + 1;
+
+  return (
+    <div
+      style={levelProgressWrapStyle}
+      aria-label={t('academy.playerDetail.levelProgressAria', {
+        defaultValue: '{{remaining}} XP until Level {{nextLevel}}',
+        remaining: remaining.toLocaleString(),
+        nextLevel,
+      })}
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontSize: 12, color: '#9ca3af' }}>
+        <span>
+          {t('academy.playerDetail.levelProgressLabel', {
+            defaultValue: '{{inLevel}} / {{required}} XP to Level {{nextLevel}}',
+            inLevel: inLevel.toLocaleString(),
+            required: required.toLocaleString(),
+            nextLevel,
+          })}
+        </span>
+        <span style={{ color: '#e4e4e7', fontWeight: 600 }}>{pct}%</span>
+      </div>
+      <div style={{ height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+        <div
+          style={{
+            width: `${pct}%`,
+            height: '100%',
+            background: 'linear-gradient(90deg, #3b82f6, #22d3ee)',
+            transition: 'width 0.5s ease',
+          }}
+        />
       </div>
     </div>
   );
@@ -111,46 +200,58 @@ export default function PlayerDetail() {
 
 // ─── Tab: Overview ─────────────────────────────────────────────────────────────
 
-function OverviewTab({ categoryRadar, dailyActivity }) {
+function OverviewTab({ categoryRadar, dailyActivity, skillsError, activityError }) {
   const { t } = useTranslation();
+
+  const hasRadarData = categoryRadar.length > 0 && categoryRadar.some((c) => (c.masteryPercent || 0) > 0);
+  const hasActivityData = dailyActivity.length > 0 && dailyActivity.some((d) => (d.xp_earned || 0) > 0);
+
   return (
     <div style={tabGridStyle}>
       {/* Skill Category Radar */}
       <div style={cardStyle}>
         <h3 style={cardTitleStyle}>{t('academy.playerDetail.chartSkillMastery')}</h3>
-        {categoryRadar.length > 0 ? (
+        {skillsError ? (
+          <p style={errorStyle}>{t('academy.playerDetail.sectionLoadError', { defaultValue: 'Could not load this section. Try refreshing.' })}</p>
+        ) : hasRadarData ? (
           <div style={{ height: 300 }}>
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={categoryRadar}>
                 <PolarGrid stroke="rgba(255,255,255,0.08)" />
-                <PolarAngleAxis dataKey="category" tick={{ fill: '#9ca3af', fontSize: 10 }} />
-                <PolarRadiusAxis tick={{ fill: '#71717a', fontSize: 10 }} domain={[0, 100]} />
+                <PolarAngleAxis dataKey="category" tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                <PolarRadiusAxis tick={{ fill: '#71717a', fontSize: 11 }} domain={[0, 100]} />
                 <Radar dataKey="masteryPercent" name="Mastery %" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.25} />
               </RadarChart>
             </ResponsiveContainer>
           </div>
         ) : (
-          <p style={emptyStyle}>{t('academy.playerDetail.noSkillData')}</p>
+          <p style={emptyStyle}>
+            {t('academy.playerDetail.noSkillMasteryYet', {
+              defaultValue: 'Start practicing to fill your mastery profile.',
+            })}
+          </p>
         )}
       </div>
 
       {/* Activity Heatmap (simplified as a bar chart of daily XP) */}
       <div style={cardStyle}>
         <h3 style={cardTitleStyle}>{t('academy.playerDetail.chartRecentActivity')}</h3>
-        {dailyActivity.length > 0 ? (
+        {activityError ? (
+          <p style={errorStyle}>{t('academy.playerDetail.sectionLoadError', { defaultValue: 'Could not load this section. Try refreshing.' })}</p>
+        ) : hasActivityData ? (
           <div style={{ height: 300 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={dailyActivity.slice(-90)}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
                 <XAxis
                   dataKey="activity_date"
-                  tick={{ fill: '#71717a', fontSize: 9 }}
+                  tick={{ fill: '#71717a', fontSize: 11 }}
                   tickFormatter={(d) => new Date(d).toLocaleDateString('en', { month: 'short', day: 'numeric' })}
                   interval={14}
                   axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
                   tickLine={false}
                 />
-                <YAxis tick={{ fill: '#71717a', fontSize: 10 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#e4e4e7' }} />
                 <Bar dataKey="xp_earned" name={t('common.xp')} fill="#22c55e" radius={[2, 2, 0, 0]} />
               </BarChart>
@@ -166,8 +267,22 @@ function OverviewTab({ categoryRadar, dailyActivity }) {
 
 // ─── Tab: Skill Roadmap ───────────────────────────────────────────────────────
 
-function SkillRoadmapTab({ roadmap, categoryFilter, setCategoryFilter }) {
+function SkillRoadmapTab({ roadmap, categoryFilter, setCategoryFilter, errorMessage }) {
   const { t } = useTranslation();
+
+  if (errorMessage) {
+    return <p style={errorStyle}>{t('academy.playerDetail.sectionLoadError', { defaultValue: 'Could not load this section. Try refreshing.' })}</p>;
+  }
+
+  if (roadmap?.missingAgeGroup) {
+    return (
+      <p style={emptyStyle}>
+        {t('academy.playerDetail.roadmapNoAgeGroup', {
+          defaultValue: "Set this player's age group to see their skill roadmap.",
+        })}
+      </p>
+    );
+  }
 
   if (!roadmap || roadmap.totalSkillsToMaster === 0) {
     return <p style={emptyStyle}>{t('academy.playerDetail.noSkillDataAvailable')}</p>;
@@ -308,15 +423,28 @@ function SkillRoadmapCard({ skill }) {
         {skill.isCloseToMastering && <span style={almostBadge}>{t('academy.playerDetail.skillAlmost')}</span>}
       </div>
 
-      <div style={progressBarBgStyle}>
-        <div style={{
-          ...progressBarFillStyle,
-          width: `${progressPercent}%`,
-          background: skill.isMastered ? '#22c55e' : skill.isCloseToMastering ? '#eab308' : skill.categoryColor,
-        }} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+        <div style={{ ...progressBarBgStyle, flex: 1 }}>
+          <div style={{
+            ...progressBarFillStyle,
+            width: `${progressPercent}%`,
+            background: skill.isMastered ? '#22c55e' : skill.isCloseToMastering ? '#eab308' : skill.categoryColor,
+          }} />
+        </div>
+        {!skill.isMastered && (
+          <span style={{ fontSize: 10, color: '#71717a', flexShrink: 0, minWidth: 28, textAlign: 'right' }}>
+            {progressPercent}%
+          </span>
+        )}
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
+      {skill.needsRatingBoost && (
+        <p style={{ fontSize: 10, color: '#eab308', margin: '0 0 4px', lineHeight: 1.3 }}>
+          {t('academy.playerDetail.skillNeedsHigherRatings', { defaultValue: 'Needs higher ratings to master' })}
+        </p>
+      )}
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
         <span style={{ fontSize: 11, color: '#71717a' }}>
           {skill.timesPracticed > 0 ? t('academy.playerDetail.skillCompletions', { count: skill.timesPracticed }) : t('academy.playerDetail.skillNotStarted')}
         </span>
@@ -339,11 +467,80 @@ function getRoadmapColor(percent) {
 
 // ─── Tab: Training History ─────────────────────────────────────────────────────
 
-function HistoryTab({ sessions }) {
+const SESSION_STATUS_STYLES = {
+  completed: { bg: 'rgba(34,197,94,0.15)', fg: '#22c55e' },
+  abandoned: { bg: 'rgba(239,68,68,0.15)', fg: '#ef4444' },
+  in_progress: { bg: 'rgba(234,179,8,0.15)', fg: '#eab308' },
+};
+const UNKNOWN_STATUS_STYLE = { bg: 'rgba(255,255,255,0.06)', fg: '#9ca3af' };
+
+function formatSessionDate(startedAt) {
+  if (!startedAt) return '\u2014';
+  const d = new Date(startedAt);
+  return Number.isNaN(d.getTime()) ? '\u2014' : d.toLocaleDateString();
+}
+
+function StatusBadge({ status }) {
+  const palette = SESSION_STATUS_STYLES[status] || UNKNOWN_STATUS_STYLE;
+  return (
+    <span style={{
+      padding: '2px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+      textTransform: 'capitalize',
+      background: palette.bg,
+      color: palette.fg,
+    }}>
+      {status || 'unknown'}
+    </span>
+  );
+}
+
+function HistoryTab({ sessions, errorMessage }) {
   const { t } = useTranslation();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  if (errorMessage) {
+    return <p style={errorStyle}>{t('academy.playerDetail.sectionLoadError', { defaultValue: 'Could not load this section. Try refreshing.' })}</p>;
+  }
 
   if (sessions.length === 0) {
     return <p style={emptyStyle}>{t('academy.playerDetail.noRecentTraining')}</p>;
+  }
+
+  if (isMobile) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {sessions.map((s) => (
+          <div key={s.id} style={sessionCardStyle}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+              <span style={{ fontSize: 14, fontWeight: 600, color: '#e4e4e7' }}>
+                {formatSessionDate(s.started_at)}
+              </span>
+              <StatusBadge status={s.status} />
+            </div>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', fontSize: 12, color: '#9ca3af' }}>
+              <span style={{ textTransform: 'capitalize' }}>{s.session_type}</span>
+              <span>&middot;</span>
+              <span>{t('academy.playerDetail.historyExercises')}: <strong style={{ color: '#e4e4e7' }}>{s.exercises_completed}</strong></span>
+              <span>&middot;</span>
+              <span>{t('common.xp')}: <strong style={{ color: '#e4e4e7' }}>{s.total_xp_earned}</strong></span>
+              {s.average_rating && (
+                <>
+                  <span>&middot;</span>
+                  <span>{Number(s.average_rating).toFixed(1)}&#9733;</span>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
 
   return (
@@ -363,21 +560,12 @@ function HistoryTab({ sessions }) {
           <tbody>
             {sessions.map((s) => (
               <tr key={s.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                <td style={tdStyle}>{new Date(s.started_at).toLocaleDateString()}</td>
+                <td style={tdStyle}>{formatSessionDate(s.started_at)}</td>
                 <td style={tdStyle}><span style={{ textTransform: 'capitalize' }}>{s.session_type}</span></td>
                 <td style={tdStyle}>{s.exercises_completed}</td>
                 <td style={tdStyle}>{s.total_xp_earned}</td>
                 <td style={tdStyle}>{s.average_rating ? `${Number(s.average_rating).toFixed(1)}\u2605` : '\u2014'}</td>
-                <td style={tdStyle}>
-                  <span style={{
-                    padding: '2px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600,
-                    textTransform: 'capitalize',
-                    background: s.status === 'completed' ? 'rgba(34,197,94,0.15)' : 'rgba(234,179,8,0.15)',
-                    color: s.status === 'completed' ? '#22c55e' : '#eab308',
-                  }}>
-                    {s.status}
-                  </span>
-                </td>
+                <td style={tdStyle}><StatusBadge status={s.status} /></td>
               </tr>
             ))}
           </tbody>
@@ -389,11 +577,22 @@ function HistoryTab({ sessions }) {
 
 // ─── Tab: Trends ───────────────────────────────────────────────────────────────
 
-function TrendsTab({ weeklyTrends }) {
+function TrendsTab({ weeklyTrends, errorMessage }) {
   const { t } = useTranslation();
 
-  if (weeklyTrends.length === 0) {
-    return <p style={emptyStyle}>{t('academy.playerDetail.notEnoughTrendData')}</p>;
+  if (errorMessage) {
+    return <p style={errorStyle}>{t('academy.playerDetail.sectionLoadError', { defaultValue: 'Could not load this section. Try refreshing.' })}</p>;
+  }
+
+  const hasTrendData = weeklyTrends.some((w) => (w.xp || 0) > 0 || (w.minutes || 0) > 0);
+  if (!hasTrendData) {
+    return (
+      <p style={emptyStyle}>
+        {t('academy.playerDetail.noTrendActivityYet', {
+          defaultValue: 'Come back after a week of practice to see trends.',
+        })}
+      </p>
+    );
   }
 
   return (
@@ -404,8 +603,8 @@ function TrendsTab({ weeklyTrends }) {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={weeklyTrends}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
-              <YAxis tick={{ fill: '#71717a', fontSize: 11 }} axisLine={false} tickLine={false} />
+              <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 12 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
+              <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#e4e4e7' }} />
               <Line type="monotone" dataKey="xp" name={t('common.xp')} stroke="#3b82f6" strokeWidth={2} dot={{ r: 3, fill: '#3b82f6' }} />
             </LineChart>
@@ -419,8 +618,8 @@ function TrendsTab({ weeklyTrends }) {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={weeklyTrends}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
-              <YAxis tick={{ fill: '#71717a', fontSize: 11 }} axisLine={false} tickLine={false} />
+              <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 12 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
+              <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#e4e4e7' }} />
               <Bar dataKey="minutes" name="Minutes" fill="#22c55e" radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -467,6 +666,13 @@ const largeAvatarStyle = {
 
 const miniKpiRowStyle = {
   display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap',
+};
+
+const levelProgressWrapStyle = {
+  marginTop: 16,
+  padding: '12px 14px',
+  background: 'rgba(255, 255, 255, 0.04)',
+  borderRadius: 10,
 };
 const miniKpiStyle = {
   padding: '8px 14px',
@@ -521,11 +727,25 @@ const spinnerStyle = {
 
 const emptyStyle = { color: '#71717a', fontSize: 14, textAlign: 'center', padding: 32 };
 
+const errorStyle = {
+  color: '#fca5a5', fontSize: 14, textAlign: 'center', padding: 32,
+  background: 'rgba(239, 68, 68, 0.06)',
+  border: '1px solid rgba(239, 68, 68, 0.18)',
+  borderRadius: 12,
+};
+
+const sessionCardStyle = {
+  padding: '14px 14px',
+  background: 'rgba(15, 23, 42, 0.6)',
+  border: '1px solid rgba(255, 255, 255, 0.08)',
+  borderRadius: 12,
+};
+
 // Skill filter chips
 const chipStyle = {
   padding: '6px 12px', background: 'rgba(255,255,255,0.04)',
   border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8,
-  color: '#3b82f6', fontSize: 12, fontWeight: 500, cursor: 'pointer',
+  color: '#9ca3af', fontSize: 12, fontWeight: 500, cursor: 'pointer',
 };
 const activeChipStyle = {
   ...chipStyle,

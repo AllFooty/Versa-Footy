@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, Save, User, Mail, Check } from 'lucide-react';
+import { X, Save, User, Mail, Check, Building2 } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 import { IconButton, Button, SecondaryButton } from '../ui';
+
+const COOLDOWN_DAYS = 7;
 
 /**
  * Modal for editing user profile
@@ -10,11 +12,17 @@ import { IconButton, Button, SecondaryButton } from '../ui';
  */
 export default function ProfileEditModal({ isOpen, onClose }) {
   const { t } = useTranslation();
-  const { user, profile, updateProfile, profileLoading } = useAuth();
+  const { user, profile, updateProfile, profileLoading, activeOrg } = useAuth();
   const [fullName, setFullName] = useState('');
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+
+  const lastEdit = profile?.updated_at ? new Date(profile.updated_at) : null;
+  const daysSinceEdit = lastEdit ? (Date.now() - lastEdit.getTime()) / 86400000 : Infinity;
+  const hasSetNameBefore = !!(profile?.full_name);
+  const canEdit = !hasSetNameBefore || daysSinceEdit >= COOLDOWN_DAYS;
+  const daysUntilEdit = canEdit ? 0 : Math.ceil(COOLDOWN_DAYS - daysSinceEdit);
 
   // Initialize form with current profile data
   useEffect(() => {
@@ -40,6 +48,11 @@ export default function ProfileEditModal({ isOpen, onClose }) {
   const handleSave = async () => {
     if (!fullName.trim()) {
       setError(t('errors.enterName'));
+      return;
+    }
+
+    if (!canEdit) {
+      setError(t('settings.editCooldownLocked', { days: daysUntilEdit }));
       return;
     }
 
@@ -174,21 +187,33 @@ export default function ProfileEditModal({ isOpen, onClose }) {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder={t('modals.profileEdit.fullNamePlaceholder')}
+              disabled={!canEdit}
               style={{
-                background: 'rgba(0, 0, 0, 0.3)',
+                background: canEdit ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.15)',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: '10px',
                 padding: '14px 16px',
-                color: 'white',
+                color: canEdit ? 'white' : 'rgba(255, 255, 255, 0.4)',
                 fontSize: '15px',
                 width: '100%',
                 boxSizing: 'border-box',
                 outline: 'none',
                 transition: 'all 0.2s ease',
+                cursor: canEdit ? 'text' : 'not-allowed',
               }}
-              onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
-              onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
+              onFocus={(e) => canEdit && (e.target.style.borderColor = '#3b82f6')}
+              onBlur={(e) => (e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)')}
             />
+            {!canEdit && (
+              <p style={{
+                fontSize: 12,
+                color: '#f59e0b',
+                marginTop: 6,
+                marginBottom: 0,
+              }}>
+                🔒 {t('settings.editCooldownLocked', { days: daysUntilEdit })}
+              </p>
+            )}
           </div>
 
           {/* Email Field (Read-only) */}
@@ -230,6 +255,49 @@ export default function ProfileEditModal({ isOpen, onClose }) {
               {t('modals.profileEdit.emailCannotChange')}
             </p>
           </div>
+
+          {/* Organization (read-only) */}
+          {activeOrg && (
+            <div style={{ marginBottom: 20 }}>
+              <label style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                fontSize: 14,
+                fontWeight: 500,
+                color: 'rgba(255, 255, 255, 0.8)',
+                marginBottom: 8,
+              }}>
+                <Building2 size={16} />
+                {t('modals.profileEdit.organizationLabel', 'Organization')}
+              </label>
+              <div style={{
+                background: 'rgba(0, 0, 0, 0.2)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderRadius: '10px',
+                padding: '12px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+                <span style={{ fontSize: 15, color: 'rgba(255, 255, 255, 0.7)' }}>
+                  {activeOrg.name}
+                </span>
+                <span style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  color: '#60a5fa',
+                  background: 'rgba(59, 130, 246, 0.15)',
+                  padding: '3px 8px',
+                  borderRadius: 6,
+                }}>
+                  {activeOrg.role}
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* Error Message */}
           {error && (
@@ -276,7 +344,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
           }}
         >
           <SecondaryButton onClick={onClose}>{t('modals.profileEdit.cancelButton')}</SecondaryButton>
-          <Button onClick={handleSave} disabled={saving || profileLoading || success}>
+          <Button onClick={handleSave} disabled={saving || profileLoading || success || !canEdit}>
             {saving ? (
               <>
                 <div style={{

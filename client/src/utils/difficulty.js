@@ -22,7 +22,7 @@ export const normalizeDifficulty = (value) => {
   const str = String(value || '').toLowerCase();
   const mapped = {
     beginner: 1,
-    easy: 1,
+    easy: 2,
     intermediate: 2,
     medium: 3,
     advanced: 4,
@@ -33,7 +33,11 @@ export const normalizeDifficulty = (value) => {
   if (mapped) return mapped;
 
   const parsed = parseInt(value, 10);
-  return Number.isNaN(parsed) ? 1 : clampDifficulty(parsed);
+  if (Number.isNaN(parsed)) {
+    console.warn('normalizeDifficulty: unexpected value, defaulting to 1:', value);
+    return 1;
+  }
+  return clampDifficulty(parsed);
 };
 
 /**

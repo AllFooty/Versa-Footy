@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'wouter';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import HeaderLanding from './components/HeaderLanding';
 import FooterLanding from './components/FooterLanding';
@@ -152,23 +152,28 @@ export default function LandingPage() {
     },
   ];
 
+  const shouldReduceMotion = useReducedMotion();
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.95]);
 
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
-  };
+  const fadeInUp = shouldReduceMotion
+    ? { hidden: {}, visible: {} }
+    : {
+        hidden: { opacity: 0, y: 30 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+      };
 
-  const staggerChildren = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1,
-      },
-    },
-  };
+  const staggerChildren = shouldReduceMotion
+    ? { hidden: {}, visible: {} }
+    : {
+        hidden: { opacity: 0 },
+        visible: {
+          opacity: 1,
+          transition: {
+            staggerChildren: 0.15,
+            delayChildren: 0.1,
+          },
+        },
+      };
 
   // Common container style
   const containerStyle = {

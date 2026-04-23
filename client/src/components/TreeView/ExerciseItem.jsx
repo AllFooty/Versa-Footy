@@ -220,7 +220,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
                 style={{
                   position: 'absolute',
                   top: '100%',
-                  right: 0,
+                  insetInlineEnd: 0,
                   marginTop: 4,
                   backgroundColor: '#1e1e24',
                   border: '1px solid #2e2e38',

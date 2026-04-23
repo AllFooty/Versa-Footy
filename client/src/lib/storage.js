@@ -1,5 +1,22 @@
 import { supabase } from './supabase';
 
+const MAX_VIDEO_SIZE_BYTES = 200 * 1024 * 1024; // 200 MB — must match storage.buckets.file_size_limit for bucket 'exercise-videos'
+
+// Must match storage.buckets.allowed_mime_types for bucket 'exercise-videos'.
+// Kept here so the client fails fast with a friendly error instead of a 400 from storage.
+const ALLOWED_VIDEO_MIME_TYPES = new Set([
+  'video/mp4',
+  'video/webm',
+  'video/quicktime',
+  'video/x-msvideo',
+  'video/mpeg',
+  'video/x-matroska',
+  'video/3gpp',
+  'video/3gpp2',
+  'video/x-m4v',
+  'video/hevc',
+]);
+
 /**
  * Upload an exercise video to Supabase Storage and return its public URL.
  * Bucket is assumed to be public. Paths are namespaced per exercise to avoid collisions.
@@ -10,6 +27,20 @@ import { supabase } from './supabase';
 export const uploadExerciseVideo = async (file, exerciseId = null, onProgress = null) => {
   if (!file) {
     throw new Error('No file provided for upload.');
+  }
+
+  if (!file.type.startsWith('video/')) {
+    throw new Error('Only video files are allowed.');
+  }
+
+  if (!ALLOWED_VIDEO_MIME_TYPES.has(file.type)) {
+    throw new Error(
+      `This video format (${file.type}) isn't supported. Use MP4, MOV, WebM, MKV, 3GP, AVI, or M4V.`
+    );
+  }
+
+  if (file.size > MAX_VIDEO_SIZE_BYTES) {
+    throw new Error(`Video must be under 200 MB. This file is ${(file.size / (1024 * 1024)).toFixed(0)} MB.`);
   }
 
   const cleanName = file.name.replace(/\s+/g, '-').toLowerCase();
@@ -158,6 +189,35 @@ export const deleteExerciseVideo = async (urlOrPath) => {
     return false;
   }
   return true;
+};
+
+/**
+ * List every video file stored for an exercise.
+ * Returns candidates (there can be multiple; `video_url` on the exercise
+ * decides which one is shown to end users — everything else is a spare the
+ * admin may promote later).
+ */
+export const listExerciseVideos = async (exerciseId) => {
+  if (exerciseId == null) return [];
+  const folder = `exercises/${exerciseId}`;
+  const { data, error } = await supabase.storage
+    .from('exercise-videos')
+    .list(folder, { limit: 100, sortBy: { column: 'created_at', order: 'desc' } });
+  if (error) throw error;
+  return (data || [])
+    .filter((entry) => entry.id !== null) // skip sub-folders
+    .map((entry) => {
+      const path = `${folder}/${entry.name}`;
+      const { data: pub } = supabase.storage.from('exercise-videos').getPublicUrl(path);
+      return {
+        path,
+        name: entry.name,
+        publicUrl: pub?.publicUrl || '',
+        sizeBytes: entry.metadata?.size ?? null,
+        createdAt: entry.created_at ?? null,
+        mimeType: entry.metadata?.mimetype ?? null,
+      };
+    });
 };
 
 export default uploadExerciseVideo;

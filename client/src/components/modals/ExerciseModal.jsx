@@ -1,14 +1,29 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Video, Upload, Trash2, CheckCircle, X, Plus, Check, ChevronDown, ChevronRight, Search } from 'lucide-react';
 import Modal from './Modal';
 import ConfirmModal from './ConfirmModal';
+import ExerciseVideosPane from './ExerciseVideosPane';
 import { Input, TextArea, Select, FormField, Label } from '../ui';
-import { DIFFICULTY_OPTIONS, DURATION_OPTIONS, DEFAULTS, EQUIPMENT_OPTIONS } from '../../constants';
+import { getDifficultyOptions, DURATION_OPTIONS, DEFAULTS, EQUIPMENT_OPTIONS } from '../../constants';
 import { getTimerDescription, TIMER_PRESETS } from '../../constants/timerPresets';
 import { normalizeDifficulty } from '../../utils/difficulty';
 import { deleteExerciseVideo } from '../../lib/storage';
+
+const EXTERNAL_VIDEO_HOSTS = /^(www\.)?(youtube\.com|youtu\.be|m\.youtube\.com|vimeo\.com|player\.vimeo\.com)$/i;
+
+const isUploadedStorageUrl = (url) => /\/storage\/v1\/object\/public\/exercise-videos\//.test(url);
+
+const isAllowedExternalVideoUrl = (url) => {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false;
+    return EXTERNAL_VIDEO_HOSTS.test(parsed.hostname);
+  } catch {
+    return false;
+  }
+};
 
 /**
  * Full-screen skill picker overlay for mobile.
@@ -373,6 +388,9 @@ const ExerciseModal = ({
   categories = [],
   skills = [],
   preselectedSkillId = null,
+  onSetActiveVideo,
+  onDeleteVideoCandidate,
+  onAddVideoCandidate,
 }) => {
   const { t } = useTranslation();
   const [formData, setFormData] = useState(DEFAULTS.exercise);
@@ -383,9 +401,14 @@ const ExerciseModal = ({
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  // Synchronous guard against double-submit. `isSubmitting` state lags behind
+  // a rapid double-click because React hasn't committed the setState yet;
+  // a ref flips immediately and is visible to the next handler invocation.
+  const submittingRef = useRef(false);
   const [customEquipment, setCustomEquipment] = useState('');
+  const [videoUrlError, setVideoUrlError] = useState(null);
   const [confirmRemoveVideo, setConfirmRemoveVideo] = useState(false);
-  const [confirmRenameWithVideo, setConfirmRenameWithVideo] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState({});
   const [skillPickerOpen, setSkillPickerOpen] = useState(false);
@@ -416,7 +439,6 @@ const ExerciseModal = ({
     setDeleting(false);
     setDeleteMessage(null);
     setConfirmRemoveVideo(false);
-    setConfirmRenameWithVideo(false);
     setSkillPickerOpen(false);
 
     // Auto-expand categories that have selected skills (desktop)
@@ -463,6 +485,18 @@ const ExerciseModal = ({
 
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('video/')) {
+        setUploadError('Only video files are allowed.');
+        event.target.value = '';
+        return;
+      }
+      if (file.size > 200 * 1024 * 1024) {
+        setUploadError(`Video must be under 200 MB. This file is ${(file.size / (1024 * 1024)).toFixed(0)} MB.`);
+        event.target.value = '';
+        return;
+      }
+    }
     setVideoFile(file || null);
     setUploadError(null);
     setUploadProgress(0);
@@ -508,20 +542,25 @@ const ExerciseModal = ({
   };
 
   const handleSave = async () => {
-    if (uploading || deleting) return;
-    if (!formData.name.trim() || !formData.skillIds || formData.skillIds.length === 0) return;
+    // Synchronous ref check — blocks a second click before React commits state.
+    if (submittingRef.current || uploading || deleting) return;
+    submittingRef.current = true;
+    setIsSubmitting(true);
+    try {
+      if (!formData.name.trim() || !formData.skillIds || formData.skillIds.length === 0) return;
 
-    // Warn if renaming an exercise that has an existing video without replacing it
-    const nameChanged = editItem && editItem.name.trim() !== formData.name.trim();
-    const hasExistingVideo = !!formData.videoUrl;
-    const isReplacingVideo = !!videoFile;
+      const url = formData.videoUrl?.trim() || '';
+      if (url && !isUploadedStorageUrl(url) && !isAllowedExternalVideoUrl(url)) {
+        setVideoUrlError(t('modals.exercise.externalVideoError'));
+        return;
+      }
+      setVideoUrlError(null);
 
-    if (nameChanged && hasExistingVideo && !isReplacingVideo) {
-      setConfirmRenameWithVideo(true);
-      return;
+      await executeSave();
+    } finally {
+      submittingRef.current = false;
+      setIsSubmitting(false);
     }
-
-    await executeSave();
   };
 
   const handleRemoveVideo = async () => {
@@ -538,7 +577,7 @@ const ExerciseModal = ({
       if (formData.videoUrl) {
         await deleteExerciseVideo(formData.videoUrl);
       }
-      setFormData((prev) => ({ ...prev, videoUrl: '' }));
+      setFormData((prev) => ({ ...prev, videoUrl: null }));
       setVideoFile(null);
       setDeleteMessage(t('modals.exercise.videoRemoved'));
     } catch (err) {
@@ -884,7 +923,7 @@ const ExerciseModal = ({
               ? t('modals.exercise.updateButton')
               : t('modals.exercise.saveButton')
       }
-      saveDisabled={uploading || deleting}
+      saveDisabled={uploading || deleting || isSubmitting}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 16 : 20 }}>
         <FormField label={t('modals.exercise.nameLabel')} id="exercise-name">
@@ -902,15 +941,39 @@ const ExerciseModal = ({
         <div>
           <Label htmlFor="exercise-video">
             <Video size={14} style={{ marginInlineEnd: 6, verticalAlign: 'middle' }} />
-            {isMobile ? t('modals.exercise.videoLabel') : t('modals.exercise.videoUrlLabel')}
+            {isUploadedStorageUrl(formData.videoUrl)
+              ? t('modals.exercise.uploadedVideoLabel')
+              : t('modals.exercise.externalVideoLabel')}
           </Label>
-          <Input
-            id="exercise-video"
-            type="url"
-            placeholder={t('modals.exercise.videoUrlPlaceholder')}
-            value={formData.videoUrl}
-            onChange={(e) => handleChange('videoUrl', e.target.value)}
-          />
+          {isUploadedStorageUrl(formData.videoUrl) ? (
+            <div
+              style={{
+                padding: isMobile ? '10px 12px' : '8px 12px',
+                background: 'rgba(74,222,128,0.08)',
+                border: '1px solid rgba(74,222,128,0.25)',
+                borderRadius: 8,
+                color: '#a1a1aa',
+                fontSize: 12,
+                wordBreak: 'break-all',
+              }}
+            >
+              <CheckCircle size={12} style={{ color: '#4ade80', verticalAlign: 'middle', marginInlineEnd: 6 }} />
+              <a href={formData.videoUrl} target="_blank" rel="noreferrer" style={{ color: '#60a5fa' }}>
+                {formData.videoUrl.split('/').slice(-2).join('/')}
+              </a>
+            </div>
+          ) : (
+            <Input
+              id="exercise-video"
+              type="url"
+              placeholder={t('modals.exercise.externalVideoPlaceholder')}
+              value={formData.videoUrl}
+              onChange={(e) => { handleChange('videoUrl', e.target.value); setVideoUrlError(null); }}
+            />
+          )}
+          {videoUrlError && (
+            <p style={{ margin: '4px 0 0', fontSize: 12, color: '#ef4444' }}>{videoUrlError}</p>
+          )}
 
           <div style={{ marginTop: isMobile ? 10 : 12 }}>
             <label
@@ -1025,18 +1088,6 @@ const ExerciseModal = ({
             onClose={() => setConfirmRemoveVideo(false)}
           />
 
-          <ConfirmModal
-            isOpen={confirmRenameWithVideo}
-            title={t('modals.exercise.renameVideoWarningTitle', 'Video may not match')}
-            message={t('modals.exercise.renameVideoWarningMessage', 'You renamed this exercise but kept the existing video. The video may no longer show the correct drill. Are you sure you want to save without updating the video?')}
-            confirmLabel={t('modals.exercise.saveAnyway', 'Save anyway')}
-            onConfirm={() => {
-              setConfirmRenameWithVideo(false);
-              executeSave();
-            }}
-            onClose={() => setConfirmRenameWithVideo(false)}
-          />
-
           {deleteMessage && (
             <div style={{ marginTop: 6, color: '#4ade80', fontSize: 12 }}>
               {deleteMessage}
@@ -1055,6 +1106,19 @@ const ExerciseModal = ({
               {uploadError}
             </div>
           )}
+
+          {/* Multi-video pane — only meaningful for existing exercises (needs an id to list files under). */}
+          {editItem?.id != null && onSetActiveVideo && onDeleteVideoCandidate && onAddVideoCandidate && (
+            <ExerciseVideosPane
+              exerciseId={editItem.id}
+              activeUrl={formData.videoUrl}
+              isMobile={isMobile}
+              onSetActive={(url) => onSetActiveVideo(editItem.id, url)}
+              onDeleteCandidate={(path, publicUrl) => onDeleteVideoCandidate(editItem.id, path, publicUrl)}
+              onAddCandidate={(file, onProgress) => onAddVideoCandidate(editItem.id, file, onProgress)}
+              onActiveUrlChange={(url) => handleChange('videoUrl', url || '')}
+            />
+          )}
         </div>
 
         <FormField label={isMobile ? t('modals.exercise.difficultyLabel') : t('modals.exercise.difficultyScale')} id="exercise-difficulty">
@@ -1063,7 +1127,7 @@ const ExerciseModal = ({
             value={formData.difficulty}
             onChange={(e) => handleChange('difficulty', parseInt(e.target.value, 10))}
           >
-            {DIFFICULTY_OPTIONS.map((opt) => (
+            {getDifficultyOptions(t).map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
               </option>

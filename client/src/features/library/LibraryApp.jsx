@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useDeferredValue } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 // Components
@@ -52,6 +52,9 @@ export default function LibraryApp() {
     addExercise,
     updateExercise,
     deleteExercise,
+    setActiveExerciseVideo,
+    deleteExerciseVideoCandidate,
+    addExerciseVideoCandidate,
     getSkillById,
     getCategoryById,
     getSkillsForCategory,
@@ -61,7 +64,6 @@ export default function LibraryApp() {
 
   // Search & Filter state (unified)
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
-  const deferredSearchTerm = useDeferredValue(filters.searchTerm);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
   const updateFilter = useCallback((key, value) => {
@@ -84,12 +86,6 @@ export default function LibraryApp() {
     if (filters.categoryIds.length > 0) count++;
     return count;
   }, [filters]);
-
-  // Build the filters object with deferred search term for tree view
-  const deferredFilters = useMemo(
-    () => ({ ...filters, searchTerm: deferredSearchTerm }),
-    [filters, deferredSearchTerm]
-  );
 
   // Modal state
   const [categoryModal, setCategoryModal] = useState({ open: false, item: null });
@@ -257,7 +253,7 @@ export default function LibraryApp() {
             getSkillsForCategory={getSkillsForCategory}
             getExercisesForSkill={getExercisesForSkill}
             getCategoriesMatchingSearch={getCategoriesMatchingSearch}
-            filters={deferredFilters}
+            filters={filters}
             // Category actions
             onEditCategory={openCategoryModal}
             onDeleteCategory={deleteCategory}
@@ -299,6 +295,9 @@ export default function LibraryApp() {
         categories={categories}
         skills={skills}
         preselectedSkillId={exerciseModal.skillId}
+        onSetActiveVideo={setActiveExerciseVideo}
+        onDeleteVideoCandidate={deleteExerciseVideoCandidate}
+        onAddVideoCandidate={addExerciseVideoCandidate}
       />
 
       <PreviewModal

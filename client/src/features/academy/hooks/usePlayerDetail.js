@@ -1,8 +1,17 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../../lib/supabase';
+import { AGE_GROUPS } from '../../../constants';
 
-// Age group ordering for roadmap
-const AGE_GROUP_ORDER = ['U-7', 'U-8', 'U-9', 'U-10', 'U-11', 'U-12', 'U-13', 'U-14', 'U-15+'];
+// Age group ordering for roadmap — canonical list lives in `constants/index.js`.
+const AGE_GROUP_ORDER = AGE_GROUPS;
+
+const EMPTY_SECTION_ERRORS = Object.freeze({
+  skillProgress: null,
+  allSkills: null,
+  dailyActivity: null,
+  recentSessions: null,
+  levelProgress: null,
+});
 
 export default function usePlayerDetail(playerId) {
   const [profile, setProfile] = useState(null);
@@ -10,6 +19,8 @@ export default function usePlayerDetail(playerId) {
   const [allSkills, setAllSkills] = useState([]);
   const [dailyActivity, setDailyActivity] = useState([]);
   const [recentSessions, setRecentSessions] = useState([]);
+  const [levelProgress, setLevelProgress] = useState(null);
+  const [sectionErrors, setSectionErrors] = useState(EMPTY_SECTION_ERRORS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -17,30 +28,31 @@ export default function usePlayerDetail(playerId) {
     if (!playerId) return;
     setLoading(true);
     setError(null);
+    setSectionErrors(EMPTY_SECTION_ERRORS);
 
     try {
-      // Fetch all data in parallel
-      const [profileRes, skillsRes, allSkillsRes, activityRes, sessionsRes] = await Promise.all([
-        // Player profile + base profile for name
-        supabase
-          .from('player_profiles')
-          .select('*, profiles(full_name, email)')
-          .eq('id', playerId)
-          .single(),
+      // Profile load is fatal — without a profile there's no page to show.
+      const profileRes = await supabase
+        .from('player_profiles')
+        .select('*, profiles(full_name, email)')
+        .eq('id', playerId)
+        .single();
+      if (profileRes.error) throw profileRes.error;
+      setProfile(profileRes.data);
 
-        // All skill progress with skill/category names
+      // Secondary queries fire in parallel; any individual failure only
+      // degrades its section rather than the whole page.
+      const [skillsRes, allSkillsRes, activityRes, sessionsRes, levelRes] = await Promise.allSettled([
         supabase
           .from('skill_progress')
           .select('*, skills(name, age_group, categories(name, color, icon))')
           .eq('user_id', playerId),
 
-        // All skills in the system (for full roadmap including not-started)
         supabase
           .from('skills')
           .select('id, name, age_group, category_id, categories(name, color, icon)')
           .order('id', { ascending: true }),
 
-        // Daily activity for last 180 days (for heatmap + trends)
         supabase
           .from('daily_activity')
           .select('*')
@@ -48,21 +60,27 @@ export default function usePlayerDetail(playerId) {
           .gte('activity_date', getMonthsAgoDate(6))
           .order('activity_date', { ascending: true }),
 
-        // Recent training sessions (last 30 days)
         supabase
           .from('training_sessions')
           .select('*')
           .eq('user_id', playerId)
-          .gte('started_at', getMonthsAgoDate(1))
+          .gte('started_at', getDaysAgoDate(30))
           .order('started_at', { ascending: false }),
+
+        supabase.rpc('get_player_level_progress', { p_player_id: playerId }),
       ]);
 
-      if (profileRes.error) throw profileRes.error;
-      setProfile(profileRes.data);
-      setSkillProgress(skillsRes.data || []);
-      setAllSkills(allSkillsRes.data || []);
-      setDailyActivity(activityRes.data || []);
-      setRecentSessions(sessionsRes.data || []);
+      const nextErrors = { ...EMPTY_SECTION_ERRORS };
+      setSkillProgress(takeOrRecord(skillsRes, 'skillProgress', nextErrors) || []);
+      setAllSkills(takeOrRecord(allSkillsRes, 'allSkills', nextErrors) || []);
+      setDailyActivity(takeOrRecord(activityRes, 'dailyActivity', nextErrors) || []);
+      setRecentSessions(takeOrRecord(sessionsRes, 'recentSessions', nextErrors) || []);
+
+      const levelData = takeOrRecord(levelRes, 'levelProgress', nextErrors);
+      // RPC returns a table; grab the single row.
+      setLevelProgress(Array.isArray(levelData) ? (levelData[0] || null) : (levelData || null));
+
+      setSectionErrors(nextErrors);
     } catch (err) {
       console.error('Error fetching player detail:', err);
       setError(err.message);
@@ -75,11 +93,12 @@ export default function usePlayerDetail(playerId) {
     fetchDetail();
   }, [fetchDetail]);
 
-  // Compute derived data
-  const categoryRadar = computeCategoryRadar(skillProgress);
-  const weeklyTrends = computeWeeklyTrends(dailyActivity);
-  const skillsByCategory = groupSkillsByCategory(skillProgress);
-  const roadmap = computeRoadmap(profile, allSkills, skillProgress);
+  const categoryRadar = useMemo(() => computeCategoryRadar(skillProgress), [skillProgress]);
+  const weeklyTrends = useMemo(() => computeWeeklyTrends(dailyActivity), [dailyActivity]);
+  const roadmap = useMemo(
+    () => computeRoadmap(profile, allSkills, skillProgress),
+    [profile, allSkills, skillProgress],
+  );
 
   return {
     profile,
@@ -87,19 +106,52 @@ export default function usePlayerDetail(playerId) {
     allSkills,
     dailyActivity,
     recentSessions,
+    levelProgress,
     categoryRadar,
     weeklyTrends,
-    skillsByCategory,
     roadmap,
     loading,
     error,
+    sectionErrors,
   };
+}
+
+function takeOrRecord(settledResult, key, errors) {
+  if (settledResult.status === 'rejected') {
+    console.error(`usePlayerDetail: ${key} failed`, settledResult.reason);
+    errors[key] = settledResult.reason?.message || 'Failed to load';
+    return null;
+  }
+  const { data, error: queryError } = settledResult.value || {};
+  if (queryError) {
+    console.error(`usePlayerDetail: ${key} query error`, queryError);
+    errors[key] = queryError.message || 'Failed to load';
+    return null;
+  }
+  return data;
 }
 
 function getMonthsAgoDate(months) {
   const d = new Date();
   d.setMonth(d.getMonth() - months);
+  return d.toISOString().split('T')[0];
+}
+
+function getDaysAgoDate(days) {
+  const d = new Date();
+  d.setDate(d.getDate() - days);
   return d.toISOString();
+}
+
+function parseLocalDate(dateStr) {
+  if (typeof dateStr !== 'string') return null;
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(dateStr);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const d = new Date(year, month - 1, day);
+  return Number.isNaN(d.getTime()) ? null : d;
 }
 
 function computeCategoryRadar(skills) {
@@ -121,14 +173,23 @@ function computeCategoryRadar(skills) {
 
 function computeWeeklyTrends(activities) {
   const weeks = {};
+
+  for (let i = 25; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i * 7);
+    const weekKey = getWeekKey(d);
+    weeks[weekKey] = { week: weekKey, xp: 0, minutes: 0, days: 0 };
+  }
+
   activities.forEach(({ activity_date, xp_earned, practice_minutes }) => {
-    const weekKey = getWeekKey(new Date(activity_date));
-    if (!weeks[weekKey]) {
-      weeks[weekKey] = { week: weekKey, xp: 0, minutes: 0, days: 0 };
+    const parsed = parseLocalDate(activity_date);
+    if (!parsed) return;
+    const weekKey = getWeekKey(parsed);
+    if (weeks[weekKey]) {
+      weeks[weekKey].xp += xp_earned || 0;
+      weeks[weekKey].minutes += practice_minutes || 0;
+      weeks[weekKey].days++;
     }
-    weeks[weekKey].xp += xp_earned || 0;
-    weeks[weekKey].minutes += practice_minutes || 0;
-    weeks[weekKey].days++;
   });
 
   return Object.values(weeks);
@@ -143,26 +204,17 @@ function getWeekKey(date) {
   return `${month} ${d.getDate()}`;
 }
 
-function groupSkillsByCategory(skills) {
-  const groups = {};
-  skills.forEach((sp) => {
-    const catName = sp.skills?.categories?.name || 'Unknown';
-    const catColor = sp.skills?.categories?.color || '#3b82f6';
-    const catIcon = sp.skills?.categories?.icon || '';
-    if (!groups[catName]) {
-      groups[catName] = { name: catName, color: catColor, icon: catIcon, skills: [] };
-    }
-    groups[catName].skills.push(sp);
-  });
-  return Object.values(groups);
-}
-
 function computeRoadmap(profile, allSkills, progressRecords) {
   if (!profile || allSkills.length === 0) {
-    return { playerAgeGroup: null, totalSkillsToMaster: 0, masteredCount: 0, progressPercent: 0, skillsByAge: [], categorySummary: [] };
+    return { playerAgeGroup: null, totalSkillsToMaster: 0, masteredCount: 0, progressPercent: 0, skillsByAge: [], categorySummary: [], missingAgeGroup: false };
   }
 
-  const playerAgeGroup = profile.age_group || 'U-12';
+  // Player must have an age group set for the roadmap to be meaningful.
+  if (!profile.age_group) {
+    return { playerAgeGroup: null, totalSkillsToMaster: 0, masteredCount: 0, progressPercent: 0, skillsByAge: [], categorySummary: [], missingAgeGroup: true };
+  }
+
+  const playerAgeGroup = profile.age_group;
   const playerAgeIndex = AGE_GROUP_ORDER.indexOf(playerAgeGroup);
 
   // Build a lookup of progress by skill_id
@@ -181,7 +233,6 @@ function computeRoadmap(profile, allSkills, progressRecords) {
   const skillsWithProgress = allSkills.map((skill) => {
     const progress = progressMap[skill.id];
     const timesPracticed = progress?.times_practiced || 0;
-    const highRated = progress?.high_rated_completions || 0;
     const totalRatingSum = progress?.total_rating_sum || 0;
     const avgRating = timesPracticed > 0 ? totalRatingSum / timesPracticed : 0;
     const isMastered = progress?.status === 'mastered';
@@ -201,10 +252,10 @@ function computeRoadmap(profile, allSkills, progressRecords) {
       isMastered,
       status: progress?.status || 'not_started',
       timesPracticed,
-      highRatedCompletions: highRated,
       avgRating,
       masteryProgress,
       isCloseToMastering: !isMastered && masteryProgress >= 0.75,
+      needsRatingBoost: !isMastered && timesPracticed >= 10 && avgRating < 4.5,
     };
   });
 
@@ -253,5 +304,6 @@ function computeRoadmap(profile, allSkills, progressRecords) {
     progressPercent,
     skillsByAge,
     categorySummary: Object.values(catMap),
+    missingAgeGroup: false,
   };
 }

@@ -15,6 +15,7 @@ const FaqPage = React.lazy(() => import('./features/landing/FaqPage'));
 const TermsOfServicePage = React.lazy(() => import('./features/landing/TermsOfServicePage'));
 const PrivacyPolicyPage = React.lazy(() => import('./features/landing/PrivacyPolicyPage'));
 const LibraryApp = React.lazy(() => import('./features/library/LibraryApp'));
+const VideosAuditPage = React.lazy(() => import('./features/admin/VideosAuditPage'));
 const SettingsPage = React.lazy(() => import('./features/settings/SettingsPage'));
 const Login = React.lazy(() => import('./features/auth/Login'));
 const AcademyDashboard = React.lazy(() => import('./features/academy/AcademyDashboard'));
@@ -201,6 +202,13 @@ export default function AppRouter() {
           </ProtectedRoute>
         </Route>
 
+        {/* Manual invite code entry (no code in URL) */}
+        <Route path="/join">
+          <ProtectedRoute>
+            <JoinOrganization />
+          </ProtectedRoute>
+        </Route>
+
         {/* Academy sub-pages (must come before catch-all) */}
         <Route path="/academy/invitations">
           <AcademyProtectedRoute>
@@ -255,6 +263,13 @@ export default function AppRouter() {
         <Route path="/library/:rest*">
           <AdminProtectedRoute>
             <LibraryApp />
+          </AdminProtectedRoute>
+        </Route>
+
+        {/* Videos Audit - Admin only */}
+        <Route path="/videos-audit">
+          <AdminProtectedRoute>
+            <VideosAuditPage />
           </AdminProtectedRoute>
         </Route>
 

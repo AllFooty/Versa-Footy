@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, SlidersHorizontal } from 'lucide-react';
-import { AGE_GROUPS, EQUIPMENT_OPTIONS, DIFFICULTY_OPTIONS, DURATION_OPTIONS } from '../constants';
+import { AGE_GROUPS, EQUIPMENT_OPTIONS, getDifficultyOptions, DURATION_OPTIONS } from '../constants';
 
 const FilterChip = ({ label, active, onClick }) => (
   <button
@@ -50,7 +50,7 @@ const AdvancedFilterPanel = ({
             onChange={(e) => updateFilter('difficultyMin', e.target.value ? Number(e.target.value) : null)}
           >
             <option value="">{t('filters.min', 'Min')}</option>
-            {DIFFICULTY_OPTIONS.map((opt) => (
+            {getDifficultyOptions(t).map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.value}★</option>
             ))}
           </select>
@@ -61,7 +61,7 @@ const AdvancedFilterPanel = ({
             onChange={(e) => updateFilter('difficultyMax', e.target.value ? Number(e.target.value) : null)}
           >
             <option value="">{t('filters.max', 'Max')}</option>
-            {DIFFICULTY_OPTIONS.map((opt) => (
+            {getDifficultyOptions(t).map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.value}★</option>
             ))}
           </select>
