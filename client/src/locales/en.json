@@ -402,6 +402,7 @@
     "signInButton": "Sign in",
     "verifyingButton": "Verifying...",
     "resendCodeButton": "Resend code",
+    "resendCooldown": "Resend in {{seconds}}s",
     "useDifferentEmail": "\u2190 Use different email",
     "backToHome": "\u2190 Back to home",
     "successMessage": "Successfully signed in!",
@@ -623,7 +624,12 @@
       "acceptInvitation": "Accept Invitation",
       "joining": "Joining...",
       "decline": "Decline",
-      "noInviteCode": "No invite code provided"
+      "noInviteCode": "No invite code provided",
+      "enterCodeTitle": "Enter your invite code",
+      "enterCodeDesc": "Paste the 8-character code your coach gave you.",
+      "continue": "Continue",
+      "alreadyMember": "Already a member",
+      "alreadyMemberDesc": "You're already part of {{orgName}}."
     }
   },
 
@@ -648,7 +654,15 @@
     "exactAgeOnly": "Exact age only",
     "filterAll": "All",
     "filterHasExercises": "Has Exercises",
-    "filterNoExercises": "No Exercises"
+    "filterNoExercises": "No Exercises",
+    "editCategory": "Edit Category",
+    "deleteCategory": "Delete Category",
+    "noMatchingSkills": "No matching skills in this category",
+    "noSkillsYet": "No skills yet. Add one!",
+    "noCategoriesYet": "No categories yet. Tap the + button to get started!",
+    "noResultsFound": "No results found",
+    "noResultsHint": "Try different keywords or adjust your filters",
+    "searchResultsSummary": "Found {{skills}} skill(s) and {{exercises}} exercise(s) across {{categories}} category(ies)"
   },
 
   "modals": {
@@ -694,6 +708,10 @@
       "videoLabel": "Video",
       "videoUrlLabel": "Video URL",
       "videoUrlPlaceholder": "https://youtube.com/watch?v=...",
+      "externalVideoLabel": "External video link (YouTube / Vimeo)",
+      "externalVideoPlaceholder": "https://youtube.com/watch?v=...",
+      "externalVideoError": "Only YouTube or Vimeo links are allowed. Upload a file for anything else.",
+      "uploadedVideoLabel": "Uploaded video",
       "orUploadVideo": "Or upload a video file",
       "replaceWithUpload": "Replace with file upload",
       "videoUploaded": "Video uploaded!",
@@ -703,7 +721,7 @@
       "removeButton": "Remove",
       "videoRemoved": "Video removed. Save to confirm.",
       "difficultyLabel": "Difficulty",
-      "difficultyScale": "Difficulty (1 easy -> 5 hard)",
+      "difficultyScale": "Difficulty (1 Beginner → 5 Expert)",
       "minDurationLabel": "Minimum Duration",
       "minDurationHint": "Controls how long players must practice before they can finish. 'Auto' calculates based on category and difficulty.",
       "equipmentLabel": "Equipment",
@@ -713,7 +731,10 @@
       "descriptionPlaceholder": "Detailed instructions for this exercise...",
       "skillPickerHint": "Tap to browse skills by category. Multiple skills = Combo Exercise.",
       "skillPickerRequired": "Select at least one skill. Multiple skills create a Combo Exercise.",
-      "selectedCombo": "selected (Combo)"
+      "selectedCombo": "selected (Combo)",
+      "renameVideoWarningTitle": "Video may not match",
+      "renameVideoWarningMessage": "You renamed this exercise but kept the existing video. The video may no longer show the correct drill. Are you sure you want to save without updating the video?",
+      "saveAnyway": "Save anyway"
     },
     "deleteCategory": {
       "title": "Delete Category",
@@ -780,7 +801,15 @@
     "emailLabel": "Email Address",
     "fullNamePlaceholder": "Enter your full name",
     "emailCannotChange": "Email address cannot be changed",
-    "saveChanges": "Save Changes"
+    "saveChanges": "Save Changes",
+    "editCooldownLocked": "You can edit your name again in {{days}} day(s)",
+    "dangerZone": "Danger Zone",
+    "deleteAccount": "Delete Account",
+    "deleteAccountWarning": "Permanently deletes your account and all associated data. This action cannot be undone.",
+    "deleteAccountConfirmTitle": "Delete your account?",
+    "deleteAccountConfirmMessage": "This permanently deletes all your data including progress, achievements, and session history. This cannot be undone.",
+    "deleteAccountConfirmButton": "Delete Account",
+    "deletingAccount": "Deleting account..."
   },
 
   "filters": {
@@ -808,11 +837,11 @@
 
   "constants": {
     "difficulty": {
-      "star1": "1 Star - Easiest",
-      "star2": "2 Stars",
-      "star3": "3 Stars",
-      "star4": "4 Stars",
-      "star5": "5 Stars - Hardest"
+      "star1": "⭐ Beginner",
+      "star2": "⭐⭐ Easy",
+      "star3": "⭐⭐⭐ Medium",
+      "star4": "⭐⭐⭐⭐ Hard",
+      "star5": "⭐⭐⭐⭐⭐ Expert"
     },
     "duration": {
       "auto": "Auto (based on category & difficulty)",

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronRight, Edit3, Trash2, Plus, MoreVertical } from 'lucide-react';
 import { IconButton, Badge } from '../ui';
 import SkillItem from './SkillItem';
@@ -29,6 +30,7 @@ const CategoryItem = ({
   isMobile = false,
   isSearching = false,
 }) => {
+  const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const menuRef = useRef(null);
@@ -136,7 +138,7 @@ const CategoryItem = ({
               style={{
                 position: 'absolute',
                 top: '100%',
-                right: 0,
+                insetInlineEnd: 0,
                 marginTop: 4,
                 backgroundColor: '#1e1e24',
                 border: '1px solid #2e2e38',
@@ -160,7 +162,7 @@ const CategoryItem = ({
                   color: '#e4e4e7',
                   fontSize: 14,
                   cursor: 'pointer',
-                  textAlign: 'left',
+                  textAlign: 'start',
                 }}
               >
                 <Edit3 size={14} />
@@ -179,7 +181,7 @@ const CategoryItem = ({
                   color: '#ef4444',
                   fontSize: 14,
                   cursor: 'pointer',
-                  textAlign: 'left',
+                  textAlign: 'start',
                 }}
               >
                 <Trash2 size={14} />
@@ -199,12 +201,12 @@ const CategoryItem = ({
           items={[
             {
               icon: <Edit3 size={18} />,
-              label: 'Edit Category',
+              label: t('library.editCategory'),
               onClick: () => onEditCategory(category),
             },
             {
               icon: <Trash2 size={18} />,
-              label: 'Delete Category',
+              label: t('library.deleteCategory'),
               onClick: () => setDeleteModalOpen(true),
               danger: true,
             },
@@ -234,7 +236,7 @@ const CategoryItem = ({
                 padding: isMobile ? '16px' : '10px 16px',
               }}
             >
-              {isSearching ? 'No matching skills in this category' : 'No skills yet. Add one!'}
+              {isSearching ? t('library.noMatchingSkills') : t('library.noSkillsYet')}
             </div>
           ) : (
             skills.map((skill) => (

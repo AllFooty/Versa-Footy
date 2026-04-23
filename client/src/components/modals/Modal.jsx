@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { X, Save } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { IconButton, Button, SecondaryButton } from '../ui';
 
 /**
@@ -17,6 +18,8 @@ const Modal = ({
   large = false,
   children,
 }) => {
+  const { t } = useTranslation();
+
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -29,6 +32,16 @@ const Modal = ({
     };
   }, [isOpen]);
 
+  // Close modal on ESC key
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
@@ -37,19 +50,6 @@ const Modal = ({
         className={`modal ${large ? 'modal-large' : ''}`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Mobile drag handle indicator */}
-        <div
-          className="modal-drag-handle"
-          style={{
-            width: 40,
-            height: 4,
-            background: 'rgba(255,255,255,0.2)',
-            borderRadius: 2,
-            margin: '0 auto 16px',
-            display: 'none',
-          }}
-        />
-
         {/* Header */}
         <div
           style={{
@@ -91,7 +91,7 @@ const Modal = ({
               marginTop: 32,
             }}
           >
-            <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
+            <SecondaryButton onClick={onClose}>{t('common.cancel')}</SecondaryButton>
             <Button onClick={onSave} disabled={saveDisabled}>
               <Save size={16} /> {saveLabel}
             </Button>
@@ -102,9 +102,6 @@ const Modal = ({
       {/* Mobile-specific modal styles */}
       <style>{`
         @media (max-width: 768px) {
-          .modal-drag-handle {
-            display: block !important;
-          }
           .modal-title {
             font-size: 18px !important;
           }

@@ -13,7 +13,7 @@ i18n
       en: { translation: en },
       ar: { translation: ar },
     },
-    fallbackLng: 'en',
+    fallbackLng: 'ar',
     detection: {
       order: ['localStorage', 'navigator'],
       lookupLocalStorage: 'i18nextLng',
@@ -23,10 +23,5 @@ i18n
       escapeValue: false, // React already escapes
     },
   });
-
-// Set default to Arabic if no stored preference
-if (!localStorage.getItem('i18nextLng')) {
-  i18n.changeLanguage('ar');
-}
 
 export default i18n;

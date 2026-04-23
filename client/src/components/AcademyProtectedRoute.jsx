@@ -41,7 +41,7 @@ export default function AcademyProtectedRoute({ children }) {
   }
 
   // Wait for organizations to load before deciding access
-  if (orgsLoading || (organizations.length === 0 && orgsLoading !== false)) {
+  if (orgsLoading) {
     return (
       <div style={loadingContainerStyle}>
         <div style={{ textAlign: 'center' }}>

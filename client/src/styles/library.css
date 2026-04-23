@@ -18,8 +18,8 @@
   --color-bg-tertiary: #0d1117;
   --color-text-primary: #e4e4e7;
   --color-text-secondary: #a1a1aa;
-  --color-text-muted: #71717a;
-  --color-text-dim: #52525b;
+  --color-text-muted: #8b8b94;
+  --color-text-dim: #6b6b75;
   
   /* Accent Colors */
   --color-blue: #3b82f6;
@@ -296,7 +296,7 @@
 }
 
 .filter-section-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -362,6 +362,17 @@
   cursor: pointer;
   padding: 0;
   transition: background var(--transition-fast);
+  position: relative;
+}
+
+/* Invisible expanded touch target for mobile (44x44px) */
+.active-chip-remove::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: -14px;
+  right: -14px;
+  bottom: -14px;
 }
 
 .active-chip-remove:hover {
@@ -751,8 +762,8 @@
 
   /* Filter chip mobile sizing */
   .filter-chip {
-    min-height: 36px;
-    padding: 8px 14px;
+    min-height: 44px;
+    padding: 10px 14px;
     font-size: 13px;
   }
 
@@ -798,6 +809,7 @@
   .card {
     border-radius: 12px;
     padding: 16px;
+    backdrop-filter: blur(8px); /* Reduced from 20px for mobile performance */
   }
 
   .card:hover {
@@ -808,6 +820,7 @@
   .modal-overlay {
     padding: 0;
     align-items: flex-end;
+    backdrop-filter: blur(4px); /* Reduced from 8px for mobile performance */
   }
 
   .modal {
@@ -856,13 +869,13 @@
   /* Badge sizing */
   .badge {
     padding: 4px 8px;
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 0.3px;
   }
 
   .age-badge {
-    padding: 3px 6px;
-    font-size: 9px;
+    padding: 3px 8px;
+    font-size: 11px;
   }
 
   /* Better scrolling */
@@ -959,7 +972,7 @@
 }
 
 .mobile-stat-label {
-  font-size: 9px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--color-text-muted);
@@ -1161,5 +1174,27 @@
   .library-main-content {
     padding: 16px;
     padding-bottom: 100px; /* Space for FAB */
+  }
+}
+
+/* ============ Skeleton Loading ============ */
+.skeleton-pulse {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+/* ============ Reduced Motion Support ============ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

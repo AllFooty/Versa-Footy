@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
@@ -137,6 +137,14 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const resendTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (resendTimerRef.current) clearInterval(resendTimerRef.current);
+    };
+  }, []);
 
   // Redirect if already authenticated
   // Send to /academy — AcademyProtectedRoute will redirect to /org/create if no org exists
@@ -285,6 +293,16 @@ export default function Login() {
         setError(error.message);
       } else {
         setMessage(t('auth.newCodeSentMessage'));
+        setResendCooldown(30);
+        resendTimerRef.current = setInterval(() => {
+          setResendCooldown((prev) => {
+            if (prev <= 1) {
+              clearInterval(resendTimerRef.current);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
       }
     } catch (err) {
       setError(t('errors.resendFailed'));
@@ -435,13 +453,13 @@ export default function Login() {
               {loading ? t('auth.verifyingButton') : t('auth.signInButton')}
             </button>
 
-            <button 
+            <button
               type="button"
-              style={secondaryButtonStyle}
+              style={loading || resendCooldown > 0 ? { ...secondaryButtonStyle, opacity: 0.5, cursor: 'not-allowed' } : secondaryButtonStyle}
               onClick={handleResendCode}
-              disabled={loading}
+              disabled={loading || resendCooldown > 0}
             >
-              {t('auth.resendCodeButton')}
+              {resendCooldown > 0 ? t('auth.resendCooldown', { seconds: resendCooldown }) : t('auth.resendCodeButton')}
             </button>
 
             <button 

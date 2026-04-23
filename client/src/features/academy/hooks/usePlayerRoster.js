@@ -105,9 +105,9 @@ export default function usePlayerRoster(orgId) {
 
 export function getPlayerStatus(player) {
   if (!player.last_practice_date) return 'inactive';
-  const daysSince = Math.floor(
-    (Date.now() - new Date(player.last_practice_date).getTime()) / (1000 * 60 * 60 * 24)
-  );
+  const [y, m, d] = player.last_practice_date.split('-').map(Number);
+  const practiceDate = new Date(y, m - 1, d);
+  const daysSince = Math.floor((Date.now() - practiceDate.getTime()) / (1000 * 60 * 60 * 24));
   if (daysSince <= 3) return 'active';
   if (daysSince <= 7) return 'idle';
   return 'inactive';

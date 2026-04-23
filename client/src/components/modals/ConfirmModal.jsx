@@ -40,19 +40,6 @@ const ConfirmModal = ({
         onClick={(e) => e.stopPropagation()}
         style={{ maxWidth: 420 }}
       >
-        {/* Mobile drag handle */}
-        <div
-          className="modal-drag-handle"
-          style={{
-            width: 40,
-            height: 4,
-            background: 'rgba(255,255,255,0.2)',
-            borderRadius: 2,
-            margin: '0 auto 16px',
-            display: 'none',
-          }}
-        />
-
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -122,13 +109,6 @@ const ConfirmModal = ({
         </div>
       </div>
 
-      <style>{`
-        @media (max-width: 768px) {
-          .modal-drag-handle {
-            display: block !important;
-          }
-        }
-      `}</style>
     </div>
   );
 };

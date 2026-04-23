@@ -33,12 +33,26 @@
 /**
  * Difficulty level options for exercises
  */
+/**
+ * Generate difficulty options with i18n labels
+ * @param {function} t - i18next translation function
+ * @returns {array} Array of difficulty options with localized labels
+ */
+export const getDifficultyOptions = (t) => [
+  { value: 1, label: t('constants.difficulty.star1') },
+  { value: 2, label: t('constants.difficulty.star2') },
+  { value: 3, label: t('constants.difficulty.star3') },
+  { value: 4, label: t('constants.difficulty.star4') },
+  { value: 5, label: t('constants.difficulty.star5') },
+];
+
+// Legacy export for backward compatibility (to be removed)
 export const DIFFICULTY_OPTIONS = [
-  { value: 1, label: '1 Star - Easiest' },
-  { value: 2, label: '2 Stars' },
-  { value: 3, label: '3 Stars' },
-  { value: 4, label: '4 Stars' },
-  { value: 5, label: '5 Stars - Hardest' },
+  { value: 1, label: '⭐ Beginner' },
+  { value: 2, label: '⭐⭐ Easy' },
+  { value: 3, label: '⭐⭐⭐ Medium' },
+  { value: 4, label: '⭐⭐⭐⭐ Hard' },
+  { value: 5, label: '⭐⭐⭐⭐⭐ Expert' },
 ];
 
 /**
@@ -79,12 +93,7 @@ export const DURATION_OPTIONS = [
 export const getDurationLabel = (value, short = false) => {
   if (value === null || value === undefined) return 'Auto';
   const option = DURATION_OPTIONS.find((opt) => opt.value === value);
-  if (!option) return 'Auto';
-  if (short) {
-    // Return compact form for list badges
-    return option.label;
-  }
-  return option.label;
+  return option ? option.label : 'Auto';
 };
 
 /**

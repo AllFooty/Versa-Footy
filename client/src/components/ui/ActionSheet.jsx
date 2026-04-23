@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Mobile bottom sheet action menu
  * Replaces kebab dropdown menus on mobile for better UX
  */
 const ActionSheet = ({ isOpen, onClose, items = [], title }) => {
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -137,7 +140,7 @@ const ActionSheet = ({ isOpen, onClose, items = [], title }) => {
             fontFamily: "'DM Sans', sans-serif",
           }}
         >
-          Cancel
+          {t('common.cancel')}
         </button>
       </div>
     </div>

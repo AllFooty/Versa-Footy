@@ -8,18 +8,23 @@ export default function JoinOrganization() {
   const { t } = useTranslation();
   const { code } = useParams();
   const [, navigate] = useLocation();
-  const { isAuthenticated, refreshOrganizations } = useAuth();
+  const { isAuthenticated, refreshOrganizations, organizations } = useAuth();
 
   const [invitation, setInvitation] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!code);
   const [error, setError] = useState(null);
   const [accepting, setAccepting] = useState(false);
   const [accepted, setAccepted] = useState(false);
+  const [alreadyMember, setAlreadyMember] = useState(false);
+
+  // Manual-entry state (used when no code is in the URL)
+  const [manualCode, setManualCode] = useState('');
+  const [manualSubmitting, setManualSubmitting] = useState(false);
 
   // Look up the invite code on mount
   useEffect(() => {
     if (!code) {
-      setError(t('academy.join.noInviteCode'));
+      // No code in URL — show manual entry form, don't error
       setLoading(false);
       return;
     }
@@ -29,10 +34,20 @@ export default function JoinOrganization() {
         setError(lookupError);
       } else {
         setInvitation(inv);
+        // Server already tells us if the user is a member
+        if (inv?.already_member) setAlreadyMember(true);
       }
       setLoading(false);
     });
   }, [code]);
+
+  const handleManualSubmit = (e) => {
+    e.preventDefault();
+    const trimmed = manualCode.trim().toUpperCase();
+    if (trimmed.length < 6) return;
+    setManualSubmitting(true);
+    navigate(`/join/${trimmed}`);
+  };
 
   const handleAccept = async () => {
     if (!invitation) return;
@@ -40,10 +55,15 @@ export default function JoinOrganization() {
     setError(null);
 
     try {
-      await acceptInvitation(code);
-      setAccepted(true);
+      const prevOrgIds = new Set((organizations || []).map((o) => o.id));
+      const acceptResult = await acceptInvitation(code);
       await refreshOrganizations();
-      // Redirect after a short delay
+      // Prefer server flag; fall back to pre/post membership diff
+      const serverAlready = acceptResult?.already_member === true;
+      if (serverAlready || prevOrgIds.has(invitation.organization_id)) {
+        setAlreadyMember(true);
+      }
+      setAccepted(true);
       setTimeout(() => {
         const isCoachRole = ['coach', 'admin', 'owner'].includes(invitation.role);
         navigate(isCoachRole ? '/academy' : '/');
@@ -58,19 +78,53 @@ export default function JoinOrganization() {
   // Redirect to login if not authenticated (will come back after login)
   if (!isAuthenticated && !loading) {
     // Store the join URL so login can redirect back
-    sessionStorage.setItem('joinRedirect', `/join/${code}`);
+    if (code) sessionStorage.setItem('joinRedirect', `/join/${code}`);
     navigate('/login');
     return null;
   }
 
   return (
     <div style={containerStyle}>
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
       <div style={cardStyle}>
         {loading ? (
           <div style={{ textAlign: 'center', padding: 24 }}>
             <div style={spinnerStyle} />
             <p style={{ marginTop: 16, color: '#71717a' }}>{t('academy.join.lookingUpInvite')}</p>
           </div>
+        ) : !code ? (
+          <>
+            <div style={iconCircleStyle('#3b82f6')}>#</div>
+            <h1 style={titleStyle}>{t('academy.join.enterCodeTitle', 'Enter your invite code')}</h1>
+            <p style={descStyle}>
+              {t('academy.join.enterCodeDesc', 'Paste the 8-character code your coach gave you.')}
+            </p>
+            <form onSubmit={handleManualSubmit}>
+              <input
+                type="text"
+                value={manualCode}
+                onChange={(e) => setManualCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
+                placeholder="ABCD1234"
+                maxLength={12}
+                autoFocus
+                style={codeInputStyle}
+              />
+              <button
+                type="submit"
+                disabled={manualCode.trim().length < 6 || manualSubmitting}
+                style={{
+                  ...primaryButtonStyle,
+                  opacity: manualCode.trim().length < 6 ? 0.5 : 1,
+                  cursor: manualCode.trim().length < 6 ? 'not-allowed' : 'pointer',
+                }}
+              >
+                {t('academy.join.continue', 'Continue')}
+              </button>
+            </form>
+            <button onClick={() => navigate('/')} style={secondaryButtonStyle}>
+              {t('academy.join.goHome')}
+            </button>
+          </>
         ) : error && !invitation ? (
           <>
             <div style={iconCircleStyle('#ef4444')}>!</div>
@@ -83,9 +137,13 @@ export default function JoinOrganization() {
         ) : accepted ? (
           <>
             <div style={iconCircleStyle('#22c55e')}>&#10003;</div>
-            <h1 style={titleStyle}>{t('academy.join.youreIn')}</h1>
+            <h1 style={titleStyle}>
+              {alreadyMember ? t('academy.join.alreadyMember') : t('academy.join.youreIn')}
+            </h1>
             <p style={descStyle}>
-              {t('academy.join.joinedAs', { orgName: invitation.organizations?.name, role: invitation.role })}
+              {alreadyMember
+                ? t('academy.join.alreadyMemberDesc', { orgName: invitation.organizations?.name })
+                : t('academy.join.joinedAs', { orgName: invitation.organizations?.name, role: invitation.role })}
             </p>
           </>
         ) : (
@@ -93,8 +151,20 @@ export default function JoinOrganization() {
             <div style={iconCircleStyle('#3b82f6')}>&#9734;</div>
             <h1 style={titleStyle}>{t('academy.join.youveBeenInvited')}</h1>
             <div style={orgInfoStyle}>
+              {invitation.organizations?.logo_url && (
+                <img
+                  src={invitation.organizations.logo_url}
+                  alt={invitation.organizations.name}
+                  style={{ width: 48, height: 48, borderRadius: 8, objectFit: 'cover', margin: '0 auto 8px', display: 'block' }}
+                />
+              )}
               <p style={orgNameStyle}>{invitation.organizations?.name}</p>
               <p style={orgTypeStyle}>{invitation.organizations?.type}</p>
+              {invitation.organizations?.description && (
+                <p style={{ fontSize: 13, color: '#9ca3af', margin: '8px 0 0', lineHeight: 1.4 }}>
+                  {invitation.organizations.description}
+                </p>
+              )}
             </div>
             <p style={descStyle}>
               {t('academy.join.joiningAs', { role: invitation.role })}
@@ -201,4 +271,21 @@ const secondaryButtonStyle = {
   fontSize: 13,
   borderRadius: 8,
   cursor: 'pointer',
+};
+
+const codeInputStyle = {
+  width: '100%',
+  padding: '14px 16px',
+  fontSize: 20,
+  fontWeight: 700,
+  fontFamily: 'SFMono-Regular, Menlo, monospace',
+  letterSpacing: '0.15em',
+  textAlign: 'center',
+  background: 'rgba(255, 255, 255, 0.04)',
+  border: '1px solid rgba(255, 255, 255, 0.12)',
+  color: '#e4e4e7',
+  borderRadius: 10,
+  marginBottom: 12,
+  outline: 'none',
+  textTransform: 'uppercase',
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import CategoryItem from './CategoryItem';
 import { isAnyFilterActive } from '../../utils/search';
 
@@ -26,6 +27,7 @@ const TreeView = ({
   onDeleteExercise,
 }) => {
   const [expandedCategories, setExpandedCategories] = useState({});
+  const { t } = useTranslation();
   const [expandedSkills, setExpandedSkills] = useState({});
   const [isMobile, setIsMobile] = useState(false);
 
@@ -116,7 +118,7 @@ const TreeView = ({
         >
           <div style={{ fontSize: isMobile ? 36 : 48, marginBottom: 16 }}>⚽</div>
           <p style={{ fontSize: isMobile ? 14 : 16, margin: 0 }}>
-            No categories yet. Tap the + button to get started!
+            {t('library.noCategoriesYet')}
           </p>
         </div>
       ) : (
@@ -131,9 +133,11 @@ const TreeView = ({
                 fontSize: 13,
               }}
             >
-              Found {resultCounts.totalSkills} skill{resultCounts.totalSkills !== 1 ? 's' : ''}
-              {' '}and {resultCounts.totalExercises} exercise{resultCounts.totalExercises !== 1 ? 's' : ''}
-              {' '}across {resultCounts.totalCategories} categor{resultCounts.totalCategories !== 1 ? 'ies' : 'y'}
+              {t('library.searchResultsSummary', {
+                skills: resultCounts.totalSkills,
+                exercises: resultCounts.totalExercises,
+                categories: resultCounts.totalCategories,
+              })}
             </div>
           )}
 
@@ -148,10 +152,10 @@ const TreeView = ({
             >
               <div style={{ fontSize: isMobile ? 36 : 48, marginBottom: 16 }}>🔍</div>
               <p style={{ fontSize: isMobile ? 14 : 16, margin: '0 0 8px' }}>
-                No results found
+                {t('library.noResultsFound')}
               </p>
               <p style={{ fontSize: 13, margin: 0, color: '#52525b' }}>
-                Try different keywords or adjust your filters
+                {t('library.noResultsHint')}
               </p>
             </div>
           )}

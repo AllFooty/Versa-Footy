@@ -402,6 +402,7 @@
     "signInButton": "تسجيل الدخول",
     "verifyingButton": "جاري التحقق...",
     "resendCodeButton": "إعادة إرسال الرمز",
+    "resendCooldown": "إعادة الإرسال خلال {{seconds}} ثانية",
     "useDifferentEmail": "→ استخدام بريد إلكتروني مختلف",
     "backToHome": "→ العودة للرئيسية",
     "successMessage": "تم تسجيل الدخول بنجاح!",
@@ -623,7 +624,12 @@
       "acceptInvitation": "قبول الدعوة",
       "joining": "جاري الانضمام...",
       "decline": "رفض",
-      "noInviteCode": "لم يتم تقديم رمز دعوة"
+      "noInviteCode": "لم يتم تقديم رمز دعوة",
+      "enterCodeTitle": "أدخل رمز الدعوة",
+      "enterCodeDesc": "الصق الرمز المكوّن من 8 أحرف الذي قدمه لك المدرب.",
+      "continue": "متابعة",
+      "alreadyMember": "عضو بالفعل",
+      "alreadyMemberDesc": "أنت عضو في {{orgName}} بالفعل."
     }
   },
 
@@ -648,7 +654,15 @@
     "exactAgeOnly": "العمر المحدد فقط",
     "filterAll": "الكل",
     "filterHasExercises": "بها تمارين",
-    "filterNoExercises": "بدون تمارين"
+    "filterNoExercises": "بدون تمارين",
+    "editCategory": "تعديل الفئة",
+    "deleteCategory": "حذف الفئة",
+    "noMatchingSkills": "لا توجد مهارات مطابقة في هذه الفئة",
+    "noSkillsYet": "لا توجد مهارات بعد. أضف مهارة!",
+    "noCategoriesYet": "لا توجد فئات بعد. اضغط على زر + للبدء!",
+    "noResultsFound": "لا توجد نتائج",
+    "noResultsHint": "جرّب كلمات مختلفة أو عدّل الفلاتر",
+    "searchResultsSummary": "تم العثور على {{skills}} مهارة و {{exercises}} تمرين في {{categories}} فئة"
   },
 
   "modals": {
@@ -694,6 +708,10 @@
       "videoLabel": "الفيديو",
       "videoUrlLabel": "رابط الفيديو",
       "videoUrlPlaceholder": "https://youtube.com/watch?v=...",
+      "externalVideoLabel": "رابط فيديو خارجي (YouTube / Vimeo)",
+      "externalVideoPlaceholder": "https://youtube.com/watch?v=...",
+      "externalVideoError": "يُسمح فقط بروابط YouTube أو Vimeo. استخدم رفع الملفات لأي مصدر آخر.",
+      "uploadedVideoLabel": "فيديو مرفوع",
       "orUploadVideo": "أو ارفع ملف فيديو",
       "replaceWithUpload": "استبدال برفع ملف",
       "videoUploaded": "تم رفع الفيديو!",
@@ -703,7 +721,7 @@
       "removeButton": "إزالة",
       "videoRemoved": "تمت إزالة الفيديو. احفظ للتأكيد.",
       "difficultyLabel": "الصعوبة",
-      "difficultyScale": "الصعوبة (1 سهل -> 5 صعب)",
+      "difficultyScale": "الصعوبة (1 مبتدئ ← 5 خبير)",
       "minDurationLabel": "الحد الأدنى للمدة",
       "minDurationHint": "يتحكم في المدة التي يجب أن يتدربها اللاعبون قبل أن يتمكنوا من الانتهاء. 'تلقائي' يحسب بناءً على الفئة والصعوبة.",
       "equipmentLabel": "المعدات",
@@ -713,7 +731,10 @@
       "descriptionPlaceholder": "تعليمات مفصلة لهذا التمرين...",
       "skillPickerHint": "انقر لتصفح المهارات حسب الفئة. مهارات متعددة = تمرين مُركّب.",
       "skillPickerRequired": "اختر مهارة واحدة على الأقل. المهارات المتعددة تُنشئ تمريناً مُركّباً.",
-      "selectedCombo": "مختار (مُركّب)"
+      "selectedCombo": "مختار (مُركّب)",
+      "renameVideoWarningTitle": "قد لا يتطابق الفيديو",
+      "renameVideoWarningMessage": "لقد أعدت تسمية هذا التمرين مع الإبقاء على الفيديو الحالي. قد لا يعرض الفيديو التمرين الصحيح بعد الآن. هل أنت متأكد من الحفظ دون تحديث الفيديو؟",
+      "saveAnyway": "حفظ على أي حال"
     },
     "deleteCategory": {
       "title": "حذف الفئة",
@@ -780,7 +801,15 @@
     "emailLabel": "عنوان البريد الإلكتروني",
     "fullNamePlaceholder": "أدخل اسمك الكامل",
     "emailCannotChange": "لا يمكن تغيير عنوان البريد الإلكتروني",
-    "saveChanges": "حفظ التغييرات"
+    "saveChanges": "حفظ التغييرات",
+    "editCooldownLocked": "يمكنك تعديل اسمك مجدداً خلال {{days}} يوم",
+    "dangerZone": "منطقة الخطر",
+    "deleteAccount": "حذف الحساب",
+    "deleteAccountWarning": "يحذف حسابك وجميع بياناتك بشكل دائم. لا يمكن التراجع عن هذا الإجراء.",
+    "deleteAccountConfirmTitle": "هل تريد حذف حسابك؟",
+    "deleteAccountConfirmMessage": "سيؤدي هذا إلى حذف جميع بياناتك بشكل دائم بما في ذلك التقدم والإنجازات وسجل الجلسات. لا يمكن التراجع عن ذلك.",
+    "deleteAccountConfirmButton": "حذف الحساب",
+    "deletingAccount": "جاري حذف الحساب..."
   },
 
   "filters": {
@@ -808,11 +837,11 @@
 
   "constants": {
     "difficulty": {
-      "star1": "نجمة واحدة - الأسهل",
-      "star2": "نجمتان",
-      "star3": "3 نجوم",
-      "star4": "4 نجوم",
-      "star5": "5 نجوم - الأصعب"
+      "star1": "⭐ مبتدئ",
+      "star2": "⭐⭐ سهل",
+      "star3": "⭐⭐⭐ متوسط",
+      "star4": "⭐⭐⭐⭐ صعب",
+      "star5": "⭐⭐⭐⭐⭐ خبير"
     },
     "duration": {
       "auto": "تلقائي (بناءً على الفئة والصعوبة)",

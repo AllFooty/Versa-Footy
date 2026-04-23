@@ -3,6 +3,7 @@ import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../lib/AuthContext';
 import usePlayerRoster, { getPlayerStatus } from './hooks/usePlayerRoster';
+import { SkeletonRow } from '../../components/ui/Skeleton';
 
 const STATUS_OPTIONS = ['', 'active', 'idle', 'inactive'];
 const AGE_GROUPS = ['', 'U-7', 'U-8', 'U-9', 'U-10', 'U-11', 'U-12', 'U-13', 'U-14', 'U-15+'];
@@ -36,103 +37,147 @@ export default function PlayerRoster() {
   };
 
   return (
-    <div style={containerStyle}>
+    <div className="academy-container" style={containerStyle}>
       <div style={headerStyle}>
         <Link href="/academy" style={backLinkStyle}>&larr; {t('nav.dashboard')}</Link>
-        <h1 style={titleStyle}>{t('academy.roster.title')}</h1>
+        <h1 className="academy-title" style={titleStyle}>{t('academy.roster.title')}</h1>
         <p style={subtitleStyle}>{t('academy.roster.playerCount', { count: players.length })}</p>
       </div>
 
       {/* Filters */}
-      <div style={filtersStyle}>
+      <div className="roster-filters" style={filtersStyle}>
         <input
           type="text"
+          className="academy-search-input"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t('academy.roster.searchPlaceholder')}
           style={searchInputStyle}
         />
-        <select value={filterAgeGroup} onChange={(e) => setFilterAgeGroup(e.target.value)} style={filterSelectStyle}>
+        <select className="academy-filter-select" value={filterAgeGroup} onChange={(e) => setFilterAgeGroup(e.target.value)} style={filterSelectStyle}>
           <option value="">{t('academy.roster.allAges')}</option>
           {AGE_GROUPS.slice(1).map((ag) => (
             <option key={ag} value={ag}>{ag}</option>
           ))}
         </select>
-        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} style={filterSelectStyle}>
+        <select className="academy-filter-select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} style={filterSelectStyle}>
           {STATUS_OPTIONS.map((s) => (
             <option key={s} value={s}>{STATUS_LABELS[s]}</option>
           ))}
         </select>
       </div>
 
-      {/* Table */}
+      {/* Content */}
       <div style={tableWrapStyle}>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: 48 }}>
-            <div style={spinnerStyle} />
-            <p style={{ marginTop: 16, color: '#71717a' }}>{t('academy.roster.loadingPlayers')}</p>
+          <div style={{ padding: 16 }}>
+            {[...Array(5)].map((_, i) => <SkeletonRow key={i} />)}
           </div>
         ) : players.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 48 }}>
-            <p style={{ color: '#71717a', fontSize: 14 }}>{t('academy.roster.noPlayersFound')}</p>
+          <div className="roster-empty" style={{ textAlign: 'center', padding: 48 }}>
+            <p className="academy-muted-text" style={{ color: '#71717a', fontSize: 14 }}>{t('academy.roster.noPlayersFound')}</p>
             <Link href="/academy/invitations" style={{ color: '#3b82f6', fontSize: 14 }}>{t('academy.roster.invitePlayers')}</Link>
           </div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={tableStyle}>
-              <thead>
-                <tr>
-                  {COLUMNS.map((col) => (
-                    <th
-                      key={col.key}
-                      onClick={() => toggleSort(col.key)}
-                      style={thStyle}
-                    >
-                      {col.label}
-                      {sortField === col.key && (
-                        <span style={{ marginLeft: 4 }}>{sortDir === 'asc' ? '\u2191' : '\u2193'}</span>
-                      )}
-                    </th>
-                  ))}
-                  <th style={thStyle}>{t('academy.roster.columnStatus')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {players.map((p) => {
-                  const status = getPlayerStatus(p);
-                  return (
-                    <tr key={p.player_id} style={trStyle}>
-                      <td style={tdStyle}>
-                        <Link href={`/academy/players/${p.player_id}`} style={playerLinkStyle}>
-                          <div style={avatarStyle}>{(p.display_name || '?')[0].toUpperCase()}</div>
-                          {p.display_name || t('common.unknown')}
-                        </Link>
-                      </td>
-                      <td style={tdStyle}>{p.age_group || '\u2014'}</td>
-                      <td style={tdStyle}>{p.current_level}</td>
-                      <td style={tdStyle}>{p.total_xp?.toLocaleString()}</td>
-                      <td style={tdStyle}>{p.xp_this_week?.toLocaleString()}</td>
-                      <td style={tdStyle}>{p.skills_mastered}</td>
-                      <td style={tdStyle}>
-                        {p.current_streak > 0 ? `${p.current_streak}d` : '\u2014'}
-                      </td>
-                      <td style={tdStyle}>
-                        {p.avg_self_rating > 0 ? `${p.avg_self_rating}\u2605` : '\u2014'}
-                      </td>
-                      <td style={tdStyle}>
-                        {p.last_practice_date
-                          ? formatRelativeDate(p.last_practice_date, t)
-                          : t('common.never')}
-                      </td>
-                      <td style={tdStyle}>
-                        <span style={statusBadgeStyle(status)}>{status}</span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <>
+            {/* Desktop: Table */}
+            <div className="roster-table-desktop" style={{ overflowX: 'auto' }}>
+              <table style={tableStyle}>
+                <thead>
+                  <tr>
+                    {COLUMNS.map((col) => (
+                      <th
+                        key={col.key}
+                        onClick={() => toggleSort(col.key)}
+                        style={thStyle}
+                      >
+                        {col.label}
+                        {sortField === col.key && (
+                          <span style={{ marginLeft: 4 }}>{sortDir === 'asc' ? '\u2191' : '\u2193'}</span>
+                        )}
+                      </th>
+                    ))}
+                    <th style={thStyle}>{t('academy.roster.columnStatus')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {players.map((p) => {
+                    const status = getPlayerStatus(p);
+                    return (
+                      <tr key={p.player_id} style={trStyle}>
+                        <td style={tdStyle}>
+                          <Link href={`/academy/players/${p.player_id}`} style={playerLinkStyle}>
+                            <div style={avatarStyle}>{(p.display_name || '?')[0].toUpperCase()}</div>
+                            {p.display_name || t('common.unknown')}
+                          </Link>
+                        </td>
+                        <td style={tdStyle}>{p.age_group || '\u2014'}</td>
+                        <td style={tdStyle}>{p.current_level}</td>
+                        <td style={tdStyle}>{p.total_xp?.toLocaleString()}</td>
+                        <td style={tdStyle}>{p.xp_this_week?.toLocaleString()}</td>
+                        <td style={tdStyle}>{p.skills_mastered}</td>
+                        <td style={tdStyle}>
+                          {p.current_streak > 0 ? `${p.current_streak}d` : '\u2014'}
+                        </td>
+                        <td style={tdStyle}>
+                          {p.avg_self_rating > 0 ? `${p.avg_self_rating}\u2605` : '\u2014'}
+                        </td>
+                        <td style={tdStyle}>
+                          {p.last_practice_date
+                            ? formatRelativeDate(p.last_practice_date, t)
+                            : t('common.never')}
+                        </td>
+                        <td style={tdStyle}>
+                          <span style={statusBadgeStyle(status)}>{status}</span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile: Card Layout */}
+            <div className="roster-cards-mobile">
+              {players.map((p) => {
+                const status = getPlayerStatus(p);
+                return (
+                  <Link key={p.player_id} href={`/academy/players/${p.player_id}`} style={{ textDecoration: 'none' }}>
+                    <div className="roster-player-card">
+                      <div className="roster-card-header">
+                        <div className="roster-card-avatar">
+                          {(p.display_name || '?')[0].toUpperCase()}
+                        </div>
+                        <div className="roster-card-info">
+                          <span className="roster-card-name">{p.display_name || t('common.unknown')}</span>
+                          <span className="roster-card-meta">
+                            {p.age_group || '\u2014'} &middot; {t('common.level')} {p.current_level}
+                          </span>
+                        </div>
+                        <span className={`roster-card-status roster-card-status--${status}`}>
+                          {status}
+                        </span>
+                      </div>
+                      <div className="roster-card-stats">
+                        <div className="roster-card-stat">
+                          <span className="roster-card-stat-label">{t('academy.roster.columnXP')}</span>
+                          <span className="roster-card-stat-value">{p.total_xp?.toLocaleString()}</span>
+                        </div>
+                        <div className="roster-card-stat">
+                          <span className="roster-card-stat-label">{t('academy.roster.columnStreak')}</span>
+                          <span className="roster-card-stat-value">{p.current_streak > 0 ? `${p.current_streak}d` : '\u2014'}</span>
+                        </div>
+                        <div className="roster-card-stat">
+                          <span className="roster-card-stat-label">{t('academy.roster.columnMastered')}</span>
+                          <span className="roster-card-stat-value">{p.skills_mastered}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
     </div>

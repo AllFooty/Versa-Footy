@@ -3,6 +3,7 @@ import { Link, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../lib/AuthContext';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
+import '../../styles/academy.css';
 
 const NAV_KEYS = [
   {
@@ -64,9 +65,22 @@ const NAV_KEYS = [
 
 export default function AcademyLayout({ children }) {
   const { t } = useTranslation();
-  const { activeOrg, organizations, setActiveOrg } = useAuth();
+  const { activeOrg, organizations, setActiveOrg, setPrimaryOrganization } = useAuth();
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [settingPrimary, setSettingPrimary] = useState(false);
+
+  const handleSetPrimary = async () => {
+    if (!activeOrg?.id || activeOrg.is_primary) return;
+    setSettingPrimary(true);
+    try {
+      await setPrimaryOrganization(activeOrg.id);
+    } catch (err) {
+      console.error('Failed to set primary organization:', err);
+    } finally {
+      setSettingPrimary(false);
+    }
+  };
 
   const isActive = (href) => {
     if (href === '/academy') return location === '/academy';
@@ -77,7 +91,7 @@ export default function AcademyLayout({ children }) {
     <div style={{ display: 'flex', minHeight: '100vh', position: 'relative' }}>
       {/* Mobile top bar */}
       <div className="acad-mobile-bar" style={mobileBarStyle}>
-        <button onClick={() => setMobileOpen(true)} style={hamburgerBtnStyle}>
+        <button className="acad-hamburger-btn" onClick={() => setMobileOpen(true)} style={hamburgerBtnStyle}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <line x1="3" y1="6" x2="21" y2="6" />
             <line x1="3" y1="12" x2="21" y2="12" />
@@ -124,24 +138,44 @@ export default function AcademyLayout({ children }) {
             {(activeOrg?.name || 'A')[0].toUpperCase()}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={orgNameStyle}>{activeOrg?.name || 'Academy'}</p>
+            <p style={orgNameStyle}>
+              {activeOrg?.is_primary && (
+                <span title={t('academy.primaryBadge', 'Primary')} style={{ color: '#facc15', marginRight: 4 }}>★</span>
+              )}
+              {activeOrg?.name || 'Academy'}
+            </p>
             <p style={orgTypeStyle}>{activeOrg?.type || 'Organization'}</p>
           </div>
         </div>
 
         {organizations.length > 1 && (
-          <select
-            value={activeOrg?.id || ''}
-            onChange={(e) => {
-              const org = organizations.find((o) => o.id === e.target.value);
-              if (org) setActiveOrg(org);
-            }}
-            style={orgSwitcherStyle}
-          >
-            {organizations.map((o) => (
-              <option key={o.id} value={o.id}>{o.name}</option>
-            ))}
-          </select>
+          <>
+            <select
+              className="acad-sidebar-switcher"
+              value={activeOrg?.id || ''}
+              onChange={(e) => {
+                const org = organizations.find((o) => o.id === e.target.value);
+                if (org) setActiveOrg(org);
+              }}
+              style={orgSwitcherStyle}
+            >
+              {organizations.map((o) => (
+                <option key={o.id} value={o.id}>{o.name}</option>
+              ))}
+            </select>
+            {activeOrg && !activeOrg.is_primary && (
+              <button
+                onClick={handleSetPrimary}
+                disabled={settingPrimary}
+                style={setPrimaryBtnStyle}
+                title={t('academy.setPrimaryTooltip', 'Make this your default academy')}
+              >
+                {settingPrimary
+                  ? t('academy.settingPrimary', 'Setting…')
+                  : t('academy.setAsPrimary', 'Set as primary')}
+              </button>
+            )}
+          </>
         )}
 
         {/* Navigation */}
@@ -151,6 +185,7 @@ export default function AcademyLayout({ children }) {
             return (
               <Link key={item.href} href={item.href}>
                 <a
+                  className="acad-nav-item"
                   onClick={() => setMobileOpen(false)}
                   style={{
                     ...navItemStyle,
@@ -330,6 +365,19 @@ const orgSwitcherStyle = {
   color: '#e4e4e7',
   fontSize: 12,
   margin: '12px 0 0',
+};
+
+const setPrimaryBtnStyle = {
+  width: '100%',
+  padding: '6px 10px',
+  background: 'transparent',
+  border: '1px solid rgba(250, 204, 21, 0.35)',
+  borderRadius: 8,
+  color: '#facc15',
+  fontSize: 11,
+  fontWeight: 500,
+  margin: '8px 0 0',
+  cursor: 'pointer',
 };
 
 const navItemStyle = {
