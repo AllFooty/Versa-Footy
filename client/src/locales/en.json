@@ -161,6 +161,24 @@
       "title": "Ready to Give Your Kid a Competitive Edge?",
       "subtitle": "Download the app and watch your kid's confidence and skills take off."
     },
+    "download": {
+      "iosTopLabel": "Download on the",
+      "iosBigLabel": "App Store",
+      "iosAriaLabel": "Download Versa Footy on the App Store",
+      "androidTopLabel": "Coming Soon",
+      "androidNotifySmallLabel": "Notify me on",
+      "androidBigLabel": "Google Play",
+      "androidHint": "Versa Footy is currently iOS-only — Android coming soon.",
+      "androidFormPrompt": "Get notified the moment Versa Footy lands on Android.",
+      "emailPlaceholder": "your@email.com",
+      "notifyMe": "Notify me",
+      "onTheList": "You're on the list — we'll email you the day Android launches.",
+      "alreadyOnList": "You're already on the list — we'll be in touch.",
+      "welcomeBack": "Welcome back! You're on the list.",
+      "invalidEmail": "Please enter a valid email.",
+      "somethingWrong": "Something went wrong. Please try again.",
+      "privacyNote": "We'll only email you about Android availability. Unsubscribe anytime."
+    },
     "earlyAccess": {
       "title": "Start Training Today!",
       "subtitle": "Sign up and give your kid the edge with AI-powered soccer training.",

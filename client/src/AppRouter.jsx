@@ -14,8 +14,13 @@ const AboutPage = React.lazy(() => import('./features/landing/AboutPage'));
 const FaqPage = React.lazy(() => import('./features/landing/FaqPage'));
 const TermsOfServicePage = React.lazy(() => import('./features/landing/TermsOfServicePage'));
 const PrivacyPolicyPage = React.lazy(() => import('./features/landing/PrivacyPolicyPage'));
+const UnsubscribePage = React.lazy(() => import('./features/landing/UnsubscribePage'));
+const PreferencesPage = React.lazy(() => import('./features/landing/PreferencesPage'));
 const LibraryApp = React.lazy(() => import('./features/library/LibraryApp'));
 const VideosAuditPage = React.lazy(() => import('./features/admin/VideosAuditPage'));
+const MarketingEmailPage = React.lazy(() => import('./features/admin/MarketingEmailPage'));
+const SegmentsPage = React.lazy(() => import('./features/admin/SegmentsPage'));
+const AutomationsPage = React.lazy(() => import('./features/admin/AutomationsPage'));
 const SettingsPage = React.lazy(() => import('./features/settings/SettingsPage'));
 const Login = React.lazy(() => import('./features/auth/Login'));
 const AcademyDashboard = React.lazy(() => import('./features/academy/AcademyDashboard'));
@@ -174,6 +179,14 @@ export default function AppRouter() {
           <PrivacyPolicyPage />
         </Route>
 
+        <Route path="/unsubscribe">
+          <UnsubscribePage />
+        </Route>
+
+        <Route path="/preferences">
+          <PreferencesPage />
+        </Route>
+
         {/* Home Hub - Post-login landing for authenticated users */}
         <Route path="/home">
           <ProtectedRoute>
@@ -270,6 +283,25 @@ export default function AppRouter() {
         <Route path="/videos-audit">
           <AdminProtectedRoute>
             <VideosAuditPage />
+          </AdminProtectedRoute>
+        </Route>
+
+        {/* Marketing Email - Admin only */}
+        <Route path="/marketing">
+          <AdminProtectedRoute>
+            <MarketingEmailPage />
+          </AdminProtectedRoute>
+        </Route>
+
+        <Route path="/marketing/segments">
+          <AdminProtectedRoute>
+            <SegmentsPage />
+          </AdminProtectedRoute>
+        </Route>
+
+        <Route path="/marketing/automations">
+          <AdminProtectedRoute>
+            <AutomationsPage />
           </AdminProtectedRoute>
         </Route>
 

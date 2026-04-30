@@ -7,6 +7,7 @@ import FooterLanding from './components/FooterLanding';
 import WengerQuote from './components/WengerQuote';
 import VideoPlayer from './components/VideoPlayer';
 import All4FootyFamilyBar from './components/All4FootyFamilyBar';
+import DownloadCTA from './components/DownloadCTA';
 import styles from './styles/LandingPage.module.css';
 import './styles/landing-globals.css';
 
@@ -221,17 +222,9 @@ export default function LandingPage() {
                     {t('landing.hero.statsLine')}
                   </p>
 
-                  {/* CTA Button */}
-                  <div style={{
-                    display: 'flex',
-                    gap: '16px',
-                    flexWrap: 'wrap',
-                  }}>
-                    <Link href="/login">
-                      <a className={styles.button}>
-                        {t('landing.hero.getStarted')}
-                      </a>
-                    </Link>
+                  {/* Download CTA */}
+                  <div style={{ marginTop: '8px' }}>
+                    <DownloadCTA source="landing_hero" layout="row" />
                   </div>
                 </motion.div>
 
@@ -662,15 +655,13 @@ export default function LandingPage() {
               <h2 style={{ fontSize: '36px', fontWeight: '800', color: 'white', marginBottom: '16px' }}>
                 {t('landing.cta.title')}
               </h2>
-              <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.9)', marginBottom: '40px', maxWidth: '640px', margin: '0 auto 40px' }}>
+              <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.9)', marginBottom: '32px', maxWidth: '640px', margin: '0 auto 32px' }}>
                 {t('landing.cta.subtitle')}
               </p>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                <Link href="/login">
-                  <a className={styles.button} style={{ fontSize: '18px', padding: '14px 32px' }}>
-                    {t('landing.hero.getStarted')}
-                  </a>
-                </Link>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div style={{ maxWidth: 480, width: '100%' }}>
+                  <DownloadCTA source="landing_cta" layout="row" />
+                </div>
               </div>
             </div>
           </section>

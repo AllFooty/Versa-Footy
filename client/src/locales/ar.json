@@ -161,6 +161,24 @@
       "title": "مستعد لمنح طفلك ميزة تنافسية؟",
       "subtitle": "حمّل التطبيق وشاهد ثقة طفلك ومهاراته تنطلق."
     },
+    "download": {
+      "iosTopLabel": "حمّل من",
+      "iosBigLabel": "App Store",
+      "iosAriaLabel": "حمّل Versa Footy من App Store",
+      "androidTopLabel": "قريباً",
+      "androidNotifySmallLabel": "أعلمني على",
+      "androidBigLabel": "Google Play",
+      "androidHint": "تطبيق Versa Footy متاح حالياً على iOS فقط — إصدار Android قريباً.",
+      "androidFormPrompt": "سنخبرك فور توفر Versa Footy على Android.",
+      "emailPlaceholder": "بريدك@example.com",
+      "notifyMe": "أعلمني",
+      "onTheList": "تمت الإضافة — سنرسل لك بريداً يوم إطلاق Android.",
+      "alreadyOnList": "أنت مسجّل بالفعل — سنتواصل معك قريباً.",
+      "welcomeBack": "أهلاً بعودتك! أنت في القائمة.",
+      "invalidEmail": "الرجاء إدخال بريد إلكتروني صحيح.",
+      "somethingWrong": "حدث خطأ. حاول مرة أخرى.",
+      "privacyNote": "سنراسلك فقط بشأن توفر Android. يمكنك إلغاء الاشتراك في أي وقت."
+    },
     "earlyAccess": {
       "title": "ابدأ التدريب اليوم!",
       "subtitle": "سجّل وامنح طفلك الأفضلية مع تدريب كرة قدم مدعوم بالذكاء الاصطناعي.",
