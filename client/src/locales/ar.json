@@ -581,7 +581,9 @@
       "typeSchool": "مدرسة",
       "typeClub": "نادي",
       "typeFederation": "اتحاد",
-      "typeMinistry": "وزارة"
+      "typeMinistry": "وزارة",
+      "successTitle": "تم إنشاء الأكاديمية!",
+      "successBody": "نقلك إلى {{name}}…"
     },
     "invitations": {
       "title": "الدعوات",
@@ -681,7 +683,9 @@
       "enterCodeDesc": "الصق الرمز المكوّن من 8 أحرف الذي قدمه لك المدرب.",
       "continue": "متابعة",
       "alreadyMember": "عضو بالفعل",
-      "alreadyMemberDesc": "أنت عضو في {{orgName}} بالفعل."
+      "alreadyMemberDesc": "أنت عضو في {{orgName}} بالفعل.",
+      "tryAnotherCode": "جرّب رمزاً آخر",
+      "alreadyMemberCta": "اذهب إلى الأكاديمية"
     }
   },
   "library": {

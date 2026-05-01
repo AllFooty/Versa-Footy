@@ -581,7 +581,9 @@
       "typeSchool": "School",
       "typeClub": "Club",
       "typeFederation": "Federation",
-      "typeMinistry": "Ministry"
+      "typeMinistry": "Ministry",
+      "successTitle": "Academy created!",
+      "successBody": "Taking you to {{name}}…"
     },
     "invitations": {
       "title": "Invitations",
@@ -681,7 +683,9 @@
       "enterCodeDesc": "Paste the 8-character code your coach gave you.",
       "continue": "Continue",
       "alreadyMember": "Already a member",
-      "alreadyMemberDesc": "You're already part of {{orgName}}."
+      "alreadyMemberDesc": "You're already part of {{orgName}}.",
+      "tryAnotherCode": "Try another code",
+      "alreadyMemberCta": "Go to academy"
     }
   },
   "library": {

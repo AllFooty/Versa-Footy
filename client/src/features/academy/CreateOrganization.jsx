@@ -8,7 +8,7 @@ const ORG_TYPES = ['academy', 'school', 'club', 'federation', 'ministry'];
 
 export default function CreateOrganization() {
   const { t } = useTranslation();
-  const { user, refreshOrganizations } = useAuth();
+  const { refreshOrganizations } = useAuth();
   const [, navigate] = useLocation();
   const [name, setName] = useState('');
   const [type, setType] = useState('academy');
@@ -16,6 +16,7 @@ export default function CreateOrganization() {
   const [city, setCity] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   const ORG_TYPE_LABELS = {
     academy: t('academy.createOrg.typeAcademy'),
@@ -34,7 +35,7 @@ export default function CreateOrganization() {
 
     try {
       // Create organization + add owner atomically via RPC
-      const { data: org, error: orgError } = await supabase.rpc('create_organization', {
+      const { error: orgError } = await supabase.rpc('create_organization', {
         p_name: name.trim(),
         p_type: type,
         p_region: region.trim() || null,
@@ -43,16 +44,36 @@ export default function CreateOrganization() {
 
       if (orgError) throw orgError;
 
-      // Refresh org list in context and navigate to dashboard
       await refreshOrganizations();
-      navigate('/academy');
+      setSuccess(true);
+      // Brief acknowledgement before handoff to the dashboard
+      setTimeout(() => navigate('/academy'), 800);
     } catch (err) {
       console.error('Error creating organization:', err);
       setError(err.message);
-    } finally {
       setSubmitting(false);
     }
   };
+
+  if (success) {
+    return (
+      <div style={containerStyle}>
+        <div style={cardStyle} role="status" aria-live="polite">
+          <div style={successIconWrapStyle} aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h1 style={{ ...titleStyle, textAlign: 'center' }}>
+            {t('academy.createOrg.successTitle')}
+          </h1>
+          <p style={{ ...subtitleStyle, textAlign: 'center', margin: 0 }}>
+            {t('academy.createOrg.successBody', { name: name.trim() })}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={containerStyle}>
@@ -64,20 +85,22 @@ export default function CreateOrganization() {
 
         <form onSubmit={handleSubmit}>
           <div style={fieldStyle}>
-            <label style={labelStyle}>{t('academy.createOrg.nameLabel')}</label>
+            <label style={labelStyle} htmlFor="org-name">{t('academy.createOrg.nameLabel')}</label>
             <input
+              id="org-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={t('academy.createOrg.namePlaceholder')}
               style={inputStyle}
               required
+              autoFocus
             />
           </div>
 
           <div style={fieldStyle}>
-            <label style={labelStyle}>{t('academy.createOrg.typeLabel')}</label>
-            <select value={type} onChange={(e) => setType(e.target.value)} style={inputStyle}>
+            <label style={labelStyle} htmlFor="org-type">{t('academy.createOrg.typeLabel')}</label>
+            <select id="org-type" value={type} onChange={(e) => setType(e.target.value)} style={inputStyle}>
               {ORG_TYPES.map((orgType) => (
                 <option key={orgType} value={orgType}>
                   {ORG_TYPE_LABELS[orgType]}
@@ -87,8 +110,9 @@ export default function CreateOrganization() {
           </div>
 
           <div style={fieldStyle}>
-            <label style={labelStyle}>{t('academy.createOrg.regionLabel')}</label>
+            <label style={labelStyle} htmlFor="org-region">{t('academy.createOrg.regionLabel')}</label>
             <input
+              id="org-region"
               type="text"
               value={region}
               onChange={(e) => setRegion(e.target.value)}
@@ -98,8 +122,9 @@ export default function CreateOrganization() {
           </div>
 
           <div style={fieldStyle}>
-            <label style={labelStyle}>{t('academy.createOrg.cityLabel')}</label>
+            <label style={labelStyle} htmlFor="org-city">{t('academy.createOrg.cityLabel')}</label>
             <input
+              id="org-city"
               type="text"
               value={city}
               onChange={(e) => setCity(e.target.value)}
@@ -108,7 +133,7 @@ export default function CreateOrganization() {
             />
           </div>
 
-          {error && <p style={errorStyle}>{error}</p>}
+          {error && <p role="alert" style={errorStyle}>{error}</p>}
 
           <button type="submit" disabled={submitting || !name.trim()} style={buttonStyle}>
             {submitting ? t('academy.createOrg.creating') : t('academy.createOrg.createButton')}
@@ -194,4 +219,15 @@ const buttonStyle = {
   borderRadius: 'var(--radius-lg)',
   cursor: 'pointer',
   marginTop: 8,
+};
+
+const successIconWrapStyle = {
+  width: 56,
+  height: 56,
+  borderRadius: '50%',
+  background: 'rgba(34, 197, 94, 0.15)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  margin: '0 auto 16px',
 };
