@@ -68,7 +68,20 @@
     "invitations": "الدعوات",
     "backToHome": "العودة للرئيسية",
     "backToLanding": "العودة للصفحة الرئيسية",
-    "backToRoster": "العودة لقائمة اللاعبين"
+    "backToRoster": "العودة لقائمة اللاعبين",
+    "videosAudit": "تدقيق الفيديوهات",
+    "marketingEmail": "حملات البريد",
+    "marketingSegments": "الشرائح",
+    "marketingAutomations": "الأتمتة",
+    "academySettings": "إعدادات الأكاديمية",
+    "account": "الحساب",
+    "ground": "الميدان",
+    "groupAcademy": "الأكاديمية",
+    "groupAdmin": "الإدارة",
+    "adminMarketingSubheader": "التسويق",
+    "primary": "التنقل الرئيسي",
+    "skipToContent": "تخطي إلى المحتوى الرئيسي",
+    "openMenu": "فتح قائمة التنقل"
   },
   "landing": {
     "hero": {
@@ -478,7 +491,19 @@
     "createAcademy": "أنشئ أكاديميتك",
     "createAcademyDescription": "أنشئ مؤسسة لبدء تتبع اللاعبين",
     "exerciseLibrary": "مكتبة التمارين",
-    "settings": "الإعدادات"
+    "settings": "الإعدادات",
+    "dashboardSubtitle": "أهلاً بعودتك إلى ميدانك",
+    "haveInviteCode": "لديك رمز دعوة؟",
+    "libraryDescription": "إدارة المهارات والتمارين",
+    "marketingDescription": "إرسال الحملات وإدارة الشرائح",
+    "accountDescription": "الملف الشخصي والأمان والتفضيلات",
+    "quickActions": "إجراءات سريعة",
+    "stats": {
+      "myAcademies": "أكاديمياتي",
+      "activeAcademy": "الأكاديمية النشطة",
+      "playersInOrg": "اللاعبون",
+      "pendingInvitations": "الدعوات المعلقة"
+    }
   },
   "academy": {
     "dashboard": {

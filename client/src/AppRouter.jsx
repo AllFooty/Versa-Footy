@@ -7,6 +7,7 @@ import { LanguageProvider } from './lib/LanguageContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import AcademyProtectedRoute from './components/AcademyProtectedRoute';
+import AppShell from './components/AppShell';
 
 const Landing = React.lazy(() => import('./features/landing/LandingPage'));
 const HomePage = React.lazy(() => import('./features/home/HomePage'));
@@ -186,99 +187,99 @@ export default function AppRouter() {
         {/* Home Hub - Post-login landing for authenticated users */}
         <Route path="/home">
           <ProtectedRoute>
-            <HomePage />
+            <AppShell pageTitleKey="nav.home"><HomePage /></AppShell>
           </ProtectedRoute>
         </Route>
 
         {/* Settings Page - For authenticated users */}
         <Route path="/settings">
           <ProtectedRoute>
-            <SettingsPage />
+            <AppShell pageTitleKey="nav.account"><SettingsPage /></AppShell>
           </ProtectedRoute>
         </Route>
 
         {/* Academy - Create/Join Organization */}
         <Route path="/org/create">
           <ProtectedRoute>
-            <CreateOrganization />
+            <AppShell pageTitleKey="home.createAcademy"><CreateOrganization /></AppShell>
           </ProtectedRoute>
         </Route>
 
         {/* Join via invite code - requires auth only */}
         <Route path="/join/:code">
           <ProtectedRoute>
-            <JoinOrganization />
+            <AppShell pageTitleKey="nav.invitations"><JoinOrganization /></AppShell>
           </ProtectedRoute>
         </Route>
 
         {/* Manual invite code entry (no code in URL) */}
         <Route path="/join">
           <ProtectedRoute>
-            <JoinOrganization />
+            <AppShell pageTitleKey="nav.invitations"><JoinOrganization /></AppShell>
           </ProtectedRoute>
         </Route>
 
         {/* Academy sub-pages (must come before catch-all) */}
         <Route path="/academy/invitations">
           <AcademyProtectedRoute>
-            <InvitationManager />
+            <AppShell pageTitleKey="nav.invitations"><InvitationManager /></AppShell>
           </AcademyProtectedRoute>
         </Route>
 
         <Route path="/academy/players/:id">
           <AcademyProtectedRoute>
-            <PlayerDetail />
+            <AppShell pageTitleKey="nav.players"><PlayerDetail /></AppShell>
           </AcademyProtectedRoute>
         </Route>
 
         <Route path="/academy/players">
           <AcademyProtectedRoute>
-            <PlayerRoster />
+            <AppShell pageTitleKey="nav.players"><PlayerRoster /></AppShell>
           </AcademyProtectedRoute>
         </Route>
 
         <Route path="/academy/teams">
           <AcademyProtectedRoute>
-            <TeamManagement />
+            <AppShell pageTitleKey="nav.teams"><TeamManagement /></AppShell>
           </AcademyProtectedRoute>
         </Route>
 
         <Route path="/academy/settings">
           <AcademyProtectedRoute>
-            <AcademySettings />
+            <AppShell pageTitleKey="nav.academySettings"><AcademySettings /></AppShell>
           </AcademyProtectedRoute>
         </Route>
 
         {/* Academy Dashboard - Requires coach/admin/owner org membership */}
         <Route path="/academy">
           <AcademyProtectedRoute>
-            <AcademyDashboard />
+            <AppShell pageTitleKey="nav.dashboard"><AcademyDashboard /></AppShell>
           </AcademyProtectedRoute>
         </Route>
 
         <Route path="/academy/:rest*">
           <AcademyProtectedRoute>
-            <AcademyDashboard />
+            <AppShell pageTitleKey="nav.dashboard"><AcademyDashboard /></AppShell>
           </AcademyProtectedRoute>
         </Route>
 
         {/* Library App - Admin only */}
         <Route path="/library">
           <AdminProtectedRoute>
-            <LibraryApp />
+            <AppShell pageTitleKey="nav.library"><LibraryApp /></AppShell>
           </AdminProtectedRoute>
         </Route>
 
         <Route path="/library/:rest*">
           <AdminProtectedRoute>
-            <LibraryApp />
+            <AppShell pageTitleKey="nav.library"><LibraryApp /></AppShell>
           </AdminProtectedRoute>
         </Route>
 
         {/* Videos Audit - Admin only */}
         <Route path="/videos-audit">
           <AdminProtectedRoute>
-            <VideosAuditPage />
+            <AppShell pageTitleKey="nav.videosAudit"><VideosAuditPage /></AppShell>
           </AdminProtectedRoute>
         </Route>
 
