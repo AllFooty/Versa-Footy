@@ -1,12 +1,16 @@
 /**
  * Main application styles
- * - Landing pages use: features/landing/styles/landing-globals.css (Tailwind + landing-specific)
- * - Library app uses: styles/global.css (custom CSS variables + library-specific)
+ * - Design tokens: ./styles/tokens.css (loaded globally below)
+ * - Shared primitives: ./styles/app-shell.css (loaded globally below)
+ * - Landing additionally loads: features/landing/styles/landing-globals.css
+ * - Library additionally loads: styles/library.css
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
-/* Base reset and defaults */
+@import './styles/tokens.css';
+@import './styles/app-shell.css';
+
 *,
 *::before,
 *::after {
@@ -21,13 +25,12 @@ html {
 
 body {
   margin: 0;
-  background: #0a0f1a;
-  color: #e4e4e7;
-  font-family: 'Rubik', 'Inter', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-app-mid);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
   line-height: 1.6;
 }
 
 #root {
   min-height: 100vh;
 }
-

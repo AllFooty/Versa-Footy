@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { supabase } from './supabase';
 import { setPrimaryOrganization as rpcSetPrimaryOrganization } from '../features/academy/hooks/useInvitations';
 
@@ -25,7 +25,7 @@ export function AuthProvider({ children }) {
   }, [activeOrg?.id]);
 
   // Fetch user profile from profiles table (non-blocking)
-  const fetchProfile = async (userId) => {
+  const fetchProfile = useCallback(async (userId) => {
     if (!userId) {
       setProfile(null);
       profileRef.current = null;
@@ -62,10 +62,10 @@ export function AuthProvider({ children }) {
     } finally {
       setProfileLoading(false);
     }
-  };
+  }, []);
 
   // Fetch user's organizations via RPC (non-blocking)
-  const fetchOrganizations = async () => {
+  const fetchOrganizations = useCallback(async () => {
     setOrgsLoading(true);
     try {
       const { data, error } = await supabase.rpc('get_my_organizations');
@@ -98,7 +98,7 @@ export function AuthProvider({ children }) {
     } finally {
       setOrgsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     // Check if supabase.auth is available (handles missing credentials gracefully)
@@ -170,9 +170,9 @@ export function AuthProvider({ children }) {
         subscription.unsubscribe();
       }
     };
-  }, []);
+  }, [fetchProfile, fetchOrganizations]);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error('Error signing out:', error.message);
@@ -183,16 +183,16 @@ export function AuthProvider({ children }) {
     setActiveOrg(null);
     setOrgsLoading(false);
     localStorage.removeItem('activeOrgId');
-  };
+  }, []);
 
-  const deleteAccount = async () => {
+  const deleteAccount = useCallback(async () => {
     const { error } = await supabase.rpc('delete_user_account');
     if (error) throw error;
     // onAuthStateChange fires when auth.users is deleted, cleaning up state
-  };
+  }, []);
 
   // Update user profile in profiles table
-  const updateProfile = async (updates) => {
+  const updateProfile = useCallback(async (updates) => {
     if (!user?.id) {
       throw new Error('No user logged in');
     }
@@ -221,9 +221,14 @@ export function AuthProvider({ children }) {
     } finally {
       setProfileLoading(false);
     }
-  };
+  }, [user?.id]);
 
-  const value = {
+  const setPrimaryOrganization = useCallback(async (orgId) => {
+    await rpcSetPrimaryOrganization(orgId);
+    await fetchOrganizations();
+  }, [fetchOrganizations]);
+
+  const value = useMemo(() => ({
     user,
     session,
     profile,
@@ -240,13 +245,24 @@ export function AuthProvider({ children }) {
     setActiveOrg,
     orgsLoading,
     refreshOrganizations: fetchOrganizations,
-    setPrimaryOrganization: async (orgId) => {
-      await rpcSetPrimaryOrganization(orgId);
-      await fetchOrganizations();
-    },
+    setPrimaryOrganization,
     isCoach: activeOrg ? ['owner', 'admin', 'coach'].includes(activeOrg.role) : false,
     isOrgAdmin: activeOrg ? ['owner', 'admin'].includes(activeOrg.role) : false,
-  };
+  }), [
+    user,
+    session,
+    profile,
+    loading,
+    profileLoading,
+    signOut,
+    deleteAccount,
+    updateProfile,
+    organizations,
+    activeOrg,
+    orgsLoading,
+    fetchOrganizations,
+    setPrimaryOrganization,
+  ]);
 
   return (
     <AuthContext.Provider value={value}>

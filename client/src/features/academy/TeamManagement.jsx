@@ -4,6 +4,7 @@ import { useAuth } from '../../lib/AuthContext';
 import { AGE_GROUPS } from '../../constants';
 import useTeams from './hooks/useTeams';
 import usePlayerRoster from './hooks/usePlayerRoster';
+import ConfirmModal from '../../components/modals/ConfirmModal';
 
 export default function TeamManagement() {
   const { t } = useTranslation();
@@ -17,6 +18,8 @@ export default function TeamManagement() {
   const [newAgeGroup, setNewAgeGroup] = useState('');
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState(null);
+  const [actionError, setActionError] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   // Selected team detail
   const [selectedTeamId, setSelectedTeamId] = useState(null);
@@ -56,8 +59,14 @@ export default function TeamManagement() {
     }
   };
 
-  const handleDelete = async (teamId) => {
-    if (!confirm(t('academy.teams.deleteConfirm'))) return;
+  const requestDelete = (teamId) => {
+    setActionError(null);
+    setConfirmDeleteId(teamId);
+  };
+
+  const handleConfirmDelete = async () => {
+    const teamId = confirmDeleteId;
+    if (!teamId) return;
     try {
       await deleteTeam(teamId);
       if (selectedTeamId === teamId) {
@@ -65,25 +74,27 @@ export default function TeamManagement() {
         setTeamMembers([]);
       }
     } catch (err) {
-      alert(err.message);
+      setActionError(err.message);
     }
   };
 
   const handleAddPlayer = async () => {
     if (!addPlayerId || !selectedTeamId) return;
+    setActionError(null);
     try {
       await addPlayer(selectedTeamId, addPlayerId);
       setAddPlayerId('');
     } catch (err) {
-      alert(err.message);
+      setActionError(err.message);
     }
   };
 
   const handleRemovePlayer = async (playerId) => {
+    setActionError(null);
     try {
       await removePlayer(selectedTeamId, playerId);
     } catch (err) {
-      alert(err.message);
+      setActionError(err.message);
     }
   };
 
@@ -175,7 +186,7 @@ export default function TeamManagement() {
                     </p>
                   </div>
                   <button
-                    onClick={(e) => { e.stopPropagation(); handleDelete(team.id); }}
+                    onClick={(e) => { e.stopPropagation(); requestDelete(team.id); }}
                     style={deleteIconStyle}
                     title={t('academy.teams.deleteTeamTooltip')}
                   >
@@ -262,6 +273,52 @@ export default function TeamManagement() {
           )}
         </div>
       </div>
+
+      {actionError && (
+        <div
+          role="alert"
+          style={{
+            position: 'fixed',
+            insetInlineEnd: 16,
+            bottom: 16,
+            maxWidth: 360,
+            background: 'var(--color-red-soft)',
+            border: '1px solid var(--color-red-soft-border)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '12px 14px',
+            color: '#fca5a5',
+            fontSize: 13,
+            zIndex: 100,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setActionError(null)}
+            aria-label={t('common.close', { defaultValue: 'Close' })}
+            style={{
+              float: 'inline-end',
+              background: 'transparent',
+              border: 'none',
+              color: '#fca5a5',
+              cursor: 'pointer',
+              fontSize: 18,
+              lineHeight: 1,
+              padding: '0 0 0 8px',
+            }}
+          >×</button>
+          {actionError}
+        </div>
+      )}
+
+      <ConfirmModal
+        isOpen={confirmDeleteId != null}
+        title={t('academy.teams.deleteConfirmTitle', { defaultValue: 'Delete team?' })}
+        message={t('academy.teams.deleteConfirm')}
+        confirmLabel={t('common.delete', { defaultValue: 'Delete' })}
+        confirmDanger
+        onConfirm={handleConfirmDelete}
+        onClose={() => setConfirmDeleteId(null)}
+      />
     </div>
   );
 }

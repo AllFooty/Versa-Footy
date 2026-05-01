@@ -5,11 +5,6 @@ import { User, Mail, Check, ArrowLeft, Save, Trash2 } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 import ConfirmModal from '../../components/modals/ConfirmModal';
 
-// Landing page components for consistent look
-import HeaderLanding from '../landing/components/HeaderLanding';
-import FooterLanding from '../landing/components/FooterLanding';
-import All4FootyFamilyBar from '../landing/components/All4FootyFamilyBar';
-
 const COOLDOWN_DAYS = 7;
 
 export default function SettingsPage() {
@@ -102,18 +97,14 @@ export default function SettingsPage() {
   };
 
   return (
-    <>
-      <All4FootyFamilyBar />
-      <div
-        style={{
-          minHeight: '100vh',
-          background: 'linear-gradient(135deg, #0a0f1a 0%, #1a1f2e 50%, #0d1117 100%)',
-          fontFamily: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-          color: '#e4e4e7',
-        }}
-      >
-        <HeaderLanding />
-
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-app-gradient)',
+        fontFamily: 'var(--font-sans)',
+        color: 'var(--text-primary)',
+      }}
+    >
         {/* Main Content */}
         <main style={{
           maxWidth: '600px',
@@ -121,7 +112,7 @@ export default function SettingsPage() {
           padding: '40px 24px 80px',
         }}>
           {/* Back Button */}
-          <Link href="/">
+          <Link href="/home">
             <a style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -461,7 +452,6 @@ export default function SettingsPage() {
             </button>
           </div>
         </main>
-      </div>
 
       <ConfirmModal
         isOpen={showDeleteConfirm}
@@ -472,15 +462,6 @@ export default function SettingsPage() {
         onConfirm={handleDeleteAccount}
         onClose={() => setShowDeleteConfirm(false)}
       />
-
-      <FooterLanding />
-
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
-    </>
+    </div>
   );
 }
