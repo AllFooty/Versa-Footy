@@ -7,6 +7,7 @@ import { LanguageProvider } from './lib/LanguageContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import AcademyProtectedRoute from './components/AcademyProtectedRoute';
+import AppShell from './components/AppShell';
 
 const Landing = React.lazy(() => import('./features/landing/LandingPage'));
 const HomePage = React.lazy(() => import('./features/home/HomePage'));
@@ -190,14 +191,18 @@ export default function AppRouter() {
         {/* Home Hub - Post-login landing for authenticated users */}
         <Route path="/home">
           <ProtectedRoute>
-            <HomePage />
+            <AppShell pageTitleKey="nav.home">
+              <HomePage />
+            </AppShell>
           </ProtectedRoute>
         </Route>
 
         {/* Settings Page - For authenticated users */}
         <Route path="/settings">
           <ProtectedRoute>
-            <SettingsPage />
+            <AppShell pageTitleKey="nav.settings">
+              <SettingsPage />
+            </AppShell>
           </ProtectedRoute>
         </Route>
 
@@ -225,44 +230,58 @@ export default function AppRouter() {
         {/* Academy sub-pages (must come before catch-all) */}
         <Route path="/academy/invitations">
           <AcademyProtectedRoute>
-            <InvitationManager />
+            <AppShell pageTitleKey="nav.invitations">
+              <InvitationManager />
+            </AppShell>
           </AcademyProtectedRoute>
         </Route>
 
         <Route path="/academy/players/:id">
           <AcademyProtectedRoute>
-            <PlayerDetail />
+            <AppShell pageTitleKey="nav.players">
+              <PlayerDetail />
+            </AppShell>
           </AcademyProtectedRoute>
         </Route>
 
         <Route path="/academy/players">
           <AcademyProtectedRoute>
-            <PlayerRoster />
+            <AppShell pageTitleKey="nav.players">
+              <PlayerRoster />
+            </AppShell>
           </AcademyProtectedRoute>
         </Route>
 
         <Route path="/academy/teams">
           <AcademyProtectedRoute>
-            <TeamManagement />
+            <AppShell pageTitleKey="nav.teams">
+              <TeamManagement />
+            </AppShell>
           </AcademyProtectedRoute>
         </Route>
 
         <Route path="/academy/settings">
           <AcademyProtectedRoute>
-            <AcademySettings />
+            <AppShell pageTitleKey="nav.settings">
+              <AcademySettings />
+            </AppShell>
           </AcademyProtectedRoute>
         </Route>
 
         {/* Academy Dashboard - Requires coach/admin/owner org membership */}
         <Route path="/academy">
           <AcademyProtectedRoute>
-            <AcademyDashboard />
+            <AppShell pageTitleKey="nav.dashboard">
+              <AcademyDashboard />
+            </AppShell>
           </AcademyProtectedRoute>
         </Route>
 
         <Route path="/academy/:rest*">
           <AcademyProtectedRoute>
-            <AcademyDashboard />
+            <AppShell pageTitleKey="nav.dashboard">
+              <AcademyDashboard />
+            </AppShell>
           </AcademyProtectedRoute>
         </Route>
 
@@ -282,26 +301,34 @@ export default function AppRouter() {
         {/* Videos Audit - Admin only */}
         <Route path="/videos-audit">
           <AdminProtectedRoute>
-            <VideosAuditPage />
+            <AppShell pageTitleKey="nav.videosAudit">
+              <VideosAuditPage />
+            </AppShell>
           </AdminProtectedRoute>
         </Route>
 
         {/* Marketing Email - Admin only */}
         <Route path="/marketing">
           <AdminProtectedRoute>
-            <MarketingEmailPage />
+            <AppShell pageTitleKey="nav.marketingEmail">
+              <MarketingEmailPage />
+            </AppShell>
           </AdminProtectedRoute>
         </Route>
 
         <Route path="/marketing/segments">
           <AdminProtectedRoute>
-            <SegmentsPage />
+            <AppShell pageTitleKey="nav.marketingSegments">
+              <SegmentsPage />
+            </AppShell>
           </AdminProtectedRoute>
         </Route>
 
         <Route path="/marketing/automations">
           <AdminProtectedRoute>
-            <AutomationsPage />
+            <AppShell pageTitleKey="nav.marketingAutomations">
+              <AutomationsPage />
+            </AppShell>
           </AdminProtectedRoute>
         </Route>
 

@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'wouter';
+import { useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { User, Mail, Check, ArrowLeft, Save, Trash2 } from 'lucide-react';
+import { User, Mail, Check, Save, Trash2 } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 import ConfirmModal from '../../components/modals/ConfirmModal';
-
-// Landing page components for consistent look
-import HeaderLanding from '../landing/components/HeaderLanding';
-import FooterLanding from '../landing/components/FooterLanding';
-import All4FootyFamilyBar from '../landing/components/All4FootyFamilyBar';
 
 const COOLDOWN_DAYS = 7;
 
@@ -103,43 +98,8 @@ export default function SettingsPage() {
 
   return (
     <>
-      <All4FootyFamilyBar />
-      <div
-        style={{
-          minHeight: '100vh',
-          background: 'linear-gradient(135deg, #0a0f1a 0%, #1a1f2e 50%, #0d1117 100%)',
-          fontFamily: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-          color: '#e4e4e7',
-        }}
-      >
-        <HeaderLanding />
-
-        {/* Main Content */}
-        <main style={{
-          maxWidth: '600px',
-          margin: '0 auto',
-          padding: '40px 24px 80px',
-        }}>
-          {/* Back Button */}
-          <Link href="/">
-            <a style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              color: 'rgba(255, 255, 255, 0.6)',
-              textDecoration: 'none',
-              fontSize: '14px',
-              marginBottom: '24px',
-              transition: 'color 0.2s',
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
-            onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'}
-            >
-              <ArrowLeft size={18} />
-              {t('settings.backToHome')}
-            </a>
-          </Link>
-
+      <div style={{ fontFamily: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif", color: '#e4e4e7' }}>
+        <main style={{ maxWidth: '600px', margin: '0 auto' }}>
           {/* Page Title */}
           <h1 style={{
             fontSize: '28px',
@@ -472,8 +432,6 @@ export default function SettingsPage() {
         onConfirm={handleDeleteAccount}
         onClose={() => setShowDeleteConfirm(false)}
       />
-
-      <FooterLanding />
 
       <style>{`
         @keyframes spin {

@@ -64,6 +64,17 @@
     "players": "Players",
     "teams": "Teams",
     "invitations": "Invitations",
+    "videosAudit": "Videos Audit",
+    "marketingEmail": "Marketing Email",
+    "marketingSegments": "Segments",
+    "marketingAutomations": "Automations",
+    "groupOverview": "Overview",
+    "groupAcademy": "Academy",
+    "groupContent": "Content",
+    "groupMarketing": "Marketing",
+    "groupAccount": "Account",
+    "primary": "Primary navigation",
+    "openMenu": "Open navigation menu",
     "backToHome": "Back to Home",
     "backToLanding": "Back to landing page",
     "backToRoster": "Back to Roster"
@@ -438,12 +449,26 @@
     "welcomeBack": "Welcome back, {{firstName}}",
     "welcomeGeneric": "Welcome to Versa Footy",
     "whereToGo": "Where would you like to go?",
+    "dashboardSubtitle": "Here's an overview of your operations",
     "academyDashboard": "Academy Dashboard",
     "academyDescription": "Manage your players, teams, and training",
     "createAcademy": "Create Your Academy",
     "createAcademyDescription": "Set up an organization to start tracking players",
+    "haveInviteCode": "Have an invite code?",
     "exerciseLibrary": "Exercise Library",
-    "settings": "Settings"
+    "libraryDescription": "Manage skills and exercises",
+    "marketingDescription": "Send campaigns and manage segments",
+    "settings": "Settings",
+    "settingsDescription": "Profile, security and preferences",
+    "quickActions": "Quick actions",
+    "recentActivity": "Recent activity",
+    "activityComingSoon": "No recent activity to show yet.",
+    "stats": {
+      "myAcademies": "My Academies",
+      "activeAcademy": "Active Academy",
+      "playersInOrg": "Players",
+      "pendingInvitations": "Pending Invitations"
+    }
   },
 
   "academy": {

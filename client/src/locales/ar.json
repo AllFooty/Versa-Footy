@@ -64,6 +64,17 @@
     "players": "اللاعبون",
     "teams": "الفرق",
     "invitations": "الدعوات",
+    "videosAudit": "تدقيق الفيديوهات",
+    "marketingEmail": "البريد التسويقي",
+    "marketingSegments": "الشرائح",
+    "marketingAutomations": "الأتمتة",
+    "groupOverview": "نظرة عامة",
+    "groupAcademy": "الأكاديمية",
+    "groupContent": "المحتوى",
+    "groupMarketing": "التسويق",
+    "groupAccount": "الحساب",
+    "primary": "التنقل الرئيسي",
+    "openMenu": "فتح قائمة التنقل",
     "backToHome": "العودة للرئيسية",
     "backToLanding": "العودة للصفحة الرئيسية",
     "backToRoster": "العودة لقائمة اللاعبين"
@@ -438,12 +449,26 @@
     "welcomeBack": "مرحباً بعودتك، {{firstName}}",
     "welcomeGeneric": "مرحباً بك في فيرسا فوتي",
     "whereToGo": "إلى أين تريد الذهاب؟",
+    "dashboardSubtitle": "نظرة عامة على عملياتك",
     "academyDashboard": "لوحة تحكم الأكاديمية",
     "academyDescription": "إدارة اللاعبين والفرق والتدريب",
     "createAcademy": "أنشئ أكاديميتك",
     "createAcademyDescription": "أنشئ مؤسسة لبدء تتبع اللاعبين",
+    "haveInviteCode": "لديك رمز دعوة؟",
     "exerciseLibrary": "مكتبة التمارين",
-    "settings": "الإعدادات"
+    "libraryDescription": "إدارة المهارات والتمارين",
+    "marketingDescription": "إرسال الحملات وإدارة الشرائح",
+    "settings": "الإعدادات",
+    "settingsDescription": "الملف الشخصي والأمان والتفضيلات",
+    "quickActions": "إجراءات سريعة",
+    "recentActivity": "النشاط الأخير",
+    "activityComingSoon": "لا يوجد نشاط حديث لعرضه بعد.",
+    "stats": {
+      "myAcademies": "أكاديمياتي",
+      "activeAcademy": "الأكاديمية النشطة",
+      "playersInOrg": "اللاعبون",
+      "pendingInvitations": "الدعوات المعلقة"
+    }
   },
 
   "academy": {
