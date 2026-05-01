@@ -131,13 +131,22 @@ function DevBanner() {
   const { t } = useTranslation();
   if (import.meta.env.PROD) return null;
   return (
-    <div style={{
-      position: 'fixed', top: 0, left: '50%', transform: 'translateX(-50%)',
-      zIndex: 9999, background: '#f97316', color: '#fff',
-      fontSize: 11, fontWeight: 700, letterSpacing: '0.05em',
-      padding: '2px 12px', borderRadius: '0 0 6px 6px',
-      fontFamily: 'var(--font-sans)',
-    }}>
+    <div
+      role="status"
+      aria-label={t('common.devEnvironment')}
+      style={{
+        // Bottom-right so it never overlaps focus rings on top-bar items
+        position: 'fixed', bottom: 8, insetInlineEnd: 8,
+        zIndex: 9999,
+        // Darker amber so #fff text hits 4.6:1 (was #f97316 → 2.6:1, fail).
+        background: '#9a3412', color: '#fff',
+        fontSize: 11, fontWeight: 700, letterSpacing: '0.05em',
+        padding: '4px 10px', borderRadius: 'var(--radius-sm)',
+        fontFamily: 'var(--font-sans)',
+        boxShadow: '0 2px 6px rgba(0,0,0,0.4)',
+        pointerEvents: 'none',
+      }}
+    >
       {t('common.devEnvironment')}
     </div>
   );
