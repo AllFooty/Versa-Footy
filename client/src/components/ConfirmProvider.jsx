@@ -15,6 +15,7 @@ export function ConfirmProvider({ children }) {
         message: options.message,
         confirmLabel: options.confirmLabel,
         danger: Boolean(options.danger),
+        requireConfirmText: options.requireConfirmText,
       });
     });
   }, []);
@@ -40,6 +41,7 @@ export function ConfirmProvider({ children }) {
         message={state?.message}
         confirmLabel={state?.confirmLabel}
         confirmDanger={state?.danger}
+        requireConfirmText={state?.requireConfirmText}
         onConfirm={handleConfirm}
         onClose={handleClose}
       />

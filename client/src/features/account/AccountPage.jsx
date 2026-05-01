@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { User, Mail, Check, Save, Trash2 } from 'lucide-react';
+import { User, Mail, Check, Save, Trash2, Lock } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 import ConfirmModal from '../../components/modals/ConfirmModal';
 import { PageContainer, PageHeader } from '../../components/Page';
@@ -20,21 +20,18 @@ export default function AccountPage() {
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
 
-  // Redirect if not authenticated
   useEffect(() => {
     if (!isAuthenticated && !profileLoading) {
       setLocation('/login');
     }
   }, [isAuthenticated, profileLoading, setLocation]);
 
-  // Initialize form with current profile data
   useEffect(() => {
     if (profile) {
       setFullName(profile.full_name || '');
     }
   }, [profile]);
 
-  // Cooldown: only applies if user has already set a name before
   const lastEdit = profile?.updated_at ? new Date(profile.updated_at) : null;
   const daysSinceEdit = lastEdit ? (Date.now() - lastEdit.getTime()) / 86400000 : Infinity;
   const hasSetNameBefore = !!(profile?.full_name);
@@ -53,7 +50,6 @@ export default function AccountPage() {
     }
   };
 
-  // Get user initials for avatar
   const getInitials = () => {
     if (fullName.trim()) {
       const names = fullName.trim().split(' ');
@@ -88,7 +84,6 @@ export default function AccountPage() {
     try {
       await updateProfile({ full_name: fullName.trim() });
       setSuccess(true);
-      // Clear success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       setError(err.message || t('errors.profileUpdateFailed'));
@@ -105,293 +100,126 @@ export default function AccountPage() {
           subtitle={t('account.pageSubtitle')}
         />
 
-          {/* Profile Section */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '16px',
-            padding: '28px',
-          }}>
-            <h2 style={{
-              fontSize: '18px',
-              fontWeight: '600',
-              marginBottom: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-            }}>
-              <User size={20} />
-              {t('account.profileInfo')}
-            </h2>
-
-            {/* Avatar Preview */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '20px',
-              marginBottom: '28px',
-              padding: '20px',
-              background: 'rgba(0, 0, 0, 0.2)',
-              borderRadius: '12px',
-            }}>
-              <div style={{
-                width: '72px',
-                height: '72px',
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '24px',
-                fontWeight: '600',
-                color: 'white',
-                boxShadow: '0 8px 24px rgba(59, 130, 246, 0.3)',
-                flexShrink: 0,
-              }}>
-                {getInitials()}
-              </div>
-              <div>
-                <div style={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  marginBottom: '4px',
-                }}>
-                  {fullName || t('account.yourName')}
-                </div>
-                <div style={{
-                  fontSize: '14px',
-                  color: 'rgba(255, 255, 255, 0.5)',
-                }}>
-                  {user?.email}
-                </div>
-              </div>
-            </div>
-
-            {/* Form */}
-            <form onSubmit={handleSave}>
-              {/* Full Name Field */}
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: 'rgba(255, 255, 255, 0.8)',
-                  marginBottom: '8px',
-                }}>
-                  <User size={16} />
-                  {t('account.fullNameLabel')}
-                </label>
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder={t('account.fullNamePlaceholder')}
-                  disabled={!canEdit}
-                  style={{
-                    background: canEdit ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.15)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '10px',
-                    padding: '14px 16px',
-                    color: canEdit ? 'white' : 'rgba(255, 255, 255, 0.4)',
-                    fontSize: '15px',
-                    width: '100%',
-                    boxSizing: 'border-box',
-                    outline: 'none',
-                    transition: 'border-color 0.2s',
-                    cursor: canEdit ? 'text' : 'not-allowed',
-                  }}
-                  onFocus={(e) => canEdit && (e.target.style.borderColor = '#3b82f6')}
-                  onBlur={(e) => (e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)')}
-                />
-                {!canEdit && (
-                  <p style={{
-                    fontSize: '12px',
-                    color: '#f59e0b',
-                    marginTop: '6px',
-                    marginBottom: '0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                  }}>
-                    🔒 {t('account.editCooldownLocked', { days: daysUntilEdit })}
-                  </p>
-                )}
-              </div>
-
-              {/* Email Field (Read-only) */}
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: 'rgba(255, 255, 255, 0.8)',
-                  marginBottom: '8px',
-                }}>
-                  <Mail size={16} />
-                  {t('account.emailLabel')}
-                </label>
-                <input
-                  type="email"
-                  value={user?.email || ''}
-                  disabled
-                  style={{
-                    background: 'rgba(0, 0, 0, 0.2)',
-                    border: '1px solid rgba(255, 255, 255, 0.06)',
-                    borderRadius: '10px',
-                    padding: '14px 16px',
-                    color: 'rgba(255, 255, 255, 0.5)',
-                    fontSize: '15px',
-                    width: '100%',
-                    boxSizing: 'border-box',
-                    cursor: 'not-allowed',
-                  }}
-                />
-                <p style={{
-                  fontSize: '12px',
-                  color: 'rgba(255, 255, 255, 0.4)',
-                  marginTop: '6px',
-                  marginBottom: '0',
-                }}>
-                  {t('account.emailCannotChange')}
-                </p>
-              </div>
-
-              {/* Error Message */}
-              {error && (
-                <div style={{
-                  background: 'rgba(239, 68, 68, 0.1)',
-                  border: '1px solid rgba(239, 68, 68, 0.3)',
-                  borderRadius: '8px',
-                  padding: '12px 16px',
-                  marginBottom: '16px',
-                  color: '#fca5a5',
-                  fontSize: '14px',
-                }}>
-                  {error}
-                </div>
-              )}
-
-              {/* Success Message */}
-              {success && (
-                <div style={{
-                  background: 'rgba(34, 197, 94, 0.1)',
-                  border: '1px solid rgba(34, 197, 94, 0.3)',
-                  borderRadius: '8px',
-                  padding: '12px 16px',
-                  marginBottom: '16px',
-                  color: '#86efac',
-                  fontSize: '14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}>
-                  <Check size={16} />
-                  {t('errors.profileUpdated')}
-                </div>
-              )}
-
-              {/* Save Button */}
-              <button
-                type="submit"
-                disabled={saving || profileLoading || !canEdit}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  width: '100%',
-                  padding: '14px 24px',
-                  background: (saving || !canEdit) ? 'rgba(59, 130, 246, 0.5)' : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                  border: 'none',
-                  borderRadius: '12px',
-                  color: 'white',
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  cursor: (saving || !canEdit) ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s',
-                  boxShadow: (saving || !canEdit) ? 'none' : '0 8px 24px rgba(59, 130, 246, 0.3)',
-                }}
-              >
-                {saving ? (
-                  <>
-                    <div style={{
-                      width: '18px',
-                      height: '18px',
-                      border: '2px solid rgba(255,255,255,0.3)',
-                      borderTopColor: 'white',
-                      borderRadius: '50%',
-                      animation: 'spin 1s linear infinite',
-                    }} />
-                    {t('common.saving')}
-                  </>
-                ) : (
-                  <>
-                    <Save size={18} />
-                    {t('account.saveChanges')}
-                  </>
-                )}
-              </button>
-            </form>
+        {/* Profile Section */}
+        <section className="card card--lg">
+          <div className="card-heading">
+            <User size={20} aria-hidden="true" />
+            <h2>{t('account.profileInfo')}</h2>
           </div>
 
-          {/* Danger Zone */}
-          <div style={{
-            marginTop: '32px',
-            background: 'rgba(239, 68, 68, 0.04)',
-            border: '1px solid rgba(239, 68, 68, 0.2)',
-            borderRadius: '16px',
-            padding: '28px',
-          }}>
-            <h2 style={{
-              fontSize: '18px',
-              fontWeight: '600',
-              marginBottom: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              color: '#ef4444',
-            }}>
-              <Trash2 size={20} />
-              {t('account.dangerZone')}
-            </h2>
+          <div className="media-row">
+            <span className="avatar avatar--lg" aria-hidden="true">{getInitials()}</span>
+            <div className="media-row__main">
+              <p className="media-row__title">{fullName || t('account.yourName')}</p>
+              <p className="media-row__sub">{user?.email}</p>
+            </div>
+          </div>
 
-            <p style={{
-              fontSize: '14px',
-              color: 'rgba(255, 255, 255, 0.5)',
-              marginBottom: '20px',
-              lineHeight: 1.6,
-            }}>
-              {t('account.deleteAccountWarning')}
-            </p>
+          <form onSubmit={handleSave}>
+            <div className="field">
+              <label className="field-label" htmlFor="account-name">
+                <User size={16} aria-hidden="true" />
+                {t('account.fullNameLabel')}
+              </label>
+              <input
+                id="account-name"
+                className="input"
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder={t('account.fullNamePlaceholder')}
+                disabled={!canEdit}
+                autoComplete="name"
+              />
+              {canEdit ? (
+                <p className="field-hint">{t('account.editCooldownHint')}</p>
+              ) : (
+                <p className="field-hint field-hint--warning">
+                  <Lock size={12} aria-hidden="true" />
+                  <span>
+                    {t('account.editCooldownLocked', { days: daysUntilEdit })}
+                    {' · '}
+                    <span style={{ color: 'var(--text-tertiary)' }}>
+                      {t('account.editCooldownHint')}
+                    </span>
+                  </span>
+                </p>
+              )}
+            </div>
 
-            {deleteError && (
-              <div style={{
-                background: 'rgba(239, 68, 68, 0.1)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                marginBottom: '16px',
-                color: '#fca5a5',
-                fontSize: '14px',
-              }}>
-                {deleteError}
+            <div className="field">
+              <label className="field-label" htmlFor="account-email">
+                <Mail size={16} aria-hidden="true" />
+                {t('account.emailLabel')}
+              </label>
+              <input
+                id="account-email"
+                className="input"
+                type="email"
+                value={user?.email || ''}
+                disabled
+                autoComplete="email"
+              />
+              <p className="field-hint">{t('account.emailCannotChange')}</p>
+            </div>
+
+            {error && (
+              <div role="alert" className="alert alert--danger">{error}</div>
+            )}
+
+            {success && (
+              <div role="status" aria-live="polite" className="alert alert--success">
+                <Check size={16} aria-hidden="true" />
+                <span>{t('errors.profileUpdated')}</span>
               </div>
             )}
 
             <button
-              type="button"
-              className="danger-button"
-              onClick={() => setShowDeleteConfirm(true)}
-              disabled={deleting}
+              type="submit"
+              className="btn-primary"
+              disabled={saving || profileLoading || !canEdit}
+              style={{ width: '100%', justifyContent: 'center' }}
             >
-              <Trash2 size={16} />
-              {deleting ? t('account.deletingAccount') : t('account.deleteAccount')}
+              {saving ? (
+                <>
+                  <span className="spinner" aria-hidden="true" />
+                  {t('common.saving')}
+                </>
+              ) : (
+                <>
+                  <Save size={18} aria-hidden="true" />
+                  {t('account.saveChanges')}
+                </>
+              )}
             </button>
+          </form>
+        </section>
+
+        {/* Danger Zone */}
+        <section className="card card--lg card--danger" style={{ marginTop: 24 }}>
+          <div className="card-heading card-heading--danger">
+            <Trash2 size={20} aria-hidden="true" />
+            <h2>{t('account.dangerZone')}</h2>
           </div>
+
+          <p className="section__desc" style={{ marginBottom: 20 }}>
+            {t('account.deleteAccountWarning')}
+          </p>
+
+          {deleteError && (
+            <div role="alert" className="alert alert--danger">{deleteError}</div>
+          )}
+
+          <button
+            type="button"
+            className="danger-button"
+            onClick={() => setShowDeleteConfirm(true)}
+            disabled={deleting}
+          >
+            <Trash2 size={16} aria-hidden="true" />
+            {deleting ? t('account.deletingAccount') : t('account.deleteAccount')}
+          </button>
+        </section>
       </PageContainer>
 
       <ConfirmModal
@@ -400,16 +228,10 @@ export default function AccountPage() {
         message={t('account.deleteAccountConfirmMessage')}
         confirmLabel={t('account.deleteAccountConfirmButton')}
         confirmDanger
+        requireConfirmText={user?.email}
         onConfirm={handleDeleteAccount}
         onClose={() => setShowDeleteConfirm(false)}
       />
-
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </>
   );
 }

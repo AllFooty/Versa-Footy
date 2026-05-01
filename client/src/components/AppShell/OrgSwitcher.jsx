@@ -131,39 +131,45 @@ function Popover({ orgs, activeOrg, busyId, onSelect, onSetPrimary, t, placement
         const isPrimary = !!org.is_primary;
         const isBusy = busyId === org.id;
         return (
-          <button
+          <div
             key={org.id}
-            type="button"
-            role="menuitem"
-            className={`app-orgswitcher__item${isActive ? ' app-orgswitcher__item--active' : ''}`}
-            onClick={() => onSelect(org)}
+            className={`app-orgswitcher__row${isActive ? ' app-orgswitcher__row--active' : ''}`}
           >
-            <div className="app-orgswitcher__item-main">
-              <div className="app-orgswitcher__item-name">
-                {isPrimary && <StarIcon filled size={11} />}
-                <span>{org.name}</span>
+            <button
+              type="button"
+              role="menuitem"
+              className="app-orgswitcher__item"
+              onClick={() => onSelect(org)}
+            >
+              <div className="app-orgswitcher__item-main">
+                <div className="app-orgswitcher__item-name">
+                  {isPrimary && <StarIcon filled size={11} />}
+                  <span>{org.name}</span>
+                </div>
+                <div className="app-orgswitcher__item-meta">
+                  {org.type ? `${org.type}` : ''}
+                  {org.role ? ` · ${org.role}` : ''}
+                </div>
               </div>
-              <div className="app-orgswitcher__item-meta">
-                {org.type ? `${org.type}` : ''}
-                {org.role ? ` · ${org.role}` : ''}
-              </div>
-            </div>
-            <div className="app-orgswitcher__item-actions">
-              {isActive && <CheckIcon size={14} />}
-              {!isPrimary && (
-                <button
-                  type="button"
-                  className="app-orgswitcher__star-btn"
-                  onClick={(e) => onSetPrimary(e, org)}
-                  disabled={isBusy}
-                  title={t('academy.setAsPrimary', 'Set as primary')}
-                  aria-label={t('academy.setAsPrimary', 'Set as primary')}
-                >
-                  <StarIcon size={13} />
-                </button>
+              {isActive && (
+                <span className="app-orgswitcher__item-check" aria-hidden="true">
+                  <CheckIcon size={14} />
+                </span>
               )}
-            </div>
-          </button>
+            </button>
+            {!isPrimary && (
+              <button
+                type="button"
+                className="app-orgswitcher__star-btn"
+                onClick={(e) => onSetPrimary(e, org)}
+                disabled={isBusy}
+                title={t('academy.setAsPrimary', 'Set as primary')}
+                aria-label={t('academy.setAsPrimary', 'Set as primary')}
+              >
+                <StarIcon size={13} />
+              </button>
+            )}
+          </div>
         );
       })}
     </div>

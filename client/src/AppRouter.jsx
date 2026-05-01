@@ -11,13 +11,15 @@ function Redirect({ to }) {
 }
 
 import { Toaster } from 'sonner';
-import { AuthProvider } from './lib/AuthContext';
+import { AuthProvider, useAuth } from './lib/AuthContext';
 import { LanguageProvider } from './lib/LanguageContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import AcademyProtectedRoute from './components/AcademyProtectedRoute';
 import AppShell from './components/AppShell';
 import { ConfirmProvider } from './components/ConfirmProvider';
+
+import './styles/page.css';
 
 const Landing = React.lazy(() => import('./features/landing/LandingPage'));
 const HomePage = React.lazy(() => import('./features/home/HomePage'));
@@ -45,6 +47,9 @@ const AcademySettings = React.lazy(() => import('./features/academy/AcademySetti
 
 const NotFound = () => {
   const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
+  const primaryHref = isAuthenticated ? '/home' : '/';
+  const primaryLabel = isAuthenticated ? t('errors.notFound.goDashboard') : t('errors.notFound.goHome');
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
@@ -52,12 +57,14 @@ const NotFound = () => {
         <h1 style={titleStyle}>{t('errors.notFound.title')}</h1>
         <p style={bodyStyle}>{t('errors.notFound.description')}</p>
         <div style={actionsStyle}>
-          <Link href="/">
-            <a style={primaryButtonStyle}>{t('errors.notFound.goHome')}</a>
+          <Link href={primaryHref}>
+            <a style={primaryButtonStyle}>{primaryLabel}</a>
           </Link>
-          <Link href="/admin/library">
-            <a style={ghostButtonStyle}>{t('errors.notFound.library')}</a>
-          </Link>
+          {isAuthenticated && (
+            <Link href="/">
+              <a style={ghostButtonStyle}>{t('errors.notFound.goHome')}</a>
+            </Link>
+          )}
         </div>
       </div>
     </div>
@@ -133,13 +140,48 @@ const ghostButtonStyle = {
 };
 
 const LoadingFallback = () => (
-  <div style={{
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'radial-gradient(circle at 20% 20%, #111827, #0b1020 45%, #050910)',
-  }} />
+  <div
+    role="status"
+    aria-live="polite"
+    style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'radial-gradient(circle at 20% 20%, #111827, #0b1020 45%, #050910)',
+    }}
+  >
+    <style>{`
+      @keyframes vf-loading-pulse {
+        0%, 100% { opacity: 0.7; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.04); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .vf-loading-mark { animation: none !important; }
+      }
+    `}</style>
+    <div
+      className="vf-loading-mark"
+      aria-hidden="true"
+      style={{
+        width: 64,
+        height: 64,
+        borderRadius: 16,
+        background: 'linear-gradient(135deg, #2563eb, #22d3ee)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 22,
+        fontWeight: 800,
+        letterSpacing: '0.04em',
+        color: '#0b1020',
+        boxShadow: '0 16px 48px rgba(34, 211, 238, 0.35)',
+        animation: 'vf-loading-pulse 1.4s ease-in-out infinite',
+      }}
+    >
+      VF
+    </div>
+  </div>
 );
 
 function DevBanner() {

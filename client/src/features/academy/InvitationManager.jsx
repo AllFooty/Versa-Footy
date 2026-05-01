@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { useAuth } from '../../lib/AuthContext';
 import useInvitations from './hooks/useInvitations';
 import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 
-const ROLE_OPTIONS_KEYS = ['player', 'coach', 'parent'];
+const ROLE_BADGE_VARIANT = {
+  player: 'badge--info',
+  coach: 'badge--info',
+  parent: 'badge--warning',
+};
+
+const STATUS_BADGE_VARIANT = {
+  pending: 'badge--warning',
+  accepted: 'badge--success',
+  revoked: 'badge--danger',
+};
 
 export default function InvitationManager() {
   const { t } = useTranslation();
@@ -13,7 +24,11 @@ export default function InvitationManager() {
     useInvitations(activeOrg?.id);
   const [activeTab, setActiveTab] = useState(0);
 
-  const TABS = [t('academy.invitations.tabEmail'), t('academy.invitations.tabCode'), t('academy.invitations.tabAll')];
+  const TABS = [
+    t('academy.invitations.tabEmail'),
+    t('academy.invitations.tabCode'),
+    t('academy.invitations.tabAll'),
+  ];
 
   return (
     <PageContainer width="narrow">
@@ -23,38 +38,34 @@ export default function InvitationManager() {
         subtitle={t('academy.invitations.subtitle', { orgName: activeOrg?.name })}
       />
 
-      {/* Tabs */}
-      <div style={tabBarStyle}>
+      <div className="tabs" role="tablist" style={{ width: '100%' }}>
         {TABS.map((tab, i) => (
           <button
             key={tab}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === i}
+            className={`tab${activeTab === i ? ' tab--active' : ''}`}
+            style={{ flex: 1, justifyContent: 'center' }}
             onClick={() => setActiveTab(i)}
-            style={activeTab === i ? activeTabStyle : tabStyle}
           >
             {tab}
             {i === 2 && invitations.length > 0 && (
-              <span style={badgeStyle}>{invitations.length}</span>
+              <span className="tab__count">{invitations.length}</span>
             )}
           </button>
         ))}
       </div>
 
-      {/* Tab Content */}
-      <div style={contentStyle}>
-        {activeTab === 0 && (
-          <EmailInviteTab orgId={activeOrg?.id} inviteByEmail={inviteByEmail} />
-        )}
-        {activeTab === 1 && (
-          <CodeInviteTab orgId={activeOrg?.id} inviteByCode={inviteByCode} />
-        )}
-        {activeTab === 2 && (
-          <InvitationsListTab
-            invitations={invitations}
-            loading={loading}
-            onRevoke={revokeInvitation}
-          />
-        )}
-      </div>
+      {activeTab === 0 && <EmailInviteTab inviteByEmail={inviteByEmail} />}
+      {activeTab === 1 && <CodeInviteTab inviteByCode={inviteByCode} />}
+      {activeTab === 2 && (
+        <InvitationsListTab
+          invitations={invitations}
+          loading={loading}
+          onRevoke={revokeInvitation}
+        />
+      )}
     </PageContainer>
   );
 }
@@ -92,28 +103,37 @@ function EmailInviteTab({ inviteByEmail }) {
   };
 
   return (
-    <div style={cardStyle}>
-      <h2 style={cardTitleStyle}>{t('academy.invitations.emailInviteTitle')}</h2>
-      <p style={cardDescStyle}>
-        {t('academy.invitations.emailInviteDescription')}
-      </p>
+    <section className="card card--lg">
+      <h2 className="section__title">{t('academy.invitations.emailInviteTitle')}</h2>
+      <p className="section__desc">{t('academy.invitations.emailInviteDescription')}</p>
 
       <form onSubmit={handleSubmit}>
-        <div style={fieldStyle}>
-          <label style={labelStyle}>{t('academy.invitations.emailLabel')}</label>
+        <div className="field">
+          <label className="field-label" htmlFor="invite-email">
+            {t('academy.invitations.emailLabel')}
+          </label>
           <input
+            id="invite-email"
+            className="input"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t('academy.invitations.emailPlaceholder')}
-            style={inputStyle}
             required
+            autoComplete="email"
           />
         </div>
 
-        <div style={fieldStyle}>
-          <label style={labelStyle}>{t('academy.invitations.roleLabel')}</label>
-          <select value={role} onChange={(e) => setRole(e.target.value)} style={inputStyle}>
+        <div className="field">
+          <label className="field-label" htmlFor="invite-role">
+            {t('academy.invitations.roleLabel')}
+          </label>
+          <select
+            id="invite-role"
+            className="select"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
             {ROLE_OPTIONS.map((r) => (
               <option key={r.value} value={r.value}>{r.label}</option>
             ))}
@@ -121,16 +141,32 @@ function EmailInviteTab({ inviteByEmail }) {
         </div>
 
         {message && (
-          <p style={{ color: message.type === 'success' ? '#22c55e' : '#ef4444', fontSize: 13, marginBottom: 12 }}>
+          <div
+            role={message.type === 'success' ? 'status' : 'alert'}
+            aria-live="polite"
+            className={`alert alert--${message.type === 'success' ? 'success' : 'danger'}`}
+          >
             {message.text}
-          </p>
+          </div>
         )}
 
-        <button type="submit" disabled={submitting || !email.trim()} style={primaryButtonStyle}>
-          {submitting ? t('academy.invitations.sending') : t('academy.invitations.sendInvitation')}
+        <button
+          type="submit"
+          className="btn-primary"
+          disabled={submitting || !email.trim()}
+          style={{ width: '100%', justifyContent: 'center' }}
+        >
+          {submitting ? (
+            <>
+              <span className="spinner" aria-hidden="true" />
+              {t('academy.invitations.sending')}
+            </>
+          ) : (
+            t('academy.invitations.sendInvitation')
+          )}
         </button>
       </form>
-    </div>
+    </section>
   );
 }
 
@@ -170,7 +206,6 @@ function CodeInviteTab({ inviteByCode }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback for older browsers
       const textarea = document.createElement('textarea');
       textarea.value = text;
       document.body.appendChild(textarea);
@@ -187,58 +222,84 @@ function CodeInviteTab({ inviteByCode }) {
     : null;
 
   return (
-    <div style={cardStyle}>
-      <h2 style={cardTitleStyle}>{t('academy.invitations.codeInviteTitle')}</h2>
-      <p style={cardDescStyle}>
-        {t('academy.invitations.codeInviteDescription')}
-      </p>
+    <section className="card card--lg">
+      <h2 className="section__title">{t('academy.invitations.codeInviteTitle')}</h2>
+      <p className="section__desc">{t('academy.invitations.codeInviteDescription')}</p>
 
-      <div style={fieldStyle}>
-        <label style={labelStyle}>{t('academy.invitations.roleForInvitees')}</label>
-        <select value={role} onChange={(e) => setRole(e.target.value)} style={inputStyle}>
+      <div className="field">
+        <label className="field-label" htmlFor="invite-code-role">
+          {t('academy.invitations.roleForInvitees')}
+        </label>
+        <select
+          id="invite-code-role"
+          className="select"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+        >
           {ROLE_OPTIONS.map((r) => (
             <option key={r.value} value={r.value}>{r.label}</option>
           ))}
         </select>
       </div>
 
-      {error && <p style={{ color: '#ef4444', fontSize: 13, marginBottom: 12 }}>{error}</p>}
+      {error && (
+        <div role="alert" className="alert alert--danger">{error}</div>
+      )}
 
       {!generatedCode ? (
-        <button onClick={handleGenerate} disabled={submitting} style={primaryButtonStyle}>
-          {submitting ? t('academy.invitations.generating') : t('academy.invitations.generateInviteCode')}
+        <button
+          type="button"
+          className="btn-primary"
+          onClick={handleGenerate}
+          disabled={submitting}
+          style={{ width: '100%', justifyContent: 'center' }}
+        >
+          {submitting ? (
+            <>
+              <span className="spinner" aria-hidden="true" />
+              {t('academy.invitations.generating')}
+            </>
+          ) : (
+            t('academy.invitations.generateInviteCode')
+          )}
         </button>
       ) : (
-        <div style={codeDisplayStyle}>
-          <div style={codeBoxStyle}>
-            <span style={codeTextStyle}>{generatedCode}</span>
-            <button onClick={() => handleCopy(generatedCode)} style={copyButtonStyle}>
+        <div className="code-reveal">
+          <div className="code-reveal__row">
+            <span className="code-reveal__code">{generatedCode}</span>
+            <button
+              type="button"
+              className="code-reveal__copy-btn"
+              onClick={() => handleCopy(generatedCode)}
+            >
               {copied ? t('common.copied') : t('common.copy')}
             </button>
           </div>
-          <div style={{ marginTop: 12 }}>
-            <p style={{ fontSize: 12, color: '#71717a', marginBottom: 4 }}>{t('academy.invitations.shareLink')}</p>
-            <div style={codeBoxStyle}>
-              <span style={{ fontSize: 13, color: '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
-                {joinUrl}
-              </span>
-              <button onClick={() => handleCopy(joinUrl)} style={copyButtonStyle}>
-                {t('common.copy')}
-              </button>
-            </div>
-          </div>
-          <p style={{ fontSize: 12, color: '#71717a', marginTop: 12 }}>
-            {t('academy.invitations.expiresIn30Days')}
+          <p className="field-hint" style={{ marginTop: 12, marginBottom: 4 }}>
+            {t('academy.invitations.shareLink')}
           </p>
+          <div className="code-reveal__row">
+            <span className="code-reveal__url">{joinUrl}</span>
+            <button
+              type="button"
+              className="code-reveal__copy-btn"
+              onClick={() => handleCopy(joinUrl)}
+            >
+              {t('common.copy')}
+            </button>
+          </div>
+          <p className="code-reveal__hint">{t('academy.invitations.expiresIn30Days')}</p>
           <button
+            type="button"
+            className="btn-secondary"
             onClick={() => { setGeneratedCode(null); setCopied(false); }}
-            style={{ ...secondaryButtonStyle, marginTop: 12 }}
+            style={{ width: '100%', justifyContent: 'center', marginTop: 12 }}
           >
             {t('academy.invitations.generateAnother')}
           </button>
         </div>
       )}
-    </div>
+    </section>
   );
 }
 
@@ -253,65 +314,84 @@ function InvitationsListTab({ invitations, loading, onRevoke }) {
     try {
       await onRevoke(id);
     } catch (err) {
-      console.error('Error revoking:', err);
+      toast.error(err.message);
     } finally {
       setRevoking(null);
     }
   };
 
   if (loading) {
-    return <p style={{ color: '#71717a', textAlign: 'center', padding: 32 }}>{t('academy.invitations.loadingInvitations')}</p>;
+    return (
+      <div className="empty-compact">
+        <span className="spinner spinner--lg" aria-hidden="true" />
+        <p className="empty-compact__msg" style={{ marginTop: 12 }}>
+          {t('academy.invitations.loadingInvitations')}
+        </p>
+      </div>
+    );
   }
 
   if (invitations.length === 0) {
     return (
-      <div style={{ ...cardStyle, textAlign: 'center' }}>
-        <p style={{ color: '#71717a', fontSize: 14 }}>{t('academy.invitations.noInvitationsYet')}</p>
+      <div className="card card--lg">
+        <div className="empty-compact">
+          <p className="empty-compact__msg">{t('academy.invitations.noInvitationsYet')}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={cardStyle}>
-      <h2 style={cardTitleStyle}>{t('academy.invitations.allInvitationsTitle')}</h2>
-      <div style={tableWrapStyle}>
-        <table style={tableStyle}>
+    <section className="card card--lg">
+      <h2 className="section__title" style={{ marginBottom: 14 }}>
+        {t('academy.invitations.allInvitationsTitle')}
+      </h2>
+      <div className="data-table-wrap__scroll">
+        <table className="data-table">
           <thead>
             <tr>
-              <th style={thStyle}>{t('academy.invitations.columnRecipient')}</th>
-              <th style={thStyle}>{t('academy.invitations.columnRole')}</th>
-              <th style={thStyle}>{t('academy.invitations.columnStatus')}</th>
-              <th style={thStyle}>{t('academy.invitations.columnCreated')}</th>
-              <th style={thStyle}>{t('academy.invitations.columnAction')}</th>
+              <th scope="col">{t('academy.invitations.columnRecipient')}</th>
+              <th scope="col">{t('academy.invitations.columnRole')}</th>
+              <th scope="col">{t('academy.invitations.columnStatus')}</th>
+              <th scope="col">{t('academy.invitations.columnCreated')}</th>
+              <th scope="col">{t('academy.invitations.columnAction')}</th>
             </tr>
           </thead>
           <tbody>
             {invitations.map((inv) => (
-              <tr key={inv.id} style={trStyle}>
-                <td style={tdStyle}>
+              <tr key={inv.id}>
+                <td>
                   {inv.email || (
                     <span style={{ fontFamily: 'monospace', fontSize: 13 }}>
                       {t('academy.invitations.codePrefix', { code: inv.invite_code })}
                     </span>
                   )}
                 </td>
-                <td style={tdStyle}>
-                  <span style={roleBadgeStyle(inv.role)}>{inv.role}</span>
+                <td>
+                  <span className={`badge ${ROLE_BADGE_VARIANT[inv.role] || 'badge--neutral'}`}>
+                    {inv.role}
+                  </span>
                 </td>
-                <td style={tdStyle}>
-                  <span style={statusBadgeStyle(inv.status)}>{inv.status}</span>
+                <td>
+                  <span className={`badge ${STATUS_BADGE_VARIANT[inv.status] || 'badge--neutral'}`}>
+                    {inv.status}
+                  </span>
                 </td>
-                <td style={tdStyle}>
-                  {new Date(inv.created_at).toLocaleDateString()}
-                </td>
-                <td style={tdStyle}>
+                <td>{new Date(inv.created_at).toLocaleDateString()}</td>
+                <td>
                   {inv.status === 'pending' && (
                     <button
+                      type="button"
+                      className="btn-secondary"
+                      style={{ padding: '6px 12px', fontSize: 12 }}
                       onClick={() => handleRevoke(inv.id)}
                       disabled={revoking === inv.id}
-                      style={revokeButtonStyle}
                     >
-                      {revoking === inv.id ? '...' : t('academy.invitations.revoke')}
+                      {revoking === inv.id ? (
+                        <span className="spinner" aria-hidden="true" />
+                      ) : (
+                        t('academy.invitations.revoke')
+                      )}
                     </button>
                   )}
                 </td>
@@ -320,189 +400,6 @@ function InvitationsListTab({ invitations, loading, onRevoke }) {
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
   );
 }
-
-// ─── Styles ────────────────────────────────────────────────────────────────────
-
-
-const tabBarStyle = {
-  margin: '0 0 24px',
-  display: 'flex',
-  gap: 4,
-  background: 'rgba(255, 255, 255, 0.04)',
-  borderRadius: 10,
-  padding: 4,
-};
-
-const tabStyle = {
-  flex: 1,
-  padding: '10px 16px',
-  background: 'transparent',
-  border: 'none',
-  borderRadius: 8,
-  color: '#9ca3af',
-  fontSize: 13,
-  fontWeight: 500,
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: 6,
-};
-
-const activeTabStyle = {
-  ...tabStyle,
-  background: 'rgba(59, 130, 246, 0.15)',
-  color: '#3b82f6',
-};
-
-const badgeStyle = {
-  background: 'rgba(59, 130, 246, 0.25)',
-  color: '#60a5fa',
-  fontSize: 11,
-  padding: '2px 6px',
-  borderRadius: 10,
-  fontWeight: 600,
-};
-
-const contentStyle = { margin: 0 };
-
-const cardStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 16,
-  padding: 24,
-  backdropFilter: 'blur(12px)',
-};
-
-const cardTitleStyle = { fontSize: 18, fontWeight: 600, margin: '0 0 8px' };
-const cardDescStyle = { fontSize: 13, color: '#9ca3af', margin: '0 0 20px', lineHeight: 1.5 };
-
-const fieldStyle = { marginBottom: 16 };
-const labelStyle = { display: 'block', fontSize: 13, fontWeight: 500, color: '#9ca3af', marginBottom: 6 };
-const inputStyle = {
-  width: '100%',
-  padding: '10px 12px',
-  background: 'rgba(255, 255, 255, 0.06)',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 8,
-  color: '#e4e4e7',
-  fontSize: 14,
-  outline: 'none',
-  boxSizing: 'border-box',
-};
-
-const primaryButtonStyle = {
-  width: '100%',
-  padding: '12px 16px',
-  background: 'linear-gradient(135deg, #2563eb, #22d3ee)',
-  color: '#0b1020',
-  fontWeight: 600,
-  fontSize: 14,
-  border: 'none',
-  borderRadius: 10,
-  cursor: 'pointer',
-};
-
-const secondaryButtonStyle = {
-  width: '100%',
-  padding: '10px 16px',
-  background: 'transparent',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
-  color: '#94a3b8',
-  fontWeight: 500,
-  fontSize: 13,
-  borderRadius: 8,
-  cursor: 'pointer',
-};
-
-const codeDisplayStyle = {
-  background: 'rgba(0, 0, 0, 0.3)',
-  borderRadius: 12,
-  padding: 16,
-};
-
-const codeBoxStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 12,
-  background: 'rgba(255, 255, 255, 0.06)',
-  borderRadius: 8,
-  padding: '10px 12px',
-};
-
-const codeTextStyle = {
-  fontFamily: 'monospace',
-  fontSize: 22,
-  fontWeight: 700,
-  letterSpacing: '0.15em',
-  color: '#e4e4e7',
-  flex: 1,
-};
-
-const copyButtonStyle = {
-  padding: '6px 12px',
-  background: 'rgba(59, 130, 246, 0.2)',
-  border: '1px solid rgba(59, 130, 246, 0.3)',
-  borderRadius: 6,
-  color: '#60a5fa',
-  fontSize: 12,
-  fontWeight: 600,
-  cursor: 'pointer',
-  whiteSpace: 'nowrap',
-};
-
-// Table styles
-const tableWrapStyle = { overflowX: 'auto' };
-const tableStyle = { width: '100%', borderCollapse: 'collapse', fontSize: 13 };
-const thStyle = {
-  textAlign: 'left',
-  padding: '10px 12px',
-  color: '#71717a',
-  fontWeight: 500,
-  borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-  whiteSpace: 'nowrap',
-};
-const trStyle = { borderBottom: '1px solid rgba(255, 255, 255, 0.04)' };
-const tdStyle = { padding: '10px 12px', whiteSpace: 'nowrap' };
-
-const roleBadgeStyle = (role) => ({
-  padding: '2px 8px',
-  borderRadius: 6,
-  fontSize: 11,
-  fontWeight: 600,
-  textTransform: 'capitalize',
-  background: role === 'coach' ? 'rgba(139, 92, 246, 0.2)' : role === 'player' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(249, 115, 22, 0.2)',
-  color: role === 'coach' ? '#a78bfa' : role === 'player' ? '#60a5fa' : '#fb923c',
-});
-
-const statusBadgeStyle = (status) => ({
-  padding: '2px 8px',
-  borderRadius: 6,
-  fontSize: 11,
-  fontWeight: 600,
-  textTransform: 'capitalize',
-  background:
-    status === 'pending' ? 'rgba(234, 179, 8, 0.15)' :
-    status === 'accepted' ? 'rgba(34, 197, 94, 0.15)' :
-    status === 'revoked' ? 'rgba(239, 68, 68, 0.15)' :
-    'rgba(113, 113, 122, 0.15)',
-  color:
-    status === 'pending' ? '#eab308' :
-    status === 'accepted' ? '#22c55e' :
-    status === 'revoked' ? '#ef4444' :
-    '#71717a',
-});
-
-const revokeButtonStyle = {
-  padding: '4px 10px',
-  background: 'rgba(239, 68, 68, 0.15)',
-  border: '1px solid rgba(239, 68, 68, 0.25)',
-  borderRadius: 6,
-  color: '#ef4444',
-  fontSize: 12,
-  fontWeight: 500,
-  cursor: 'pointer',
-};

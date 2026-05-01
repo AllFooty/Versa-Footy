@@ -39,10 +39,13 @@ export default function AppShell({ children, pageTitle, pageTitleKey }) {
 
   return (
     <div className="app-shell">
+      <a className="app-shell__skip-link" href="#app-shell-content">
+        {t('nav.skipToContent', 'Skip to main content')}
+      </a>
       <aside
         id="app-shell-sidebar"
         className={`app-sidebar${mobileOpen ? ' app-sidebar--open' : ''}`}
-        aria-label="Sidebar"
+        aria-label={t('nav.primary', 'Primary navigation')}
       >
         <AppSidebar onNavigate={handleSidebarNavigate} />
       </aside>
@@ -61,7 +64,7 @@ export default function AppShell({ children, pageTitle, pageTitleKey }) {
           mobileOpen={mobileOpen}
           onToggleMobile={() => setMobileOpen((v) => !v)}
         />
-        <main className="app-shell__content">
+        <main id="app-shell-content" className="app-shell__content" tabIndex={-1}>
           {children}
         </main>
       </div>

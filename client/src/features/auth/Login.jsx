@@ -4,6 +4,33 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/AuthContext';
 
+function mapAuthError(t, err) {
+  if (!err) return t('errors.generic');
+  const code = err.code || err.error_code || '';
+  const status = err.status;
+  const raw = (err.message || '').toLowerCase();
+
+  if (code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit' || status === 429 || raw.includes('rate limit')) {
+    return t('errors.auth.rateLimit');
+  }
+  if (code === 'otp_expired' || raw.includes('expired')) {
+    return t('errors.auth.expiredCode');
+  }
+  if (code === 'invalid_grant' || code === 'invalid_credentials' || raw.includes('invalid login') || raw.includes('invalid credentials')) {
+    return t('errors.auth.wrongPassword');
+  }
+  if (raw.includes('token') && raw.includes('invalid')) {
+    return t('errors.auth.invalidCode');
+  }
+  if (code === 'user_not_found' || raw.includes('user not found')) {
+    return t('errors.auth.userNotFound');
+  }
+  if (raw.includes('failed to fetch') || raw.includes('network')) {
+    return t('errors.auth.networkError');
+  }
+  return err.message || t('errors.generic');
+}
+
 const containerStyle = {
   minHeight: '100vh',
   display: 'flex',
@@ -217,13 +244,13 @@ export default function Login() {
       });
 
       if (error) {
-        setError(error.message);
+        setError(mapAuthError(t, error));
       } else {
         setMessage(t('auth.checkEmailMessage'));
         setStep('otp');
       }
     } catch (err) {
-      setError(t('errors.generic'));
+      setError(mapAuthError(t, err));
     } finally {
       setLoading(false);
     }
@@ -254,7 +281,7 @@ export default function Login() {
       });
 
       if (error) {
-        setError(error.message);
+        setError(mapAuthError(t, error));
         setLoading(false);
       } else if (data.session) {
         // Show success state - the useEffect will handle redirect
@@ -264,7 +291,7 @@ export default function Login() {
         // Don't set loading to false - keep showing loading state until redirect
       }
     } catch (err) {
-      setError(t('errors.generic'));
+      setError(mapAuthError(t, err));
       setLoading(false);
     }
   };
@@ -290,7 +317,7 @@ export default function Login() {
       });
 
       if (error) {
-        setError(error.message);
+        setError(mapAuthError(t, error));
       } else {
         setMessage(t('auth.newCodeSentMessage'));
         setResendCooldown(30);
@@ -324,14 +351,14 @@ export default function Login() {
       });
 
       if (error) {
-        setError(error.message);
+        setError(mapAuthError(t, error));
         setLoading(false);
       } else if (data.session) {
         setStep('success');
         setMessage(`${t('auth.successMessage')} ${t('common.redirecting')}`);
       }
     } catch (err) {
-      setError(t('errors.generic'));
+      setError(mapAuthError(t, err));
       setLoading(false);
     }
   };
@@ -369,8 +396,8 @@ export default function Login() {
           </>
         )}
 
-        {error && <div style={errorStyle}>{error}</div>}
-        {message && step !== 'success' && <div style={successStyle}>{message}</div>}
+        {error && <div style={errorStyle} role="alert">{error}</div>}
+        {message && step !== 'success' && <div style={successStyle} role="status" aria-live="polite">{message}</div>}
 
         {step === 'success' ? (
           <div style={{ textAlign: 'center', padding: '20px 0' }}>

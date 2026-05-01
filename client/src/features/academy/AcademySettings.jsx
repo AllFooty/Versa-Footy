@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { Settings, Users } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 import { useConfirm } from '../../components/ConfirmProvider';
 import { supabase } from '../../lib/supabase';
@@ -21,7 +22,6 @@ export default function AcademySettings() {
     parent: t('academy.settings.roleParent'),
   };
 
-  // Org info form
   const [name, setName] = useState('');
   const [type, setType] = useState('');
   const [region, setRegion] = useState('');
@@ -29,11 +29,9 @@ export default function AcademySettings() {
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState(null);
 
-  // Members
   const [members, setMembers] = useState([]);
   const [membersLoading, setMembersLoading] = useState(false);
 
-  // Fetch full org record (activeOrg from RPC only has id/name/type/role)
   useEffect(() => {
     if (!activeOrg?.id) return;
     supabase
@@ -153,196 +151,146 @@ export default function AcademySettings() {
         subtitle={t('academy.settings.subtitle')}
       />
 
-      {/* Organization Info */}
-      <div style={sectionStyle}>
-        <div style={cardStyle}>
-          <h2 style={cardTitleStyle}>{t('academy.settings.orgDetailsTitle')}</h2>
-          <form onSubmit={handleSaveOrg}>
-            <div style={fieldStyle}>
-              <label style={labelStyle}>{t('academy.settings.nameLabel')}</label>
+      {/* Organization details */}
+      <section className="card card--lg">
+        <div className="card-heading">
+          <Settings size={20} aria-hidden="true" />
+          <h2>{t('academy.settings.orgDetailsTitle')}</h2>
+        </div>
+
+        <form onSubmit={handleSaveOrg}>
+          <div className="field">
+            <label className="field-label" htmlFor="org-name">
+              {t('academy.settings.nameLabel')}
+            </label>
+            <input
+              id="org-name"
+              className="input"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-grid-2">
+            <div className="field">
+              <label className="field-label" htmlFor="org-type">
+                {t('academy.settings.typeLabel')}
+              </label>
+              <select
+                id="org-type"
+                className="select"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+              >
+                <option value="academy">{t('academy.createOrg.typeAcademy')}</option>
+                <option value="school">{t('academy.createOrg.typeSchool')}</option>
+                <option value="club">{t('academy.createOrg.typeClub')}</option>
+                <option value="federation">{t('academy.createOrg.typeFederation')}</option>
+                <option value="ministry">{t('academy.createOrg.typeMinistry')}</option>
+              </select>
+            </div>
+            <div className="field">
+              <label className="field-label" htmlFor="org-region">
+                {t('academy.settings.regionLabel')}
+              </label>
               <input
+                id="org-region"
+                className="input"
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={inputStyle}
-                required
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+                placeholder={t('academy.settings.regionPlaceholder')}
               />
             </div>
-            <div style={rowStyle}>
-              <div style={{ ...fieldStyle, flex: 1 }}>
-                <label style={labelStyle}>{t('academy.settings.typeLabel')}</label>
-                <select value={type} onChange={(e) => setType(e.target.value)} style={inputStyle}>
-                  <option value="academy">{t('academy.createOrg.typeAcademy')}</option>
-                  <option value="school">{t('academy.createOrg.typeSchool')}</option>
-                  <option value="club">{t('academy.createOrg.typeClub')}</option>
-                  <option value="federation">{t('academy.createOrg.typeFederation')}</option>
-                  <option value="ministry">{t('academy.createOrg.typeMinistry')}</option>
-                </select>
-              </div>
-              <div style={{ ...fieldStyle, flex: 1 }}>
-                <label style={labelStyle}>{t('academy.settings.regionLabel')}</label>
-                <input
-                  type="text"
-                  value={region}
-                  onChange={(e) => setRegion(e.target.value)}
-                  placeholder={t('academy.settings.regionPlaceholder')}
-                  style={inputStyle}
-                />
-              </div>
-              <div style={{ ...fieldStyle, flex: 1 }}>
-                <label style={labelStyle}>{t('academy.settings.cityLabel')}</label>
-                <input
-                  type="text"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  style={inputStyle}
-                />
-              </div>
-            </div>
+          </div>
 
-            {saveMsg && (
-              <p style={{ color: saveMsg.type === 'success' ? '#22c55e' : '#ef4444', fontSize: 13, marginBottom: 12 }}>
-                {saveMsg.text}
-              </p>
-            )}
+          <div className="field">
+            <label className="field-label" htmlFor="org-city">
+              {t('academy.settings.cityLabel')}
+            </label>
+            <input
+              id="org-city"
+              className="input"
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+            />
+          </div>
 
-            <button type="submit" disabled={saving || !name.trim()} style={primaryBtnStyle}>
-              {saving ? t('academy.settings.saving') : t('academy.settings.saveChanges')}
-            </button>
-          </form>
-        </div>
-      </div>
-
-      {/* Members */}
-      <div style={sectionStyle}>
-        <div style={cardStyle}>
-          <h2 style={cardTitleStyle}>{t('academy.settings.membersTitle')}</h2>
-          <p style={{ fontSize: 13, color: '#71717a', margin: '0 0 16px' }}>
-            {t('academy.settings.memberCount', { count: members.length })}
-          </p>
-
-          {membersLoading ? (
-            <p style={{ color: '#71717a', fontSize: 13 }}>{t('academy.settings.loadingMembers')}</p>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {members.map((m) => (
-                <div key={m.id} style={memberRowStyle}>
-                  <div style={avatarStyle}>
-                    {(m.full_name || m.email || '?')[0].toUpperCase()}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>
-                      {m.full_name || t('common.unknown')}
-                    </p>
-                    <p style={{ fontSize: 12, color: '#71717a', margin: 0 }}>
-                      {m.email || m.user_id.slice(0, 8)}
-                    </p>
-                  </div>
-                  <select
-                    value={m.role}
-                    onChange={(e) => handleRoleChange(m.id, e.target.value)}
-                    style={roleSelectStyle}
-                  >
-                    {ROLE_OPTIONS.map((r) => (
-                      <option key={r} value={r}>{ROLE_LABELS[r]}</option>
-                    ))}
-                  </select>
-                  {m.role !== 'owner' && (
-                    <button
-                      onClick={() => handleRemoveMember(m.id, m.full_name)}
-                      style={removeBtnStyle}
-                    >
-                      {t('common.remove')}
-                    </button>
-                  )}
-                </div>
-              ))}
+          {saveMsg && (
+            <div
+              role={saveMsg.type === 'error' ? 'alert' : 'status'}
+              aria-live="polite"
+              className={`alert alert--${saveMsg.type === 'error' ? 'danger' : 'success'}`}
+            >
+              {saveMsg.text}
             </div>
           )}
+
+          <button type="submit" className="btn-primary" disabled={saving || !name.trim()}>
+            {saving ? (
+              <>
+                <span className="spinner" aria-hidden="true" />
+                {t('academy.settings.saving')}
+              </>
+            ) : (
+              t('academy.settings.saveChanges')
+            )}
+          </button>
+        </form>
+      </section>
+
+      {/* Members */}
+      <section className="card card--lg" style={{ marginTop: 24 }}>
+        <div className="card-heading">
+          <Users size={20} aria-hidden="true" />
+          <h2>{t('academy.settings.membersTitle')}</h2>
         </div>
-      </div>
+        <p className="section__desc" style={{ marginBottom: 16 }}>
+          {t('academy.settings.memberCount', { count: members.length })}
+        </p>
+
+        {membersLoading ? (
+          <p style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>
+            {t('academy.settings.loadingMembers')}
+          </p>
+        ) : (
+          <div className="list-rows">
+            {members.map((m) => (
+              <div key={m.id} className="member-row">
+                <span className="list-row__avatar">
+                  {(m.full_name || m.email || '?')[0].toUpperCase()}
+                </span>
+                <div className="list-row__main">
+                  <p className="list-row__name">{m.full_name || t('common.unknown')}</p>
+                  <p className="list-row__sub">{m.email || m.user_id.slice(0, 8)}</p>
+                </div>
+                <select
+                  className="select member-row__role"
+                  aria-label={t('academy.settings.changeRoleAria', { name: m.full_name || t('common.unknown') })}
+                  value={m.role}
+                  onChange={(e) => handleRoleChange(m.id, e.target.value)}
+                >
+                  {ROLE_OPTIONS.map((r) => (
+                    <option key={r} value={r}>{ROLE_LABELS[r]}</option>
+                  ))}
+                </select>
+                {m.role !== 'owner' && (
+                  <button
+                    type="button"
+                    className="btn-secondary member-row__remove"
+                    onClick={() => handleRemoveMember(m.id, m.full_name)}
+                  >
+                    {t('common.remove')}
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </PageContainer>
   );
 }
-
-// ─── Styles ────────────────────────────────────────────────────────────────────
-
-const sectionStyle = { margin: '0 0 20px' };
-
-const cardStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 16,
-  padding: 24,
-};
-
-const cardTitleStyle = { fontSize: 18, fontWeight: 600, margin: '0 0 16px' };
-
-const fieldStyle = { marginBottom: 16 };
-const rowStyle = { display: 'flex', gap: 12, flexWrap: 'wrap' };
-const labelStyle = { display: 'block', fontSize: 13, fontWeight: 500, color: '#9ca3af', marginBottom: 6 };
-const inputStyle = {
-  width: '100%',
-  padding: '10px 12px',
-  background: 'rgba(255, 255, 255, 0.06)',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 8,
-  color: '#e4e4e7',
-  fontSize: 14,
-  outline: 'none',
-  boxSizing: 'border-box',
-};
-
-const primaryBtnStyle = {
-  padding: '12px 24px',
-  background: 'linear-gradient(135deg, #2563eb, #22d3ee)',
-  color: '#0b1020',
-  fontWeight: 600,
-  fontSize: 14,
-  border: 'none',
-  borderRadius: 10,
-  cursor: 'pointer',
-};
-
-const memberRowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 10,
-  padding: '10px 12px',
-  background: 'rgba(255, 255, 255, 0.03)',
-  borderRadius: 8,
-};
-
-const avatarStyle = {
-  width: 34,
-  height: 34,
-  borderRadius: '50%',
-  background: 'rgba(59, 130, 246, 0.15)',
-  color: '#60a5fa',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: 13,
-  fontWeight: 600,
-  flexShrink: 0,
-};
-
-const roleSelectStyle = {
-  padding: '5px 8px',
-  background: 'rgba(255, 255, 255, 0.06)',
-  border: '1px solid rgba(255, 255, 255, 0.1)',
-  borderRadius: 6,
-  color: '#e4e4e7',
-  fontSize: 12,
-};
-
-const removeBtnStyle = {
-  padding: '5px 10px',
-  background: 'rgba(239, 68, 68, 0.12)',
-  border: '1px solid rgba(239, 68, 68, 0.2)',
-  borderRadius: 6,
-  color: '#ef4444',
-  fontSize: 11,
-  fontWeight: 500,
-  cursor: 'pointer',
-};

@@ -74,6 +74,7 @@
     "groupAdmin": "الإدارة",
     "adminMarketingSubheader": "التسويق",
     "primary": "التنقل الرئيسي",
+    "skipToContent": "تخطي إلى المحتوى الرئيسي",
     "openMenu": "فتح قائمة التنقل",
     "backToHome": "العودة للرئيسية",
     "backToLanding": "العودة للصفحة الرئيسية",
@@ -486,8 +487,17 @@
       "atRiskPlayers": "لاعبون معرضون للخطر",
       "atRiskDescription": "لاعبون لم يتدربوا منذ أكثر من 7 أيام",
       "neverTrained": "لم يتدرب أبداً",
+      "atRiskAria": "{{name}}، آخر تدريب منذ {{days}} يوم",
+      "atRiskAriaNever": "{{name}}، لم يتدرب أبداً",
       "streakBroken": "انقطعت السلسلة (كانت {{days}} يوم)",
-      "activePlayers": "اللاعبون النشطون"
+      "activePlayers": "اللاعبون النشطون",
+      "empty": {
+        "title": "أكاديميتك جاهزة — لنضِف أول لاعب.",
+        "body": "بمجرد انضمام اللاعبين، ستظهر هنا أنشطتهم ومهاراتهم وتقدمهم الأسبوعي. ادعُ لاعباً أو أنشئ فريقاً للبدء.",
+        "invitePrimary": "ادعُ أول لاعب",
+        "teamSecondary": "أنشئ فريقاً أولاً",
+        "hint": "نصيحة: ينضم اللاعبون عبر رمز قصير من صفحة الدعوات. يمكنك إرسال نفس الرمز لعدة أولياء أمور."
+      }
     },
     "layout": {
       "organization": "المؤسسة"
@@ -651,6 +661,7 @@
       "removeConfirm": "إزالة {{name}} من المؤسسة؟",
       "removeTitle": "إزالة العضو؟",
       "removeAction": "إزالة العضو",
+      "changeRoleAria": "تغيير دور {{name}}",
       "roleOwner": "مالك",
       "roleAdmin": "مشرف",
       "roleCoach": "مدرب",
@@ -1259,7 +1270,9 @@
     "confirm": {
       "defaultTitle": "تأكيد",
       "defaultCancel": "إلغاء",
-      "defaultConfirm": "تأكيد"
+      "defaultConfirm": "تأكيد",
+      "typeToConfirm": "اكتب {{value}} للتأكيد",
+      "typeToConfirmPlaceholder": "اكتب هنا للتأكيد"
     },
     "profileEdit": {
       "title": "تعديل الملف الشخصي",
@@ -1287,6 +1300,7 @@
     "fullNamePlaceholder": "أدخل اسمك الكامل",
     "emailCannotChange": "لا يمكن تغيير عنوان البريد الإلكتروني",
     "saveChanges": "حفظ التغييرات",
+    "editCooldownHint": "يمكن تغيير الاسم مرة واحدة في الأسبوع للحفاظ على ثبات هويتك أمام المدربين وزملاء الفريق.",
     "editCooldownLocked": "يمكنك تعديل اسمك مجدداً خلال {{days}} يوم",
     "dangerZone": "منطقة الخطر",
     "deleteAccount": "حذف الحساب",
@@ -1362,6 +1376,14 @@
     "enterName": "يرجى إدخال اسمك",
     "profileUpdateFailed": "فشل في تحديث الملف الشخصي",
     "profileUpdated": "تم تحديث الملف الشخصي بنجاح!",
+    "auth": {
+      "rateLimit": "محاولات كثيرة جدًا. يرجى الانتظار دقيقة والمحاولة مرة أخرى.",
+      "invalidCode": "الرمز غير صحيح. تحقق منه أو اطلب رمزًا جديدًا.",
+      "expiredCode": "انتهت صلاحية هذا الرمز. اطلب رمزًا جديدًا للمتابعة.",
+      "userNotFound": "لم نعثر على حساب لهذا البريد الإلكتروني.",
+      "wrongPassword": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "networkError": "مشكلة في الشبكة. تحقق من اتصالك وحاول مرة أخرى."
+    },
     "somethingWentWrong": "حدث خطأ ما",
     "errorDescription": "واجه التطبيق خطأ. قد يحدث هذا بسبب مشاكل في الشبكة أو إعدادات المتصفح. يرجى محاولة تحديث الصفحة.",
     "refreshPage": "تحديث الصفحة",
@@ -1370,7 +1392,7 @@
       "title": "الصفحة غير موجودة",
       "description": "حاول العودة إلى الصفحة الرئيسية.",
       "goHome": "الذهاب للرئيسية",
-      "library": "المكتبة"
+      "goDashboard": "العودة للوحة التحكم"
     }
   }
 }

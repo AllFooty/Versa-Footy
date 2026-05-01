@@ -74,6 +74,7 @@
     "groupAdmin": "Admin",
     "adminMarketingSubheader": "Marketing",
     "primary": "Primary navigation",
+    "skipToContent": "Skip to main content",
     "openMenu": "Open navigation menu",
     "backToHome": "Back to Home",
     "backToLanding": "Back to landing page",
@@ -486,8 +487,17 @@
       "atRiskPlayers": "At-Risk Players",
       "atRiskDescription": "Players who haven't trained in 7+ days",
       "neverTrained": "Never trained",
+      "atRiskAria": "{{name}}, last trained {{days}} days ago",
+      "atRiskAriaNever": "{{name}}, never trained",
       "streakBroken": "Streak broken (was {{days}}d)",
-      "activePlayers": "Active Players"
+      "activePlayers": "Active Players",
+      "empty": {
+        "title": "Your academy is ready — let's add your first player.",
+        "body": "Once players join, their activity, skills, and weekly trends show up here. Invite a player or set up a team to get started.",
+        "invitePrimary": "Invite your first player",
+        "teamSecondary": "Set up a team first",
+        "hint": "Tip: players join with a short code from the Invitations page. You can send the same code to multiple parents."
+      }
     },
     "layout": {
       "organization": "Organization"
@@ -651,6 +661,7 @@
       "removeConfirm": "Remove {{name}} from the organization?",
       "removeTitle": "Remove member?",
       "removeAction": "Remove member",
+      "changeRoleAria": "Change role for {{name}}",
       "roleOwner": "Owner",
       "roleAdmin": "Admin",
       "roleCoach": "Coach",
@@ -1259,7 +1270,9 @@
     "confirm": {
       "defaultTitle": "Confirm",
       "defaultCancel": "Cancel",
-      "defaultConfirm": "Confirm"
+      "defaultConfirm": "Confirm",
+      "typeToConfirm": "Type {{value}} to confirm",
+      "typeToConfirmPlaceholder": "Type here to confirm"
     },
     "profileEdit": {
       "title": "Edit Profile",
@@ -1287,6 +1300,7 @@
     "fullNamePlaceholder": "Enter your full name",
     "emailCannotChange": "Email address cannot be changed",
     "saveChanges": "Save Changes",
+    "editCooldownHint": "Name changes are limited to once a week to keep your identity stable for coaches and teammates.",
     "editCooldownLocked": "You can edit your name again in {{days}} day(s)",
     "dangerZone": "Danger Zone",
     "deleteAccount": "Delete Account",
@@ -1362,6 +1376,14 @@
     "enterName": "Please enter your name",
     "profileUpdateFailed": "Failed to update profile",
     "profileUpdated": "Profile updated successfully!",
+    "auth": {
+      "rateLimit": "Too many attempts. Please wait a minute and try again.",
+      "invalidCode": "That code didn't match. Double-check it or request a new one.",
+      "expiredCode": "This code has expired. Request a new one to continue.",
+      "userNotFound": "We couldn't find an account for that email.",
+      "wrongPassword": "Incorrect email or password.",
+      "networkError": "Network problem. Check your connection and try again."
+    },
     "somethingWentWrong": "Something went wrong",
     "errorDescription": "The app encountered an error. This can happen due to network issues or browser settings. Please try refreshing the page.",
     "refreshPage": "Refresh Page",
@@ -1370,7 +1392,7 @@
       "title": "Page not found",
       "description": "Try heading back to the landing page.",
       "goHome": "Go home",
-      "library": "Library"
+      "goDashboard": "Back to dashboard"
     }
   }
 }

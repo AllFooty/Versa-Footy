@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { Trash2, Plus } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 import { useConfirm } from '../../components/ConfirmProvider';
 import { AGE_GROUPS } from '../../constants';
@@ -22,7 +23,6 @@ export default function TeamManagement() {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState(null);
 
-  // Selected team detail
   const [selectedTeamId, setSelectedTeamId] = useState(null);
   const [teamMembers, setTeamMembers] = useState([]);
   const [membersLoading, setMembersLoading] = useState(false);
@@ -39,7 +39,6 @@ export default function TeamManagement() {
     });
   }, [selectedTeamId, teams]);
 
-  // Players not yet in the selected team
   const memberIds = new Set(teamMembers.map((m) => m.id));
   const availablePlayers = allPlayers.filter((p) => !memberIds.has(p.player_id));
 
@@ -97,11 +96,9 @@ export default function TeamManagement() {
     }
   };
 
-  const getPlayerCountText = (count) => {
-    return count !== 1
-      ? t('academy.teams.playerCountPlural', { count })
-      : t('academy.teams.playerCount', { count });
-  };
+  const getPlayerCountText = (count) => count !== 1
+    ? t('academy.teams.playerCountPlural', { count })
+    : t('academy.teams.playerCount', { count });
 
   return (
     <PageContainer width="default">
@@ -109,117 +106,121 @@ export default function TeamManagement() {
         backLink={<BackLink href="/academy">{t('nav.dashboard')}</BackLink>}
         title={t('academy.teams.title')}
         subtitle={t('academy.teams.subtitle', { orgName: activeOrg?.name })}
-      />
-
-      {/* Create Team */}
-      <div style={sectionStyle}>
-        {!showCreate ? (
-          <button onClick={() => setShowCreate(true)} style={createBtnStyle}>
+        actions={!showCreate && (
+          <button type="button" className="action-chip" onClick={() => setShowCreate(true)}>
+            <Plus size={14} aria-hidden="true" />
             {t('academy.teams.createNewTeam')}
           </button>
-        ) : (
-          <div style={createCardStyle}>
-            <h3 style={{ fontSize: 15, fontWeight: 600, margin: '0 0 12px' }}>{t('academy.teams.newTeam')}</h3>
-            <form onSubmit={handleCreate} style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <input
-                type="text"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                placeholder={t('academy.teams.teamNamePlaceholder')}
-                style={{ ...inputStyle, flex: '1 1 200px' }}
-                autoFocus
-              />
-              <select
-                value={newAgeGroup}
-                onChange={(e) => setNewAgeGroup(e.target.value)}
-                style={{ ...inputStyle, flex: '0 0 120px' }}
-              >
-                <option value="">{t('academy.teams.ageGroupLabel')}</option>
-                {AGE_GROUPS.map((ag) => (
-                  <option key={ag} value={ag}>{ag}</option>
-                ))}
-              </select>
-              <button type="submit" disabled={creating || !newName.trim()} style={primaryBtnStyle}>
-                {creating ? t('academy.teams.creating') : t('academy.teams.createButton')}
-              </button>
-              <button type="button" onClick={() => setShowCreate(false)} style={cancelBtnStyle}>
-                {t('academy.teams.cancelButton')}
-              </button>
-            </form>
-            {error && <p style={{ color: '#ef4444', fontSize: 13, marginTop: 8 }}>{error}</p>}
-          </div>
         )}
-      </div>
+      />
+
+      {/* Inline create form */}
+      {showCreate && (
+        <section className="card" style={{ marginBottom: 20 }}>
+          <h3 className="section__title" style={{ marginBottom: 12 }}>
+            {t('academy.teams.newTeam')}
+          </h3>
+          <form onSubmit={handleCreate} className="toolbar" style={{ marginBottom: 0 }}>
+            <input
+              type="text"
+              className="input toolbar__search"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              placeholder={t('academy.teams.teamNamePlaceholder')}
+              aria-label={t('academy.teams.teamNamePlaceholder')}
+              autoFocus
+            />
+            <select
+              className="select toolbar__select"
+              value={newAgeGroup}
+              onChange={(e) => setNewAgeGroup(e.target.value)}
+              aria-label={t('academy.teams.ageGroupLabel')}
+            >
+              <option value="">{t('academy.teams.ageGroupLabel')}</option>
+              {AGE_GROUPS.map((ag) => (
+                <option key={ag} value={ag}>{ag}</option>
+              ))}
+            </select>
+            <button type="submit" className="btn-primary" disabled={creating || !newName.trim()}>
+              {creating ? t('academy.teams.creating') : t('academy.teams.createButton')}
+            </button>
+            <button type="button" className="btn-secondary" onClick={() => setShowCreate(false)}>
+              {t('academy.teams.cancelButton')}
+            </button>
+          </form>
+          {error && <div role="alert" className="alert alert--danger" style={{ marginTop: 12, marginBottom: 0 }}>{error}</div>}
+        </section>
+      )}
 
       {/* Team grid + detail */}
-      <div style={mainGridStyle}>
+      <div className="teams-grid">
         {/* Team list */}
-        <div style={teamListStyle}>
+        <div className="card teams-grid__list">
           {loading ? (
-            <div style={{ textAlign: 'center', padding: 48 }}>
-              <div style={spinnerStyle} />
-              <p style={{ marginTop: 16, color: '#71717a' }}>{t('academy.teams.loadingTeams')}</p>
-            </div>
-          ) : teams.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: 48 }}>
-              <p style={{ color: '#71717a', fontSize: 14 }}>
-                {t('academy.teams.noTeamsYet')}
+            <div className="empty-compact">
+              <span className="spinner spinner--lg" aria-hidden="true" />
+              <p className="empty-compact__msg" style={{ marginTop: 12 }}>
+                {t('academy.teams.loadingTeams')}
               </p>
             </div>
+          ) : teams.length === 0 ? (
+            <div className="empty-compact">
+              <p className="empty-compact__msg">{t('academy.teams.noTeamsYet')}</p>
+            </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {teams.map((team) => (
-                <div
-                  key={team.id}
-                  onClick={() => setSelectedTeamId(team.id)}
-                  style={{
-                    ...teamCardStyle,
-                    ...(selectedTeamId === team.id ? teamCardActiveStyle : {}),
-                  }}
-                >
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={teamNameStyle}>{team.name}</p>
-                    <p style={teamMetaStyle}>
-                      {team.age_group || t('academy.teams.allAges')} &middot; {getPlayerCountText(team.player_count)}
-                    </p>
-                  </div>
+            <div className="list-rows">
+              {teams.map((team) => {
+                const isActive = selectedTeamId === team.id;
+                return (
                   <button
-                    onClick={(e) => { e.stopPropagation(); handleDelete(team.id); }}
-                    style={deleteIconStyle}
-                    title={t('academy.teams.deleteTeamTooltip')}
+                    type="button"
+                    key={team.id}
+                    onClick={() => setSelectedTeamId(team.id)}
+                    className={`team-card${isActive ? ' team-card--active' : ''}`}
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                      <polyline points="3 6 5 6 21 6" />
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                    </svg>
+                    <div className="list-row__main">
+                      <p className="list-row__name">{team.name}</p>
+                      <p className="list-row__sub">
+                        {team.age_group || t('academy.teams.allAges')} &middot; {getPlayerCountText(team.player_count)}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-icon btn-icon--danger"
+                      onClick={(e) => { e.stopPropagation(); handleDelete(team.id); }}
+                      title={t('academy.teams.deleteTeamTooltip')}
+                      aria-label={t('academy.teams.deleteTeamTooltip')}
+                    >
+                      <Trash2 size={14} aria-hidden="true" />
+                    </button>
                   </button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
 
         {/* Team detail panel */}
-        <div style={detailPanelStyle}>
+        <div className="card teams-grid__detail">
           {!selectedTeam ? (
-            <div style={{ textAlign: 'center', padding: 48, color: '#71717a' }}>
-              <p style={{ fontSize: 14 }}>{t('academy.teams.selectTeamPrompt')}</p>
+            <div className="empty-compact">
+              <p className="empty-compact__msg">{t('academy.teams.selectTeamPrompt')}</p>
             </div>
           ) : (
             <>
-              <div style={{ marginBottom: 20 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 600, margin: '0 0 4px' }}>{selectedTeam.name}</h2>
-                <p style={{ fontSize: 13, color: '#71717a', margin: 0 }}>
+              <div style={{ marginBottom: 18 }}>
+                <h2 className="section__title" style={{ fontSize: 18 }}>{selectedTeam.name}</h2>
+                <p className="section__desc" style={{ marginBottom: 0 }}>
                   {selectedTeam.age_group || t('academy.teams.allAges')} &middot; {getPlayerCountText(selectedTeam.player_count)}
                 </p>
               </div>
 
-              {/* Add player */}
-              <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+              <div className="toolbar" style={{ marginBottom: 16 }}>
                 <select
+                  className="select toolbar__search"
                   value={addPlayerId}
                   onChange={(e) => setAddPlayerId(e.target.value)}
-                  style={{ ...inputStyle, flex: 1 }}
+                  aria-label={t('academy.teams.addPlayerPlaceholder')}
                 >
                   <option value="">{t('academy.teams.addPlayerPlaceholder')}</option>
                   {availablePlayers.map((p) => (
@@ -229,37 +230,41 @@ export default function TeamManagement() {
                   ))}
                 </select>
                 <button
+                  type="button"
+                  className="btn-primary"
                   onClick={handleAddPlayer}
                   disabled={!addPlayerId}
-                  style={primaryBtnStyle}
                 >
+                  <Plus size={14} aria-hidden="true" />
                   {t('academy.teams.addButton')}
                 </button>
               </div>
 
-              {/* Members list */}
               {membersLoading ? (
-                <p style={{ color: '#71717a', fontSize: 13 }}>{t('academy.teams.loadingMembers')}</p>
+                <p style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>
+                  {t('academy.teams.loadingMembers')}
+                </p>
               ) : teamMembers.length === 0 ? (
-                <p style={{ color: '#71717a', fontSize: 13 }}>
+                <p style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>
                   {t('academy.teams.noPlayersInTeam')}
                 </p>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div className="list-rows">
                   {teamMembers.map((m) => (
-                    <div key={m.id} style={memberRowStyle}>
-                      <div style={memberAvatarStyle}>
+                    <div key={m.id} className="member-row">
+                      <span className="list-row__avatar">
                         {(m.display_name || '?')[0].toUpperCase()}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>{m.display_name || t('common.unknown')}</p>
-                        <p style={{ fontSize: 11, color: '#71717a', margin: 0 }}>
+                      </span>
+                      <div className="list-row__main">
+                        <p className="list-row__name">{m.display_name || t('common.unknown')}</p>
+                        <p className="list-row__sub">
                           {m.age_group || t('common.noAge')} &middot; {t('common.level')} {m.current_level} &middot; {m.total_xp?.toLocaleString()} {t('common.xp')}
                         </p>
                       </div>
                       <button
+                        type="button"
+                        className="btn-secondary member-row__remove"
                         onClick={() => handleRemovePlayer(m.id)}
-                        style={removeBtnStyle}
                       >
                         {t('academy.teams.removeButton')}
                       </button>
@@ -274,155 +279,3 @@ export default function TeamManagement() {
     </PageContainer>
   );
 }
-
-// ─── Styles ────────────────────────────────────────────────────────────────────
-
-const sectionStyle = { margin: '0 0 20px' };
-
-const createBtnStyle = {
-  padding: '10px 20px',
-  background: 'rgba(59, 130, 246, 0.12)',
-  border: '1px solid rgba(59, 130, 246, 0.25)',
-  borderRadius: 10,
-  color: '#60a5fa',
-  fontSize: 14,
-  fontWeight: 600,
-  cursor: 'pointer',
-};
-
-const createCardStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 12,
-  padding: 16,
-};
-
-const inputStyle = {
-  padding: '9px 12px',
-  background: 'rgba(255, 255, 255, 0.06)',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 8,
-  color: '#e4e4e7',
-  fontSize: 13,
-  outline: 'none',
-};
-
-const primaryBtnStyle = {
-  padding: '9px 16px',
-  background: 'linear-gradient(135deg, #2563eb, #22d3ee)',
-  color: '#0b1020',
-  fontWeight: 600,
-  fontSize: 13,
-  border: 'none',
-  borderRadius: 8,
-  cursor: 'pointer',
-  whiteSpace: 'nowrap',
-};
-
-const cancelBtnStyle = {
-  padding: '9px 16px',
-  background: 'transparent',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 8,
-  color: '#9ca3af',
-  fontSize: 13,
-  cursor: 'pointer',
-};
-
-const mainGridStyle = {
-  margin: 0,
-  display: 'grid',
-  gridTemplateColumns: '320px 1fr',
-  gap: 16,
-};
-
-const teamListStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 14,
-  padding: 12,
-  minHeight: 300,
-};
-
-const teamCardStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 10,
-  padding: '12px 14px',
-  borderRadius: 10,
-  cursor: 'pointer',
-  transition: 'background 0.15s',
-  background: 'transparent',
-};
-
-const teamCardActiveStyle = {
-  background: 'rgba(59, 130, 246, 0.1)',
-  border: '1px solid rgba(59, 130, 246, 0.2)',
-};
-
-const teamNameStyle = { fontSize: 14, fontWeight: 600, margin: 0 };
-const teamMetaStyle = { fontSize: 12, color: '#71717a', margin: 0 };
-
-const deleteIconStyle = {
-  background: 'none',
-  border: 'none',
-  color: '#71717a',
-  cursor: 'pointer',
-  padding: 6,
-  borderRadius: 6,
-  display: 'flex',
-  alignItems: 'center',
-  opacity: 0.6,
-};
-
-const detailPanelStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 14,
-  padding: 20,
-  minHeight: 300,
-};
-
-const memberRowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 10,
-  padding: '10px 12px',
-  background: 'rgba(255, 255, 255, 0.03)',
-  borderRadius: 8,
-};
-
-const memberAvatarStyle = {
-  width: 32,
-  height: 32,
-  borderRadius: '50%',
-  background: 'rgba(59, 130, 246, 0.15)',
-  color: '#60a5fa',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: 12,
-  fontWeight: 600,
-  flexShrink: 0,
-};
-
-const removeBtnStyle = {
-  padding: '4px 10px',
-  background: 'rgba(239, 68, 68, 0.12)',
-  border: '1px solid rgba(239, 68, 68, 0.2)',
-  borderRadius: 6,
-  color: '#ef4444',
-  fontSize: 11,
-  fontWeight: 500,
-  cursor: 'pointer',
-};
-
-const spinnerStyle = {
-  width: 40,
-  height: 40,
-  border: '3px solid #27272a',
-  borderTopColor: '#E63946',
-  borderRadius: '50%',
-  animation: 'spin 1s linear infinite',
-  margin: '0 auto',
-};
