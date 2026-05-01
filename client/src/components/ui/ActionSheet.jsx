@@ -112,7 +112,6 @@ const ActionSheet = ({ isOpen, onClose, items = [], title }) => {
               fontWeight: 500,
               cursor: 'pointer',
               textAlign: 'left',
-              fontFamily: "'DM Sans', sans-serif",
             }}
           >
             {item.icon}
@@ -137,7 +136,6 @@ const ActionSheet = ({ isOpen, onClose, items = [], title }) => {
             fontSize: 16,
             fontWeight: 600,
             cursor: 'pointer',
-            fontFamily: "'DM Sans', sans-serif",
           }}
         >
           {t('common.cancel')}
