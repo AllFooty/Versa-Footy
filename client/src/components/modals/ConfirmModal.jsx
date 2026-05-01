@@ -49,7 +49,7 @@ const ConfirmModal = ({
           <div style={{
             width: 40,
             height: 40,
-            borderRadius: 10,
+            borderRadius: 'var(--radius-lg)',
             background: confirmDanger
               ? 'rgba(239, 68, 68, 0.15)'
               : 'rgba(59, 130, 246, 0.15)',
@@ -65,7 +65,7 @@ const ConfirmModal = ({
           </div>
           <h2 style={{
             margin: 0,
-            fontFamily: "'Space Grotesk', sans-serif",
+            fontFamily: 'var(--font-display)',
             fontSize: 18,
             fontWeight: 600,
           }}>
@@ -100,7 +100,7 @@ const ConfirmModal = ({
               onClose();
             }}
             style={confirmDanger ? {
-              background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+              background: 'var(--gradient-danger)',
               boxShadow: 'none',
             } : {}}
           >

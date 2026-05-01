@@ -55,7 +55,7 @@ const DeleteCategoryModal = ({ isOpen, category, skillCount, exerciseCount, onCo
             <h2
               style={{
                 margin: 0,
-                fontFamily: "'Space Grotesk', sans-serif",
+                fontFamily: 'var(--font-display)',
                 fontSize: 20,
                 fontWeight: 600,
                 color: '#ef4444',
@@ -74,7 +74,7 @@ const DeleteCategoryModal = ({ isOpen, category, skillCount, exerciseCount, onCo
           style={{
             backgroundColor: 'rgba(239, 68, 68, 0.08)',
             border: '1px solid rgba(239, 68, 68, 0.2)',
-            borderRadius: 8,
+            borderRadius: 'var(--radius-md)',
             padding: 16,
             marginBottom: 20,
           }}
@@ -130,8 +130,8 @@ const DeleteCategoryModal = ({ isOpen, category, skillCount, exerciseCount, onCo
               padding: '10px 12px',
               backgroundColor: '#16161a',
               border: `1px solid ${typedName.length > 0 && !nameMatches ? '#ef4444' : '#2e2e38'}`,
-              borderRadius: 8,
-              color: '#e4e4e7',
+              borderRadius: 'var(--radius-md)',
+              color: 'var(--text-primary)',
               fontSize: 14,
               outline: 'none',
               boxSizing: 'border-box',
@@ -155,7 +155,7 @@ const DeleteCategoryModal = ({ isOpen, category, skillCount, exerciseCount, onCo
               padding: '10px 20px',
               backgroundColor: 'transparent',
               border: '1px solid #2e2e38',
-              borderRadius: 8,
+              borderRadius: 'var(--radius-md)',
               color: '#a1a1aa',
               fontSize: 14,
               cursor: 'pointer',
@@ -173,7 +173,7 @@ const DeleteCategoryModal = ({ isOpen, category, skillCount, exerciseCount, onCo
               padding: '10px 20px',
               backgroundColor: nameMatches ? '#dc2626' : '#3f3f46',
               border: 'none',
-              borderRadius: 8,
+              borderRadius: 'var(--radius-md)',
               color: nameMatches ? '#fff' : '#71717a',
               fontSize: 14,
               fontWeight: 600,

@@ -124,16 +124,16 @@ const containerStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
+  background: 'var(--bg-app-gradient)',
+  color: 'var(--text-primary)',
   padding: 32,
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  fontFamily: 'var(--font-sans)',
 };
 
 const cardStyle = {
   background: 'rgba(15, 23, 42, 0.6)',
   border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 16,
+  borderRadius: 'var(--radius-2xl)',
   padding: 32,
   maxWidth: 480,
   width: '100%',
@@ -149,7 +149,7 @@ const titleStyle = {
 
 const subtitleStyle = {
   fontSize: 14,
-  color: '#9ca3af',
+  color: 'var(--text-muted)',
   margin: '0 0 24px',
 };
 
@@ -161,7 +161,7 @@ const labelStyle = {
   display: 'block',
   fontSize: 13,
   fontWeight: 500,
-  color: '#9ca3af',
+  color: 'var(--text-muted)',
   marginBottom: 6,
 };
 
@@ -170,8 +170,8 @@ const inputStyle = {
   padding: '10px 12px',
   background: 'rgba(255, 255, 255, 0.06)',
   border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 8,
-  color: '#e4e4e7',
+  borderRadius: 'var(--radius-md)',
+  color: 'var(--text-primary)',
   fontSize: 14,
   outline: 'none',
   boxSizing: 'border-box',
@@ -186,12 +186,12 @@ const errorStyle = {
 const buttonStyle = {
   width: '100%',
   padding: '12px 16px',
-  background: 'linear-gradient(135deg, #2563eb, #22d3ee)',
+  background: 'var(--gradient-brand)',
   color: '#0b1020',
   fontWeight: 600,
   fontSize: 14,
   border: 'none',
-  borderRadius: 10,
+  borderRadius: 'var(--radius-lg)',
   cursor: 'pointer',
   marginTop: 8,
 };

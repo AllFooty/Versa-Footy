@@ -31,7 +31,7 @@ export const SkeletonCard = ({ style = {} }) => (
     style={{
       background: 'rgba(15, 23, 42, 0.6)',
       border: '1px solid rgba(255, 255, 255, 0.08)',
-      borderRadius: 12,
+      borderRadius: 'var(--radius-xl)',
       padding: '16px 18px',
       ...style,
     }}
@@ -53,7 +53,7 @@ export const SkeletonRow = ({ style = {} }) => (
       padding: '14px 16px',
       background: 'rgba(15, 23, 42, 0.6)',
       border: '1px solid rgba(255, 255, 255, 0.08)',
-      borderRadius: 12,
+      borderRadius: 'var(--radius-xl)',
       marginBottom: 8,
       ...style,
     }}
@@ -75,7 +75,7 @@ export const SkeletonChart = ({ style = {} }) => (
     style={{
       background: 'rgba(15, 23, 42, 0.6)',
       border: '1px solid rgba(255, 255, 255, 0.08)',
-      borderRadius: 14,
+      borderRadius: 'var(--radius-card)',
       padding: '20px 16px 12px',
       ...style,
     }}

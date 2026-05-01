@@ -34,9 +34,9 @@ class ErrorBoundary extends React.Component {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
+            background: 'var(--bg-app-gradient)',
             color: '#e5e7eb',
-            fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+            fontFamily: 'var(--font-sans)',
             padding: 24,
           }}
         >
@@ -46,7 +46,7 @@ class ErrorBoundary extends React.Component {
               maxWidth: 400,
               background: 'rgba(15, 23, 42, 0.6)',
               border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: 16,
+              borderRadius: 'var(--radius-2xl)',
               padding: 32,
             }}
           >
@@ -54,17 +54,17 @@ class ErrorBoundary extends React.Component {
             <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>
               {t('errors.somethingWentWrong')}
             </h2>
-            <p style={{ fontSize: 14, color: '#9ca3af', marginBottom: 24, lineHeight: 1.6 }}>
+            <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 24, lineHeight: 1.6 }}>
               {t('errors.errorDescription')}
             </p>
             <button
               onClick={this.handleRetry}
               style={{
-                background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                background: 'var(--gradient-brand)',
                 color: 'white',
                 border: 'none',
                 padding: '12px 24px',
-                borderRadius: 10,
+                borderRadius: 'var(--radius-lg)',
                 fontWeight: 600,
                 fontSize: 14,
                 cursor: 'pointer',
@@ -78,7 +78,7 @@ class ErrorBoundary extends React.Component {
                   marginTop: 24,
                   padding: 16,
                   background: 'rgba(0, 0, 0, 0.3)',
-                  borderRadius: 8,
+                  borderRadius: 'var(--radius-md)',
                   fontSize: 12,
                   textAlign: 'left',
                   overflow: 'auto',

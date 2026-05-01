@@ -84,7 +84,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
             gap: 12,
             padding: '8px 12px',
             background: 'rgba(255,255,255,0.02)',
-            borderRadius: 8,
+            borderRadius: 'var(--radius-md)',
             marginBottom: 4,
             borderLeft: '2px solid rgba(255,255,255,0.05)',
             cursor: 'pointer',
@@ -114,7 +114,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
             {exercise.description && (
               <span style={{
                 fontSize: 11,
-                color: '#71717a',
+                color: 'var(--text-dim)',
                 display: 'block',
                 marginTop: 2,
                 overflow: 'hidden',
@@ -135,7 +135,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
                 alignItems: 'center',
                 padding: '3px 8px',
                 background: 'rgba(251, 191, 36, 0.15)',
-                borderRadius: 4,
+                borderRadius: 'var(--radius-xs)',
                 color: '#fbbf24',
                 fontSize: 11,
                 fontWeight: 600,
@@ -156,7 +156,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
                 background: timerMode === 'interval'
                   ? 'rgba(34, 197, 94, 0.12)'
                   : 'rgba(249, 115, 22, 0.12)',
-                borderRadius: 4,
+                borderRadius: 'var(--radius-xs)',
                 color: timerMode === 'interval' ? '#4ade80' : '#fb923c',
                 fontSize: 11,
                 fontWeight: 600,
@@ -176,7 +176,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
                 gap: 4,
                 padding: '3px 8px',
                 background: 'rgba(59, 130, 246, 0.1)',
-                borderRadius: 4,
+                borderRadius: 'var(--radius-xs)',
                 color: '#60a5fa',
                 fontSize: 11,
               }}
@@ -196,7 +196,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
               background: exercise.minimumDuration != null
                 ? 'rgba(168, 85, 247, 0.12)'
                 : 'rgba(255,255,255,0.04)',
-              borderRadius: 4,
+              borderRadius: 'var(--radius-xs)',
               color: exercise.minimumDuration != null ? '#c084fc' : '#52525b',
               fontSize: 11,
             }}
@@ -224,7 +224,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
                   marginTop: 4,
                   backgroundColor: '#1e1e24',
                   border: '1px solid #2e2e38',
-                  borderRadius: 8,
+                  borderRadius: 'var(--radius-md)',
                   boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
                   zIndex: 50,
                   minWidth: 140,
@@ -241,7 +241,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
                     padding: '10px 12px',
                     backgroundColor: 'transparent',
                     border: 'none',
-                    color: '#e4e4e7',
+                    color: 'var(--text-primary)',
                     fontSize: 14,
                     cursor: 'pointer',
                     textAlign: 'left',
@@ -290,7 +290,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
           gap: 12,
           padding: '12px',
           background: 'rgba(255,255,255,0.02)',
-          borderRadius: 10,
+          borderRadius: 'var(--radius-lg)',
           marginBottom: 6,
           borderLeft: '3px solid rgba(59, 130, 246, 0.3)',
           cursor: 'pointer',
@@ -303,7 +303,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
             style={{
               width: 36,
               height: 36,
-              borderRadius: 8,
+              borderRadius: 'var(--radius-md)',
               background: 'rgba(59, 130, 246, 0.15)',
               display: 'flex',
               alignItems: 'center',
@@ -318,7 +318,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
             style={{
               width: 36,
               height: 36,
-              borderRadius: 8,
+              borderRadius: 'var(--radius-md)',
               background: 'rgba(255,255,255,0.05)',
               display: 'flex',
               alignItems: 'center',
@@ -335,7 +335,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
           <span style={{
             display: 'block',
             fontSize: 14,
-            color: '#e4e4e7',
+            color: 'var(--text-primary)',
             fontWeight: 500,
             marginBottom: exercise.description ? 2 : 4,
           }}>
@@ -345,7 +345,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
             <span style={{
               display: 'block',
               fontSize: 12,
-              color: '#71717a',
+              color: 'var(--text-dim)',
               marginBottom: 4,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -365,7 +365,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
                   background: timerMode === 'interval'
                     ? 'rgba(34, 197, 94, 0.12)'
                     : 'rgba(249, 115, 22, 0.12)',
-                  borderRadius: 4,
+                  borderRadius: 'var(--radius-xs)',
                   color: timerMode === 'interval' ? '#4ade80' : '#fb923c',
                   fontSize: 11,
                   fontWeight: 600,
@@ -382,7 +382,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
                   alignItems: 'center',
                   padding: '4px 8px',
                   background: 'rgba(251, 191, 36, 0.15)',
-                  borderRadius: 4,
+                  borderRadius: 'var(--radius-xs)',
                   color: '#fbbf24',
                   fontSize: 11,
                   fontWeight: 600,
@@ -400,7 +400,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
                   gap: 4,
                   padding: '4px 8px',
                   background: 'rgba(59, 130, 246, 0.1)',
-                  borderRadius: 4,
+                  borderRadius: 'var(--radius-xs)',
                   color: '#60a5fa',
                   fontSize: 11,
                 }}
@@ -418,7 +418,7 @@ const ExerciseItem = ({ exercise, categoryName, onPreview, onEdit, onDelete, isM
                 background: exercise.minimumDuration != null
                   ? 'rgba(168, 85, 247, 0.12)'
                   : 'rgba(255,255,255,0.04)',
-                borderRadius: 4,
+                borderRadius: 'var(--radius-xs)',
                 color: exercise.minimumDuration != null ? '#c084fc' : '#52525b',
                 fontSize: 11,
               }}

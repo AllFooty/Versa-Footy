@@ -113,7 +113,7 @@ const TreeView = ({
           style={{
             textAlign: 'center',
             padding: isMobile ? '40px 20px' : '60px 20px',
-            color: '#71717a',
+            color: 'var(--text-dim)',
           }}
         >
           <div style={{ fontSize: isMobile ? 36 : 48, marginBottom: 16 }}>⚽</div>
@@ -129,7 +129,7 @@ const TreeView = ({
               style={{
                 padding: '8px 16px',
                 marginBottom: 12,
-                color: '#71717a',
+                color: 'var(--text-dim)',
                 fontSize: 13,
               }}
             >
@@ -147,7 +147,7 @@ const TreeView = ({
               style={{
                 textAlign: 'center',
                 padding: isMobile ? '40px 20px' : '60px 20px',
-                color: '#71717a',
+                color: 'var(--text-dim)',
               }}
             >
               <div style={{ fontSize: isMobile ? 36 : 48, marginBottom: 16 }}>🔍</div>

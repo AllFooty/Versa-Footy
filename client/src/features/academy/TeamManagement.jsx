@@ -160,11 +160,11 @@ export default function TeamManagement() {
           {loading ? (
             <div style={{ textAlign: 'center', padding: 48 }}>
               <div style={spinnerStyle} />
-              <p style={{ marginTop: 16, color: '#71717a' }}>{t('academy.teams.loadingTeams')}</p>
+              <p style={{ marginTop: 16, color: 'var(--text-dim)' }}>{t('academy.teams.loadingTeams')}</p>
             </div>
           ) : teams.length === 0 ? (
             <div style={{ textAlign: 'center', padding: 48 }}>
-              <p style={{ color: '#71717a', fontSize: 14 }}>
+              <p style={{ color: 'var(--text-dim)', fontSize: 14 }}>
                 {t('academy.teams.noTeamsYet')}
               </p>
             </div>
@@ -204,14 +204,14 @@ export default function TeamManagement() {
         {/* Team detail panel */}
         <div style={detailPanelStyle}>
           {!selectedTeam ? (
-            <div style={{ textAlign: 'center', padding: 48, color: '#71717a' }}>
+            <div style={{ textAlign: 'center', padding: 48, color: 'var(--text-dim)' }}>
               <p style={{ fontSize: 14 }}>{t('academy.teams.selectTeamPrompt')}</p>
             </div>
           ) : (
             <>
               <div style={{ marginBottom: 20 }}>
                 <h2 style={{ fontSize: 18, fontWeight: 600, margin: '0 0 4px' }}>{selectedTeam.name}</h2>
-                <p style={{ fontSize: 13, color: '#71717a', margin: 0 }}>
+                <p style={{ fontSize: 13, color: 'var(--text-dim)', margin: 0 }}>
                   {selectedTeam.age_group || t('academy.teams.allAges')} &middot; {getPlayerCountText(selectedTeam.player_count)}
                 </p>
               </div>
@@ -241,9 +241,9 @@ export default function TeamManagement() {
 
               {/* Members list */}
               {membersLoading ? (
-                <p style={{ color: '#71717a', fontSize: 13 }}>{t('academy.teams.loadingMembers')}</p>
+                <p style={{ color: 'var(--text-dim)', fontSize: 13 }}>{t('academy.teams.loadingMembers')}</p>
               ) : teamMembers.length === 0 ? (
-                <p style={{ color: '#71717a', fontSize: 13 }}>
+                <p style={{ color: 'var(--text-dim)', fontSize: 13 }}>
                   {t('academy.teams.noPlayersInTeam')}
                 </p>
               ) : (
@@ -255,7 +255,7 @@ export default function TeamManagement() {
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>{m.display_name || t('common.unknown')}</p>
-                        <p style={{ fontSize: 11, color: '#71717a', margin: 0 }}>
+                        <p style={{ fontSize: 11, color: 'var(--text-dim)', margin: 0 }}>
                           {m.age_group || t('common.noAge')} &middot; {t('common.level')} {m.current_level} &middot; {m.total_xp?.toLocaleString()} {t('common.xp')}
                         </p>
                       </div>
@@ -327,15 +327,15 @@ export default function TeamManagement() {
 
 const containerStyle = {
   minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  background: 'var(--bg-app-gradient)',
+  color: 'var(--text-primary)',
+  fontFamily: 'var(--font-sans)',
   padding: '32px',
 };
 
 const headerStyle = { maxWidth: 1200, margin: '0 auto 20px' };
 const titleStyle = { fontSize: 28, fontWeight: 700, margin: '0 0 4px' };
-const subtitleStyle = { fontSize: 14, color: '#9ca3af', margin: 0 };
+const subtitleStyle = { fontSize: 14, color: 'var(--text-muted)', margin: 0 };
 
 const sectionStyle = { maxWidth: 1200, margin: '0 auto 20px' };
 
@@ -343,7 +343,7 @@ const createBtnStyle = {
   padding: '10px 20px',
   background: 'rgba(59, 130, 246, 0.12)',
   border: '1px solid rgba(59, 130, 246, 0.25)',
-  borderRadius: 10,
+  borderRadius: 'var(--radius-lg)',
   color: '#60a5fa',
   fontSize: 14,
   fontWeight: 600,
@@ -353,7 +353,7 @@ const createBtnStyle = {
 const createCardStyle = {
   background: 'rgba(15, 23, 42, 0.6)',
   border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 12,
+  borderRadius: 'var(--radius-xl)',
   padding: 16,
 };
 
@@ -361,20 +361,20 @@ const inputStyle = {
   padding: '9px 12px',
   background: 'rgba(255, 255, 255, 0.06)',
   border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 8,
-  color: '#e4e4e7',
+  borderRadius: 'var(--radius-md)',
+  color: 'var(--text-primary)',
   fontSize: 13,
   outline: 'none',
 };
 
 const primaryBtnStyle = {
   padding: '9px 16px',
-  background: 'linear-gradient(135deg, #2563eb, #22d3ee)',
+  background: 'var(--gradient-brand)',
   color: '#0b1020',
   fontWeight: 600,
   fontSize: 13,
   border: 'none',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-md)',
   cursor: 'pointer',
   whiteSpace: 'nowrap',
 };
@@ -383,8 +383,8 @@ const cancelBtnStyle = {
   padding: '9px 16px',
   background: 'transparent',
   border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 8,
-  color: '#9ca3af',
+  borderRadius: 'var(--radius-md)',
+  color: 'var(--text-muted)',
   fontSize: 13,
   cursor: 'pointer',
 };
@@ -400,7 +400,7 @@ const mainGridStyle = {
 const teamListStyle = {
   background: 'rgba(15, 23, 42, 0.6)',
   border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 14,
+  borderRadius: 'var(--radius-card)',
   padding: 12,
   minHeight: 300,
 };
@@ -410,7 +410,7 @@ const teamCardStyle = {
   alignItems: 'center',
   gap: 10,
   padding: '12px 14px',
-  borderRadius: 10,
+  borderRadius: 'var(--radius-lg)',
   cursor: 'pointer',
   transition: 'background 0.15s',
   background: 'transparent',
@@ -422,15 +422,15 @@ const teamCardActiveStyle = {
 };
 
 const teamNameStyle = { fontSize: 14, fontWeight: 600, margin: 0 };
-const teamMetaStyle = { fontSize: 12, color: '#71717a', margin: 0 };
+const teamMetaStyle = { fontSize: 12, color: 'var(--text-dim)', margin: 0 };
 
 const deleteIconStyle = {
   background: 'none',
   border: 'none',
-  color: '#71717a',
+  color: 'var(--text-dim)',
   cursor: 'pointer',
   padding: 6,
-  borderRadius: 6,
+  borderRadius: 'var(--radius-sm)',
   display: 'flex',
   alignItems: 'center',
   opacity: 0.6,
@@ -439,7 +439,7 @@ const deleteIconStyle = {
 const detailPanelStyle = {
   background: 'rgba(15, 23, 42, 0.6)',
   border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 14,
+  borderRadius: 'var(--radius-card)',
   padding: 20,
   minHeight: 300,
 };
@@ -450,7 +450,7 @@ const memberRowStyle = {
   gap: 10,
   padding: '10px 12px',
   background: 'rgba(255, 255, 255, 0.03)',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-md)',
 };
 
 const memberAvatarStyle = {
@@ -471,7 +471,7 @@ const removeBtnStyle = {
   padding: '4px 10px',
   background: 'rgba(239, 68, 68, 0.12)',
   border: '1px solid rgba(239, 68, 68, 0.2)',
-  borderRadius: 6,
+  borderRadius: 'var(--radius-sm)',
   color: '#ef4444',
   fontSize: 11,
   fontWeight: 500,

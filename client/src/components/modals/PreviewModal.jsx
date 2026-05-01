@@ -165,7 +165,7 @@ const PreviewModal = ({
             <h2
               style={{
                 margin: 0,
-                fontFamily: "'Space Grotesk', sans-serif",
+                fontFamily: 'var(--font-display)',
                 fontSize: isMobile ? 18 : 24,
                 fontWeight: 700,
                 lineHeight: 1.3,
@@ -177,7 +177,7 @@ const PreviewModal = ({
                   marginInlineStart: 8,
                   fontSize: isMobile ? 11 : 12,
                   fontWeight: 500,
-                  color: '#71717a',
+                  color: 'var(--text-dim)',
                   verticalAlign: 'middle',
                 }}>
                   #{exercise.id}
@@ -197,7 +197,7 @@ const PreviewModal = ({
                 <span style={{
                   padding: '3px 8px',
                   background: 'rgba(251, 191, 36, 0.15)',
-                  borderRadius: 4,
+                  borderRadius: 'var(--radius-xs)',
                   color: '#fbbf24',
                   fontSize: 11,
                   fontWeight: 600,
@@ -268,12 +268,12 @@ const PreviewModal = ({
               gap: isMobile ? 8 : 12,
               padding: isMobile ? '12px 14px' : '16px 20px',
               background: 'rgba(0,0,0,0.2)',
-              borderRadius: 12,
+              borderRadius: 'var(--radius-xl)',
               marginBottom: isMobile ? 16 : 20,
               flexWrap: 'wrap',
             }}
           >
-            <span style={{ color: '#71717a', fontSize: isMobile ? 13 : 14 }}>{t('modals.preview.difficulty')}</span>
+            <span style={{ color: 'var(--text-dim)', fontSize: isMobile ? 13 : 14 }}>{t('modals.preview.difficulty')}</span>
             <span
               style={{
                 fontSize: isMobile ? 16 : 20,
@@ -297,12 +297,12 @@ const PreviewModal = ({
                 gap: isMobile ? 8 : 12,
                 padding: isMobile ? '12px 14px' : '16px 20px',
                 background: 'rgba(0,0,0,0.2)',
-                borderRadius: 12,
+                borderRadius: 'var(--radius-xl)',
                 marginBottom: isMobile ? 16 : 20,
                 flexWrap: 'wrap',
               }}
             >
-              <span style={{ color: '#71717a', fontSize: isMobile ? 13 : 14 }}>{t('modals.preview.equipment')}</span>
+              <span style={{ color: 'var(--text-dim)', fontSize: isMobile ? 13 : 14 }}>{t('modals.preview.equipment')}</span>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {exercise.equipment.map((item) => (
                   <span
@@ -311,7 +311,7 @@ const PreviewModal = ({
                       padding: '4px 10px',
                       background: 'rgba(59, 130, 246, 0.15)',
                       border: '1px solid rgba(59, 130, 246, 0.25)',
-                      borderRadius: 6,
+                      borderRadius: 'var(--radius-sm)',
                       color: '#93c5fd',
                       fontSize: isMobile ? 12 : 13,
                     }}
@@ -329,7 +329,7 @@ const PreviewModal = ({
               onClick={() => setYoutubeFullscreen(true)}
               style={{
                 position: 'relative',
-                borderRadius: 12,
+                borderRadius: 'var(--radius-xl)',
                 overflow: 'hidden',
                 marginBottom: isMobile ? 16 : 20,
                 background: '#000',
@@ -353,7 +353,7 @@ const PreviewModal = ({
               onClick={handlePlayDirectVideo}
               style={{
                 position: 'relative',
-                borderRadius: 12,
+                borderRadius: 'var(--radius-xl)',
                 overflow: 'hidden',
                 marginBottom: isMobile ? 16 : 20,
                 background: '#000',
@@ -389,7 +389,7 @@ const PreviewModal = ({
                 padding: isMobile ? '14px 16px' : '16px 20px',
                 background: 'rgba(59, 130, 246, 0.1)',
                 border: '1px solid rgba(59, 130, 246, 0.2)',
-                borderRadius: 12,
+                borderRadius: 'var(--radius-xl)',
                 marginBottom: isMobile ? 16 : 20,
                 color: '#3b82f6',
                 textDecoration: 'none',
@@ -411,7 +411,7 @@ const PreviewModal = ({
                 padding: isMobile ? '30px 20px' : '40px 20px',
                 background: 'rgba(255,255,255,0.02)',
                 border: '1px dashed rgba(255,255,255,0.1)',
-                borderRadius: 12,
+                borderRadius: 'var(--radius-xl)',
                 marginBottom: isMobile ? 16 : 20,
                 color: '#52525b',
               }}
@@ -440,7 +440,7 @@ const PreviewModal = ({
                 style={{
                   padding: isMobile ? '14px 16px' : '16px 20px',
                   background: 'rgba(0,0,0,0.2)',
-                  borderRadius: 12,
+                  borderRadius: 'var(--radius-xl)',
                   lineHeight: 1.7,
                   color: '#d4d4d8',
                   whiteSpace: 'pre-wrap',
@@ -527,7 +527,7 @@ const PreviewModal = ({
           <iframe
             src={`${embedUrl}?autoplay=1`}
             title={exercise.name}
-            style={{ width: '100%', height: '100%', border: 'none', borderRadius: 8 }}
+            style={{ width: '100%', height: '100%', border: 'none', borderRadius: 'var(--radius-md)' }}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
             allowFullScreen
           />

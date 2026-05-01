@@ -40,8 +40,8 @@ const Header = ({ stats }) => {
               style={{
                 width: 48,
                 height: 48,
-                background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
-                borderRadius: 12,
+                background: 'var(--gradient-brand-purple)',
+                borderRadius: 'var(--radius-xl)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -53,7 +53,7 @@ const Header = ({ stats }) => {
             <div>
               <h1
                 style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontFamily: 'var(--font-display)',
                   fontSize: 22,
                   fontWeight: 700,
                   margin: 0,
@@ -64,7 +64,7 @@ const Header = ({ stats }) => {
               >
                 {t('library.headerTitle')}
               </h1>
-              <p style={{ margin: 0, fontSize: 13, color: '#71717a' }}>
+              <p style={{ margin: 0, fontSize: 13, color: 'var(--text-dim)' }}>
                 {t('library.headerSubtitle')}
               </p>
             </div>
@@ -106,8 +106,8 @@ const Header = ({ stats }) => {
               style={{
                 width: 40,
                 height: 40,
-                background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
-                borderRadius: 10,
+                background: 'var(--gradient-brand-purple)',
+                borderRadius: 'var(--radius-lg)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -119,7 +119,7 @@ const Header = ({ stats }) => {
             <div>
               <h1
                 style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontFamily: 'var(--font-display)',
                   fontSize: 16,
                   fontWeight: 700,
                   margin: 0,
@@ -130,7 +130,7 @@ const Header = ({ stats }) => {
               >
                 {t('common.versaFooty')}
               </h1>
-              <p style={{ margin: 0, fontSize: 10, color: '#71717a' }}>
+              <p style={{ margin: 0, fontSize: 10, color: 'var(--text-dim)' }}>
                 {t('nav.library')}
               </p>
             </div>
@@ -158,7 +158,7 @@ const StatItem = ({ value, label, color }) => (
     <div
       style={{
         fontSize: 11,
-        color: '#71717a',
+        color: 'var(--text-dim)',
         textTransform: 'uppercase',
         letterSpacing: 1,
       }}

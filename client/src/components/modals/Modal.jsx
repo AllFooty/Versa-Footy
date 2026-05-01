@@ -63,7 +63,7 @@ const Modal = ({
             className="modal-title"
             style={{
               margin: 0,
-              fontFamily: "'Space Grotesk', sans-serif",
+              fontFamily: 'var(--font-display)',
               fontSize: 20,
               fontWeight: 600,
             }}

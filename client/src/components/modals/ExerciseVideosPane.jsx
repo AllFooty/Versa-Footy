@@ -236,7 +236,7 @@ const ExerciseVideosPane = ({
                       src={item.publicUrl}
                       controls
                       playsInline
-                      style={{ width: '100%', maxHeight: 320, borderRadius: 6, background: '#000' }}
+                      style={{ width: '100%', maxHeight: 320, borderRadius: 'var(--radius-sm)', background: '#000' }}
                     />
                   </div>
                 )}
@@ -297,7 +297,7 @@ const ExerciseVideosPane = ({
 const paneStyle = {
   marginTop: 12,
   padding: 12,
-  borderRadius: 10,
+  borderRadius: 'var(--radius-lg)',
   background: 'rgba(255,255,255,0.02)',
   border: '1px solid rgba(255,255,255,0.08)',
 };
@@ -313,21 +313,21 @@ const headerStyle = {
 const titleStyle = {
   fontSize: 13,
   fontWeight: 600,
-  color: '#e4e4e7',
+  color: 'var(--text-primary)',
 };
 
 const subtitleStyle = {
   fontSize: 11,
-  color: '#9ca3af',
+  color: 'var(--text-muted)',
   marginTop: 2,
 };
 
 const iconBtnStyle = {
   background: 'transparent',
   border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: 6,
+  borderRadius: 'var(--radius-sm)',
   padding: 6,
-  color: '#9ca3af',
+  color: 'var(--text-muted)',
   cursor: 'pointer',
   display: 'inline-flex',
   alignItems: 'center',
@@ -337,7 +337,7 @@ const iconBtnStyle = {
 const errorStyle = {
   padding: '6px 10px',
   marginBottom: 8,
-  borderRadius: 6,
+  borderRadius: 'var(--radius-sm)',
   fontSize: 12,
   background: 'rgba(239,68,68,0.1)',
   border: '1px solid rgba(239,68,68,0.3)',
@@ -348,7 +348,7 @@ const listStyle = { listStyle: 'none', margin: 0, padding: 0, marginBottom: 10 }
 
 const rowStyle = (isActive, isMobile) => ({
   padding: isMobile ? '10px 10px' : '8px 10px',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-md)',
   marginBottom: 6,
   background: isActive ? 'rgba(74,222,128,0.06)' : 'rgba(255,255,255,0.025)',
   border: `1px solid ${isActive ? 'rgba(74,222,128,0.25)' : 'rgba(255,255,255,0.06)'}`,
@@ -365,7 +365,7 @@ const previewBtnStyle = (on) => ({
   flexShrink: 0,
   width: 32,
   height: 32,
-  borderRadius: 6,
+  borderRadius: 'var(--radius-sm)',
   background: on ? 'rgba(96,165,250,0.25)' : 'rgba(96,165,250,0.1)',
   border: `1px solid ${on ? 'rgba(96,165,250,0.5)' : 'rgba(96,165,250,0.25)'}`,
   color: on ? '#bfdbfe' : '#93c5fd',
@@ -379,7 +379,7 @@ const metaColStyle = { flex: '1 1 auto', minWidth: 0 };
 
 const nameStyle = {
   fontSize: 13,
-  color: '#e4e4e7',
+  color: 'var(--text-primary)',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
@@ -389,12 +389,12 @@ const nameStyle = {
   flexWrap: 'wrap',
 };
 
-const metaStyle = { fontSize: 11, color: '#71717a', marginTop: 2 };
+const metaStyle = { fontSize: 11, color: 'var(--text-dim)', marginTop: 2 };
 
 const movBadgeStyle = {
   fontSize: 10,
   padding: '1px 6px',
-  borderRadius: 4,
+  borderRadius: 'var(--radius-xs)',
   background: 'rgba(250,204,21,0.15)',
   border: '1px solid rgba(250,204,21,0.35)',
   color: '#fde68a',
@@ -404,7 +404,7 @@ const movBadgeStyle = {
 const otherFolderBadgeStyle = {
   fontSize: 10,
   padding: '1px 6px',
-  borderRadius: 4,
+  borderRadius: 'var(--radius-xs)',
   background: 'rgba(251, 146, 60, 0.15)',
   border: '1px solid rgba(251, 146, 60, 0.35)',
   color: '#fed7aa',
@@ -419,7 +419,7 @@ const mismatchStyle = {
   gap: 8,
   padding: '10px 12px',
   marginBottom: 10,
-  borderRadius: 8,
+  borderRadius: 'var(--radius-md)',
   background: 'rgba(251, 146, 60, 0.08)',
   border: '1px solid rgba(251, 146, 60, 0.3)',
   color: '#fed7aa',
@@ -428,7 +428,7 @@ const mismatchStyle = {
 };
 
 const inlineCodeStyle = {
-  fontFamily: 'ui-monospace, Menlo, monospace',
+  fontFamily: 'var(--font-mono)',
   background: 'rgba(0,0,0,0.3)',
   padding: '1px 5px',
   borderRadius: 3,
@@ -439,7 +439,7 @@ const inlineCodeStyle = {
 const activeBadgeStyle = {
   fontSize: 10,
   padding: '1px 6px',
-  borderRadius: 4,
+  borderRadius: 'var(--radius-xs)',
   background: 'rgba(74,222,128,0.15)',
   border: '1px solid rgba(74,222,128,0.35)',
   color: '#bbf7d0',
@@ -462,7 +462,7 @@ const setActiveBtnStyle = {
   padding: '6px 10px',
   fontSize: 12,
   fontWeight: 600,
-  borderRadius: 6,
+  borderRadius: 'var(--radius-sm)',
   background: 'rgba(96,165,250,0.12)',
   border: '1px solid rgba(96,165,250,0.3)',
   color: '#bfdbfe',
@@ -472,7 +472,7 @@ const setActiveBtnStyle = {
 
 const deleteBtnStyle = {
   padding: '6px 8px',
-  borderRadius: 6,
+  borderRadius: 'var(--radius-sm)',
   background: 'rgba(239,68,68,0.1)',
   border: '1px solid rgba(239,68,68,0.3)',
   color: '#fecaca',
@@ -494,7 +494,7 @@ const addBtnStyle = (isMobile) => ({
   padding: isMobile ? '12px 16px' : '10px 14px',
   background: 'rgba(96,165,250,0.08)',
   border: '1px dashed rgba(96,165,250,0.3)',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-md)',
   color: '#93c5fd',
   fontSize: isMobile ? 14 : 13,
   fontWeight: 500,
