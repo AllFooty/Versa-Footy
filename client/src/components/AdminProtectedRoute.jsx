@@ -1,5 +1,6 @@
 import React from 'react';
 import { Redirect } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../lib/AuthContext';
 
 const loadingContainerStyle = {
@@ -8,7 +9,7 @@ const loadingContainerStyle = {
   alignItems: 'center',
   justifyContent: 'center',
   background: 'var(--bg-app-gradient)',
-  color: '#e5e7eb',
+  color: 'var(--text-primary)',
   fontFamily: 'var(--font-sans)',
 };
 
@@ -16,49 +17,43 @@ const spinnerStyle = {
   width: 40,
   height: 40,
   border: '3px solid #27272a',
-  borderTopColor: '#E63946',
+  borderTopColor: 'var(--color-cyan)',
   borderRadius: '50%',
   animation: 'spin 1s linear infinite',
 };
 
+function LoadingScreen({ label }) {
+  return (
+    <div style={loadingContainerStyle}>
+      <div role="status" aria-live="polite" style={{ textAlign: 'center' }}>
+        <div style={spinnerStyle} aria-hidden="true" />
+        <p style={{ marginTop: 16, color: 'var(--text-dim)' }}>{label}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminProtectedRoute({ children }) {
+  const { t } = useTranslation();
   const { isAuthenticated, isAdmin, loading, profileLoading, profile } = useAuth();
 
-  // Show loading state while checking authentication (session)
   if (loading) {
-    return (
-      <div style={loadingContainerStyle}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={spinnerStyle} />
-          <p style={{ marginTop: 16, color: 'var(--text-dim)' }}>Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen label={t('common.loading')} />;
   }
 
-  // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Redirect to="/login" />;
   }
 
   // Wait for profile to load before checking admin status
-  // This prevents incorrect redirects while profile is fetching
+  // (prevents incorrect redirects while profile is fetching)
   if (profileLoading || profile === null) {
-    return (
-      <div style={loadingContainerStyle}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={spinnerStyle} />
-          <p style={{ marginTop: 16, color: 'var(--text-dim)' }}>Loading profile...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen label={t('common.loadingProfile')} />;
   }
 
-  // Redirect non-admins to the landing page
   if (!isAdmin) {
     return <Redirect to="/" />;
   }
 
-  // Render protected content for admins
   return children;
 }
