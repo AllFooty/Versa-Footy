@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { useAuth } from '../../lib/AuthContext';
+import { useConfirm } from '../../components/ConfirmProvider';
 import { AGE_GROUPS } from '../../constants';
 import useTeams from './hooks/useTeams';
 import usePlayerRoster from './hooks/usePlayerRoster';
@@ -8,6 +10,7 @@ import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 
 export default function TeamManagement() {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const { activeOrg } = useAuth();
   const { teams, loading, createTeam, deleteTeam, getTeamMembers, addPlayer, removePlayer } =
     useTeams(activeOrg?.id);
@@ -58,7 +61,13 @@ export default function TeamManagement() {
   };
 
   const handleDelete = async (teamId) => {
-    if (!confirm(t('academy.teams.deleteConfirm'))) return;
+    const ok = await confirm({
+      title: t('academy.teams.deleteTitle'),
+      message: t('academy.teams.deleteConfirm'),
+      confirmLabel: t('academy.teams.deleteAction'),
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await deleteTeam(teamId);
       if (selectedTeamId === teamId) {
@@ -66,7 +75,7 @@ export default function TeamManagement() {
         setTeamMembers([]);
       }
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -76,7 +85,7 @@ export default function TeamManagement() {
       await addPlayer(selectedTeamId, addPlayerId);
       setAddPlayerId('');
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -84,7 +93,7 @@ export default function TeamManagement() {
     try {
       await removePlayer(selectedTeamId, playerId);
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { useAuth } from '../../lib/AuthContext';
+import { useConfirm } from '../../components/ConfirmProvider';
 import { supabase } from '../../lib/supabase';
 import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 
@@ -8,6 +10,7 @@ const ROLE_OPTIONS = ['owner', 'admin', 'coach', 'player', 'parent'];
 
 export default function AcademySettings() {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const { activeOrg, refreshOrganizations } = useAuth();
 
   const ROLE_LABELS = {
@@ -116,21 +119,27 @@ export default function AcademySettings() {
       .eq('id', memberId);
 
     if (error) {
-      alert(error.message);
+      toast.error(error.message);
     } else {
       fetchMembers();
     }
   };
 
   const handleRemoveMember = async (memberId, memberName) => {
-    if (!confirm(t('academy.settings.removeConfirm', { name: memberName || t('common.unknown') }))) return;
+    const ok = await confirm({
+      title: t('academy.settings.removeTitle'),
+      message: t('academy.settings.removeConfirm', { name: memberName || t('common.unknown') }),
+      confirmLabel: t('academy.settings.removeAction'),
+      danger: true,
+    });
+    if (!ok) return;
     const { error } = await supabase
       .from('organization_members')
       .delete()
       .eq('id', memberId);
 
     if (error) {
-      alert(error.message);
+      toast.error(error.message);
     } else {
       fetchMembers();
     }

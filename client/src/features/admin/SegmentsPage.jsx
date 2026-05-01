@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { supabase } from '../../lib/supabase';
+import { useConfirm } from '../../components/ConfirmProvider';
 import SegmentBuilder from './marketing/SegmentBuilder.jsx';
 import { emptyFilter } from './marketing/segments.js';
 import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 
 export default function SegmentsPage() {
+  const { t } = useTranslation();
+  const confirmDialog = useConfirm();
   const [segments, setSegments] = useState(null);
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(null); // { id?, name, description, filter, is_builtin }
@@ -39,7 +44,7 @@ export default function SegmentsPage() {
   }
 
   async function saveSegment() {
-    if (!editing.name?.trim()) { alert('Name is required'); return; }
+    if (!editing.name?.trim()) { toast.error(t('admin.segments.nameRequired')); return; }
     const payload = {
       name: editing.name.trim(),
       description: editing.description?.trim() || null,
@@ -47,20 +52,29 @@ export default function SegmentsPage() {
     };
     if (editing.id) {
       const { error } = await supabase.from('marketing_segments').update(payload).eq('id', editing.id);
-      if (error) { alert(error.message); return; }
+      if (error) { toast.error(error.message); return; }
+      toast.success(t('admin.segments.updatedToast'));
     } else {
       const { error } = await supabase.from('marketing_segments').insert(payload);
-      if (error) { alert(error.message); return; }
+      if (error) { toast.error(error.message); return; }
+      toast.success(t('admin.segments.createdToast'));
     }
     setEditing(null);
     await load();
   }
 
   async function deleteSegment(s) {
-    if (s.is_builtin) { alert('Built-in segments cannot be deleted.'); return; }
-    if (!window.confirm(`Delete segment "${s.name}"?`)) return;
+    if (s.is_builtin) { toast.error(t('admin.segments.builtinDeleteError')); return; }
+    const ok = await confirmDialog({
+      title: t('admin.segments.deleteTitle'),
+      message: t('admin.segments.deleteMessage', { name: s.name }),
+      confirmLabel: t('admin.segments.delete'),
+      danger: true,
+    });
+    if (!ok) return;
     const { error } = await supabase.from('marketing_segments').delete().eq('id', s.id);
-    if (error) { alert(error.message); return; }
+    if (error) { toast.error(error.message); return; }
+    toast.success(t('admin.segments.deletedToast'));
     await load();
   }
 
@@ -74,36 +88,36 @@ export default function SegmentsPage() {
                 <line x1="19" y1="12" x2="5" y2="12" />
                 <polyline points="12 19 5 12 12 5" />
               </svg>
-              <span>Segments</span>
+              <span>{t('admin.segments.title')}</span>
             </a>
           }
-          title={editing.id ? 'Edit segment' : 'New segment'}
+          title={editing.id ? t('admin.segments.editTitle') : t('admin.segments.newTitle')}
         />
         <div>
           <div className="card card--lg">
             <label style={labelStyle}>
-              Name
+              {t('admin.segments.nameLabel')}
               <input
                 type="text"
                 value={editing.name}
                 onChange={(e) => setEditing({ ...editing, name: e.target.value })}
                 disabled={editing.is_builtin}
                 style={inputStyle}
-                placeholder="e.g. Power users with email"
+                placeholder={t('admin.segments.namePlaceholder')}
               />
             </label>
             <label style={labelStyle}>
-              Description
+              {t('admin.segments.descriptionLabel')}
               <input
                 type="text"
                 value={editing.description || ''}
                 onChange={(e) => setEditing({ ...editing, description: e.target.value })}
                 style={inputStyle}
-                placeholder="Optional one-line summary"
+                placeholder={t('admin.segments.descriptionPlaceholder')}
               />
             </label>
             <div style={labelStyle}>
-              Rules
+              {t('admin.segments.rulesLabel')}
               <SegmentBuilder
                 value={editing.filter}
                 onChange={(filter) => setEditing({ ...editing, filter })}
@@ -112,9 +126,9 @@ export default function SegmentsPage() {
 
             <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
               <button onClick={saveSegment} style={primaryBtnStyle}>
-                {editing.id ? 'Save changes' : 'Create segment'}
+                {editing.id ? t('admin.segments.saveButton') : t('admin.segments.createButton')}
               </button>
-              <button onClick={() => setEditing(null)} style={ghostBtnStyle}>Cancel</button>
+              <button onClick={() => setEditing(null)} style={ghostBtnStyle}>{t('common.cancel')}</button>
             </div>
           </div>
         </div>
@@ -125,9 +139,9 @@ export default function SegmentsPage() {
   return (
     <PageContainer width="narrow">
       <PageHeader
-        backLink={<BackLink href="/admin/marketing">Marketing</BackLink>}
-        title="Segments"
-        actions={<button onClick={newSegment} style={primaryBtnStyle}>+ New segment</button>}
+        backLink={<BackLink href="/admin/marketing">{t('admin.common.marketing')}</BackLink>}
+        title={t('admin.segments.title')}
+        actions={<button onClick={newSegment} style={primaryBtnStyle}>{t('admin.segments.newSegment')}</button>}
       />
       <div>
 
@@ -135,24 +149,24 @@ export default function SegmentsPage() {
 
         <div className="card card--lg">
           {segments == null ? (
-            <p style={{ color: '#9ca3af' }}>Loading…</p>
+            <p style={{ color: '#9ca3af' }}>{t('admin.common.loading')}</p>
           ) : segments.length === 0 ? (
-            <p style={{ color: '#9ca3af' }}>No segments yet.</p>
+            <p style={{ color: '#9ca3af' }}>{t('admin.segments.empty')}</p>
           ) : (
             segments.map((s) => (
               <div key={s.id} style={rowStyle}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <strong style={{ color: '#e5e7eb' }}>{s.name}</strong>
-                    {s.is_builtin && <span style={tagStyle}>built-in</span>}
+                    {s.is_builtin && <span style={tagStyle}>{t('admin.segments.builtinTag')}</span>}
                   </div>
                   {s.description && <div style={{ color: '#9ca3af', fontSize: 12, marginTop: 4 }}>{s.description}</div>}
                 </div>
                 <div style={{ color: '#22d3ee', fontWeight: 600, fontSize: 13, minWidth: 80, textAlign: 'right' }}>
-                  {counts[s.id] != null ? `${counts[s.id]} recipients` : '…'}
+                  {counts[s.id] != null ? t('admin.common.recipients', { count: counts[s.id] }) : '…'}
                 </div>
-                <button onClick={() => editSegment(s)} style={smallBtn}>Edit</button>
-                <button onClick={() => deleteSegment(s)} disabled={s.is_builtin} style={{ ...smallBtn, opacity: s.is_builtin ? 0.4 : 1 }}>Delete</button>
+                <button onClick={() => editSegment(s)} style={smallBtn}>{t('admin.segments.edit')}</button>
+                <button onClick={() => deleteSegment(s)} disabled={s.is_builtin} style={{ ...smallBtn, opacity: s.is_builtin ? 0.4 : 1 }}>{t('admin.segments.delete')}</button>
               </div>
             ))
           )}

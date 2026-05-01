@@ -259,7 +259,7 @@ export default function DashboardHome() {
           <QuickAction
             href="/account"
             title={t('nav.account', 'Account')}
-            description={t('home.settingsDescription', 'Profile, security and preferences')}
+            description={t('home.accountDescription', 'Profile, security and preferences')}
             icon={Icons.settings}
             accent="#94a3b8"
           />

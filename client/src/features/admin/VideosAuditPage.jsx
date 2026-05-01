@@ -1,17 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { useVideosAudit } from './useVideosAudit';
+import { useConfirm } from '../../components/ConfirmProvider';
 import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 
 const TAB_ORDER = [
-  { key: 'missing',    label: 'Missing video',      tone: 'danger' },
-  { key: 'broken',     label: 'Broken URL',         tone: 'danger' },
-  { key: 'mismatched', label: 'Wrong folder id',    tone: 'danger' },
-  { key: 'external',   label: 'External (YT/Vimeo)', tone: 'info' },
+  { key: 'missing',    tone: 'danger' },
+  { key: 'broken',     tone: 'danger' },
+  { key: 'mismatched', tone: 'danger' },
+  { key: 'external',   tone: 'info' },
   // Multi-version is *informational*: exercises are allowed to have several
   // candidate videos per folder and one is picked as active in the library
   // modal. This tab just lists where it's happening.
-  { key: 'duplicates', label: 'Multi-version',      tone: 'info' },
-  { key: 'orphans',    label: 'Orphan files',       tone: 'warn' },
+  { key: 'duplicates', tone: 'info' },
+  { key: 'orphans',    tone: 'warn' },
 ];
 
 const formatBytes = (n) => {
@@ -23,11 +26,12 @@ const formatBytes = (n) => {
 };
 
 export default function VideosAuditPage() {
+  const { t } = useTranslation();
+  const confirmDialog = useConfirm();
   const { audit, loading, error, refresh, deleteOrphans } = useVideosAudit();
   const [active, setActive] = useState('missing');
   const [isMobile, setIsMobile] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth <= 768);
@@ -43,38 +47,49 @@ export default function VideosAuditPage() {
 
   const handleDeleteOrphans = async () => {
     if (!audit.orphans.length) return;
-    if (!window.confirm(`Delete ${audit.orphans.length} orphan files? This cannot be undone.`)) return;
+    const count = audit.orphans.length;
+    const ok = await confirmDialog({
+      title: t('admin.videos.deleteOrphansTitle'),
+      message: t('admin.videos.deleteOrphansMessage', { count }),
+      confirmLabel: t('admin.segments.delete'),
+      danger: true,
+    });
+    if (!ok) return;
     setBusy(true);
-    setMessage(null);
     const { removed, errors } = await deleteOrphans(audit.orphans.map((o) => o.path));
     setBusy(false);
-    setMessage(errors.length ? `Errors: ${errors.join(', ')}` : `Deleted ${removed} files.`);
+    if (errors.length) {
+      toast.error(t('admin.videos.deleteOrphansErrors', { errors: errors.join(', ') }));
+    } else {
+      toast.success(t('admin.videos.deleteOrphansSuccess', { count: removed }));
+    }
   };
 
   return (
     <PageContainer width="default">
       <PageHeader
-        backLink={<BackLink href="/admin/library">Library</BackLink>}
-        title="Videos Audit"
-        subtitle={audit.generated_at ? `Generated ${new Date(audit.generated_at).toLocaleString()}` : undefined}
+        backLink={<BackLink href="/admin/library">{t('admin.common.library')}</BackLink>}
+        title={t('admin.videos.title')}
+        subtitle={audit.generated_at
+          ? t('admin.videos.generated', { when: new Date(audit.generated_at).toLocaleString() })
+          : undefined}
         actions={
           <button onClick={refresh} disabled={loading} style={refreshBtnStyle}>
-            {loading ? 'Loading…' : 'Refresh'}
+            {loading ? t('admin.common.loading') : t('admin.common.refresh')}
           </button>
         }
       />
 
       {error && <div style={errorBoxStyle}>{error}</div>}
-      {message && <div style={messageBoxStyle}>{message}</div>}
 
       <div style={tabsWrapStyle}>
-        {TAB_ORDER.map(({ key, label, tone }) => (
+        {TAB_ORDER.map(({ key, tone }) => (
           <button
             key={key}
             onClick={() => setActive(key)}
             style={tabStyle(active === key, tone, counts[key], isMobile)}
           >
-            <span>{label}</span>
+            <span>{t(`admin.videos.tabs.${key}`)}</span>
             <span style={badgeStyle(tone, counts[key])}>{counts[key]}</span>
           </button>
         ))}
@@ -96,8 +111,9 @@ export default function VideosAuditPage() {
 
 /* -------- lists ---------- */
 
-const MissingList = ({ items }) =>
-  !items.length ? <Empty text="No exercises are missing a video." /> : (
+const MissingList = ({ items }) => {
+  const { t } = useTranslation();
+  return !items.length ? <Empty text={t('admin.videos.empty.missing')} /> : (
     <ul style={ulStyle}>
       {items.map((e) => (
         <li key={e.id} style={rowStyle}>
@@ -105,14 +121,16 @@ const MissingList = ({ items }) =>
             <span style={idChipStyle}>#{e.id}</span>
             <span>{e.name}</span>
           </div>
-          <span style={mutedStyle}>skill {e.skill_id}</span>
+          <span style={mutedStyle}>{t('admin.videos.skillId', { id: e.skill_id })}</span>
         </li>
       ))}
     </ul>
   );
+};
 
-const BrokenList = ({ items }) =>
-  !items.length ? <Empty text="All video URLs point to existing files." /> : (
+const BrokenList = ({ items }) => {
+  const { t } = useTranslation();
+  return !items.length ? <Empty text={t('admin.videos.empty.broken')} /> : (
     <ul style={ulStyle}>
       {items.map((e) => (
         <li key={e.id} style={rowStyle}>
@@ -125,9 +143,11 @@ const BrokenList = ({ items }) =>
       ))}
     </ul>
   );
+};
 
-const MismatchedList = ({ items }) =>
-  !items.length ? <Empty text="No folder-id mismatches." /> : (
+const MismatchedList = ({ items }) => {
+  const { t } = useTranslation();
+  return !items.length ? <Empty text={t('admin.videos.empty.mismatched')} /> : (
     <ul style={ulStyle}>
       {items.map((e) => (
         <li key={e.id} style={rowStyle}>
@@ -135,16 +155,16 @@ const MismatchedList = ({ items }) =>
             <span style={idChipStyle}>#{e.id}</span>
             <span>{e.name}</span>
           </div>
-          <span style={mutedStyle}>
-            URL folder = #{e.url_exercise_id}
-          </span>
+          <span style={mutedStyle}>{t('admin.videos.urlFolder', { id: e.url_exercise_id })}</span>
         </li>
       ))}
     </ul>
   );
+};
 
-const ExternalList = ({ items }) =>
-  !items.length ? <Empty text="No external video URLs." /> : (
+const ExternalList = ({ items }) => {
+  const { t } = useTranslation();
+  return !items.length ? <Empty text={t('admin.videos.empty.external')} /> : (
     <ul style={ulStyle}>
       {items.map((e) => (
         <li key={e.id} style={rowStyle}>
@@ -153,29 +173,30 @@ const ExternalList = ({ items }) =>
             <span>{e.name}</span>
           </div>
           <a href={e.video_url} target="_blank" rel="noreferrer" style={linkStyle}>
-            open
+            {t('admin.videos.openLink')}
           </a>
         </li>
       ))}
     </ul>
   );
+};
 
-const DuplicatesList = ({ items }) =>
-  !items.length ? <Empty text="No exercises with multiple uploaded files." /> : (
+const DuplicatesList = ({ items }) => {
+  const { t } = useTranslation();
+  return !items.length ? <Empty text={t('admin.videos.empty.duplicates')} /> : (
     <>
       <div style={{ padding: '8px 12px 12px', fontSize: 12, color: '#9ca3af' }}>
-        These exercises have more than one file in storage. That's fine — open the
-        exercise in the library and pick which one is shown to users.
+        {t('admin.videos.duplicatesHint')}
       </div>
       <ul style={ulStyle}>
         {items.map((d) => (
           <li key={d.exercise_id} style={{ ...rowStyle, flexDirection: 'column', alignItems: 'flex-start' }}>
             <div style={rowMainStyle}>
               <span style={idChipStyle}>#{d.exercise_id}</span>
-              <span>{d.objects} candidate videos</span>
+              <span>{t('admin.videos.duplicatesCandidates', { count: d.objects })}</span>
             </div>
             <details style={{ marginTop: 8, width: '100%' }}>
-              <summary style={detailsSummaryStyle}>Show paths</summary>
+              <summary style={detailsSummaryStyle}>{t('admin.videos.showPaths')}</summary>
               <ul style={{ margin: '6px 0 0 16px', padding: 0 }}>
                 {d.paths.map((p) => <li key={p}><code style={codeStyle}>{p}</code></li>)}
               </ul>
@@ -185,17 +206,17 @@ const DuplicatesList = ({ items }) =>
       </ul>
     </>
   );
+};
 
 const OrphansList = ({ items, onDeleteAll, busy }) => {
+  const { t } = useTranslation();
   const total = items.reduce((sum, o) => sum + (o.size_bytes || 0), 0);
-  return !items.length ? <Empty text="No orphan files in storage." /> : (
+  return !items.length ? <Empty text={t('admin.videos.empty.orphans')} /> : (
     <>
       <div style={orphanHeaderStyle}>
-        <div>
-          <strong>{items.length}</strong> files · {formatBytes(total)} reclaimable
-        </div>
+        <div>{t('admin.videos.orphanSummary', { count: items.length, size: formatBytes(total) })}</div>
         <button onClick={onDeleteAll} disabled={busy} style={dangerBtnStyle}>
-          {busy ? 'Deleting…' : 'Delete all'}
+          {busy ? t('admin.common.deleting') : t('admin.videos.deleteAll')}
         </button>
       </div>
       <ul style={ulStyle}>
@@ -231,11 +252,6 @@ const errorBoxStyle = {
   padding: 12, borderRadius: 8, marginBottom: 12,
   background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#fecaca',
 };
-const messageBoxStyle = {
-  padding: 12, borderRadius: 8, marginBottom: 12,
-  background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', color: '#bbf7d0',
-};
-
 const tabsWrapStyle = {
   display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16,
 };

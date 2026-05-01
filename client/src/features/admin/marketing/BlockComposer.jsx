@@ -1,16 +1,17 @@
 import React, { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../../../lib/supabase';
 import { BLOCK_TYPES, createBlock } from './blocks.js';
 
 const ADDABLE_TYPES = [
-  { type: BLOCK_TYPES.heading, label: 'Heading' },
-  { type: BLOCK_TYPES.paragraph, label: 'Paragraph' },
-  { type: BLOCK_TYPES.image, label: 'Image' },
-  { type: BLOCK_TYPES.button, label: 'Button' },
-  { type: BLOCK_TYPES.divider, label: 'Divider' },
-  { type: BLOCK_TYPES.spacer, label: 'Spacer' },
-  { type: BLOCK_TYPES.two_column, label: 'Two columns' },
-  { type: BLOCK_TYPES.footer, label: 'Footer' },
+  BLOCK_TYPES.heading,
+  BLOCK_TYPES.paragraph,
+  BLOCK_TYPES.image,
+  BLOCK_TYPES.button,
+  BLOCK_TYPES.divider,
+  BLOCK_TYPES.spacer,
+  BLOCK_TYPES.two_column,
+  BLOCK_TYPES.footer,
 ];
 
 export default function BlockComposer({ blocks, onChange, allowTwoColumn = true, depth = 0 }) {
@@ -29,7 +30,7 @@ export default function BlockComposer({ blocks, onChange, allowTwoColumn = true,
 
   const add = (type) => onChange([...blocks, createBlock(type)]);
 
-  const visibleTypes = allowTwoColumn ? ADDABLE_TYPES : ADDABLE_TYPES.filter((t) => t.type !== BLOCK_TYPES.two_column);
+  const visibleTypes = allowTwoColumn ? ADDABLE_TYPES : ADDABLE_TYPES.filter((type) => type !== BLOCK_TYPES.two_column);
 
   return (
     <div>
@@ -53,14 +54,15 @@ export default function BlockComposer({ blocks, onChange, allowTwoColumn = true,
 }
 
 function BlockCard({ block, isFirst, isLast, onUpdate, onRemove, onMoveUp, onMoveDown, allowTwoColumn, depth }) {
+  const { t } = useTranslation();
   return (
     <div style={blockCardStyle}>
       <div style={blockHeaderStyle}>
-        <span style={blockTypeBadge}>{block.type.replace('_', ' ')}</span>
+        <span style={blockTypeBadge}>{t(`admin.blocks.types.${block.type}`)}</span>
         <div style={{ display: 'flex', gap: 4 }}>
-          <button type="button" style={iconBtnStyle} onClick={onMoveUp} disabled={isFirst} title="Move up">↑</button>
-          <button type="button" style={iconBtnStyle} onClick={onMoveDown} disabled={isLast} title="Move down">↓</button>
-          <button type="button" style={{ ...iconBtnStyle, color: '#fca5a5' }} onClick={onRemove} title="Delete">✕</button>
+          <button type="button" style={iconBtnStyle} onClick={onMoveUp} disabled={isFirst} title={t('admin.blocks.moveUp')}>↑</button>
+          <button type="button" style={iconBtnStyle} onClick={onMoveDown} disabled={isLast} title={t('admin.blocks.moveDown')}>↓</button>
+          <button type="button" style={{ ...iconBtnStyle, color: '#fca5a5' }} onClick={onRemove} title={t('admin.blocks.delete')}>✕</button>
         </div>
       </div>
       <BlockEditor block={block} onUpdate={onUpdate} allowTwoColumn={allowTwoColumn} depth={depth} />
@@ -69,26 +71,27 @@ function BlockCard({ block, isFirst, isLast, onUpdate, onRemove, onMoveUp, onMov
 }
 
 function BlockEditor({ block, onUpdate, allowTwoColumn, depth }) {
+  const { t } = useTranslation();
   switch (block.type) {
     case BLOCK_TYPES.heading:
       return (
         <>
-          <Field label="Text">
+          <Field label={t('admin.blocks.fields.text')}>
             <input type="text" value={block.text} onChange={(e) => onUpdate({ text: e.target.value })} style={inputStyle} />
           </Field>
           <Row>
-            <Field label="Level" flex={1}>
+            <Field label={t('admin.blocks.fields.level')} flex={1}>
               <select value={block.level} onChange={(e) => onUpdate({ level: parseInt(e.target.value, 10) })} style={inputStyle}>
-                <option value={1}>H1 — large</option>
-                <option value={2}>H2 — medium</option>
-                <option value={3}>H3 — small</option>
+                <option value={1}>{t('admin.blocks.fields.levelH1')}</option>
+                <option value={2}>{t('admin.blocks.fields.levelH2')}</option>
+                <option value={3}>{t('admin.blocks.fields.levelH3')}</option>
               </select>
             </Field>
-            <Field label="Align" flex={1}>
+            <Field label={t('admin.blocks.fields.align')} flex={1}>
               <select value={block.align} onChange={(e) => onUpdate({ align: e.target.value })} style={inputStyle}>
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="right">Right</option>
+                <option value="left">{t('admin.blocks.fields.alignLeft')}</option>
+                <option value="center">{t('admin.blocks.fields.alignCenter')}</option>
+                <option value="right">{t('admin.blocks.fields.alignRight')}</option>
               </select>
             </Field>
           </Row>
@@ -97,7 +100,7 @@ function BlockEditor({ block, onUpdate, allowTwoColumn, depth }) {
 
     case BLOCK_TYPES.paragraph:
       return (
-        <Field label="Text" hint="Use **bold**, *italic*, [text](url). Blank lines = new paragraph.">
+        <Field label={t('admin.blocks.fields.text')} hint={t('admin.blocks.fields.paragraphHint')}>
           <textarea
             value={block.text}
             onChange={(e) => onUpdate({ text: e.target.value })}
@@ -115,15 +118,15 @@ function BlockEditor({ block, onUpdate, allowTwoColumn, depth }) {
             onUploaded={(src) => onUpdate({ src })}
           />
           <Row>
-            <Field label="Alt text" flex={2}>
+            <Field label={t('admin.blocks.fields.imageAlt')} flex={2}>
               <input type="text" value={block.alt} onChange={(e) => onUpdate({ alt: e.target.value })} style={inputStyle} />
             </Field>
-            <Field label="Width (px)" flex={1}>
+            <Field label={t('admin.blocks.fields.imageWidth')} flex={1}>
               <input type="number" value={block.width} onChange={(e) => onUpdate({ width: parseInt(e.target.value, 10) || 0 })} style={inputStyle} />
             </Field>
           </Row>
-          <Field label="Click-through URL (optional)">
-            <input type="url" value={block.href} onChange={(e) => onUpdate({ href: e.target.value })} style={inputStyle} placeholder="https://..." />
+          <Field label={t('admin.blocks.fields.imageHref')}>
+            <input type="url" value={block.href} onChange={(e) => onUpdate({ href: e.target.value })} style={inputStyle} placeholder={t('admin.blocks.fields.imageHrefPlaceholder')} />
           </Field>
         </>
       );
@@ -132,25 +135,25 @@ function BlockEditor({ block, onUpdate, allowTwoColumn, depth }) {
       return (
         <>
           <Row>
-            <Field label="Button text" flex={2}>
+            <Field label={t('admin.blocks.fields.buttonText')} flex={2}>
               <input type="text" value={block.text} onChange={(e) => onUpdate({ text: e.target.value })} style={inputStyle} />
             </Field>
-            <Field label="Color" flex={1}>
+            <Field label={t('admin.blocks.fields.buttonColor')} flex={1}>
               <input type="color" value={block.color} onChange={(e) => onUpdate({ color: e.target.value })} style={{ ...inputStyle, padding: 4, height: 40 }} />
             </Field>
           </Row>
-          <Field label="URL">
-            <input type="url" value={block.href} onChange={(e) => onUpdate({ href: e.target.value })} style={inputStyle} placeholder="https://..." />
+          <Field label={t('admin.blocks.fields.buttonUrl')}>
+            <input type="url" value={block.href} onChange={(e) => onUpdate({ href: e.target.value })} style={inputStyle} placeholder={t('admin.blocks.fields.imageHrefPlaceholder')} />
           </Field>
         </>
       );
 
     case BLOCK_TYPES.divider:
-      return <p style={hintStyle}>Horizontal divider line.</p>;
+      return <p style={hintStyle}>{t('admin.blocks.fields.dividerHint')}</p>;
 
     case BLOCK_TYPES.spacer:
       return (
-        <Field label="Height (px)">
+        <Field label={t('admin.blocks.fields.spacerHeight')}>
           <input type="number" value={block.height} onChange={(e) => onUpdate({ height: parseInt(e.target.value, 10) || 0 })} style={inputStyle} />
         </Field>
       );
@@ -159,7 +162,7 @@ function BlockEditor({ block, onUpdate, allowTwoColumn, depth }) {
       return (
         <Row>
           <div style={{ flex: 1, paddingRight: 8, borderRight: '1px solid rgba(255,255,255,0.08)' }}>
-            <p style={subLabelStyle}>Left column</p>
+            <p style={subLabelStyle}>{t('admin.blocks.fields.leftColumn')}</p>
             <BlockComposer
               blocks={block.left || []}
               onChange={(left) => onUpdate({ left })}
@@ -168,7 +171,7 @@ function BlockEditor({ block, onUpdate, allowTwoColumn, depth }) {
             />
           </div>
           <div style={{ flex: 1, paddingLeft: 8 }}>
-            <p style={subLabelStyle}>Right column</p>
+            <p style={subLabelStyle}>{t('admin.blocks.fields.rightColumn')}</p>
             <BlockComposer
               blocks={block.right || []}
               onChange={(right) => onUpdate({ right })}
@@ -181,7 +184,7 @@ function BlockEditor({ block, onUpdate, allowTwoColumn, depth }) {
 
     case BLOCK_TYPES.footer:
       return (
-        <Field label="Footer text" hint="Unsubscribe link is auto-appended per recipient.">
+        <Field label={t('admin.blocks.fields.footerText')} hint={t('admin.blocks.fields.footerHint')}>
           <textarea
             value={block.text}
             onChange={(e) => onUpdate({ text: e.target.value })}
@@ -192,11 +195,12 @@ function BlockEditor({ block, onUpdate, allowTwoColumn, depth }) {
       );
 
     default:
-      return <p style={hintStyle}>Unknown block type: {block.type}</p>;
+      return <p style={hintStyle}>{t('admin.blocks.fields.unknownType', { type: block.type })}</p>;
   }
 }
 
 function ImageUploader({ currentSrc, onUploaded }) {
+  const { t } = useTranslation();
   const fileRef = useRef(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
@@ -224,23 +228,23 @@ function ImageUploader({ currentSrc, onUploaded }) {
   }
 
   return (
-    <Field label="Image">
+    <Field label={t('admin.blocks.fields.image')}>
       {currentSrc && (
         <img
           src={currentSrc}
-          alt="preview"
+          alt={t('admin.blocks.fields.imagePreviewAlt')}
           style={{ maxWidth: '100%', maxHeight: 160, borderRadius: 6, marginBottom: 8, background: 'rgba(0,0,0,0.2)' }}
         />
       )}
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} style={{ flex: 1, color: '#d1d5db', fontSize: 12 }} />
-        {uploading && <span style={hintStyle}>Uploading...</span>}
+        {uploading && <span style={hintStyle}>{t('admin.blocks.fields.uploading')}</span>}
       </div>
       <input
         type="url"
         value={currentSrc || ''}
         onChange={(e) => onUploaded(e.target.value)}
-        placeholder="...or paste an image URL"
+        placeholder={t('admin.blocks.fields.imagePastePlaceholder')}
         style={{ ...inputStyle, marginTop: 8 }}
       />
       {error && <p style={{ ...hintStyle, color: '#fca5a5' }}>{error}</p>}
@@ -249,28 +253,29 @@ function ImageUploader({ currentSrc, onUploaded }) {
 }
 
 function AddBlockMenu({ types, onAdd }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   if (!open) {
     return (
       <button type="button" style={addButtonStyle} onClick={() => setOpen(true)}>
-        + Add block
+        {t('admin.blocks.addBlock')}
       </button>
     );
   }
   return (
     <div style={addMenuStyle}>
-      {types.map((t) => (
+      {types.map((type) => (
         <button
-          key={t.type}
+          key={type}
           type="button"
           style={addMenuItemStyle}
-          onClick={() => { onAdd(t.type); setOpen(false); }}
+          onClick={() => { onAdd(type); setOpen(false); }}
         >
-          {t.label}
+          {t(`admin.blocks.types.${type}`)}
         </button>
       ))}
       <button type="button" style={{ ...addMenuItemStyle, color: '#9ca3af' }} onClick={() => setOpen(false)}>
-        Cancel
+        {t('admin.blocks.cancel')}
       </button>
     </div>
   );

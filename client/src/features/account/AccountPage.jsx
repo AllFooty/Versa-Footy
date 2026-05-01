@@ -8,7 +8,7 @@ import { PageContainer, PageHeader } from '../../components/Page';
 
 const COOLDOWN_DAYS = 7;
 
-export default function SettingsPage() {
+export default function AccountPage() {
   const { t } = useTranslation();
   const [, setLocation] = useLocation();
   const { user, profile, updateProfile, deleteAccount, profileLoading, isAuthenticated } = useAuth();
@@ -77,7 +77,7 @@ export default function SettingsPage() {
     }
 
     if (!canEdit) {
-      setError(t('settings.editCooldownLocked', { days: daysUntilEdit }));
+      setError(t('account.editCooldownLocked', { days: daysUntilEdit }));
       return;
     }
 
@@ -99,10 +99,10 @@ export default function SettingsPage() {
 
   return (
     <>
-      <PageContainer width="narrow" className="settings-page">
+      <PageContainer width="narrow">
         <PageHeader
-          title={t('settings.pageTitle')}
-          subtitle={t('settings.pageSubtitle')}
+          title={t('account.pageTitle')}
+          subtitle={t('account.pageSubtitle')}
         />
 
           {/* Profile Section */}
@@ -121,7 +121,7 @@ export default function SettingsPage() {
               gap: '10px',
             }}>
               <User size={20} />
-              {t('settings.profileInfo')}
+              {t('account.profileInfo')}
             </h2>
 
             {/* Avatar Preview */}
@@ -156,7 +156,7 @@ export default function SettingsPage() {
                   fontWeight: '600',
                   marginBottom: '4px',
                 }}>
-                  {fullName || t('settings.yourName')}
+                  {fullName || t('account.yourName')}
                 </div>
                 <div style={{
                   fontSize: '14px',
@@ -181,13 +181,13 @@ export default function SettingsPage() {
                   marginBottom: '8px',
                 }}>
                   <User size={16} />
-                  {t('settings.fullNameLabel')}
+                  {t('account.fullNameLabel')}
                 </label>
                 <input
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder={t('settings.fullNamePlaceholder')}
+                  placeholder={t('account.fullNamePlaceholder')}
                   disabled={!canEdit}
                   style={{
                     background: canEdit ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.15)',
@@ -215,7 +215,7 @@ export default function SettingsPage() {
                     alignItems: 'center',
                     gap: '4px',
                   }}>
-                    🔒 {t('settings.editCooldownLocked', { days: daysUntilEdit })}
+                    🔒 {t('account.editCooldownLocked', { days: daysUntilEdit })}
                   </p>
                 )}
               </div>
@@ -232,7 +232,7 @@ export default function SettingsPage() {
                   marginBottom: '8px',
                 }}>
                   <Mail size={16} />
-                  {t('settings.emailLabel')}
+                  {t('account.emailLabel')}
                 </label>
                 <input
                   type="email"
@@ -256,7 +256,7 @@ export default function SettingsPage() {
                   marginTop: '6px',
                   marginBottom: '0',
                 }}>
-                  {t('settings.emailCannotChange')}
+                  {t('account.emailCannotChange')}
                 </p>
               </div>
 
@@ -331,7 +331,7 @@ export default function SettingsPage() {
                 ) : (
                   <>
                     <Save size={18} />
-                    {t('settings.saveChanges')}
+                    {t('account.saveChanges')}
                   </>
                 )}
               </button>
@@ -356,7 +356,7 @@ export default function SettingsPage() {
               color: '#ef4444',
             }}>
               <Trash2 size={20} />
-              {t('settings.dangerZone')}
+              {t('account.dangerZone')}
             </h2>
 
             <p style={{
@@ -365,7 +365,7 @@ export default function SettingsPage() {
               marginBottom: '20px',
               lineHeight: 1.6,
             }}>
-              {t('settings.deleteAccountWarning')}
+              {t('account.deleteAccountWarning')}
             </p>
 
             {deleteError && (
@@ -384,37 +384,21 @@ export default function SettingsPage() {
 
             <button
               type="button"
+              className="danger-button"
               onClick={() => setShowDeleteConfirm(true)}
               disabled={deleting}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '12px 20px',
-                background: 'rgba(239, 68, 68, 0.1)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                borderRadius: '10px',
-                color: '#ef4444',
-                fontSize: '14px',
-                fontWeight: '600',
-                cursor: deleting ? 'not-allowed' : 'pointer',
-                transition: 'all 0.2s',
-                opacity: deleting ? 0.6 : 1,
-              }}
-              onMouseEnter={(e) => !deleting && (e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)')}
-              onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)')}
             >
               <Trash2 size={16} />
-              {deleting ? t('settings.deletingAccount') : t('settings.deleteAccount')}
+              {deleting ? t('account.deletingAccount') : t('account.deleteAccount')}
             </button>
           </div>
       </PageContainer>
 
       <ConfirmModal
         isOpen={showDeleteConfirm}
-        title={t('settings.deleteAccountConfirmTitle')}
-        message={t('settings.deleteAccountConfirmMessage')}
-        confirmLabel={t('settings.deleteAccountConfirmButton')}
+        title={t('account.deleteAccountConfirmTitle')}
+        message={t('account.deleteAccountConfirmMessage')}
+        confirmLabel={t('account.deleteAccountConfirmButton')}
         confirmDanger
         onConfirm={handleDeleteAccount}
         onClose={() => setShowDeleteConfirm(false)}

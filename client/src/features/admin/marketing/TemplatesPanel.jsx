@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
+import { useConfirm } from '../../../components/ConfirmProvider';
 
 // Templates library: load / save-as / duplicate / delete.
 // Built-ins (is_builtin=true) cannot be edited or deleted (RLS-enforced).
@@ -10,6 +13,8 @@ export default function TemplatesPanel({
   currentHtml,
   onLoad,
 }) {
+  const { t } = useTranslation();
+  const confirmDialog = useConfirm();
   const [templates, setTemplates] = useState(null);
   const [error, setError] = useState(null);
   const [selectedId, setSelectedId] = useState('');
@@ -40,7 +45,7 @@ export default function TemplatesPanel({
   }
 
   async function saveAsNew() {
-    const name = window.prompt('Template name:');
+    const name = window.prompt(t('admin.templates.namePrompt'));
     if (!name) return;
     setBusy(true);
     const payload = {
@@ -53,13 +58,14 @@ export default function TemplatesPanel({
     };
     const { error } = await supabase.from('marketing_templates').insert(payload);
     setBusy(false);
-    if (error) { alert(`Save failed: ${error.message}`); return; }
+    if (error) { toast.error(t('admin.templates.saveFailed', { error: error.message })); return; }
+    toast.success(t('admin.templates.savedToast'));
     reload();
   }
 
   async function duplicateSelected() {
     if (!selected) return;
-    const name = window.prompt('New name:', `${selected.name} (copy)`);
+    const name = window.prompt(t('admin.templates.newNamePrompt'), t('admin.templates.copyName', { name: selected.name }));
     if (!name) return;
     setBusy(true);
     const { error } = await supabase.from('marketing_templates').insert({
@@ -71,22 +77,30 @@ export default function TemplatesPanel({
       is_builtin: false,
     });
     setBusy(false);
-    if (error) { alert(`Duplicate failed: ${error.message}`); return; }
+    if (error) { toast.error(t('admin.templates.duplicateFailed', { error: error.message })); return; }
+    toast.success(t('admin.templates.duplicatedToast'));
     reload();
   }
 
   async function deleteSelected() {
     if (!selected || selected.is_builtin) return;
-    if (!window.confirm(`Delete template "${selected.name}"? This cannot be undone.`)) return;
+    const ok = await confirmDialog({
+      title: t('admin.templates.deleteTitle'),
+      message: t('admin.templates.deleteMessage', { name: selected.name }),
+      confirmLabel: t('admin.templates.delete'),
+      danger: true,
+    });
+    if (!ok) return;
     setBusy(true);
     const { error } = await supabase.from('marketing_templates').delete().eq('id', selected.id);
     setBusy(false);
-    if (error) { alert(`Delete failed: ${error.message}`); return; }
+    if (error) { toast.error(t('admin.templates.deleteFailed', { error: error.message })); return; }
+    toast.success(t('admin.templates.deletedToast'));
     setSelectedId('');
     reload();
   }
 
-  if (error) return <div style={errorBox}>Failed to load templates: {error}</div>;
+  if (error) return <div style={errorBox}>{t('admin.common.failedToLoad', { error })}</div>;
 
   return (
     <div>
@@ -97,32 +111,35 @@ export default function TemplatesPanel({
           style={selectStyle}
           disabled={!templates}
         >
-          <option value="">— Pick a template —</option>
-          {templates?.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.is_builtin ? '★ ' : ''}{t.name}
+          <option value="">{t('admin.templates.pickPlaceholder')}</option>
+          {templates?.map((tpl) => (
+            <option key={tpl.id} value={tpl.id}>
+              {tpl.is_builtin ? '★ ' : ''}{tpl.name}
             </option>
           ))}
         </select>
-        <button onClick={loadSelected} disabled={!selected || busy} style={btnPrimary}>Load</button>
-        <button onClick={duplicateSelected} disabled={!selected || busy} style={btnGhost}>Duplicate</button>
+        <button onClick={loadSelected} disabled={!selected || busy} style={btnPrimary}>{t('admin.templates.load')}</button>
+        <button onClick={duplicateSelected} disabled={!selected || busy} style={btnGhost}>{t('admin.templates.duplicate')}</button>
         <button
           onClick={deleteSelected}
           disabled={!selected || selected.is_builtin || busy}
           style={selected?.is_builtin ? btnDisabled : btnDanger}
-          title={selected?.is_builtin ? 'Built-in templates cannot be deleted' : ''}
+          title={selected?.is_builtin ? t('admin.templates.builtinDeleteTitle') : ''}
         >
-          Delete
+          {t('admin.templates.delete')}
         </button>
         <span style={{ flex: 1 }} />
         <button onClick={saveAsNew} disabled={busy || !currentSubject} style={btnGhost}>
-          Save current as template…
+          {t('admin.templates.saveCurrent')}
         </button>
       </div>
       {selected && (
         <div style={{ marginTop: 8, fontSize: 11, color: '#9ca3af' }}>
-          {selected.is_builtin ? 'Built-in.' : `Custom · updated ${new Date(selected.updated_at).toLocaleString()}`}
-          {' · subject: '}<em style={{ color: '#cbd5e1' }}>{selected.subject || '(empty)'}</em>
+          {selected.is_builtin
+            ? t('admin.templates.builtinNote')
+            : t('admin.templates.customNote', { when: new Date(selected.updated_at).toLocaleString() })}
+          {' · '}{t('admin.templates.subjectPrefix')}{' '}
+          <em style={{ color: '#cbd5e1' }}>{selected.subject || t('admin.templates.emptySubject')}</em>
         </div>
       )}
     </div>

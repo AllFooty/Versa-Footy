@@ -10,12 +10,14 @@ function Redirect({ to }) {
   return null;
 }
 
+import { Toaster } from 'sonner';
 import { AuthProvider } from './lib/AuthContext';
 import { LanguageProvider } from './lib/LanguageContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import AcademyProtectedRoute from './components/AcademyProtectedRoute';
 import AppShell from './components/AppShell';
+import { ConfirmProvider } from './components/ConfirmProvider';
 
 const Landing = React.lazy(() => import('./features/landing/LandingPage'));
 const HomePage = React.lazy(() => import('./features/home/HomePage'));
@@ -30,7 +32,7 @@ const VideosAuditPage = React.lazy(() => import('./features/admin/VideosAuditPag
 const MarketingEmailPage = React.lazy(() => import('./features/admin/MarketingEmailPage'));
 const SegmentsPage = React.lazy(() => import('./features/admin/SegmentsPage'));
 const AutomationsPage = React.lazy(() => import('./features/admin/AutomationsPage'));
-const SettingsPage = React.lazy(() => import('./features/settings/SettingsPage'));
+const AccountPage = React.lazy(() => import('./features/account/AccountPage'));
 const Login = React.lazy(() => import('./features/auth/Login'));
 const AcademyDashboard = React.lazy(() => import('./features/academy/AcademyDashboard'));
 const CreateOrganization = React.lazy(() => import('./features/academy/CreateOrganization'));
@@ -70,7 +72,6 @@ const containerStyle = {
   background: 'radial-gradient(circle at 20% 20%, #111827, #0b1020 45%, #050910)',
   color: '#e4e4e7',
   padding: '32px',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
 };
 
 const cardStyle = {
@@ -150,7 +151,6 @@ function DevBanner() {
       zIndex: 9999, background: '#f97316', color: '#fff',
       fontSize: 11, fontWeight: 700, letterSpacing: '0.05em',
       padding: '2px 12px', borderRadius: '0 0 6px 6px',
-      fontFamily: "'Inter', system-ui, sans-serif",
     }}>
       {t('common.devEnvironment')}
     </div>
@@ -161,7 +161,14 @@ export default function AppRouter() {
   return (
     <LanguageProvider>
     <AuthProvider>
+      <ConfirmProvider>
       <DevBanner />
+      <Toaster
+        position="top-right"
+        theme="dark"
+        richColors
+        closeButton
+      />
       <Suspense fallback={<LoadingFallback />}>
       <Switch>
         <Route path="/">
@@ -209,7 +216,7 @@ export default function AppRouter() {
         <Route path="/account">
           <ProtectedRoute>
             <AppShell pageTitleKey="nav.account">
-              <SettingsPage />
+              <AccountPage />
             </AppShell>
           </ProtectedRoute>
         </Route>
@@ -362,6 +369,7 @@ export default function AppRouter() {
         </Route>
       </Switch>
       </Suspense>
+      </ConfirmProvider>
     </AuthProvider>
     </LanguageProvider>
   );

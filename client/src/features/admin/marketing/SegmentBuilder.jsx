@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../../../lib/supabase';
 import { FIELDS, OPERATORS, getField, emptyRule, coerceValue } from './segments.js';
 
 export default function SegmentBuilder({ value, onChange }) {
+  const { t } = useTranslation();
   const filter = value || { match: 'all', rules: [emptyRule()] };
   const [count, setCount] = useState(null);
   const [counting, setCounting] = useState(false);
@@ -28,14 +30,18 @@ export default function SegmentBuilder({ value, onChange }) {
   return (
     <div>
       <div style={topRowStyle}>
-        <span style={{ color: '#9ca3af', fontSize: 13 }}>Match</span>
+        <span style={{ color: '#9ca3af', fontSize: 13 }}>{t('admin.segments.builder.match')}</span>
         <select value={filter.match} onChange={(e) => setMatch(e.target.value)} style={smallSelectStyle}>
-          <option value="all">all rules (AND)</option>
-          <option value="any">any rule (OR)</option>
+          <option value="all">{t('admin.segments.builder.matchAll')}</option>
+          <option value="any">{t('admin.segments.builder.matchAny')}</option>
         </select>
         <span style={{ flex: 1 }} />
         <span style={{ color: counting ? '#9ca3af' : '#22d3ee', fontSize: 13, fontWeight: 600 }}>
-          {counting ? '…' : count != null ? `${count} recipient${count === 1 ? '' : 's'}` : 'count unavailable'}
+          {counting
+            ? '…'
+            : count != null
+              ? t('admin.common.recipients', { count })
+              : t('admin.segments.builder.countAvailable')}
         </span>
       </div>
 
@@ -52,13 +58,14 @@ export default function SegmentBuilder({ value, onChange }) {
       </div>
 
       <button type="button" style={addBtnStyle} onClick={addRule}>
-        + Add rule
+        {t('admin.segments.builder.addRule')}
       </button>
     </div>
   );
 }
 
 function RuleRow({ rule, onChange, onRemove, canRemove }) {
+  const { t } = useTranslation();
   const field = getField(rule.field) ?? FIELDS[0];
   const op = rule.op;
   const opMeta = OPERATORS[op] ?? {};
@@ -79,10 +86,10 @@ function RuleRow({ rule, onChange, onRemove, canRemove }) {
   return (
     <div style={ruleStyle}>
       <select value={rule.field} onChange={(e) => onFieldChange(e.target.value)} style={fieldSelectStyle}>
-        {FIELDS.map((f) => <option key={f.key} value={f.key}>{f.label}</option>)}
+        {FIELDS.map((f) => <option key={f.key} value={f.key}>{t(`admin.segments.fields.${f.key}`)}</option>)}
       </select>
       <select value={op} onChange={(e) => onOpChange(e.target.value)} style={opSelectStyle}>
-        {field.ops.map((o) => <option key={o} value={o}>{OPERATORS[o].label}</option>)}
+        {field.ops.map((o) => <option key={o} value={o}>{t(`admin.segments.operators.${o}`)}</option>)}
       </select>
       {!valueless && <ValueInput field={field} op={op} value={rule.value} onChange={onValueChange} />}
       <button
@@ -90,18 +97,19 @@ function RuleRow({ rule, onChange, onRemove, canRemove }) {
         onClick={onRemove}
         disabled={!canRemove}
         style={{ ...iconBtnStyle, color: canRemove ? '#fca5a5' : '#4b5563' }}
-        title="Remove rule"
+        title={t('admin.segments.builder.removeRule')}
       >✕</button>
     </div>
   );
 }
 
 function ValueInput({ field, op, value, onChange }) {
+  const { t } = useTranslation();
   if (field.type === 'bool') {
     return (
       <select value={String(value ?? true)} onChange={(e) => onChange(e.target.value === 'true')} style={valueInputStyle}>
-        <option value="true">true</option>
-        <option value="false">false</option>
+        <option value="true">{t('admin.segments.builder.boolTrue')}</option>
+        <option value="false">{t('admin.segments.builder.boolFalse')}</option>
       </select>
     );
   }
@@ -112,14 +120,18 @@ function ValueInput({ field, op, value, onChange }) {
           type="text"
           value={Array.isArray(value) ? value.join(',') : (value ?? '')}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="en,ar"
+          placeholder={t('admin.segments.builder.csvPlaceholder')}
           style={valueInputStyle}
         />
       );
     }
     return (
       <select value={value ?? field.options[0].value} onChange={(e) => onChange(e.target.value)} style={valueInputStyle}>
-        {field.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        {field.options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {t(`admin.segments.fieldEnums.${field.key}_${o.value}`)}
+          </option>
+        ))}
       </select>
     );
   }

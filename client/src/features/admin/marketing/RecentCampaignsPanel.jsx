@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../../../lib/supabase';
 import CampaignDrilldownModal from './CampaignDrilldownModal.jsx';
 
 export default function RecentCampaignsPanel({ refreshKey }) {
+  const { t } = useTranslation();
   const [campaigns, setCampaigns] = useState(null);
   const [error, setError] = useState(null);
   const [drilldown, setDrilldown] = useState(null);
@@ -18,19 +20,19 @@ export default function RecentCampaignsPanel({ refreshKey }) {
     return () => { cancelled = true; };
   }, [refreshKey]);
 
-  if (error) return <div style={errorBox}>Failed to load campaigns: {error}</div>;
-  if (!campaigns) return <div style={loadingStyle}>Loading recent campaigns...</div>;
-  if (campaigns.length === 0) return <div style={emptyStyle}>No campaigns sent yet.</div>;
+  if (error) return <div style={errorBox}>{t('admin.common.failedToLoad', { error })}</div>;
+  if (!campaigns) return <div style={loadingStyle}>{t('admin.recent.loading')}</div>;
+  if (campaigns.length === 0) return <div style={emptyStyle}>{t('admin.recent.empty')}</div>;
 
   return (
     <div>
       <div style={headerRow}>
-        <span style={colSubject}>Subject</span>
-        <span style={colStat}>Sent</span>
-        <span style={colStat}>Delivered</span>
-        <span style={colStat}>Opened</span>
-        <span style={colStat}>Clicked</span>
-        <span style={colStat}>Bounced</span>
+        <span style={colSubject}>{t('admin.recent.colSubject')}</span>
+        <span style={colStat}>{t('admin.recent.colSent')}</span>
+        <span style={colStat}>{t('admin.recent.colDelivered')}</span>
+        <span style={colStat}>{t('admin.recent.colOpened')}</span>
+        <span style={colStat}>{t('admin.recent.colClicked')}</span>
+        <span style={colStat}>{t('admin.recent.colBounced')}</span>
       </div>
       {campaigns.map((c) => (
         <CampaignRow key={c.id} c={c} onClick={() => setDrilldown(c)} />
@@ -41,17 +43,23 @@ export default function RecentCampaignsPanel({ refreshKey }) {
 }
 
 function CampaignRow({ c, onClick }) {
+  const { t } = useTranslation();
   const sent = c.successful_sends || 0;
   const denom = sent || 1;
   const pct = (n) => `${Math.round((n / denom) * 100)}%`;
   const date = c.completed_at || c.created_at;
-  const sender = c.sent_by_email || 'system';
+  const sender = c.sent_by_email || t('admin.recent.rowSystemSender');
   return (
-    <div style={{ ...dataRow, cursor: 'pointer' }} onClick={onClick} title="Click for recipient drilldown">
+    <div style={{ ...dataRow, cursor: 'pointer' }} onClick={onClick} title={t('admin.recent.rowTitle')}>
       <div style={colSubject}>
         <div style={{ color: '#e5e7eb', fontWeight: 600, fontSize: 13 }}>{c.subject}</div>
         <div style={{ color: '#9ca3af', fontSize: 11, marginTop: 2 }}>
-          {c.audience} · {date ? new Date(date).toLocaleDateString() : '—'} · status: {c.status} · by <span style={{ color: '#cbd5e1' }}>{sender}</span>
+          {t('admin.recent.rowMeta', {
+            audience: c.audience,
+            date: date ? new Date(date).toLocaleDateString() : '—',
+            status: c.status,
+            sender,
+          })}
         </div>
       </div>
       <Stat n={sent} pct="" />

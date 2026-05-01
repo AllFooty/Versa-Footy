@@ -52,7 +52,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
     }
 
     if (!canEdit) {
-      setError(t('settings.editCooldownLocked', { days: daysUntilEdit }));
+      setError(t('account.editCooldownLocked', { days: daysUntilEdit }));
       return;
     }
 
@@ -211,7 +211,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
                 marginTop: 6,
                 marginBottom: 0,
               }}>
-                🔒 {t('settings.editCooldownLocked', { days: daysUntilEdit })}
+                🔒 {t('account.editCooldownLocked', { days: daysUntilEdit })}
               </p>
             )}
           </div>

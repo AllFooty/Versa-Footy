@@ -1,7 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
+import { useConfirm } from '../../../components/ConfirmProvider';
 
 export default function ScheduledCampaignsPanel({ refreshKey }) {
+  const { t } = useTranslation();
+  const confirmDialog = useConfirm();
   const [rows, setRows] = useState(null);
   const [error, setError] = useState(null);
   const [busyId, setBusyId] = useState(null);
@@ -15,32 +20,46 @@ export default function ScheduledCampaignsPanel({ refreshKey }) {
   useEffect(() => { reload(); }, [reload, refreshKey]);
 
   async function cancel(id) {
-    if (!window.confirm('Cancel this scheduled campaign?')) return;
+    const ok = await confirmDialog({
+      title: t('admin.scheduled.cancelTitle'),
+      message: t('admin.scheduled.cancelMessage'),
+      confirmLabel: t('admin.scheduled.cancelButton'),
+      danger: true,
+    });
+    if (!ok) return;
     setBusyId(id);
     const { data, error } = await supabase.rpc('marketing_cancel_scheduled', { p_id: id });
     setBusyId(null);
-    if (error) { alert(`Cancel failed: ${error.message}`); return; }
-    if (!data) { alert('Could not cancel — it may have already started sending.'); }
+    if (error) { toast.error(t('admin.scheduled.cancelFailed', { error: error.message })); return; }
+    if (!data) {
+      toast.warning(t('admin.scheduled.cancelTooLate'));
+    } else {
+      toast.success(t('admin.scheduled.canceledToast'));
+    }
     reload();
   }
 
   async function reschedule(id) {
-    const input = window.prompt('New send time (your local time, e.g. 2026-05-01 09:00):');
+    const input = window.prompt(t('admin.scheduled.reschedulePrompt'));
     if (!input) return;
     const dt = new Date(input);
-    if (isNaN(dt.getTime())) { alert('Invalid date.'); return; }
-    if (dt <= new Date()) { alert('Must be in the future.'); return; }
+    if (isNaN(dt.getTime())) { toast.error(t('admin.scheduled.invalidDate')); return; }
+    if (dt <= new Date()) { toast.error(t('admin.scheduled.futureRequired')); return; }
     setBusyId(id);
     const { data, error } = await supabase.rpc('marketing_reschedule_campaign', { p_id: id, p_new_time: dt.toISOString() });
     setBusyId(null);
-    if (error) { alert(`Reschedule failed: ${error.message}`); return; }
-    if (!data) { alert('Could not reschedule — it may have already started sending or been canceled.'); }
+    if (error) { toast.error(t('admin.scheduled.rescheduleFailed', { error: error.message })); return; }
+    if (!data) {
+      toast.warning(t('admin.scheduled.rescheduleTooLate'));
+    } else {
+      toast.success(t('admin.scheduled.rescheduledToast'));
+    }
     reload();
   }
 
-  if (error) return <div style={errorBox}>Failed to load scheduled: {error}</div>;
-  if (!rows) return <div style={muted}>Loading scheduled campaigns…</div>;
-  if (rows.length === 0) return <div style={muted}>No scheduled campaigns.</div>;
+  if (error) return <div style={errorBox}>{t('admin.common.failedToLoad', { error })}</div>;
+  if (!rows) return <div style={muted}>{t('admin.scheduled.loading')}</div>;
+  if (rows.length === 0) return <div style={muted}>{t('admin.scheduled.empty')}</div>;
 
   return (
     <div>
@@ -55,13 +74,13 @@ export default function ScheduledCampaignsPanel({ refreshKey }) {
               <div style={{ color: '#9ca3af', fontSize: 11, marginTop: 2 }}>
                 {c.audience}{c.category ? ` · ${c.category}` : ''} ·{' '}
                 <span style={{ color: statusColor }}>{c.status}</span>
-                {when ? <> · {when.toLocaleString()}{isPast && c.status === 'scheduled' ? ' (overdue)' : ''}</> : null}
+                {when ? <> · {when.toLocaleString()}{isPast && c.status === 'scheduled' ? t('admin.scheduled.overdue') : ''}</> : null}
               </div>
             </div>
             {c.status === 'scheduled' && (
               <div style={{ display: 'flex', gap: 8 }}>
-                <button onClick={() => reschedule(c.id)} disabled={busyId === c.id} style={btnGhost}>Reschedule</button>
-                <button onClick={() => cancel(c.id)} disabled={busyId === c.id} style={btnDanger}>Cancel</button>
+                <button onClick={() => reschedule(c.id)} disabled={busyId === c.id} style={btnGhost}>{t('admin.scheduled.reschedule')}</button>
+                <button onClick={() => cancel(c.id)} disabled={busyId === c.id} style={btnDanger}>{t('admin.scheduled.cancel')}</button>
               </div>
             )}
           </div>

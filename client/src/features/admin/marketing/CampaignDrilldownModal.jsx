@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../../../lib/supabase';
+import { useConfirm } from '../../../components/ConfirmProvider';
 
 const FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/resend-campaign-failures`;
 
+const FILTERS = ['all', 'sent', 'failed', 'opened', 'clicked', 'bounced'];
+
 export default function CampaignDrilldownModal({ campaign, onClose }) {
+  const { t } = useTranslation();
+  const confirmDialog = useConfirm();
   const [rows, setRows] = useState(null);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all'); // all | sent | failed | bounced
@@ -21,7 +27,12 @@ export default function CampaignDrilldownModal({ campaign, onClose }) {
   useEffect(() => { load(); }, [campaign.id]);
 
   async function resendFailures() {
-    if (!window.confirm(`Resend to all ${counts.failed} failed addresses for this campaign?`)) return;
+    const ok = await confirmDialog({
+      title: t('admin.drilldown.resendTitle'),
+      message: t('admin.drilldown.resendMessage', { count: counts.failed }),
+      confirmLabel: t('admin.drilldown.resendConfirm'),
+    });
+    if (!ok) return;
     setResending(true);
     setResendResult(null);
     try {
@@ -68,16 +79,17 @@ export default function CampaignDrilldownModal({ campaign, onClose }) {
           <div style={{ minWidth: 0 }}>
             <h2 style={{ margin: 0, color: '#e5e7eb', fontSize: 16 }}>{campaign.subject}</h2>
             <div style={{ color: '#9ca3af', fontSize: 12, marginTop: 4 }}>
-              {campaign.audience} · status: {campaign.status} · id: <code>{campaign.id}</code>
+              {t('admin.drilldown.metadata', { audience: campaign.audience, status: campaign.status, id: campaign.id })}
             </div>
           </div>
-          <button onClick={onClose} style={btnGhost}>Close</button>
+          <button onClick={onClose} style={btnGhost}>{t('admin.drilldown.close')}</button>
         </div>
 
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
-          {['all', 'sent', 'failed', 'opened', 'clicked', 'bounced'].map((f) => (
+          {FILTERS.map((f) => (
             <button key={f} onClick={() => setFilter(f)} style={filter === f ? chipActive : chip}>
-              {f}{f !== 'all' ? ` (${counts[f] ?? 0})` : ` (${rows?.length ?? 0})`}
+              {t(`admin.drilldown.filter${f.charAt(0).toUpperCase()}${f.slice(1)}`)}
+              {f !== 'all' ? ` (${counts[f] ?? 0})` : ` (${rows?.length ?? 0})`}
             </button>
           ))}
           <span style={{ flex: 1 }} />
@@ -86,32 +98,34 @@ export default function CampaignDrilldownModal({ campaign, onClose }) {
             disabled={resending || counts.failed === 0}
             style={counts.failed === 0 ? btnDisabled : btnPrimary}
           >
-            {resending ? 'Resending…' : `Resend to ${counts.failed} failure${counts.failed === 1 ? '' : 's'}`}
+            {resending
+              ? t('admin.drilldown.resending')
+              : t('admin.drilldown.resendButton', { count: counts.failed })}
           </button>
         </div>
 
         {resendResult && (
           <div style={resendResult.error ? errBox : okBox}>
             {resendResult.error
-              ? <>Error: {resendResult.error}</>
-              : <>Resend complete — {resendResult.sent} sent, {resendResult.failed} failed, {resendResult.skipped} skipped (suppressed/unsubscribed).</>
+              ? t('admin.drilldown.errorPrefix', { error: resendResult.error })
+              : t('admin.drilldown.resendComplete', { sent: resendResult.sent, failed: resendResult.failed, skipped: resendResult.skipped })
             }
           </div>
         )}
 
-        {error && <div style={errBox}>Failed to load recipients: {error}</div>}
-        {!rows && !error && <div style={muted}>Loading recipients…</div>}
-        {rows && rows.length === 0 && <div style={muted}>No recipient rows logged for this campaign.</div>}
+        {error && <div style={errBox}>{t('admin.drilldown.loadFailed', { error })}</div>}
+        {!rows && !error && <div style={muted}>{t('admin.drilldown.loading')}</div>}
+        {rows && rows.length === 0 && <div style={muted}>{t('admin.drilldown.empty')}</div>}
 
         {filtered.length > 0 && (
           <div style={{ maxHeight: 480, overflow: 'auto', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 8 }}>
             <div style={headerRow}>
-              <span>Email</span>
-              <span>Status</span>
-              <span>Opened</span>
-              <span>Clicked</span>
-              <span>Bounce/Comp.</span>
-              <span>Error</span>
+              <span>{t('admin.drilldown.colEmail')}</span>
+              <span>{t('admin.drilldown.colStatus')}</span>
+              <span>{t('admin.drilldown.colOpened')}</span>
+              <span>{t('admin.drilldown.colClicked')}</span>
+              <span>{t('admin.drilldown.colBounce')}</span>
+              <span>{t('admin.drilldown.colError')}</span>
             </div>
             {filtered.map((r, i) => (
               <div key={`${r.email}-${i}`} style={dataRow}>
@@ -119,7 +133,7 @@ export default function CampaignDrilldownModal({ campaign, onClose }) {
                 <span style={{ color: r.status === 'sent' ? '#34d399' : '#fca5a5', fontSize: 12 }}>{r.status}</span>
                 <span style={{ color: r.opened_at ? '#22d3ee' : '#6b7280', fontSize: 11 }}>{r.opened_at ? new Date(r.opened_at).toLocaleDateString() : '—'}</span>
                 <span style={{ color: r.clicked_at ? '#22d3ee' : '#6b7280', fontSize: 11 }}>{r.clicked_at ? new Date(r.clicked_at).toLocaleDateString() : '—'}</span>
-                <span style={{ color: '#fdba74', fontSize: 11 }}>{r.bounced_at ? 'bounced' : r.complained_at ? 'complained' : '—'}</span>
+                <span style={{ color: '#fdba74', fontSize: 11 }}>{r.bounced_at ? t('admin.drilldown.bounced') : r.complained_at ? t('admin.drilldown.complained') : '—'}</span>
                 <span style={{ color: '#9ca3af', fontSize: 11, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={r.error_message || ''}>{r.error_message || '—'}</span>
               </div>
             ))}

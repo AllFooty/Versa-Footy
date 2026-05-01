@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/AuthContext';
+import { useConfirm } from '../../components/ConfirmProvider';
 import BlockComposer from './marketing/BlockComposer.jsx';
 import { defaultBlocks, validateBlocks } from './marketing/blocks.js';
 import { renderEmailHtml } from './marketing/renderEmail.jsx';
@@ -53,7 +55,9 @@ const TEMPLATE_LAUNCH = `<!DOCTYPE html>
 </html>`;
 
 export default function MarketingEmailPage() {
+  const { t } = useTranslation();
   const { user } = useAuth();
+  const confirmDialog = useConfirm();
   const [mode, setMode] = useState('blocks'); // 'blocks' | 'html'
   const [subject, setSubject] = useState('Versa Footy is launching today');
   const [html, setHtml] = useState(TEMPLATE_LAUNCH);
@@ -123,11 +127,11 @@ export default function MarketingEmailPage() {
         const result = await renderEmailHtml(blocks);
         if (!cancelled) setRenderedHtml(result);
       } catch (e) {
-        if (!cancelled) setError(`Render failed: ${e?.message || e}`);
+        if (!cancelled) setError(t('admin.email.errors.renderFailed', { error: e?.message || e }));
       }
     })();
     return () => { cancelled = true; };
-  }, [blocks, mode]);
+  }, [blocks, mode, t]);
 
   // Same for the AR variant.
   useEffect(() => {
@@ -138,11 +142,11 @@ export default function MarketingEmailPage() {
         const result = await renderEmailHtml(blocksAr);
         if (!cancelled) setRenderedHtmlAr(result);
       } catch (e) {
-        if (!cancelled) setError(`AR render failed: ${e?.message || e}`);
+        if (!cancelled) setError(t('admin.email.errors.renderFailedAr', { error: e?.message || e }));
       }
     })();
     return () => { cancelled = true; };
-  }, [blocksAr, mode, enableAr]);
+  }, [blocksAr, mode, enableAr, t]);
 
   // Fetch a sample recipient for the merge preview when the audience changes.
   useEffect(() => {
@@ -198,38 +202,48 @@ export default function MarketingEmailPage() {
       : (counts?.opted_in_users ?? 0);
 
     if (recipientCount === 0) {
-      setError('No recipients in this audience. Pick another or wait for signups.');
+      setError(t('admin.email.errors.noRecipients'));
       return;
     }
 
     const isSchedule = sendMode === 'schedule' && audience !== 'test';
     let scheduledISO = null;
     if (isSchedule) {
-      if (!scheduledFor) { setError('Pick a date/time to schedule.'); return; }
+      if (!scheduledFor) { setError(t('admin.email.errors.pickDateTime')); return; }
       const dt = new Date(scheduledFor);
-      if (isNaN(dt.getTime())) { setError('Invalid date.'); return; }
-      if (dt <= new Date()) { setError('Scheduled time must be in the future.'); return; }
+      if (isNaN(dt.getTime())) { setError(t('admin.email.errors.invalidDate')); return; }
+      if (dt <= new Date()) { setError(t('admin.email.errors.futureDate')); return; }
       scheduledISO = dt.toISOString();
     }
 
     // Typed-SEND confirm gate for big sends. Plain confirm() is too easy to miss-click.
     if (audience !== 'test' && recipientCount > 100 && !isSchedule) {
       const costEst = (recipientCount * 0.0004).toFixed(2);
-      const typed = window.prompt(
-        `You're about to send to ${recipientCount} recipients (~$${costEst}). ` +
-        `Type SEND to confirm. This cannot be undone.`
-      );
+      const typed = window.prompt(t('admin.email.errors.sendPrompt', { count: recipientCount, cost: costEst }));
       if (typed !== 'SEND') {
-        setError(typed == null ? null : 'Send canceled (you must type SEND exactly).');
+        setError(typed == null ? null : t('admin.email.errors.sendCanceled'));
         return;
       }
     } else {
-      const confirmMsg = audience === 'test'
-        ? `Send test email to ${testRecipient}?`
+      const confirmTitle = audience === 'test'
+        ? t('admin.email.confirm.testTitle')
         : isSchedule
-          ? `Schedule send to ${recipientCount} recipient(s) for ${new Date(scheduledISO).toLocaleString()}?`
-          : `Send to ${recipientCount} ${audience === 'subscribers' ? 'waitlist subscriber(s)' : 'opted-in user(s)'}? This cannot be undone.`;
-      if (!window.confirm(confirmMsg)) return;
+          ? t('admin.email.confirm.scheduleTitle')
+          : t('admin.email.confirm.campaignTitle');
+      const confirmMsg = audience === 'test'
+        ? t('admin.email.confirm.testMessage', { email: testRecipient })
+        : isSchedule
+          ? t('admin.email.confirm.scheduleMessage', { count: recipientCount, when: new Date(scheduledISO).toLocaleString() })
+          : audience === 'subscribers'
+            ? t('admin.email.confirm.campaignMessageSubscribers', { count: recipientCount })
+            : t('admin.email.confirm.campaignMessageOptedIn', { count: recipientCount });
+      const ok = await confirmDialog({
+        title: confirmTitle,
+        message: confirmMsg,
+        confirmLabel: isSchedule ? t('admin.email.confirm.schedule') : t('admin.email.confirm.send'),
+        danger: !isSchedule && audience !== 'test',
+      });
+      if (!ok) return;
     }
 
     if (mode === 'blocks') {
@@ -240,11 +254,11 @@ export default function MarketingEmailPage() {
       }
       if (enableAr) {
         const issuesAr = validateBlocks(blocksAr);
-        if (issuesAr.length > 0) { setError(`AR: ${issuesAr.join(' ')}`); return; }
+        if (issuesAr.length > 0) { setError(t('admin.email.errors.arPrefix', { issues: issuesAr.join(' ') })); return; }
       }
     }
     if (enableAr && (!subjectAr || (mode === 'html' && !htmlAr))) {
-      setError('Arabic variant is enabled but missing subject or body.');
+      setError(t('admin.email.errors.missingArVariant'));
       return;
     }
 
@@ -277,7 +291,7 @@ export default function MarketingEmailPage() {
 
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        setError('Not authenticated.');
+        setError(t('admin.email.errors.notAuthenticated'));
         setSending(false);
         return;
       }
@@ -318,14 +332,14 @@ export default function MarketingEmailPage() {
   return (
     <PageContainer width="narrow">
       <PageHeader
-        backLink={<BackLink href="/admin/library">Library</BackLink>}
-        title="Marketing Email"
+        backLink={<BackLink href="/admin/library">{t('admin.common.library')}</BackLink>}
+        title={t('admin.email.title')}
         subtitle={
           <>
-            Send a campaign via Resend. Always test on yourself first before sending to real users.{' '}
-            <Link href="/admin/marketing/segments"><a style={{ color: '#22d3ee', textDecoration: 'none' }}>Segments</a></Link>
+            {t('admin.email.subtitle')}{' '}
+            <Link href="/admin/marketing/segments"><a style={{ color: '#22d3ee', textDecoration: 'none' }}>{t('admin.email.subtitleSegments')}</a></Link>
             {' · '}
-            <Link href="/admin/marketing/automations"><a style={{ color: '#22d3ee', textDecoration: 'none' }}>Automations</a></Link>
+            <Link href="/admin/marketing/automations"><a style={{ color: '#22d3ee', textDecoration: 'none' }}>{t('admin.email.subtitleAutomations')}</a></Link>
           </>
         }
       />
@@ -333,9 +347,9 @@ export default function MarketingEmailPage() {
 
         <div className="card card--lg">
           <label style={labelStyle}>
-            Templates
+            {t('admin.email.templatesLabel')}
             <span style={hintStyle}>
-              Built-ins (★) seed a fresh draft. Save your current draft as a custom template to reuse it later.
+              {t('admin.email.templatesHint')}
             </span>
             <TemplatesPanel
               currentSubject={subject}
@@ -361,43 +375,43 @@ export default function MarketingEmailPage() {
           </label>
 
           <label style={labelStyle}>
-            Audience
+            {t('admin.email.audienceLabel')}
             <div style={radioGroupStyle}>
               <RadioOption
                 value="test"
                 checked={audience === 'test'}
                 onChange={setAudience}
-                label="Test (just me)"
-                count="1 recipient"
+                label={t('admin.email.audience.test')}
+                count={t('admin.common.recipients', { count: 1 })}
               />
               <RadioOption
                 value="subscribers"
                 checked={audience === 'subscribers'}
                 onChange={setAudience}
-                label="Waitlist subscribers"
-                count={counts ? `${counts.subscribers} recipient${counts.subscribers === 1 ? '' : 's'}` : '...'}
+                label={t('admin.email.audience.subscribers')}
+                count={counts ? t('admin.common.recipients', { count: counts.subscribers }) : '...'}
               />
               <RadioOption
                 value="opted_in_users"
                 checked={audience === 'opted_in_users'}
                 onChange={setAudience}
-                label="Opted-in app users"
-                count={counts ? `${counts.opted_in_users} recipient${counts.opted_in_users === 1 ? '' : 's'}` : '...'}
+                label={t('admin.email.audience.opted_in_users')}
+                count={counts ? t('admin.common.recipients', { count: counts.opted_in_users }) : '...'}
               />
               <RadioOption
                 value="all_users"
                 checked={audience === 'all_users'}
                 onChange={setAudience}
-                label="All app users (one-time launch)"
-                count={counts ? `${counts.all_users} recipient${counts.all_users === 1 ? '' : 's'}` : '...'}
+                label={t('admin.email.audience.all_users')}
+                count={counts ? t('admin.common.recipients', { count: counts.all_users }) : '...'}
                 warn
               />
               <RadioOption
                 value="segment"
                 checked={audience === 'segment'}
                 onChange={setAudience}
-                label="Segment"
-                count={segments.length === 0 ? 'no segments yet' : `${segments.length} segment${segments.length === 1 ? '' : 's'} available`}
+                label={t('admin.email.audience.segment')}
+                count={segments.length === 0 ? t('admin.email.noSegments') : t('admin.email.segmentsAvailable', { count: segments.length })}
               />
             </div>
             {audience === 'segment' && (
@@ -405,42 +419,42 @@ export default function MarketingEmailPage() {
                 <select value={segmentId} onChange={(e) => setSegmentId(e.target.value)} style={inputStyle}>
                   {segments.map((s) => (
                     <option key={s.id} value={s.id}>
-                      {s.name} {segmentCounts[s.id] != null ? `(${segmentCounts[s.id]} recipients)` : ''}
+                      {s.name} {segmentCounts[s.id] != null ? t('admin.email.segmentRecipients', { count: segmentCounts[s.id] }) : ''}
                     </option>
                   ))}
                 </select>
-                <Link href="/marketing/segments"><a style={{ color: '#22d3ee', fontSize: 12, textDecoration: 'none' }}>Manage segments →</a></Link>
+                <Link href="/admin/marketing/segments"><a style={{ color: '#22d3ee', fontSize: 12, textDecoration: 'none' }}>{t('admin.email.manageSegments')}</a></Link>
               </div>
             )}
           </label>
 
           {(audience === 'opted_in_users' || audience === 'all_users' || audience === 'segment') && (
             <label style={labelStyle}>
-              Category
+              {t('admin.email.categoryLabel')}
               <span style={hintStyle}>
-                Recipients who turned this category off in /preferences will be skipped.
+                {t('admin.email.categoryHint')}
                 {audience === 'all_users' && (
-                  <> <span style={{ color: '#fdba74' }}>Note: users who never visited /preferences (NULL prefs) are treated as opted-in to every category, so "all users" sends to them regardless of category.</span></>
+                  <> <span style={{ color: '#fdba74' }}>{t('admin.email.categoryAllUsersWarn')}</span></>
                 )}
               </span>
               <select value={category} onChange={(e) => setCategory(e.target.value)} style={inputStyle}>
-                <option value="product_updates">Product updates</option>
-                <option value="training_tips">Training tips</option>
-                <option value="promotions">Promotions</option>
+                <option value="product_updates">{t('admin.categories.product_updates')}</option>
+                <option value="training_tips">{t('admin.categories.training_tips')}</option>
+                <option value="promotions">{t('admin.categories.promotions')}</option>
               </select>
             </label>
           )}
 
           {audience === 'test' && (
             <label style={labelStyle}>
-              Test recipient email
+              {t('admin.email.testRecipientLabel')}
               <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
                 <input
                   type="email"
                   value={testRecipient}
                   onChange={(e) => setTestRecipient(e.target.value)}
                   style={{ ...inputStyle, flex: 1, minWidth: 200 }}
-                  placeholder="you@example.com"
+                  placeholder={t('admin.email.testRecipientPlaceholder')}
                 />
                 {savedTestAddresses.length > 0 && (
                   <select
@@ -448,7 +462,7 @@ export default function MarketingEmailPage() {
                     onChange={(e) => { if (e.target.value) setTestRecipient(e.target.value); }}
                     style={{ ...inputStyle, marginTop: 0, width: 'auto' }}
                   >
-                    <option value="">— Saved addresses —</option>
+                    <option value="">{t('admin.email.savedAddresses')}</option>
                     {savedTestAddresses.map((a) => <option key={a} value={a}>{a}</option>)}
                   </select>
                 )}
@@ -461,9 +475,9 @@ export default function MarketingEmailPage() {
                     saveTestAddresses(next);
                   }}
                   style={{ padding: '8px 12px', fontSize: 12, fontWeight: 600, borderRadius: 6, cursor: 'pointer', background: 'rgba(255,255,255,0.04)', color: '#e5e7eb', border: '1px solid rgba(255,255,255,0.12)' }}
-                  title="Save this address for later"
+                  title={t('admin.email.saveAddressTitle')}
                 >
-                  Save
+                  {t('admin.email.saveAddress')}
                 </button>
                 {savedTestAddresses.includes(testRecipient) && (
                   <button
@@ -474,18 +488,18 @@ export default function MarketingEmailPage() {
                       saveTestAddresses(next);
                     }}
                     style={{ padding: '8px 12px', fontSize: 12, fontWeight: 600, borderRadius: 6, cursor: 'pointer', background: 'rgba(230,57,70,0.12)', color: '#fca5a5', border: '1px solid rgba(230,57,70,0.4)' }}
-                    title="Remove from saved addresses"
+                    title={t('admin.email.forgetAddressTitle')}
                   >
-                    Forget
+                    {t('admin.email.forgetAddress')}
                   </button>
                 )}
               </div>
               {enableAr && (
                 <div style={{ marginTop: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
-                  <span style={{ fontSize: 12, color: '#9ca3af' }}>Test as locale:</span>
+                  <span style={{ fontSize: 12, color: '#9ca3af' }}>{t('admin.email.testAsLocale')}</span>
                   <select value={testLocale} onChange={(e) => setTestLocale(e.target.value)} style={{ ...inputStyle, marginTop: 0, width: 'auto' }}>
-                    <option value="en">English (en)</option>
-                    <option value="ar">Arabic (ar)</option>
+                    <option value="en">{t('admin.email.localeEn')}</option>
+                    <option value="ar">{t('admin.email.localeAr')}</option>
                   </select>
                 </div>
               )}
@@ -495,57 +509,58 @@ export default function MarketingEmailPage() {
           <div style={{ marginBottom: 8, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#e5e7eb', cursor: 'pointer' }}>
               <input type="checkbox" checked={enableAr} onChange={(e) => { setEnableAr(e.target.checked); if (!e.target.checked) setLangTab('en'); }} />
-              Add Arabic variant (recipients with locale=ar see this version)
+              {t('admin.email.addArVariant')}
             </label>
             {enableAr && (
               <div style={{ display: 'flex', gap: 6 }}>
-                <button type="button" onClick={() => setLangTab('en')} style={langTab === 'en' ? langTabActive : langTabStyle}>English</button>
-                <button type="button" onClick={() => setLangTab('ar')} style={langTab === 'ar' ? langTabActive : langTabStyle}>العربية</button>
+                <button type="button" onClick={() => setLangTab('en')} style={langTab === 'en' ? langTabActive : langTabStyle}>{t('admin.email.tabEnglish')}</button>
+                <button type="button" onClick={() => setLangTab('ar')} style={langTab === 'ar' ? langTabActive : langTabStyle}>{t('admin.email.tabArabic')}</button>
               </div>
             )}
           </div>
 
           <label style={labelStyle}>
-            Subject {enableAr && <span style={{ color: '#9ca3af', fontWeight: 400, fontSize: 11 }}>({langTab.toUpperCase()})</span>}
+            {t('admin.email.subjectLabel')} {enableAr && <span style={{ color: '#9ca3af', fontWeight: 400, fontSize: 11 }}>{t('admin.email.subjectVariantSuffix', { lang: langTab.toUpperCase() })}</span>}
             <input
               type="text"
               value={activeSubject}
               onChange={(e) => setActiveSubject(e.target.value)}
               style={{ ...inputStyle, direction: isAr ? 'rtl' : 'ltr', textAlign: isAr ? 'right' : 'left' }}
-              placeholder='Email subject line. Tags allowed: {{first_name|"there"}}'
+              placeholder={t('admin.email.subjectPlaceholder')}
               dir={isAr ? 'rtl' : 'ltr'}
             />
           </label>
 
           <div style={{ marginBottom: 16 }}>
             <span style={hintStyle}>
-              Click a tag to copy it. Use <code style={codeStyle}>{'{{tag|"fallback"}}'}</code> to provide a default if the value is missing.
+              {t('admin.email.mergeTagsHintPre')}
+              <code style={codeStyle}>{`{{tag|"fallback"}}`}</code>
+              {t('admin.email.mergeTagsHintPost')}
             </span>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6 }}>
-              {MERGE_TAGS.map((t) => (
+              {MERGE_TAGS.map((tag) => (
                 <button
-                  key={t}
+                  key={tag}
                   type="button"
-                  onClick={() => navigator.clipboard?.writeText(`{{${t}}}`)}
+                  onClick={() => navigator.clipboard?.writeText(`{{${tag}}}`)}
                   style={tagBtnStyle}
-                  title={`Copy {{${t}}} to clipboard`}
+                  title={t('admin.email.copyTag', { tag: `{{${tag}}}` })}
                 >
-                  {`{{${t}}}`}
+                  {`{{${tag}}}`}
                 </button>
               ))}
               <button
                 type="button"
                 onClick={() => navigator.clipboard?.writeText('{{first_name|"there"}}')}
                 style={tagBtnStyle}
-                title='Copy {{first_name|"there"}} to clipboard'
+                title={t('admin.email.copyTag', { tag: '{{first_name|"there"}}' })}
               >
                 {`{{first_name|"there"}}`}
               </button>
             </div>
             {unknownTags.length > 0 && (
               <div style={{ ...hintStyle, color: '#fdba74', marginTop: 6 }}>
-                ⚠ Unknown tag{unknownTags.length === 1 ? '' : 's'} in template: {unknownTags.map((t) => `{{${t}}}`).join(', ')}.
-                These will render as empty strings.
+                {t('admin.email.unknownTags', { count: unknownTags.length, tags: unknownTags.map((tag) => `{{${tag}}}`).join(', ') })}
               </div>
             )}
           </div>
@@ -557,14 +572,14 @@ export default function MarketingEmailPage() {
                 onClick={() => setMode('blocks')}
                 style={mode === 'blocks' ? modeBtnActive : modeBtnStyle}
               >
-                Blocks
+                {t('admin.email.modeBlocks')}
               </button>
               <button
                 type="button"
                 onClick={() => setMode('html')}
                 style={mode === 'html' ? modeBtnActive : modeBtnStyle}
               >
-                Raw HTML
+                {t('admin.email.modeHtml')}
               </button>
             </div>
             {mode === 'blocks' ? (
@@ -572,8 +587,9 @@ export default function MarketingEmailPage() {
             ) : (
               <>
                 <span style={hintStyle}>
-                  Use <code style={codeStyle}>{'{{unsubscribe_url}}'}</code> wherever you want the unsubscribe link.
-                  If you skip it, a default footer with the link gets added automatically.
+                  {t('admin.email.rawHtmlHintPre')}
+                  <code style={codeStyle}>{'{{unsubscribe_url}}'}</code>
+                  {t('admin.email.rawHtmlHintPost')}
                 </span>
                 <textarea
                   value={activeRawHtml}
@@ -591,11 +607,11 @@ export default function MarketingEmailPage() {
               <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#e5e7eb', cursor: 'pointer' }}>
                   <input type="radio" name="sendMode" value="now" checked={sendMode === 'now'} onChange={() => setSendMode('now')} />
-                  Send now
+                  {t('admin.email.sendNow')}
                 </label>
                 <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#e5e7eb', cursor: 'pointer' }}>
                   <input type="radio" name="sendMode" value="schedule" checked={sendMode === 'schedule'} onChange={() => setSendMode('schedule')} />
-                  Schedule for…
+                  {t('admin.email.scheduleFor')}
                 </label>
                 {sendMode === 'schedule' && (
                   <input
@@ -608,7 +624,7 @@ export default function MarketingEmailPage() {
               </div>
               {sendMode === 'schedule' && (
                 <div style={{ ...hintStyle, marginTop: 6 }}>
-                  Times are in your local timezone. The dispatcher runs every minute via pg_cron.
+                  {t('admin.email.scheduleHint')}
                 </div>
               )}
             </div>
@@ -621,9 +637,9 @@ export default function MarketingEmailPage() {
               : (counts?.opted_in_users ?? 0);
             return (
               <div style={{ ...hintStyle, marginBottom: 8 }}>
-                ≈ {recipientCount.toLocaleString()} recipient{recipientCount === 1 ? '' : 's'}
-                {recipientCount > 0 && <> · est. cost ≈ ${(recipientCount * 0.0004).toFixed(2)} (Resend pro tier)</>}
-                {recipientCount > 100 && <span style={{ color: '#fdba74' }}> · large send: typed-SEND confirm required</span>}
+                {t('admin.email.estimateRecipients', { count: recipientCount.toLocaleString() })}
+                {recipientCount > 0 && <> · {t('admin.email.estimateCost', { cost: (recipientCount * 0.0004).toFixed(2) })}</>}
+                {recipientCount > 100 && <span style={{ color: '#fdba74' }}> · {t('admin.email.estimateLargeSend')}</span>}
               </div>
             );
           })()}
@@ -635,35 +651,38 @@ export default function MarketingEmailPage() {
               style={sending ? buttonDisabledStyle : buttonStyle}
             >
               {sending
-                ? (sendMode === 'schedule' && audience !== 'test' ? 'Scheduling…' : 'Sending...')
-                : audience === 'test' ? 'Send test'
-                : sendMode === 'schedule' ? 'Schedule campaign'
-                : 'Send campaign'}
+                ? (sendMode === 'schedule' && audience !== 'test' ? t('admin.email.schedulingButton') : t('admin.email.sendingButton'))
+                : audience === 'test' ? t('admin.email.sendTest')
+                : sendMode === 'schedule' ? t('admin.email.scheduleCampaign')
+                : t('admin.email.sendCampaign')}
             </button>
             <button
               onClick={() => setShowPreview((v) => !v)}
               style={ghostButtonStyle}
               type="button"
             >
-              {showPreview ? 'Hide preview' : 'Show preview'}
+              {showPreview ? t('admin.email.hidePreview') : t('admin.email.showPreview')}
             </button>
           </div>
 
           {result && result.scheduled && (
             <div style={successBoxStyle}>
-              <strong>Scheduled.</strong> Will send at {new Date(result.scheduledFor).toLocaleString()}.
-              Campaign id: <code>{result.campaignId}</code>
+              {t('admin.email.scheduledToast', { when: new Date(result.scheduledFor).toLocaleString(), id: result.campaignId })}
             </div>
           )}
           {result && !result.scheduled && (
             <div style={successBoxStyle}>
-              <strong>Sent.</strong> {result.successful} successful, {result.failed} failed
-              {' '}({result.totalRecipients} total). Campaign id: <code>{result.campaignId}</code>
+              {t('admin.email.sentToast', {
+                success: result.successful,
+                failed: result.failed,
+                total: result.totalRecipients,
+                id: result.campaignId,
+              })}
             </div>
           )}
           {error && (
             <div style={errorBoxStyle}>
-              <strong>Error:</strong> {error}
+              <strong>{t('admin.email.errorPrefix')}:</strong> {error}
             </div>
           )}
         </div>
@@ -671,67 +690,70 @@ export default function MarketingEmailPage() {
         {showPreview && (
           <div style={previewCardStyle}>
             <h3 style={{ margin: '0 0 12px 0', color: '#e5e7eb', fontSize: 14, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-              Preview
+              {t('admin.email.previewLabel')}
             </h3>
             <div style={previewSubjectStyle}>
-              <strong>Subject:</strong> {previewSubject || <em style={{ color: '#9ca3af' }}>(empty)</em>}
+              <strong>{t('admin.email.previewSubject')}</strong> {previewSubject || <em style={{ color: '#9ca3af' }}>{t('admin.email.previewEmpty')}</em>}
             </div>
             {sampleRecipient ? (
               <div style={{ ...previewSubjectStyle, color: '#22d3ee', fontSize: 11 }}>
-                Personalized as: <strong>{sampleRecipient.email}</strong>
+                {t('admin.email.previewPersonalized', { email: sampleRecipient.email })}
                 {sampleRecipient.first_name ? ` (${sampleRecipient.first_name})` : ''}
-                {sampleRecipient.current_level != null ? ` · level ${sampleRecipient.current_level}` : ''}
+                {sampleRecipient.current_level != null ? ` · ${t('admin.email.previewLevel', { level: sampleRecipient.current_level })}` : ''}
               </div>
             ) : audience !== 'test' && audience !== 'subscribers' ? (
               <div style={{ ...previewSubjectStyle, color: '#fdba74', fontSize: 11 }}>
-                No sample recipient available for this audience — preview shows fallback values.
+                {t('admin.email.previewNoSample')}
               </div>
             ) : null}
             <iframe
               srcDoc={isAr ? `<html dir="rtl" lang="ar"><body style="margin:0">${previewHtml}</body></html>` : previewHtml}
-              title="Email preview"
+              title={t('admin.email.previewIframeTitle')}
               sandbox=""
               style={iframeStyle}
             />
             {enableAr && (
               <div style={{ marginTop: 6, fontSize: 11, color: '#9ca3af' }}>
-                Showing {langTab === 'ar' ? 'Arabic (RTL)' : 'English'} variant. Switch with the EN/AR tabs above the subject.
+                {langTab === 'ar' ? t('admin.email.previewVariantArabic') : t('admin.email.previewVariantEnglish')}
               </div>
             )}
           </div>
         )}
 
         <div className="card card--lg">
-          <h2 style={{ margin: '0 0 12px 0', fontSize: 16, color: '#e5e7eb' }}>Scheduled</h2>
+          <h2 style={{ margin: '0 0 12px 0', fontSize: 16, color: '#e5e7eb' }}>{t('admin.email.scheduledTitle')}</h2>
           <p style={{ ...subtitleStyle, margin: '0 0 12px 0' }}>
-            Upcoming sends. Cancel or reschedule until the dispatcher picks them up.
+            {t('admin.email.scheduledSubtitle')}
           </p>
           <ScheduledCampaignsPanel refreshKey={scheduleRefresh} />
         </div>
 
         <div className="card card--lg">
-          <h2 style={{ margin: '0 0 12px 0', fontSize: 16, color: '#e5e7eb' }}>Recent campaigns</h2>
+          <h2 style={{ margin: '0 0 12px 0', fontSize: 16, color: '#e5e7eb' }}>{t('admin.email.recentTitle')}</h2>
           <p style={{ ...subtitleStyle, margin: '0 0 12px 0' }}>
-            Open / click / bounce rates update via Resend webhooks. If they're stuck at zero, check that the webhook is configured.
+            {t('admin.email.recentSubtitle')}
           </p>
           <RecentCampaignsPanel refreshKey={result?.campaignId} />
         </div>
 
         <div className="card card--lg">
-          <h2 style={{ margin: '0 0 12px 0', fontSize: 16, color: '#e5e7eb' }}>Suppressions</h2>
+          <h2 style={{ margin: '0 0 12px 0', fontSize: 16, color: '#e5e7eb' }}>{t('admin.email.suppressionsTitle')}</h2>
           <p style={{ ...subtitleStyle, margin: '0 0 12px 0' }}>
-            Addresses we'll never send marketing to. Bounces and complaints land here automatically.
-            Remove a row only if you have evidence the address is now valid.
+            {t('admin.email.suppressionsSubtitle')}
           </p>
           <SuppressionsPanel />
         </div>
 
         <div style={infoBoxStyle}>
-          <strong>Reminders:</strong>
+          <strong>{t('admin.email.remindersTitle')}</strong>
           <ul style={{ margin: '8px 0 0 0', paddingLeft: 20, lineHeight: 1.7 }}>
-            <li>Sender: <code>launch@versafooty.com</code> · Reply-To: <code>hi@all4footy.com</code></li>
-            <li>Replies route to Lark via Cloudflare Email Routing — make sure that's set up before sending real campaigns.</li>
-            <li>Always test on yourself first to verify rendering and inbox placement (not spam).</li>
+            <li>
+              {t('admin.email.reminderSender').split('<code>').map((part, i) =>
+                i === 0 ? part : <React.Fragment key={i}>{part.split('</code>').map((p, j) => j === 0 ? <code key={j}>{p}</code> : p)}</React.Fragment>
+              )}
+            </li>
+            <li>{t('admin.email.reminderRouting')}</li>
+            <li>{t('admin.email.reminderTest')}</li>
           </ul>
         </div>
       </div>
@@ -740,6 +762,7 @@ export default function MarketingEmailPage() {
 }
 
 function RadioOption({ value, checked, onChange, label, count, warn }) {
+  const { t } = useTranslation();
   const accent = warn ? '#f97316' : '#22d3ee';
   const accentBg = warn ? 'rgba(249,115,22,0.08)' : 'rgba(34,211,238,0.08)';
   return (
@@ -761,7 +784,7 @@ function RadioOption({ value, checked, onChange, label, count, warn }) {
         <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>{count}</div>
         {warn && checked && (
           <div style={{ fontSize: 11, color: '#fdba74', marginTop: 6 }}>
-            ⚠ Sends to every signed-up user, even if they didn't opt in to marketing. Use only for one-time launch announcements.
+            {t('admin.email.audienceWarning')}
           </div>
         )}
       </span>

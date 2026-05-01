@@ -18,7 +18,7 @@ const ConfirmModal = ({
   const { t } = useTranslation();
 
   const resolvedTitle = title || t('modals.confirm.defaultTitle');
-  const resolvedConfirmLabel = confirmLabel || t('modals.confirm.defaultTitle');
+  const resolvedConfirmLabel = confirmLabel || t('modals.confirm.defaultConfirm');
 
   useEffect(() => {
     if (isOpen) {
