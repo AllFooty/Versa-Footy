@@ -146,7 +146,7 @@ export default function DashboardHome() {
             </div>
           </div>
           <Link href="/org/create" style={{
-            background: 'linear-gradient(135deg, #2563eb, #22d3ee)',
+            background: 'linear-gradient(135deg, #6366f1 0%, #22d3ee 100%)',
             color: '#0b1020',
             fontWeight: 700,
             padding: '10px 18px',
@@ -155,7 +155,7 @@ export default function DashboardHome() {
             fontSize: 13.5,
           }}>{t('common.create')}</Link>
           <Link href="/join" style={{
-            color: '#60a5fa',
+            color: '#a5b4fc',
             textDecoration: 'none',
             fontSize: 13,
           }}>{t('home.haveInviteCode', 'Have an invite code?')}</Link>
@@ -171,7 +171,7 @@ export default function DashboardHome() {
         <StatCard
           label={t('home.stats.myAcademies', 'My Academies')}
           value={organizations.length}
-          accent="#3b82f6"
+          accent="#6366f1"
           icon={Icons.buildings}
           loading={orgsLoading}
         />
@@ -197,7 +197,7 @@ export default function DashboardHome() {
           <StatCard
             label={t('home.stats.pendingInvitations', 'Pending Invitations')}
             value={pendingInvites ?? 0}
-            accent="#f97316"
+            accent="#ff4b4b"
             icon={Icons.invite}
             loading={pendingInvites === null}
           />
@@ -224,7 +224,7 @@ export default function DashboardHome() {
               title={t('home.academyDashboard')}
               description={t('home.academyDescription')}
               icon={Icons.dashboard}
-              accent="#22d3ee"
+              accent="#6366f1"
               primary
             />
           )}
@@ -234,7 +234,7 @@ export default function DashboardHome() {
               title={t('home.createAcademy')}
               description={t('home.createAcademyDescription')}
               icon={Icons.add}
-              accent="#22d3ee"
+              accent="#6366f1"
               primary
             />
           )}
@@ -244,7 +244,7 @@ export default function DashboardHome() {
               title={t('home.exerciseLibrary')}
               description={t('home.libraryDescription', 'Manage skills and exercises')}
               icon={Icons.library}
-              accent="#3b82f6"
+              accent="#22d3ee"
             />
           )}
           {isAdmin && (
@@ -253,7 +253,7 @@ export default function DashboardHome() {
               title={t('nav.videosAudit', 'Videos Audit')}
               description={t('home.videosAuditDescription', 'Review uploaded videos')}
               icon={Icons.invite}
-              accent="#a855f7"
+              accent="#ffd166"
             />
           )}
           <QuickAction
@@ -261,7 +261,7 @@ export default function DashboardHome() {
             title={t('nav.account', 'Account')}
             description={t('home.accountDescription', 'Profile, security and preferences')}
             icon={Icons.settings}
-            accent="#94a3b8"
+            accent="#22c55e"
           />
         </div>
       </section>

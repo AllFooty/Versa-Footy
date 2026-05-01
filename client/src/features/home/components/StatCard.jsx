@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function StatCard({ label, value, accent = '#3b82f6', icon, suffix, loading }) {
+export default function StatCard({ label, value, accent = '#6366f1', icon, suffix, loading }) {
   return (
     <div className="dash-stat" style={{
       background: 'rgba(15, 23, 42, 0.55)',

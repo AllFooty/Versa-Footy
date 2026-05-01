@@ -7,7 +7,7 @@
 .app-shell {
   display: flex;
   min-height: 100vh;
-  background: radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f);
+  background: radial-gradient(circle at 10% 20%, #11142a, #060818 60%, #02040c);
   color: #e4e4e7;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
@@ -19,7 +19,7 @@
   top: -100px;
   z-index: 1000;
   padding: 10px 16px;
-  background: #2563eb;
+  background: #4f46e5;
   color: #ffffff;
   font-weight: 600;
   font-size: 13px;
@@ -32,7 +32,7 @@
 .app-shell__skip-link:focus,
 .app-shell__skip-link:focus-visible {
   top: 12px;
-  outline: 2px solid #93c5fd;
+  outline: 2px solid #a5b4fc;
   outline-offset: 2px;
 }
 
@@ -78,7 +78,7 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #2563eb, #22d3ee);
+  background: linear-gradient(135deg, #6366f1 0%, #22d3ee 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -121,7 +121,7 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -227,8 +227,8 @@
 }
 
 .app-nav-item--active {
-  background: rgba(59, 130, 246, 0.14);
-  color: #93c5fd;
+  background: rgba(99, 102, 241, 0.14);
+  color: #c7d2fe;
 }
 
 .app-nav-item--active::before {
@@ -239,7 +239,7 @@
   bottom: 8px;
   width: 3px;
   border-radius: 0 3px 3px 0;
-  background: linear-gradient(180deg, #2563eb, #22d3ee);
+  background: linear-gradient(180deg, #6366f1, #22d3ee);
 }
 
 [dir="rtl"] .app-nav-item--active::before {
@@ -387,9 +387,9 @@
   gap: 6px;
   padding: 7px 12px;
   border-radius: 999px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.22);
-  color: #93c5fd;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.24);
+  color: #c7d2fe;
   font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
@@ -398,7 +398,7 @@
   transition: background 0.15s;
 }
 .app-orgswitcher--header .app-orgswitcher__pill:hover:not(:disabled) {
-  background: rgba(59, 130, 246, 0.16);
+  background: rgba(99, 102, 241, 0.18);
 }
 .app-orgswitcher--header .app-orgswitcher__pill:disabled {
   cursor: default;
@@ -444,8 +444,8 @@
   transition: background 0.12s;
 }
 .app-orgswitcher__row:hover { background: rgba(255, 255, 255, 0.05); }
-.app-orgswitcher__row--active { background: rgba(59, 130, 246, 0.12); }
-.app-orgswitcher__row--active .app-orgswitcher__item { color: #93c5fd; }
+.app-orgswitcher__row--active { background: rgba(99, 102, 241, 0.14); }
+.app-orgswitcher__row--active .app-orgswitcher__item { color: #c7d2fe; }
 
 .app-orgswitcher__item {
   display: flex;
@@ -472,7 +472,7 @@
 .app-orgswitcher__item-check {
   display: inline-flex;
   align-items: center;
-  color: #60a5fa;
+  color: #a5b4fc;
   flex-shrink: 0;
 }
 .app-orgswitcher__item-name {

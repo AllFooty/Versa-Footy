@@ -24,17 +24,27 @@
   --text-dim: #71717a;
   --text-eyebrow: #64748b;
 
-  /* ---- Color: Brand ---- */
+  /* ---- Color: Brand ----
+     Aligned with landing palette: indigo + cyan, warm accents.
+     `--color-brand` is the primary chrome accent (sidebar, pills, links).
+     `--color-blue` is retained for legacy callers but should be avoided. */
+  --color-brand: #6366f1;
+  --color-brand-strong: #4f46e5;
+  --color-brand-soft: #818cf8;
   --color-blue: #3b82f6;
   --color-blue-strong: #2563eb;
   --color-cyan: #22d3ee;
   --color-purple: #8b5cf6;
   --color-green: #22c55e;
+  --color-coral: #ff4b4b;
+  --color-gold: #ffd166;
   --color-red: #ef4444;
   --color-orange: #f97316;
   --color-amber: #eab308;
 
   /* ---- Color: State ---- */
+  --color-brand-soft-bg: rgba(99, 102, 241, 0.14);
+  --color-brand-soft-border: rgba(99, 102, 241, 0.28);
   --color-blue-soft: rgba(59, 130, 246, 0.12);
   --color-blue-soft-border: rgba(59, 130, 246, 0.25);
   --color-red-soft: rgba(239, 68, 68, 0.12);
@@ -49,8 +59,8 @@
   --border-strong: rgba(255, 255, 255, 0.15);
 
   /* ---- Gradients ---- */
-  --gradient-brand: linear-gradient(135deg, var(--color-blue-strong), var(--color-cyan));
-  --gradient-brand-purple: linear-gradient(135deg, var(--color-blue), var(--color-purple));
+  --gradient-brand: linear-gradient(135deg, var(--color-brand) 0%, var(--color-cyan) 100%);
+  --gradient-brand-purple: linear-gradient(135deg, var(--color-brand), var(--color-purple));
   --gradient-danger: linear-gradient(135deg, var(--color-red), #dc2626);
 
   /* ---- Radii ---- */
@@ -85,6 +95,7 @@
   --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
   --shadow-button-brand: 0 16px 40px rgba(34, 211, 238, 0.35);
   --shadow-button-blue: 0 8px 24px rgba(59, 130, 246, 0.3);
+  --shadow-button-indigo: 0 10px 30px rgba(99, 102, 241, 0.32);
 
   /* ---- Motion ---- */
   --transition-fast: 0.15s ease;
