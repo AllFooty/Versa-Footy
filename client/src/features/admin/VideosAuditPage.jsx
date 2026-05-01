@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link } from 'wouter';
 import { useVideosAudit } from './useVideosAudit';
+import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 
 const TAB_ORDER = [
   { key: 'missing',    label: 'Missing video',      tone: 'danger' },
@@ -52,23 +52,17 @@ export default function VideosAuditPage() {
   };
 
   return (
-    <div style={pageStyle}>
-      <div style={headerRowStyle}>
-        <div>
-          <div style={crumbStyle}>
-            <Link href="/library"><a style={crumbLinkStyle}>← Library</a></Link>
-          </div>
-          <h1 style={titleStyle}>Videos Audit</h1>
-          {audit.generated_at && (
-            <p style={subtitleStyle}>
-              Generated {new Date(audit.generated_at).toLocaleString()}
-            </p>
-          )}
-        </div>
-        <button onClick={refresh} disabled={loading} style={refreshBtnStyle}>
-          {loading ? 'Loading…' : 'Refresh'}
-        </button>
-      </div>
+    <PageContainer width="default">
+      <PageHeader
+        backLink={<BackLink href="/admin/library">Library</BackLink>}
+        title="Videos Audit"
+        subtitle={audit.generated_at ? `Generated ${new Date(audit.generated_at).toLocaleString()}` : undefined}
+        actions={
+          <button onClick={refresh} disabled={loading} style={refreshBtnStyle}>
+            {loading ? 'Loading…' : 'Refresh'}
+          </button>
+        }
+      />
 
       {error && <div style={errorBoxStyle}>{error}</div>}
       {message && <div style={messageBoxStyle}>{message}</div>}
@@ -96,7 +90,7 @@ export default function VideosAuditPage() {
           <OrphansList items={audit.orphans} onDeleteAll={handleDeleteOrphans} busy={busy} />
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -221,28 +215,6 @@ const Empty = ({ text }) => (
 );
 
 /* -------- styles ---------- */
-
-const pageStyle = {
-  minHeight: '100vh',
-  background: '#0b1020',
-  color: '#e4e4e7',
-  padding: 'max(16px, env(safe-area-inset-top)) 16px 24px',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-};
-
-const headerRowStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'flex-end',
-  gap: 12,
-  marginBottom: 16,
-  flexWrap: 'wrap',
-};
-
-const crumbStyle = { fontSize: 12, color: '#9ca3af', marginBottom: 6 };
-const crumbLinkStyle = { color: '#9ca3af', textDecoration: 'none' };
-const titleStyle = { margin: 0, fontSize: 24, fontWeight: 700 };
-const subtitleStyle = { margin: '4px 0 0', fontSize: 12, color: '#9ca3af' };
 
 const refreshBtnStyle = {
   padding: '10px 16px',

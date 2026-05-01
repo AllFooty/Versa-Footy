@@ -7,14 +7,15 @@ import NavSection from './NavSection';
 import OrgSwitcher from './OrgSwitcher';
 
 function BrandHeader({ collapsed }) {
+  const { t } = useTranslation();
   return (
     <Link href="/home">
       <a className="app-sidebar__brand">
         <div className="app-sidebar__brand-mark" aria-hidden="true">VF</div>
         {!collapsed && (
           <div className="app-sidebar__brand-text">
-            <div className="app-sidebar__brand-name">Versa Footy</div>
-            <div className="app-sidebar__brand-tagline">AI Soccer Training</div>
+            <div className="app-sidebar__brand-name">{t('common.appName')}</div>
+            <div className="app-sidebar__brand-tagline">{t('nav.ground')}</div>
           </div>
         )}
       </a>
@@ -26,7 +27,7 @@ export default function AppSidebar({ onNavigate }) {
   const { t } = useTranslation();
   const { isAdmin, isCoach, organizations, orgsLoading } = useAuth();
 
-  const visibleSections = navConfig
+  const allSections = navConfig
     .filter((section) => section.visible({ isAdmin, isCoach, organizations, orgsLoading }))
     .map((section) => ({
       ...section,
@@ -36,15 +37,23 @@ export default function AppSidebar({ onNavigate }) {
     }))
     .filter((section) => section.items.length > 0);
 
+  const topSections = allSections.filter((s) => s.pinned !== 'bottom');
+  const bottomSections = allSections.filter((s) => s.pinned === 'bottom');
+
   return (
     <div className="app-sidebar__inner">
       <BrandHeader />
       <OrgSwitcher variant="sidebar" />
       <nav className="app-sidebar__nav" aria-label={t('nav.primary', 'Primary navigation')}>
-        {visibleSections.map((section) => (
+        {topSections.map((section) => (
           <NavSection key={section.groupKey} section={section} onNavigate={onNavigate} />
         ))}
       </nav>
+      <div className="app-sidebar__pinned">
+        {bottomSections.map((section) => (
+          <NavSection key={section.groupKey} section={section} onNavigate={onNavigate} />
+        ))}
+      </div>
       <div className="app-sidebar__footer">
         <Link href="/">
           <a className="app-sidebar__back-link" onClick={onNavigate}>

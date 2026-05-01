@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Link } from 'wouter';
 import { supabase } from '../../lib/supabase';
+import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 
 // Drip automations admin. Minimal UI for v1: list + create + activate/deactivate
 // + per-step quick editor. For richer composition, send a one-shot from the main
@@ -39,20 +39,17 @@ export default function AutomationsPage() {
   }
 
   return (
-    <div style={page}>
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>
-        <div style={{ marginBottom: 12 }}>
-          <Link href="/marketing"><a style={{ color: '#9ca3af', textDecoration: 'none', fontSize: 13 }}>← Marketing</a></Link>
-        </div>
-        <h1 style={{ color: '#e5e7eb', margin: '0 0 8px 0' }}>Automations</h1>
-        <p style={{ color: '#9ca3af', fontSize: 14 }}>
-          Behavior-triggered drip campaigns. The dispatcher runs every 15 minutes via pg_cron.
-          Each (automation, step, user) is enforced unique — once a step has been sent to a user, it never sends again.
-        </p>
+    <PageContainer width="narrow">
+      <PageHeader
+        backLink={<BackLink href="/admin/marketing">Marketing</BackLink>}
+        title="Automations"
+        subtitle="Behavior-triggered drip campaigns. The dispatcher runs every 15 minutes via pg_cron. Each (automation, step, user) is enforced unique — once a step has been sent to a user, it never sends again."
+      />
+      <div>
 
         {error && <div style={errBox}>Failed to load: {error}</div>}
 
-        <div style={card}>
+        <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <h2 style={{ margin: 0, color: '#e5e7eb', fontSize: 16 }}>All automations</h2>
             <button onClick={() => setEditing('new')} style={btnPrimary}>+ New automation</button>
@@ -91,7 +88,7 @@ export default function AutomationsPage() {
           />
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -194,10 +191,10 @@ function AutomationEditor({ automationId, onClose }) {
     onClose();
   }
 
-  if (!loaded) return <div style={{ ...card, marginTop: 16 }}><div style={muted}>Loading…</div></div>;
+  if (!loaded) return <div className="card" style={{ marginTop: 16 }}><div style={muted}>Loading…</div></div>;
 
   return (
-    <div style={{ ...card, marginTop: 16 }}>
+    <div className="card" style={{ marginTop: 16 }}>
       <h2 style={{ margin: '0 0 12px 0', color: '#e5e7eb', fontSize: 16 }}>
         {automationId ? 'Edit automation' : 'New automation'}
       </h2>
@@ -279,8 +276,6 @@ function AutomationEditor({ automationId, onClose }) {
   );
 }
 
-const page = { minHeight: '100vh', background: 'radial-gradient(circle at 20% 20%, #111827, #0b1020 45%, #050910)', color: '#e4e4e7' };
-const card = { background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: 12, padding: 16, marginBottom: 16 };
 const row = { display: 'flex', gap: 8, alignItems: 'center', padding: '12px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' };
 const stepBox = { padding: 12, marginTop: 12, border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, background: 'rgba(255,255,255,0.02)' };
 const lbl = { display: 'block', color: '#cbd5e1', fontSize: 13, marginTop: 8 };

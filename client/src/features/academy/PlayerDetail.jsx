@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'wouter';
+import { useParams } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
@@ -8,6 +8,7 @@ import {
 } from 'recharts';
 import usePlayerDetail from './hooks/usePlayerDetail';
 import { SkeletonCard, SkeletonChart } from '../../components/ui/Skeleton';
+import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 
 export default function PlayerDetail() {
   const { t } = useTranslation();
@@ -30,9 +31,10 @@ export default function PlayerDetail() {
 
   if (loading) {
     return (
-      <div style={containerStyle}>
-        <div style={headerStyle}>
-          <Link href="/academy/players" style={backLinkStyle}>&larr; {t('academy.roster.title')}</Link>
+      <PageContainer width="default">
+        <PageHeader
+          backLink={<BackLink href="/academy/players">{t('academy.roster.title')}</BackLink>}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 12 }}>
             <SkeletonCard style={{ width: 52, height: 52, borderRadius: '50%', padding: 0 }} />
             <div style={{ flex: 1 }}>
@@ -44,23 +46,23 @@ export default function PlayerDetail() {
               <SkeletonCard key={i} style={{ minWidth: 80, padding: '10px 14px' }} />
             ))}
           </div>
-        </div>
+        </PageHeader>
         <div style={{ ...contentStyle, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: 16 }}>
           <SkeletonChart />
           <SkeletonChart />
         </div>
-      </div>
+      </PageContainer>
     );
   }
 
   if (error || !profile) {
     return (
-      <div style={containerStyle}>
+      <PageContainer width="default">
         <div style={{ textAlign: 'center', padding: 64 }}>
           <p style={{ color: '#ef4444', fontSize: 14 }}>{error || t('academy.playerDetail.playerNotFound')}</p>
-          <Link href="/academy/players" style={{ color: '#3b82f6', fontSize: 14 }}>&larr; {t('academy.roster.title')}</Link>
+          <BackLink href="/academy/players">{t('academy.roster.title')}</BackLink>
         </div>
-      </div>
+      </PageContainer>
     );
   }
 
@@ -69,21 +71,20 @@ export default function PlayerDetail() {
   const skillsPracticed = skillProgress.filter((s) => s.times_practiced > 0).length;
 
   return (
-    <div style={containerStyle}>
-      {/* Header */}
-      <div style={headerStyle}>
-        <Link href="/academy/players" style={backLinkStyle}>&larr; {t('academy.roster.title')}</Link>
+    <PageContainer width="default">
+      <PageHeader
+        backLink={<BackLink href="/academy/players">{t('academy.roster.title')}</BackLink>}
+      >
         <div style={playerHeaderStyle}>
           <div style={largeAvatarStyle}>{displayName[0].toUpperCase()}</div>
           <div>
-            <h1 style={titleStyle}>{displayName}</h1>
-            <p style={subtitleStyle}>
+            <h1 className="page-header__title" style={{ margin: '0 0 4px' }}>{displayName}</h1>
+            <p className="page-header__subtitle" style={{ margin: 0 }}>
               {profile.age_group || t('common.noAgeGroup')} &middot; {t('common.level')} {profile.current_level} &middot; {profile.total_xp?.toLocaleString()} {t('common.xp')}
             </p>
           </div>
         </div>
 
-        {/* Mini KPIs */}
         <div style={miniKpiRowStyle}>
           <MiniKPI label={t('academy.playerDetail.kpiLevel')} value={profile.current_level} />
           <MiniKPI label={t('academy.playerDetail.kpiTotalXP')} value={profile.total_xp?.toLocaleString()} />
@@ -93,9 +94,8 @@ export default function PlayerDetail() {
           <MiniKPI label={t('academy.playerDetail.kpiPracticed')} value={skillsPracticed} />
         </div>
 
-        {/* Level progress bar (XP until next level) */}
         <LevelProgressBar levelProgress={levelProgress} />
-      </div>
+      </PageHeader>
 
       {/* Tabs */}
       <div style={tabBarStyle} role="tablist" aria-label={t('academy.playerDetail.tabsLabel', { defaultValue: 'Player sections' })}>
@@ -148,7 +148,7 @@ export default function PlayerDetail() {
           <TrendsTab weeklyTrends={weeklyTrends} errorMessage={sectionErrors?.dailyActivity} />
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -643,19 +643,6 @@ function MiniKPI({ label, value }) {
 
 // ─── Styles ────────────────────────────────────────────────────────────────────
 
-const containerStyle = {
-  minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-  padding: '32px',
-};
-
-const headerStyle = { maxWidth: 1000, margin: '0 auto 24px' };
-const backLinkStyle = { color: '#3b82f6', textDecoration: 'none', fontSize: 14 };
-const titleStyle = { fontSize: 24, fontWeight: 700, margin: '0 0 4px' };
-const subtitleStyle = { fontSize: 13, color: '#9ca3af', margin: 0 };
-
 const playerHeaderStyle = { display: 'flex', alignItems: 'center', gap: 16, marginTop: 12 };
 const largeAvatarStyle = {
   width: 52, height: 52, borderRadius: '50%',
@@ -683,7 +670,7 @@ const miniKpiStyle = {
 };
 
 const tabBarStyle = {
-  maxWidth: 1000, margin: '0 auto 20px',
+  margin: '0 0 20px',
   display: 'flex', gap: 4,
   background: 'rgba(255, 255, 255, 0.04)',
   borderRadius: 10, padding: 4,
@@ -700,7 +687,7 @@ const activeTabBtnStyle = {
   background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6',
 };
 
-const contentStyle = { maxWidth: 1000, margin: '0 auto' };
+const contentStyle = { margin: 0 };
 
 const tabGridStyle = {
   display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: 16,

@@ -83,8 +83,8 @@ const AutomationsIcon = () => (
 
 const navConfig = [
   {
-    groupKey: 'overview',
-    labelKey: 'nav.groupOverview',
+    groupKey: 'home',
+    labelKey: null,
     visible: () => true,
     items: [
       { labelKey: 'nav.home', href: '/home', exact: true, icon: HomeIcon },
@@ -99,34 +99,34 @@ const navConfig = [
       { labelKey: 'nav.players', href: '/academy/players', icon: PlayersIcon },
       { labelKey: 'nav.teams', href: '/academy/teams', icon: TeamsIcon },
       { labelKey: 'nav.invitations', href: '/academy/invitations', icon: InvitationsIcon },
-      { labelKey: 'nav.settings', href: '/academy/settings', icon: SettingsIcon },
+      { labelKey: 'nav.academySettings', href: '/academy/settings', icon: SettingsIcon },
     ],
   },
   {
-    groupKey: 'content',
-    labelKey: 'nav.groupContent',
+    groupKey: 'admin',
+    labelKey: 'nav.groupAdmin',
     visible: ({ isAdmin }) => isAdmin,
     items: [
-      { labelKey: 'nav.library', href: '/library', icon: LibraryIcon },
-      { labelKey: 'nav.videosAudit', href: '/videos-audit', icon: VideosIcon },
-    ],
-  },
-  {
-    groupKey: 'marketing',
-    labelKey: 'nav.groupMarketing',
-    visible: ({ isAdmin }) => isAdmin,
-    items: [
-      { labelKey: 'nav.marketingEmail', href: '/marketing', exact: true, icon: EmailIcon },
-      { labelKey: 'nav.marketingSegments', href: '/marketing/segments', icon: SegmentsIcon },
-      { labelKey: 'nav.marketingAutomations', href: '/marketing/automations', icon: AutomationsIcon },
+      { labelKey: 'nav.library', href: '/admin/library', icon: LibraryIcon },
+      { labelKey: 'nav.videosAudit', href: '/admin/videos', icon: VideosIcon },
+      {
+        labelKey: 'nav.marketingEmail',
+        href: '/admin/marketing',
+        exact: true,
+        icon: EmailIcon,
+        subheaderKey: 'nav.adminMarketingSubheader',
+      },
+      { labelKey: 'nav.marketingSegments', href: '/admin/marketing/segments', icon: SegmentsIcon },
+      { labelKey: 'nav.marketingAutomations', href: '/admin/marketing/automations', icon: AutomationsIcon },
     ],
   },
   {
     groupKey: 'account',
-    labelKey: 'nav.groupAccount',
+    labelKey: null,
+    pinned: 'bottom',
     visible: () => true,
     items: [
-      { labelKey: 'nav.settings', href: '/settings', icon: SettingsIcon },
+      { labelKey: 'nav.account', href: '/account', icon: SettingsIcon },
     ],
   },
 ];

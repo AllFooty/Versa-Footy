@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../lib/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 
 const ROLE_OPTIONS = ['owner', 'admin', 'coach', 'player', 'parent'];
 
@@ -136,11 +137,12 @@ export default function AcademySettings() {
   };
 
   return (
-    <div style={containerStyle}>
-      <div style={headerStyle}>
-        <h1 style={titleStyle}>{t('academy.settings.title')}</h1>
-        <p style={subtitleStyle}>{t('academy.settings.subtitle')}</p>
-      </div>
+    <PageContainer width="narrow">
+      <PageHeader
+        backLink={<BackLink href="/academy">{t('nav.dashboard')}</BackLink>}
+        title={t('academy.settings.title')}
+        subtitle={t('academy.settings.subtitle')}
+      />
 
       {/* Organization Info */}
       <div style={sectionStyle}>
@@ -250,25 +252,13 @@ export default function AcademySettings() {
           )}
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
 // ─── Styles ────────────────────────────────────────────────────────────────────
 
-const containerStyle = {
-  minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-  padding: '32px',
-};
-
-const headerStyle = { maxWidth: 900, margin: '0 auto 24px' };
-const titleStyle = { fontSize: 28, fontWeight: 700, margin: '0 0 4px' };
-const subtitleStyle = { fontSize: 14, color: '#9ca3af', margin: 0 };
-
-const sectionStyle = { maxWidth: 900, margin: '0 auto 20px' };
+const sectionStyle = { margin: '0 0 20px' };
 
 const cardStyle = {
   background: 'rgba(15, 23, 42, 0.6)',

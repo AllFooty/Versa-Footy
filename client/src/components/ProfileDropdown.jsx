@@ -236,7 +236,7 @@ export default function ProfileDropdown() {
 
                 {/* Library Link (admin only) */}
                 {isAdmin && (
-                  <Link href="/library">
+                  <Link href="/admin/library">
                     <a
                       onClick={() => setIsOpen(false)}
                       style={{
@@ -276,8 +276,8 @@ export default function ProfileDropdown() {
                   }} />
                 )}
 
-                {/* Settings Link */}
-                <Link href="/settings">
+                {/* Account Link */}
+                <Link href="/account">
                   <a
                     onClick={() => setIsOpen(false)}
                     style={{

@@ -1,8 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-// Components
-import Header from '../../components/Header';
 import SearchBar from '../../components/SearchBar';
 import AdvancedFilterPanel from '../../components/AdvancedFilterPanel';
 import ActiveFilterChips from '../../components/ActiveFilterChips';
@@ -13,21 +11,32 @@ import {
   ExerciseModal,
   PreviewModal,
 } from '../../components/modals';
+import { PageContainer, PageHeader } from '../../components/Page';
 
-// Landing page components
-import HeaderLanding from '../landing/components/HeaderLanding';
-import FooterLanding from '../landing/components/FooterLanding';
-import All4FootyFamilyBar from '../landing/components/All4FootyFamilyBar';
-
-// Hooks
 import { useData } from '../../hooks/useData';
-
-// Constants
 import { DEFAULT_FILTERS } from '../../constants';
 
-// Styles
 import '../../styles/library.css';
-import '../landing/styles/landing-globals.css';
+
+function LibraryStatsStrip({ stats }) {
+  const { t } = useTranslation();
+  if (!stats) return null;
+  const items = [
+    { value: stats.totalCategories, label: t('library.statCategories'), color: '#3b82f6' },
+    { value: stats.totalSkills, label: t('library.statSkills'), color: '#22c55e' },
+    { value: stats.totalExercises, label: t('library.statExercises'), color: '#f97316' },
+  ];
+  return (
+    <div className="library-stats-strip">
+      {items.map((s) => (
+        <div key={s.label} className="library-stats-strip__item">
+          <div className="library-stats-strip__value" style={{ color: s.color }}>{s.value}</div>
+          <div className="library-stats-strip__label">{s.label}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 /**
  * Versa Footy Library experience.
@@ -150,27 +159,13 @@ export default function LibraryApp() {
     : [];
 
   return (
-    <>
-      {/* Landing Page Header */}
-      <All4FootyFamilyBar />
-      <div
-        style={{
-          minHeight: '100vh',
-          background: 'linear-gradient(135deg, #0a0f1a 0%, #1a1f2e 50%, #0d1117 100%)',
-          fontFamily: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-          color: '#e4e4e7',
-        }}
-      >
-        <HeaderLanding />
-
-        {/* Library Stats Header */}
-        <Header stats={stats} />
-
-      {/* Main Content */}
-      <main 
-        style={{ maxWidth: 1400, margin: '0 auto' }}
-        className="library-main-content"
-      >
+    <PageContainer width="wide">
+      <PageHeader
+        title={t('library.headerTitle')}
+        subtitle={t('library.headerSubtitle')}
+        actions={<LibraryStatsStrip stats={stats} />}
+      />
+      <main className="library-main-content">
         {/* Loading State */}
         {loading && (
           <div
@@ -309,11 +304,7 @@ export default function LibraryApp() {
         onClose={() => setPreviewExercise(null)}
         onEdit={openExerciseModal}
       />
-      </div>
-
-      {/* Landing Page Footer */}
-      <FooterLanding />
-    </>
+    </PageContainer>
   );
 }
 

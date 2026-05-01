@@ -9,6 +9,7 @@ import { useAuth } from '../../lib/AuthContext';
 import useAcademyDashboard from './hooks/useAcademyDashboard';
 import usePlayerRoster, { getPlayerStatus } from './hooks/usePlayerRoster';
 import { SkeletonCard, SkeletonChart } from '../../components/ui/Skeleton';
+import { PageContainer, PageHeader } from '../../components/Page';
 
 export default function AcademyDashboard() {
   const { t } = useTranslation();
@@ -27,37 +28,31 @@ export default function AcademyDashboard() {
     .slice(0, 5);
 
   return (
-    <div className="academy-container" style={containerStyle}>
-      {/* Header */}
-      <div style={headerStyle}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-          <div>
-            <h1 className="academy-title" style={titleStyle}>{activeOrg?.name || t('academy.dashboard.fallbackName')}</h1>
-            <p className="academy-subtitle" style={subtitleStyle}>{activeOrg?.type} {t('academy.dashboard.dashboardSuffix')}</p>
-          </div>
-          {organizations.length > 1 && (
-            <select
-              className="academy-org-switcher"
-              value={activeOrg?.id || ''}
-              onChange={(e) => {
-                const org = organizations.find((o) => o.id === e.target.value);
-                if (org) setActiveOrg(org);
-              }}
-              style={orgSwitcherStyle}
-            >
-              {organizations.map((o) => (
-                <option key={o.id} value={o.id}>{o.name}</option>
-              ))}
-            </select>
-          )}
-        </div>
-
-        {/* Quick Actions */}
+    <PageContainer width="default">
+      <PageHeader
+        title={activeOrg?.name || t('academy.dashboard.fallbackName')}
+        subtitle={`${activeOrg?.type ?? ''} ${t('academy.dashboard.dashboardSuffix')}`.trim()}
+        actions={organizations.length > 1 && (
+          <select
+            className="academy-org-switcher"
+            value={activeOrg?.id || ''}
+            onChange={(e) => {
+              const org = organizations.find((o) => o.id === e.target.value);
+              if (org) setActiveOrg(org);
+            }}
+            style={orgSwitcherStyle}
+          >
+            {organizations.map((o) => (
+              <option key={o.id} value={o.id}>{o.name}</option>
+            ))}
+          </select>
+        )}
+      >
         <div className="academy-quick-actions" style={quickActionsStyle}>
           <Link href="/academy/invitations" className="academy-action-link" style={actionLinkStyle}>{t('academy.dashboard.invitePlayers')}</Link>
           <Link href="/academy/players" className="academy-action-link" style={actionLinkStyle}>{t('academy.dashboard.viewAllPlayers')}</Link>
         </div>
-      </div>
+      </PageHeader>
 
       {loading && !stats ? (
         <>
@@ -170,7 +165,7 @@ export default function AcademyDashboard() {
           )}
         </>
       )}
-    </div>
+    </PageContainer>
   );
 }
 
@@ -195,18 +190,6 @@ function daysSince(dateStr) {
 
 // ─── Styles ────────────────────────────────────────────────────────────────────
 
-const containerStyle = {
-  minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-  padding: '32px',
-};
-
-const headerStyle = { maxWidth: 1200, margin: '0 auto 28px' };
-const titleStyle = { fontSize: 28, fontWeight: 700, margin: '0 0 4px' };
-const subtitleStyle = { fontSize: 14, color: '#9ca3af', margin: 0, textTransform: 'capitalize' };
-
 const orgSwitcherStyle = {
   padding: '8px 12px',
   background: 'rgba(255, 255, 255, 0.06)',
@@ -230,7 +213,7 @@ const actionLinkStyle = {
 };
 
 const kpiGridStyle = {
-  maxWidth: 1200, margin: '0 auto 24px',
+  margin: '0 0 24px',
   display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12,
 };
 
@@ -250,7 +233,7 @@ const kpiValueStyle = { fontSize: 26, fontWeight: 700, margin: '0 0 4px', color:
 const kpiLabelStyle = { fontSize: 12, color: '#9ca3af', margin: 0 };
 
 const chartsGridStyle = {
-  maxWidth: 1200, margin: '0 auto 24px',
+  margin: '0 0 24px',
   display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 16,
 };
 
@@ -267,7 +250,7 @@ const tooltipStyle = {
   borderRadius: 8, fontSize: 12,
 };
 
-const sectionStyle = { maxWidth: 1200, margin: '0 auto 24px' };
+const sectionStyle = { margin: '0 0 24px' };
 const sectionTitleStyle = { fontSize: 16, fontWeight: 600, margin: '0 0 4px' };
 const sectionDescStyle = { fontSize: 12, color: '#71717a', margin: '0 0 12px' };
 

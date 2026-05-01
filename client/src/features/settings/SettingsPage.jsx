@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { User, Mail, Check, Save, Trash2 } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 import ConfirmModal from '../../components/modals/ConfirmModal';
+import { PageContainer, PageHeader } from '../../components/Page';
 
 const COOLDOWN_DAYS = 7;
 
@@ -98,24 +99,11 @@ export default function SettingsPage() {
 
   return (
     <>
-      <div style={{ fontFamily: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif", color: '#e4e4e7' }}>
-        <main style={{ maxWidth: '600px', margin: '0 auto' }}>
-          {/* Page Title */}
-          <h1 style={{
-            fontSize: '28px',
-            fontWeight: '700',
-            marginBottom: '8px',
-            fontFamily: "'Space Grotesk', sans-serif",
-          }}>
-            {t('settings.pageTitle')}
-          </h1>
-          <p style={{
-            color: 'rgba(255, 255, 255, 0.5)',
-            fontSize: '15px',
-            marginBottom: '32px',
-          }}>
-            {t('settings.pageSubtitle')}
-          </p>
+      <PageContainer width="narrow" className="settings-page">
+        <PageHeader
+          title={t('settings.pageTitle')}
+          subtitle={t('settings.pageSubtitle')}
+        />
 
           {/* Profile Section */}
           <div style={{
@@ -420,8 +408,7 @@ export default function SettingsPage() {
               {deleting ? t('settings.deletingAccount') : t('settings.deleteAccount')}
             </button>
           </div>
-        </main>
-      </div>
+      </PageContainer>
 
       <ConfirmModal
         isOpen={showDeleteConfirm}

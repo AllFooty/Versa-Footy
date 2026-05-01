@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'wouter';
 import { supabase } from '../../lib/supabase';
 import SegmentBuilder from './marketing/SegmentBuilder.jsx';
 import { emptyFilter } from './marketing/segments.js';
+import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 
 export default function SegmentsPage() {
   const [segments, setSegments] = useState(null);
@@ -66,14 +66,21 @@ export default function SegmentsPage() {
 
   if (editing) {
     return (
-      <div style={pageStyle}>
-        <div style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>
-          <div style={crumbStyle}>
-            <a style={crumbLinkStyle} onClick={() => setEditing(null)}>← Segments</a>
-          </div>
-          <h1 style={titleStyle}>{editing.id ? 'Edit segment' : 'New segment'}</h1>
-
-          <div style={cardStyle}>
+      <PageContainer width="narrow">
+        <PageHeader
+          backLink={
+            <a className="page-backlink" onClick={() => setEditing(null)} style={{ cursor: 'pointer' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="12 19 5 12 12 5" />
+              </svg>
+              <span>Segments</span>
+            </a>
+          }
+          title={editing.id ? 'Edit segment' : 'New segment'}
+        />
+        <div>
+          <div className="card card--lg">
             <label style={labelStyle}>
               Name
               <input
@@ -111,24 +118,22 @@ export default function SegmentsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div style={pageStyle}>
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>
-        <div style={crumbStyle}>
-          <Link href="/marketing"><a style={crumbLinkStyle}>← Marketing</a></Link>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 style={titleStyle}>Segments</h1>
-          <button onClick={newSegment} style={primaryBtnStyle}>+ New segment</button>
-        </div>
+    <PageContainer width="narrow">
+      <PageHeader
+        backLink={<BackLink href="/admin/marketing">Marketing</BackLink>}
+        title="Segments"
+        actions={<button onClick={newSegment} style={primaryBtnStyle}>+ New segment</button>}
+      />
+      <div>
 
         {error && <div style={errorBoxStyle}>{error}</div>}
 
-        <div style={cardStyle}>
+        <div className="card card--lg">
           {segments == null ? (
             <p style={{ color: '#9ca3af' }}>Loading…</p>
           ) : segments.length === 0 ? (
@@ -153,26 +158,10 @@ export default function SegmentsPage() {
           )}
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
-const pageStyle = {
-  minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e5e7eb',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-};
-const crumbStyle = { marginBottom: 16, fontSize: 13 };
-const crumbLinkStyle = { color: '#22d3ee', textDecoration: 'none', cursor: 'pointer' };
-const titleStyle = { fontSize: 28, margin: '0 0 16px 0', color: '#f4f4f5' };
-const cardStyle = {
-  background: 'rgba(15,23,42,0.6)',
-  border: '1px solid rgba(255,255,255,0.08)',
-  borderRadius: 12,
-  padding: 24,
-  marginBottom: 16,
-};
 const labelStyle = { display: 'block', marginBottom: 16, fontSize: 13, fontWeight: 600, color: '#d1d5db' };
 const inputStyle = {
   display: 'block', width: '100%', marginTop: 8, padding: '10px 12px',

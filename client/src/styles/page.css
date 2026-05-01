@@ -1,0 +1,155 @@
+/* Shared page primitives — used by every authenticated page so the product feels
+   like one app, not many. Owns: max-width, header typography, back-link styles.
+   The radial background is owned by AppShell — pages must NOT paint their own. */
+
+:root {
+  /* Surface tokens — shared across every authenticated page */
+  --surface-1: rgba(15, 23, 42, 0.6);
+  --surface-2: rgba(15, 23, 42, 0.4);
+  --surface-muted: rgba(255, 255, 255, 0.04);
+  --surface-border: rgba(255, 255, 255, 0.08);
+  --surface-border-strong: rgba(255, 255, 255, 0.12);
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --text-muted: #71717a;
+
+  --accent-blue: #3b82f6;
+  --accent-cyan: #22d3ee;
+  --accent-link: #60a5fa;
+  --accent-link-hover: #93c5fd;
+
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+
+  /* Page layout tokens */
+  --page-pad-y: 0;
+  --page-pad-x: 0;
+  --page-gap: 24px;
+
+  --page-title-size: 28px;
+  --page-title-weight: 700;
+  --page-title-color: var(--text-primary);
+
+  --page-subtitle-size: 14.5px;
+  --page-subtitle-color: var(--text-secondary);
+
+  --page-eyebrow-size: 11px;
+  --page-eyebrow-color: var(--text-tertiary);
+  --page-eyebrow-spacing: 0.22em;
+
+  --page-backlink-color: var(--accent-link);
+  --page-backlink-color-hover: var(--accent-link-hover);
+}
+
+.page {
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--page-pad-y) var(--page-pad-x);
+  color: #e4e4e7;
+  font-family: inherit;
+}
+
+.page--narrow { max-width: 900px; }
+.page--default { max-width: 1200px; }
+.page--wide { max-width: 1400px; }
+.page--fluid { max-width: none; }
+
+/* ============ Page header ============ */
+.page-header {
+  margin-bottom: var(--page-gap);
+}
+
+.page-header__backlink {
+  margin-bottom: 12px;
+}
+
+.page-header__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.page-header__text {
+  min-width: 0;
+  flex: 1;
+}
+
+.page-header__eyebrow {
+  font-size: var(--page-eyebrow-size);
+  text-transform: uppercase;
+  letter-spacing: var(--page-eyebrow-spacing);
+  color: var(--page-eyebrow-color);
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+
+[dir="rtl"] .page-header__eyebrow {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.page-header__title {
+  font-size: var(--page-title-size);
+  font-weight: var(--page-title-weight);
+  color: var(--page-title-color);
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.page-header__subtitle {
+  font-size: var(--page-subtitle-size);
+  color: var(--page-subtitle-color);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.page-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ============ Back link ============ */
+.page-backlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--page-backlink-color);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.page-backlink:hover {
+  color: var(--page-backlink-color-hover);
+}
+
+[dir="rtl"] .page-backlink svg {
+  transform: scaleX(-1);
+}
+
+/* ============ Shared card surface ============ */
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.card--lg { padding: 24px; border-radius: var(--radius-xl); }
+.card--sm { padding: 14px; border-radius: var(--radius-md); }
+.card--muted {
+  background: var(--surface-2);
+  border-style: dashed;
+}
+
+.card + .card { margin-top: 16px; }

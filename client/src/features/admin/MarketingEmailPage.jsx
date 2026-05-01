@@ -6,6 +6,7 @@ import BlockComposer from './marketing/BlockComposer.jsx';
 import { defaultBlocks, validateBlocks } from './marketing/blocks.js';
 import { renderEmailHtml } from './marketing/renderEmail.jsx';
 import RecentCampaignsPanel from './marketing/RecentCampaignsPanel.jsx';
+import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 import ScheduledCampaignsPanel from './marketing/ScheduledCampaignsPanel.jsx';
 import TemplatesPanel from './marketing/TemplatesPanel.jsx';
 import SuppressionsPanel from './marketing/SuppressionsPanel.jsx';
@@ -315,20 +316,22 @@ export default function MarketingEmailPage() {
   }
 
   return (
-    <div style={pageStyle}>
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '24px' }}>
-        <div style={crumbStyle}>
-          <Link href="/library"><a style={crumbLinkStyle}>← Library</a></Link>
-        </div>
-        <h1 style={titleStyle}>Marketing Email</h1>
-        <p style={subtitleStyle}>
-          Send a campaign via Resend. Always test on yourself first before sending to real users.{' '}
-          <Link href="/marketing/segments"><a style={{ color: '#22d3ee', textDecoration: 'none' }}>Segments</a></Link>
-          {' · '}
-          <Link href="/marketing/automations"><a style={{ color: '#22d3ee', textDecoration: 'none' }}>Automations</a></Link>
-        </p>
+    <PageContainer width="narrow">
+      <PageHeader
+        backLink={<BackLink href="/admin/library">Library</BackLink>}
+        title="Marketing Email"
+        subtitle={
+          <>
+            Send a campaign via Resend. Always test on yourself first before sending to real users.{' '}
+            <Link href="/admin/marketing/segments"><a style={{ color: '#22d3ee', textDecoration: 'none' }}>Segments</a></Link>
+            {' · '}
+            <Link href="/admin/marketing/automations"><a style={{ color: '#22d3ee', textDecoration: 'none' }}>Automations</a></Link>
+          </>
+        }
+      />
+      <div>
 
-        <div style={cardStyle}>
+        <div className="card card--lg">
           <label style={labelStyle}>
             Templates
             <span style={hintStyle}>
@@ -698,7 +701,7 @@ export default function MarketingEmailPage() {
           </div>
         )}
 
-        <div style={cardStyle}>
+        <div className="card card--lg">
           <h2 style={{ margin: '0 0 12px 0', fontSize: 16, color: '#e5e7eb' }}>Scheduled</h2>
           <p style={{ ...subtitleStyle, margin: '0 0 12px 0' }}>
             Upcoming sends. Cancel or reschedule until the dispatcher picks them up.
@@ -706,7 +709,7 @@ export default function MarketingEmailPage() {
           <ScheduledCampaignsPanel refreshKey={scheduleRefresh} />
         </div>
 
-        <div style={cardStyle}>
+        <div className="card card--lg">
           <h2 style={{ margin: '0 0 12px 0', fontSize: 16, color: '#e5e7eb' }}>Recent campaigns</h2>
           <p style={{ ...subtitleStyle, margin: '0 0 12px 0' }}>
             Open / click / bounce rates update via Resend webhooks. If they're stuck at zero, check that the webhook is configured.
@@ -714,7 +717,7 @@ export default function MarketingEmailPage() {
           <RecentCampaignsPanel refreshKey={result?.campaignId} />
         </div>
 
-        <div style={cardStyle}>
+        <div className="card card--lg">
           <h2 style={{ margin: '0 0 12px 0', fontSize: 16, color: '#e5e7eb' }}>Suppressions</h2>
           <p style={{ ...subtitleStyle, margin: '0 0 12px 0' }}>
             Addresses we'll never send marketing to. Bounces and complaints land here automatically.
@@ -732,7 +735,7 @@ export default function MarketingEmailPage() {
           </ul>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -766,26 +769,8 @@ function RadioOption({ value, checked, onChange, label, count, warn }) {
   );
 }
 
-const pageStyle = {
-  minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e5e7eb',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-};
-
-const crumbStyle = { marginBottom: 16, fontSize: 13 };
-const crumbLinkStyle = { color: '#22d3ee', textDecoration: 'none' };
-
-const titleStyle = { fontSize: 28, margin: '0 0 8px 0', color: '#f4f4f5' };
 const subtitleStyle = { fontSize: 14, color: '#9ca3af', margin: '0 0 24px 0' };
 
-const cardStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255,255,255,0.08)',
-  borderRadius: 12,
-  padding: 24,
-  marginBottom: 16,
-};
 
 const labelStyle = {
   display: 'block',

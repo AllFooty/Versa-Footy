@@ -35,7 +35,7 @@ const FooterLanding = () => {
 
   // Add Library link only when authenticated
   const quickLinks = isAuthenticated
-    ? [...baseQuickLinks, { name: t('nav.library'), href: '/library' }]
+    ? [...baseQuickLinks, { name: t('nav.library'), href: '/admin/library' }]
     : baseQuickLinks;
 
   const legalLinks = [

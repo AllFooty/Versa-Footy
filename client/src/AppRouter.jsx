@@ -1,6 +1,14 @@
-import React, { Suspense } from 'react';
-import { Link, Route, Switch } from 'wouter';
+import React, { Suspense, useEffect } from 'react';
+import { Link, Route, Switch, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
+
+function Redirect({ to }) {
+  const [, setLocation] = useLocation();
+  useEffect(() => {
+    setLocation(to, { replace: true });
+  }, [to, setLocation]);
+  return null;
+}
 
 import { AuthProvider } from './lib/AuthContext';
 import { LanguageProvider } from './lib/LanguageContext';
@@ -45,7 +53,7 @@ const NotFound = () => {
           <Link href="/">
             <a style={primaryButtonStyle}>{t('errors.notFound.goHome')}</a>
           </Link>
-          <Link href="/library">
+          <Link href="/admin/library">
             <a style={ghostButtonStyle}>{t('errors.notFound.library')}</a>
           </Link>
         </div>
@@ -197,14 +205,17 @@ export default function AppRouter() {
           </ProtectedRoute>
         </Route>
 
-        {/* Settings Page - For authenticated users */}
-        <Route path="/settings">
+        {/* Account - personal settings/profile (post-login) */}
+        <Route path="/account">
           <ProtectedRoute>
-            <AppShell pageTitleKey="nav.settings">
+            <AppShell pageTitleKey="nav.account">
               <SettingsPage />
             </AppShell>
           </ProtectedRoute>
         </Route>
+
+        {/* Legacy redirect: /settings -> /account */}
+        <Route path="/settings"><Redirect to="/account" /></Route>
 
         {/* Academy - Create/Join Organization */}
         <Route path="/org/create">
@@ -262,7 +273,7 @@ export default function AppRouter() {
 
         <Route path="/academy/settings">
           <AcademyProtectedRoute>
-            <AppShell pageTitleKey="nav.settings">
+            <AppShell pageTitleKey="nav.academySettings">
               <AcademySettings />
             </AppShell>
           </AcademyProtectedRoute>
@@ -285,21 +296,25 @@ export default function AppRouter() {
           </AcademyProtectedRoute>
         </Route>
 
-        {/* Library App - Admin only */}
-        <Route path="/library">
+        {/* Admin: Library */}
+        <Route path="/admin/library">
           <AdminProtectedRoute>
-            <LibraryApp />
+            <AppShell pageTitleKey="nav.library">
+              <LibraryApp />
+            </AppShell>
           </AdminProtectedRoute>
         </Route>
 
-        <Route path="/library/:rest*">
+        <Route path="/admin/library/:rest*">
           <AdminProtectedRoute>
-            <LibraryApp />
+            <AppShell pageTitleKey="nav.library">
+              <LibraryApp />
+            </AppShell>
           </AdminProtectedRoute>
         </Route>
 
-        {/* Videos Audit - Admin only */}
-        <Route path="/videos-audit">
+        {/* Admin: Videos Audit */}
+        <Route path="/admin/videos">
           <AdminProtectedRoute>
             <AppShell pageTitleKey="nav.videosAudit">
               <VideosAuditPage />
@@ -307,8 +322,8 @@ export default function AppRouter() {
           </AdminProtectedRoute>
         </Route>
 
-        {/* Marketing Email - Admin only */}
-        <Route path="/marketing">
+        {/* Admin: Marketing - Email */}
+        <Route path="/admin/marketing">
           <AdminProtectedRoute>
             <AppShell pageTitleKey="nav.marketingEmail">
               <MarketingEmailPage />
@@ -316,7 +331,8 @@ export default function AppRouter() {
           </AdminProtectedRoute>
         </Route>
 
-        <Route path="/marketing/segments">
+        {/* Admin: Marketing - Segments */}
+        <Route path="/admin/marketing/segments">
           <AdminProtectedRoute>
             <AppShell pageTitleKey="nav.marketingSegments">
               <SegmentsPage />
@@ -324,13 +340,22 @@ export default function AppRouter() {
           </AdminProtectedRoute>
         </Route>
 
-        <Route path="/marketing/automations">
+        {/* Admin: Marketing - Automations */}
+        <Route path="/admin/marketing/automations">
           <AdminProtectedRoute>
             <AppShell pageTitleKey="nav.marketingAutomations">
               <AutomationsPage />
             </AppShell>
           </AdminProtectedRoute>
         </Route>
+
+        {/* Legacy redirects from old admin URLs */}
+        <Route path="/library"><Redirect to="/admin/library" /></Route>
+        <Route path="/library/:rest*"><Redirect to="/admin/library" /></Route>
+        <Route path="/videos-audit"><Redirect to="/admin/videos" /></Route>
+        <Route path="/marketing"><Redirect to="/admin/marketing" /></Route>
+        <Route path="/marketing/segments"><Redirect to="/admin/marketing/segments" /></Route>
+        <Route path="/marketing/automations"><Redirect to="/admin/marketing/automations" /></Route>
 
         <Route>
           <NotFound />

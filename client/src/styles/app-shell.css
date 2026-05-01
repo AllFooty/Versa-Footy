@@ -159,6 +159,25 @@
   gap: 2px;
 }
 
+.app-nav-section__subheader {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #4b5563;
+  padding: 14px 12px 4px;
+  text-transform: uppercase;
+}
+
+[dir="rtl"] .app-nav-section__subheader {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.app-sidebar__pinned {
+  padding: 8px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 .app-nav-item {
   display: flex;
   align-items: center;

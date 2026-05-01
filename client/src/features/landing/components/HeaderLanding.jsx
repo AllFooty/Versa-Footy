@@ -36,7 +36,7 @@ export default function HeaderLanding() {
     const items = [...baseNavigationItems];
     if (isAuthenticated) items.push({ name: t('nav.home'), href: '/home' });
     if (isAuthenticated && isCoach) items.push({ name: t('nav.academy'), href: '/academy' });
-    if (isAuthenticated && isAdmin) items.push({ name: t('nav.library'), href: '/library' });
+    if (isAuthenticated && isAdmin) items.push({ name: t('nav.library'), href: '/admin/library' });
     return items;
   })();
 
@@ -329,7 +329,7 @@ export default function HeaderLanding() {
                       </div>
                     </div>
                     <div style={{ display: 'flex', gap: '10px' }}>
-                      <Link href="/settings">
+                      <Link href="/account">
                         <a
                           onClick={() => setIsMobileMenuOpen(false)}
                           style={{

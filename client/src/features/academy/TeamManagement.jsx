@@ -4,6 +4,7 @@ import { useAuth } from '../../lib/AuthContext';
 import { AGE_GROUPS } from '../../constants';
 import useTeams from './hooks/useTeams';
 import usePlayerRoster from './hooks/usePlayerRoster';
+import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 
 export default function TeamManagement() {
   const { t } = useTranslation();
@@ -94,13 +95,12 @@ export default function TeamManagement() {
   };
 
   return (
-    <div style={containerStyle}>
-      <div style={headerStyle}>
-        <h1 style={titleStyle}>{t('academy.teams.title')}</h1>
-        <p style={subtitleStyle}>
-          {t('academy.teams.subtitle', { orgName: activeOrg?.name })}
-        </p>
-      </div>
+    <PageContainer width="default">
+      <PageHeader
+        backLink={<BackLink href="/academy">{t('nav.dashboard')}</BackLink>}
+        title={t('academy.teams.title')}
+        subtitle={t('academy.teams.subtitle', { orgName: activeOrg?.name })}
+      />
 
       {/* Create Team */}
       <div style={sectionStyle}>
@@ -262,25 +262,13 @@ export default function TeamManagement() {
           )}
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
 // ─── Styles ────────────────────────────────────────────────────────────────────
 
-const containerStyle = {
-  minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-  padding: '32px',
-};
-
-const headerStyle = { maxWidth: 1200, margin: '0 auto 20px' };
-const titleStyle = { fontSize: 28, fontWeight: 700, margin: '0 0 4px' };
-const subtitleStyle = { fontSize: 14, color: '#9ca3af', margin: 0 };
-
-const sectionStyle = { maxWidth: 1200, margin: '0 auto 20px' };
+const sectionStyle = { margin: '0 0 20px' };
 
 const createBtnStyle = {
   padding: '10px 20px',
@@ -333,8 +321,7 @@ const cancelBtnStyle = {
 };
 
 const mainGridStyle = {
-  maxWidth: 1200,
-  margin: '0 auto',
+  margin: 0,
   display: 'grid',
   gridTemplateColumns: '320px 1fr',
   gap: 16,

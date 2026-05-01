@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import AppSidebar from './AppSidebar';
 import AppHeader from './AppHeader';
 import '../../styles/app-shell.css';
+import '../../styles/page.css';
 
 export default function AppShell({ children, pageTitle, pageTitleKey }) {
   const { t } = useTranslation();
@@ -14,6 +15,13 @@ export default function AppShell({ children, pageTitle, pageTitleKey }) {
   useEffect(() => {
     setMobileOpen(false);
   }, [location]);
+
+  useEffect(() => {
+    if (!resolvedTitle) return;
+    const ground = t('nav.ground');
+    const brand = t('common.appName');
+    document.title = `${ground} · ${resolvedTitle} · ${brand}`;
+  }, [resolvedTitle, t]);
 
   useEffect(() => {
     if (!mobileOpen) return undefined;

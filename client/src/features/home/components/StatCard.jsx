@@ -44,7 +44,6 @@ export default function StatCard({ label, value, accent = '#3b82f6', icon, suffi
             lineHeight: 1.1,
             marginBottom: 4,
             wordBreak: 'break-word',
-            fontFamily: "'Space Grotesk', 'Inter', system-ui, sans-serif",
           }}>
             {value}
             {suffix && <span style={{ fontSize: 14, fontWeight: 500, color: '#94a3b8', marginInlineStart: 4 }}>{suffix}</span>}

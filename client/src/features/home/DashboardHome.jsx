@@ -6,6 +6,7 @@ import { supabase } from '../../lib/supabase';
 import useAcademyDashboard from '../academy/hooks/useAcademyDashboard';
 import StatCard from './components/StatCard';
 import QuickAction from './components/QuickAction';
+import { PageContainer, PageHeader } from '../../components/Page';
 
 const Icons = {
   buildings: (
@@ -61,11 +62,6 @@ const Icons = {
       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
     </svg>
   ),
-  activity: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-    </svg>
-  ),
 };
 
 function usePendingInvitationsCount(email) {
@@ -111,27 +107,12 @@ export default function DashboardHome() {
   const noOrgs = !orgsLoading && organizations.length === 0;
 
   return (
-    <div className="dashboard-home">
-      <header style={{ marginBottom: 24 }}>
-        <p style={{
-          fontSize: 11,
-          textTransform: 'uppercase',
-          letterSpacing: '0.22em',
-          color: '#64748b',
-          margin: '0 0 6px',
-        }}>{t('home.eyebrow')}</p>
-        <h1 style={{
-          fontSize: 28,
-          fontWeight: 700,
-          color: '#f1f5f9',
-          margin: '0 0 4px',
-          fontFamily: "'Space Grotesk', 'Inter', system-ui, sans-serif",
-          letterSpacing: '-0.01em',
-        }}>{greeting}</h1>
-        <p style={{ fontSize: 14.5, color: '#94a3b8', margin: 0 }}>
-          {hasOrgs ? t('home.dashboardSubtitle', "Here's an overview of your operations") : t('home.whereToGo')}
-        </p>
-      </header>
+    <PageContainer width="default">
+      <PageHeader
+        eyebrow={t('home.eyebrow')}
+        title={greeting}
+        subtitle={hasOrgs ? t('home.dashboardSubtitle') : t('home.whereToGo')}
+      />
 
       {noOrgs && (
         <div style={{
@@ -212,13 +193,15 @@ export default function DashboardHome() {
             loading={!stats}
           />
         )}
-        <StatCard
-          label={t('home.stats.pendingInvitations', 'Pending Invitations')}
-          value={pendingInvites ?? 0}
-          accent="#f97316"
-          icon={Icons.invite}
-          loading={pendingInvites === null}
-        />
+        {(pendingInvites === null || pendingInvites > 0) && (
+          <StatCard
+            label={t('home.stats.pendingInvitations', 'Pending Invitations')}
+            value={pendingInvites ?? 0}
+            accent="#f97316"
+            icon={Icons.invite}
+            loading={pendingInvites === null}
+          />
+        )}
       </div>
 
       <section style={{ marginBottom: 24 }}>
@@ -257,7 +240,7 @@ export default function DashboardHome() {
           )}
           {isAdmin && (
             <QuickAction
-              href="/marketing"
+              href="/admin/marketing"
               title={t('nav.marketingEmail', 'Marketing Email')}
               description={t('home.marketingDescription', 'Send campaigns and manage segments')}
               icon={Icons.invite}
@@ -266,7 +249,7 @@ export default function DashboardHome() {
           )}
           {isAdmin && (
             <QuickAction
-              href="/library"
+              href="/admin/library"
               title={t('home.exerciseLibrary')}
               description={t('home.libraryDescription', 'Manage skills and exercises')}
               icon={Icons.library}
@@ -274,8 +257,8 @@ export default function DashboardHome() {
             />
           )}
           <QuickAction
-            href="/settings"
-            title={t('home.settings')}
+            href="/account"
+            title={t('nav.account', 'Account')}
             description={t('home.settingsDescription', 'Profile, security and preferences')}
             icon={Icons.settings}
             accent="#94a3b8"
@@ -283,39 +266,6 @@ export default function DashboardHome() {
         </div>
       </section>
 
-      <section>
-        <h2 style={{
-          fontSize: 13,
-          fontWeight: 700,
-          color: '#94a3b8',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          margin: '0 0 12px',
-        }}>{t('home.recentActivity', 'Recent activity')}</h2>
-        <div style={{
-          background: 'rgba(15, 23, 42, 0.4)',
-          border: '1px dashed rgba(255, 255, 255, 0.08)',
-          borderRadius: 14,
-          padding: '32px 24px',
-          textAlign: 'center',
-          color: '#71717a',
-        }}>
-          <div style={{
-            width: 40,
-            height: 40,
-            borderRadius: 10,
-            background: 'rgba(255, 255, 255, 0.04)',
-            color: '#475569',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 10,
-          }}>{Icons.activity}</div>
-          <div style={{ fontSize: 14, color: '#94a3b8' }}>
-            {t('home.activityComingSoon', 'No recent activity to show yet.')}
-          </div>
-        </div>
-      </section>
-    </div>
+    </PageContainer>
   );
 }

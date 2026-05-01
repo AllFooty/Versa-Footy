@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../lib/AuthContext';
 import useInvitations from './hooks/useInvitations';
+import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 
 const ROLE_OPTIONS_KEYS = ['player', 'coach', 'parent'];
 
@@ -16,14 +16,12 @@ export default function InvitationManager() {
   const TABS = [t('academy.invitations.tabEmail'), t('academy.invitations.tabCode'), t('academy.invitations.tabAll')];
 
   return (
-    <div style={containerStyle}>
-      <div style={headerStyle}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Link href="/academy" style={backLinkStyle}>&larr; {t('nav.dashboard')}</Link>
-        </div>
-        <h1 style={titleStyle}>{t('academy.invitations.title')}</h1>
-        <p style={subtitleStyle}>{t('academy.invitations.subtitle', { orgName: activeOrg?.name })}</p>
-      </div>
+    <PageContainer width="narrow">
+      <PageHeader
+        backLink={<BackLink href="/academy">{t('nav.dashboard')}</BackLink>}
+        title={t('academy.invitations.title')}
+        subtitle={t('academy.invitations.subtitle', { orgName: activeOrg?.name })}
+      />
 
       {/* Tabs */}
       <div style={tabBarStyle}>
@@ -57,7 +55,7 @@ export default function InvitationManager() {
           />
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -328,22 +326,9 @@ function InvitationsListTab({ invitations, loading, onRevoke }) {
 
 // ─── Styles ────────────────────────────────────────────────────────────────────
 
-const containerStyle = {
-  minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-  padding: '32px',
-};
-
-const headerStyle = { maxWidth: 900, margin: '0 auto 24px' };
-const titleStyle = { fontSize: 28, fontWeight: 700, margin: '12px 0 8px' };
-const subtitleStyle = { fontSize: 14, color: '#9ca3af', margin: 0 };
-const backLinkStyle = { color: '#3b82f6', textDecoration: 'none', fontSize: 14 };
 
 const tabBarStyle = {
-  maxWidth: 900,
-  margin: '0 auto 24px',
+  margin: '0 0 24px',
   display: 'flex',
   gap: 4,
   background: 'rgba(255, 255, 255, 0.04)',
@@ -382,7 +367,7 @@ const badgeStyle = {
   fontWeight: 600,
 };
 
-const contentStyle = { maxWidth: 900, margin: '0 auto' };
+const contentStyle = { margin: 0 };
 
 const cardStyle = {
   background: 'rgba(15, 23, 42, 0.6)',

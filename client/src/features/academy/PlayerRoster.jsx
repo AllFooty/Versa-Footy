@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../lib/AuthContext';
 import usePlayerRoster, { getPlayerStatus } from './hooks/usePlayerRoster';
 import { SkeletonRow } from '../../components/ui/Skeleton';
+import { PageContainer, PageHeader, BackLink } from '../../components/Page';
 
 const STATUS_OPTIONS = ['', 'active', 'idle', 'inactive'];
 const AGE_GROUPS = ['', 'U-7', 'U-8', 'U-9', 'U-10', 'U-11', 'U-12', 'U-13', 'U-14', 'U-15+'];
@@ -37,12 +38,12 @@ export default function PlayerRoster() {
   };
 
   return (
-    <div className="academy-container" style={containerStyle}>
-      <div style={headerStyle}>
-        <Link href="/academy" style={backLinkStyle}>&larr; {t('nav.dashboard')}</Link>
-        <h1 className="academy-title" style={titleStyle}>{t('academy.roster.title')}</h1>
-        <p style={subtitleStyle}>{t('academy.roster.playerCount', { count: players.length })}</p>
-      </div>
+    <PageContainer width="default">
+      <PageHeader
+        backLink={<BackLink href="/academy">{t('nav.dashboard')}</BackLink>}
+        title={t('academy.roster.title')}
+        subtitle={t('academy.roster.playerCount', { count: players.length })}
+      />
 
       {/* Filters */}
       <div className="roster-filters" style={filtersStyle}>
@@ -180,7 +181,7 @@ export default function PlayerRoster() {
           </>
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -206,21 +207,8 @@ const statusBadgeStyle = (status) => ({
 
 // ─── Styles ────────────────────────────────────────────────────────────────────
 
-const containerStyle = {
-  minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-  padding: '32px',
-};
-
-const headerStyle = { maxWidth: 1200, margin: '0 auto 20px' };
-const backLinkStyle = { color: '#3b82f6', textDecoration: 'none', fontSize: 14 };
-const titleStyle = { fontSize: 28, fontWeight: 700, margin: '12px 0 4px' };
-const subtitleStyle = { fontSize: 14, color: '#9ca3af', margin: 0 };
-
 const filtersStyle = {
-  maxWidth: 1200, margin: '0 auto 16px',
+  margin: '0 0 16px',
   display: 'flex', gap: 8, flexWrap: 'wrap',
 };
 
@@ -239,7 +227,7 @@ const filterSelectStyle = {
 };
 
 const tableWrapStyle = {
-  maxWidth: 1200, margin: '0 auto',
+  margin: 0,
   background: 'rgba(15, 23, 42, 0.6)',
   border: '1px solid rgba(255, 255, 255, 0.08)',
   borderRadius: 14,

@@ -1167,14 +1167,44 @@
 
 /* ============ Main Content Padding ============ */
 .library-main-content {
-  padding: 32px 40px;
+  padding: 0;
 }
 
 @media (max-width: 768px) {
   .library-main-content {
-    padding: 16px;
     padding-bottom: 100px; /* Space for FAB */
   }
+}
+
+/* ============ Library Stats Strip (used in PageHeader actions) ============ */
+.library-stats-strip {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.library-stats-strip__item {
+  text-align: center;
+  min-width: 56px;
+}
+
+.library-stats-strip__value {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.library-stats-strip__label {
+  font-size: 10.5px;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+[dir="rtl"] .library-stats-strip__label {
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 /* ============ Skeleton Loading ============ */
