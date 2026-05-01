@@ -46,9 +46,11 @@
     "exercise": "exercise",
     "exercises": "exercises",
     "devEnvironment": "DEV ENVIRONMENT",
-    "versaFooty": "Versa Footy"
+    "versaFooty": "Versa Footy",
+    "loadingAcademy": "Loading academy...",
+    "loadingProfile": "Loading profile...",
+    "videosAudit": "Videos Audit"
   },
-
   "nav": {
     "howItWorks": "How It Works",
     "features": "Features",
@@ -68,14 +70,13 @@
     "backToLanding": "Back to landing page",
     "backToRoster": "Back to Roster"
   },
-
   "landing": {
     "hero": {
       "tagline": "AI-Powered Soccer Training",
       "getStarted": "Get Started Free",
       "title": "Help Your Kid Build Pro Skills with",
       "titleHighlight": "Science-Based AI Training",
-      "subtitle": "Technical ability is made, not born, and the window to develop it closes sooner than you think. Our app gives kids aged 7\u201314 a science-based path to build it before it's too late.",
+      "subtitle": "Technical ability is made, not born, and the window to develop it closes sooner than you think. Our app gives kids aged 7–14 a science-based path to build it before it's too late.",
       "statsLine": "170+ skills. 10 categories. 1000+ exercises.",
       "appStoreAlt": "Download on the App Store",
       "playStoreAlt": "Get it on Google Play",
@@ -101,8 +102,8 @@
       "sectionTitle": "Why Versa Footy?",
       "sectionSubtitle": "Closing the Gap in Youth Soccer Development",
       "card1Title": "Club training alone isn't enough",
-      "card1Problem": "2\u20133 hours a week covers tactics and scrimmages \u2014 not the technical reps that matter.",
-      "card1Solution": "gives your kid daily structured training \u2014 the same approach the world's best young players use.",
+      "card1Problem": "2–3 hours a week covers tactics and scrimmages — not the technical reps that matter.",
+      "card1Solution": "gives your kid daily structured training — the same approach the world's best young players use.",
       "card2Title": "The window is real and closing",
       "card2Problem": "Fine motor skill development peaks in childhood. Miss it, and biology works against you.",
       "card2Solution": "delivers age-targeted training that builds the right skills at the right time.",
@@ -111,7 +112,7 @@
       "card3Solution": "adapts every session to what your kid has mastered, avoided, or needs next.",
       "card4Title": "Parents aren't coaches",
       "card4Problem": "You want to help but don't know what to teach or when.",
-      "card4Solution": "is the expert in your pocket \u2014 you encourage, it instructs."
+      "card4Solution": "is the expert in your pocket — you encourage, it instructs."
     },
     "features": {
       "sectionTitle": "Powerful Features",
@@ -168,11 +169,10 @@
     },
     "wengerQuote": {
       "quote": "You build a player like you build a house. First comes the basement, the base of a player is technique. You get that between the ages of 7 and 14 years of age. If you have no technical skill at 14, forget it. You will never be a football player.",
-      "author": "Ars\u00e8ne Wenger",
+      "author": "Arsène Wenger",
       "role": "Former Arsenal Manager & FIFA Chief of Global Football Development"
     }
   },
-
   "about": {
     "pageTitle": "About",
     "heroTitle": "About",
@@ -205,7 +205,6 @@
     "joinMissionText": "Be part of the revolution in youth soccer training. Download Versa Footy today and start your journey towards soccer excellence.",
     "getStarted": "Get Started Free"
   },
-
   "faq": {
     "pageTitle": "Frequently Asked Questions",
     "pageSubtitle": "Find answers to the most commonly asked questions about Versa Footy.",
@@ -234,25 +233,36 @@
     "q12": "How is Versa Footy's AI based on science?",
     "a12": "Versa Footy combines scientific knowledge with AI technology. The scientific part comes from research on how kids develop soccer skills at different ages. This forms the foundation of our training programs. The AI part then takes this scientific base and personalizes it for each kid. It looks at things like the kid's progress, how often they train, and which skills they're struggling with. This combination means each kid gets a scientifically-sound training program that's uniquely tailored to them."
   },
-
   "termsOfService": {
     "pageTitle": "Terms of Service",
     "lastUpdated": "Last updated: March 2, 2026",
-    "introParagraph1": "Welcome to Versa Footy. These Terms of Service (\u201cTerms\u201d) govern your access to and use of the Versa Footy platform, including our website at versafooty.com and our web application (collectively, the \u201cService\u201d), operated by Versa Footy (\u201cwe,\u201d \u201cus,\u201d or \u201cour\u201d), part of the All4Footy Family.",
+    "introParagraph1": "Welcome to Versa Footy. These Terms of Service (“Terms”) govern your access to and use of the Versa Footy platform, including our website at versafooty.com and our web application (collectively, the “Service”), operated by Versa Footy (“we,” “us,” or “our”), part of the All4Footy Family.",
     "introParagraph2": "By accessing or using the Service, you agree to be bound by these Terms. If you do not agree to these Terms, you may not use the Service. If you are a parent or legal guardian creating an account on behalf of a child under 18, you agree to these Terms on behalf of your child.",
     "section1Title": "1. Eligibility",
-    "section1Text": "Versa Footy is designed for youth soccer players ages 5\u201314 and their parents or legal guardians. Users under the age of 18 must have consent from a parent or legal guardian to use the Service. By creating an account for a minor, you represent that you are the child's parent or legal guardian and consent to their use of the Service under your supervision.",
+    "section1Text": "Versa Footy is designed for youth soccer players ages 5–14 and their parents or legal guardians. Users under the age of 18 must have consent from a parent or legal guardian to use the Service. By creating an account for a minor, you represent that you are the child's parent or legal guardian and consent to their use of the Service under your supervision.",
     "section2Title": "2. Account Registration",
-    "section2Text1": "To access certain features of the Service, you must create an account using a valid email address. We use a one-time password (OTP) system sent to your email for authentication\u2014no traditional passwords are required.",
+    "section2Text1": "To access certain features of the Service, you must create an account using a valid email address. We use a one-time password (OTP) system sent to your email for authentication—no traditional passwords are required.",
     "section2Text2": "You are responsible for:",
-    "section2List": ["Providing accurate and complete registration information", "Maintaining the security of your email account and any session access", "All activity that occurs under your account"],
+    "section2List": [
+      "Providing accurate and complete registration information",
+      "Maintaining the security of your email account and any session access",
+      "All activity that occurs under your account"
+    ],
     "section2Text3": "You must notify us immediately at info@versafooty.com if you believe your account has been compromised.",
     "section3Title": "3. Use of the Service",
     "section3Sub1Title": "3.1 Permitted Use",
     "section3Sub1Text": "Versa Footy provides AI-powered soccer training programs, including personalized exercises, skill tracking, progress monitoring, and gamification features such as XP, levels, streaks, and achievements. The Service is intended for personal, non-commercial use only.",
     "section3Sub2Title": "3.2 Prohibited Conduct",
     "section3Sub2Text": "You agree not to:",
-    "section3Sub2List": ["Use the Service for any unlawful purpose or in violation of these Terms", "Attempt to gain unauthorized access to the Service, other accounts, or our systems", "Reverse engineer, decompile, or disassemble any part of the Service", "Copy, reproduce, distribute, or create derivative works from our training content, including exercise descriptions, skill progressions, and training methodologies", "Use automated scripts, bots, or scrapers to access the Service", "Interfere with or disrupt the integrity or performance of the Service", "Misrepresent your identity or age group information"],
+    "section3Sub2List": [
+      "Use the Service for any unlawful purpose or in violation of these Terms",
+      "Attempt to gain unauthorized access to the Service, other accounts, or our systems",
+      "Reverse engineer, decompile, or disassemble any part of the Service",
+      "Copy, reproduce, distribute, or create derivative works from our training content, including exercise descriptions, skill progressions, and training methodologies",
+      "Use automated scripts, bots, or scrapers to access the Service",
+      "Interfere with or disrupt the integrity or performance of the Service",
+      "Misrepresent your identity or age group information"
+    ],
     "section4Title": "4. Training Content",
     "section4Text": "Our training library contains over 1,000 exercises covering 100+ technical soccer skills. This content is provided for informational and training purposes only.",
     "section4Sub1Title": "4.1 Not Medical or Professional Advice",
@@ -260,7 +270,7 @@
     "section4Sub2Title": "4.2 Assumption of Risk",
     "section4Sub2Text": "Physical activity carries inherent risks of injury. By using the Service, you acknowledge and accept these risks. You (or if applicable, your parent or guardian) are solely responsible for determining whether any exercise or training program is appropriate for the user's age, fitness level, and physical condition.",
     "section5Title": "5. Intellectual Property",
-    "section5Text1": "All content, features, and functionality of the Service\u2014including but not limited to text, graphics, logos, icons, images, exercise descriptions, training methodologies, skill progression systems, AI algorithms, and software\u2014are the exclusive property of Versa Footy and are protected by copyright, trademark, and other intellectual property laws.",
+    "section5Text1": "All content, features, and functionality of the Service—including but not limited to text, graphics, logos, icons, images, exercise descriptions, training methodologies, skill progression systems, AI algorithms, and software—are the exclusive property of Versa Footy and are protected by copyright, trademark, and other intellectual property laws.",
     "section5Text2": "We grant you a limited, non-exclusive, non-transferable, revocable license to access and use the Service for personal, non-commercial purposes in accordance with these Terms.",
     "section6Title": "6. User Data and Progress",
     "section6Text1": "When you use the Service, we collect and store data related to your training activity, including exercise completions, self-ratings, skill progress, XP, achievements, and session history. This data is used to personalize your training experience and track your development.",
@@ -271,14 +281,14 @@
     "section8Text1": "We may suspend or terminate your access to the Service at any time, with or without cause, and with or without notice. You may stop using the Service at any time. Upon termination, your right to use the Service will immediately cease.",
     "section8Text2": "If you wish to delete your account, please contact us at info@versafooty.com. Upon account deletion, your personal data will be removed in accordance with our Privacy Policy.",
     "section9Title": "9. Disclaimers",
-    "section9Text1": "THE SERVICE IS PROVIDED \u201cAS IS\u201d AND \u201cAS AVAILABLE\u201d WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.",
+    "section9Text1": "THE SERVICE IS PROVIDED “AS IS” AND “AS AVAILABLE” WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.",
     "section9Text2": "We do not warrant that the Service will be error-free, uninterrupted, or secure, or that any defects will be corrected. We do not guarantee any specific results from the use of the training programs.",
     "section10Title": "10. Limitation of Liability",
     "section10Text": "TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, VERSA FOOTY AND ITS OFFICERS, DIRECTORS, EMPLOYEES, AND AGENTS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF DATA, PERSONAL INJURY, OR PROPERTY DAMAGE ARISING OUT OF OR RELATED TO YOUR USE OF THE SERVICE.",
     "section11Title": "11. Indemnification",
     "section11Text": "You agree to indemnify, defend, and hold harmless Versa Footy and its affiliates, officers, directors, employees, and agents from any claims, damages, losses, liabilities, and expenses (including reasonable attorneys' fees) arising out of or related to your use of the Service, your violation of these Terms, or your violation of any rights of another party.",
     "section12Title": "12. Changes to These Terms",
-    "section12Text": "We may update these Terms from time to time. When we make changes, we will update the \u201cLast updated\u201d date at the top of this page. Your continued use of the Service after any changes constitutes your acceptance of the revised Terms. We encourage you to review these Terms periodically.",
+    "section12Text": "We may update these Terms from time to time. When we make changes, we will update the “Last updated” date at the top of this page. Your continued use of the Service after any changes constitutes your acceptance of the revised Terms. We encourage you to review these Terms periodically.",
     "section13Title": "13. Governing Law",
     "section13Text": "These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which Versa Footy operates, without regard to conflict of law principles.",
     "section14Title": "14. Contact Us",
@@ -286,67 +296,114 @@
     "section14Email": "Email: info@versafooty.com",
     "section14Website": "Website: versafooty.com"
   },
-
   "privacyPolicy": {
     "pageTitle": "Privacy Policy",
     "lastUpdated": "Last updated: March 2, 2026",
-    "introParagraph1": "Versa Footy (\u201cwe,\u201d \u201cus,\u201d or \u201cour\u201d), part of the All4Footy Family, is committed to protecting your privacy and the privacy of your children. This Privacy Policy explains how we collect, use, store, and protect information when you use our website at versafooty.com and our web application (collectively, the \u201cService\u201d).",
-    "introParagraph2": "Because our platform is designed for youth soccer players ages 5\u201314, we take children's privacy especially seriously. We encourage parents and legal guardians to read this policy carefully and to supervise their child's use of the Service.",
+    "introParagraph1": "Versa Footy (“we,” “us,” or “our”), part of the All4Footy Family, is committed to protecting your privacy and the privacy of your children. This Privacy Policy explains how we collect, use, store, and protect information when you use our website at versafooty.com and our web application (collectively, the “Service”).",
+    "introParagraph2": "Because our platform is designed for youth soccer players ages 5–14, we take children's privacy especially seriously. We encourage parents and legal guardians to read this policy carefully and to supervise their child's use of the Service.",
     "section1Title": "1. Information We Collect",
     "section1Sub1Title": "1.1 Account Information",
     "section1Sub1Text": "When you create an account, we collect:",
-    "section1Sub1List": ["Email address \u2014 used for authentication via one-time password (OTP) login", "Full name \u2014 optionally provided for your profile"],
+    "section1Sub1List": [
+      "Email address — used for authentication via one-time password (OTP) login",
+      "Full name — optionally provided for your profile"
+    ],
     "section1Sub2Title": "1.2 Player Profile Information",
     "section1Sub2Text": "To personalize the training experience, we collect:",
-    "section1Sub2List": ["Age group \u2014 used to tailor exercises and skill progressions to the appropriate developmental stage"],
+    "section1Sub2List": [
+      "Age group — used to tailor exercises and skill progressions to the appropriate developmental stage"
+    ],
     "section1Sub3Title": "1.3 Training and Activity Data",
     "section1Sub3Text": "As you use the Service, we automatically collect data about your training activity, including:",
-    "section1Sub3List": ["Training sessions (type, start time, completion time, status)", "Exercise completions and self-ratings (1\u20135 scale)", "Skill progress and mastery levels", "XP earned, current level, and achievements unlocked", "Daily activity metrics (exercises completed, practice minutes)", "Streak data (current streak, longest streak)"],
+    "section1Sub3List": [
+      "Training sessions (type, start time, completion time, status)",
+      "Exercise completions and self-ratings (1–5 scale)",
+      "Skill progress and mastery levels",
+      "XP earned, current level, and achievements unlocked",
+      "Daily activity metrics (exercises completed, practice minutes)",
+      "Streak data (current streak, longest streak)"
+    ],
     "section1Sub4Title": "1.4 Technical Data",
     "section1Sub4Text": "We may collect basic technical data necessary to operate the Service, such as session tokens stored in your browser's local storage. We do not use third-party analytics, advertising trackers, or cookies for marketing purposes.",
     "section2Title": "2. How We Use Your Information",
     "section2Text": "We use the information we collect for the following purposes:",
-    "section2TableHeaders": ["Purpose", "Data Used"],
+    "section2TableHeaders": [
+      "Purpose",
+      "Data Used"
+    ],
     "section2TableRows": [
-      ["Account authentication", "Email address"],
-      ["Personalizing training programs", "Age group, skill progress, exercise history"],
-      ["Tracking progress and achievements", "Training data, XP, levels, streaks"],
-      ["Improving the Service", "Aggregated, anonymized usage patterns"],
-      ["Communicating with you", "Email address (service-related messages only)"]
+      [
+        "Account authentication",
+        "Email address"
+      ],
+      [
+        "Personalizing training programs",
+        "Age group, skill progress, exercise history"
+      ],
+      [
+        "Tracking progress and achievements",
+        "Training data, XP, levels, streaks"
+      ],
+      [
+        "Improving the Service",
+        "Aggregated, anonymized usage patterns"
+      ],
+      [
+        "Communicating with you",
+        "Email address (service-related messages only)"
+      ]
     ],
     "section2NoSell": "We do not sell, rent, or share your personal information with third parties for their marketing purposes.",
     "section3Title": "3. Children's Privacy",
-    "section3Text": "Versa Footy is committed to protecting the privacy of children. Our platform is intended for use by children ages 5\u201314 under the supervision of a parent or legal guardian.",
-    "section3List": ["We require parental consent for accounts created for children under 13, in compliance with the Children's Online Privacy Protection Act (COPPA).", "We collect only the minimum information necessary to provide the training experience.", "We do not display targeted advertising to any users, including children.", "We do not collect precise geolocation data.", "Parents and guardians may review, update, or request deletion of their child's data at any time by contacting us at info@versafooty.com."],
+    "section3Text": "Versa Footy is committed to protecting the privacy of children. Our platform is intended for use by children ages 5–14 under the supervision of a parent or legal guardian.",
+    "section3List": [
+      "We require parental consent for accounts created for children under 13, in compliance with the Children's Online Privacy Protection Act (COPPA).",
+      "We collect only the minimum information necessary to provide the training experience.",
+      "We do not display targeted advertising to any users, including children.",
+      "We do not collect precise geolocation data.",
+      "Parents and guardians may review, update, or request deletion of their child's data at any time by contacting us at info@versafooty.com."
+    ],
     "section4Title": "4. Data Storage and Security",
     "section4Sub1Title": "4.1 Where We Store Your Data",
     "section4Sub1Text": "Your data is stored securely using Supabase, our backend infrastructure provider. Supabase provides a PostgreSQL database with built-in security features including row-level security (RLS) policies, ensuring that users can only access their own data.",
     "section4Sub2Title": "4.2 How We Protect Your Data",
     "section4Sub2Text": "We implement appropriate technical and organizational measures to protect your personal information, including:",
-    "section4Sub2List": ["Passwordless authentication via email OTP, eliminating risks associated with stored passwords", "Row-level security policies on all database tables, ensuring data isolation between users", "Encrypted data transmission using HTTPS", "Privacy-conscious session storage with fallback mechanisms for browsers with strict privacy settings"],
+    "section4Sub2List": [
+      "Passwordless authentication via email OTP, eliminating risks associated with stored passwords",
+      "Row-level security policies on all database tables, ensuring data isolation between users",
+      "Encrypted data transmission using HTTPS",
+      "Privacy-conscious session storage with fallback mechanisms for browsers with strict privacy settings"
+    ],
     "section5Title": "5. Third-Party Services",
     "section5Text": "We use the following third-party service to operate the platform:",
-    "section5List": ["Supabase \u2014 provides our database, authentication, and backend infrastructure. Supabase processes data on our behalf and is bound by their own privacy commitments."],
+    "section5List": [
+      "Supabase — provides our database, authentication, and backend infrastructure. Supabase processes data on our behalf and is bound by their own privacy commitments."
+    ],
     "section5NoTrackers": "We do not use third-party analytics services, advertising networks, or social media tracking pixels.",
     "section6Title": "6. Data Retention",
     "section6Text1": "We retain your personal information for as long as your account is active or as needed to provide the Service. Training and progress data is retained to maintain your historical performance records and enable the AI-powered personalization features.",
     "section6Text2": "If you request account deletion, we will remove your personal data within a reasonable timeframe. Some aggregated, anonymized data may be retained for service improvement purposes, but this data cannot be used to identify you.",
     "section7Title": "7. Your Rights",
     "section7Text": "Depending on your jurisdiction, you may have the following rights regarding your personal data:",
-    "section7List": ["Access \u2014 request a copy of the personal data we hold about you", "Correction \u2014 request that we correct inaccurate or incomplete data", "Deletion \u2014 request that we delete your personal data", "Data Portability \u2014 request your data in a structured, commonly used format", "Withdraw Consent \u2014 withdraw consent for processing where applicable"],
+    "section7List": [
+      "Access — request a copy of the personal data we hold about you",
+      "Correction — request that we correct inaccurate or incomplete data",
+      "Deletion — request that we delete your personal data",
+      "Data Portability — request your data in a structured, commonly used format",
+      "Withdraw Consent — withdraw consent for processing where applicable"
+    ],
     "section7ContactText": "To exercise any of these rights, please contact us at info@versafooty.com. We will respond to your request within 30 days.",
     "section8Title": "8. International Users",
     "section8Text": "If you access the Service from outside the country where our servers are located, your information may be transferred across international borders. By using the Service, you consent to the transfer and processing of your information in accordance with this Privacy Policy.",
     "section9Title": "9. Changes to This Policy",
-    "section9Text1": "We may update this Privacy Policy from time to time. When we make changes, we will update the \u201cLast updated\u201d date at the top of this page. We encourage you to review this policy periodically. Your continued use of the Service after any changes constitutes your acceptance of the updated policy.",
+    "section9Text1": "We may update this Privacy Policy from time to time. When we make changes, we will update the “Last updated” date at the top of this page. We encourage you to review this policy periodically. Your continued use of the Service after any changes constitutes your acceptance of the updated policy.",
     "section9Text2": "For material changes that affect how we handle children's data, we will make reasonable efforts to notify parents or guardians directly via email.",
     "section10Title": "10. Contact Us",
     "section10Text": "If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:",
     "section10Email": "Email: info@versafooty.com",
     "section10Website": "Website: versafooty.com",
-    "section10ChildrenNote": "For questions specifically about your child's data, please include \u201cChildren's Privacy\u201d in your email subject line."
+    "section10ChildrenNote": "For questions specifically about your child's data, please include “Children's Privacy” in your email subject line."
   },
-
   "footer": {
     "quickLinks": "Quick Links",
     "legal": "Legal",
@@ -360,12 +417,11 @@
     "all4Footy": "All4Footy",
     "empoweringSoccer": "Empowering the soccer community with innovative software solutions",
     "exploreProducts": "Explore Our Products",
-    "copyright": "\u00a9 {{year}} Versa Footy. All rights reserved.",
+    "copyright": "© {{year}} Versa Footy. All rights reserved.",
     "an": "An",
     "product": "Product",
     "ourProducts": "Our Products"
   },
-
   "signUpModal": {
     "title": "Get Started",
     "description": "Create your account to start training.",
@@ -374,7 +430,6 @@
     "submitButton": "Submit",
     "closeButton": "Close"
   },
-
   "all4FootyBar": {
     "all4Footy": "All4Footy",
     "family": "Family",
@@ -385,7 +440,6 @@
     "visitKaasFooty": "Visit KAAS Footy",
     "visitJuggleFooty": "Visit JUGGLE Footy"
   },
-
   "auth": {
     "signInLabel": "Sign In",
     "verifyLabel": "Verify",
@@ -403,8 +457,8 @@
     "verifyingButton": "Verifying...",
     "resendCodeButton": "Resend code",
     "resendCooldown": "Resend in {{seconds}}s",
-    "useDifferentEmail": "\u2190 Use different email",
-    "backToHome": "\u2190 Back to home",
+    "useDifferentEmail": "← Use different email",
+    "backToHome": "← Back to home",
     "successMessage": "Successfully signed in!",
     "checkEmailMessage": "Check your email for the login code!",
     "newCodeSentMessage": "A new code has been sent to your email!",
@@ -414,7 +468,6 @@
     "devSignInButton": "Dev Sign In",
     "devSigningIn": "Signing in..."
   },
-
   "home": {
     "eyebrow": "Home",
     "welcomeBack": "Welcome back, {{firstName}}",
@@ -427,7 +480,6 @@
     "exerciseLibrary": "Exercise Library",
     "settings": "Settings"
   },
-
   "academy": {
     "dashboard": {
       "fallbackName": "Academy",
@@ -497,7 +549,7 @@
       "noSkillDataAvailable": "No skill data available",
       "noRecentTraining": "No recent training sessions",
       "notEnoughTrendData": "Not enough data for trends yet",
-      "roadmapTitle": "Skill Roadmap \u2014 {{ageGroup}}",
+      "roadmapTitle": "Skill Roadmap — {{ageGroup}}",
       "roadmapProgress": "{{mastered}} of {{total}} skills mastered",
       "roadmapAll": "All",
       "roadmapShouldMaster": "Should master",
@@ -632,7 +684,6 @@
       "alreadyMemberDesc": "You're already part of {{orgName}}."
     }
   },
-
   "library": {
     "loadingData": "Loading data from Supabase...",
     "errorLoading": "Error loading data:",
@@ -664,7 +715,6 @@
     "noResultsHint": "Try different keywords or adjust your filters",
     "searchResultsSummary": "Found {{skills}} skill(s) and {{exercises}} exercise(s) across {{categories}} category(ies)"
   },
-
   "modals": {
     "category": {
       "editTitle": "Edit Category",
@@ -773,7 +823,8 @@
     },
     "confirm": {
       "defaultTitle": "Confirm",
-      "defaultCancel": "Cancel"
+      "defaultCancel": "Cancel",
+      "defaultConfirm": "Confirm"
     },
     "profileEdit": {
       "title": "Edit Profile",
@@ -790,7 +841,6 @@
       "openMenu": "Open profile menu"
     }
   },
-
   "settings": {
     "backToHome": "Back to Home",
     "pageTitle": "Settings",
@@ -811,7 +861,6 @@
     "deleteAccountConfirmButton": "Delete Account",
     "deletingAccount": "Deleting account..."
   },
-
   "filters": {
     "title": "Filters",
     "clearAll": "Clear All",
@@ -834,7 +883,6 @@
     "max": "Max",
     "exact": "exact"
   },
-
   "constants": {
     "difficulty": {
       "star1": "⭐ Beginner",
@@ -866,7 +914,6 @@
       "rebounder": "Rebounder"
     }
   },
-
   "errors": {
     "generic": "An unexpected error occurred. Please try again.",
     "enterEmail": "Please enter your email address",
@@ -886,6 +933,49 @@
       "description": "Try heading back to the landing page.",
       "goHome": "Go home",
       "library": "Library"
+    }
+  },
+  "videosAudit": {
+    "title": "Videos Audit",
+    "backToLibrary": "← Library",
+    "generatedAt": "Generated {{when}}",
+    "refresh": "Refresh",
+    "loading": "Loading…",
+    "tabs": {
+      "missing": "Missing video",
+      "broken": "Broken URL",
+      "mismatched": "Wrong folder id",
+      "external": "External (YT/Vimeo)",
+      "duplicates": "Multi-version",
+      "orphans": "Orphan files"
+    },
+    "empty": {
+      "missing": "No exercises are missing a video.",
+      "broken": "All video URLs point to existing files.",
+      "mismatched": "No folder-id mismatches.",
+      "external": "No external video URLs.",
+      "duplicates": "No exercises with multiple uploaded files.",
+      "orphans": "No orphan files."
+    },
+    "duplicates": {
+      "explanation": "These exercises have more than one file in storage. That's fine — open the exercise in the library and pick which one is shown to users.",
+      "candidateCount": "{{count}} candidate videos",
+      "showPaths": "Show paths"
+    },
+    "orphans": {
+      "title": "Orphan files",
+      "description": "Files in storage with no matching exercise.",
+      "deleteAll": "Delete all",
+      "deleting": "Deleting…",
+      "deleteConfirmTitle": "Delete orphan files?",
+      "deleteConfirmBody": "Delete {{count}} orphan files? This cannot be undone.",
+      "deleteSuccess": "Deleted {{count}} files.",
+      "deleteErrors": "Errors: {{errors}}"
+    },
+    "row": {
+      "skill": "skill {{id}}",
+      "urlFolder": "URL folder = #{{id}}",
+      "open": "open"
     }
   }
 }

@@ -85,18 +85,30 @@ export default function PlayerRoster() {
               <table style={tableStyle}>
                 <thead>
                   <tr>
-                    {COLUMNS.map((col) => (
-                      <th
-                        key={col.key}
-                        onClick={() => toggleSort(col.key)}
-                        style={thStyle}
-                      >
-                        {col.label}
-                        {sortField === col.key && (
-                          <span style={{ marginLeft: 4 }}>{sortDir === 'asc' ? '\u2191' : '\u2193'}</span>
-                        )}
-                      </th>
-                    ))}
+                    {COLUMNS.map((col) => {
+                      const isSorted = sortField === col.key;
+                      return (
+                        <th
+                          key={col.key}
+                          scope="col"
+                          aria-sort={isSorted ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
+                          style={thStyle}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => toggleSort(col.key)}
+                            style={thButtonStyle}
+                          >
+                            {col.label}
+                            {isSorted && (
+                              <span aria-hidden="true" style={{ marginInlineStart: 4 }}>
+                                {sortDir === 'asc' ? '\u2191' : '\u2193'}
+                              </span>
+                            )}
+                          </button>
+                        </th>
+                      );
+                    })}
                     <th style={thStyle}>{t('academy.roster.columnStatus')}</th>
                   </tr>
                 </thead>
@@ -128,7 +140,7 @@ export default function PlayerRoster() {
                             : t('common.never')}
                         </td>
                         <td style={tdStyle}>
-                          <span style={statusBadgeStyle(status)}>{status}</span>
+                          <span style={statusBadgeStyle(status)}>{t(`academy.roster.${status}`)}</span>
                         </td>
                       </tr>
                     );
@@ -155,7 +167,7 @@ export default function PlayerRoster() {
                           </span>
                         </div>
                         <span className={`roster-card-status roster-card-status--${status}`}>
-                          {status}
+                          {t(`academy.roster.${status}`)}
                         </span>
                       </div>
                       <div className="roster-card-stats">
@@ -254,9 +266,17 @@ const spinnerStyle = {
 const tableStyle = { width: '100%', borderCollapse: 'collapse', fontSize: 13 };
 
 const thStyle = {
-  textAlign: 'left', padding: '12px 10px', color: 'var(--text-dim)', fontWeight: 500,
+  textAlign: 'left', padding: 0,
   borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-  whiteSpace: 'nowrap', cursor: 'pointer', userSelect: 'none',
+  whiteSpace: 'nowrap',
+};
+
+const thButtonStyle = {
+  display: 'inline-flex', alignItems: 'center',
+  width: '100%', padding: '12px 10px',
+  background: 'transparent', border: 'none',
+  font: 'inherit', color: 'var(--text-dim)', fontWeight: 500,
+  textAlign: 'start', cursor: 'pointer', userSelect: 'none',
 };
 
 const trStyle = {

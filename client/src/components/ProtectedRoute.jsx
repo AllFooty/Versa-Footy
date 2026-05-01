@@ -9,7 +9,7 @@ const loadingContainerStyle = {
   alignItems: 'center',
   justifyContent: 'center',
   background: 'var(--bg-app-gradient)',
-  color: '#e5e7eb',
+  color: 'var(--text-primary)',
   fontFamily: 'var(--font-sans)',
 };
 
@@ -17,7 +17,7 @@ const spinnerStyle = {
   width: 40,
   height: 40,
   border: '3px solid #27272a',
-  borderTopColor: '#E63946',
+  borderTopColor: 'var(--color-cyan)',
   borderRadius: '50%',
   animation: 'spin 1s linear infinite',
 };
@@ -26,12 +26,11 @@ export default function ProtectedRoute({ children }) {
   const { t } = useTranslation();
   const { isAuthenticated, loading } = useAuth();
 
-  // Show loading state while checking session (this should be fast now)
   if (loading) {
     return (
       <div style={loadingContainerStyle}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={spinnerStyle} />
+        <div role="status" aria-live="polite" style={{ textAlign: 'center' }}>
+          <div style={spinnerStyle} aria-hidden="true" />
           <p style={{ marginTop: 16, color: 'var(--text-dim)' }}>{t('common.loading')}</p>
         </div>
       </div>

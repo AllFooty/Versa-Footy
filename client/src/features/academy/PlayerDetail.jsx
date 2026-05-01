@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import {
@@ -98,25 +98,12 @@ export default function PlayerDetail() {
       </div>
 
       {/* Tabs */}
-      <div style={tabBarStyle} role="tablist" aria-label={t('academy.playerDetail.tabsLabel', { defaultValue: 'Player sections' })}>
-        {TABS.map((tab, i) => {
-          const selected = activeTab === i;
-          return (
-            <button
-              key={tab}
-              id={`player-tab-${i}`}
-              role="tab"
-              aria-selected={selected}
-              aria-controls={`player-tabpanel-${i}`}
-              tabIndex={selected ? 0 : -1}
-              onClick={() => setActiveTab(i)}
-              style={selected ? activeTabBtnStyle : tabBtnStyle}
-            >
-              {tab}
-            </button>
-          );
-        })}
-      </div>
+      <PlayerTabs
+        tabs={TABS}
+        activeTab={activeTab}
+        onSelect={setActiveTab}
+        ariaLabel={t('academy.playerDetail.tabsLabel', { defaultValue: 'Player sections' })}
+      />
 
       {/* Tab Content */}
       <div
@@ -148,6 +135,65 @@ export default function PlayerDetail() {
           <TrendsTab weeklyTrends={weeklyTrends} errorMessage={sectionErrors?.dailyActivity} />
         )}
       </div>
+    </div>
+  );
+}
+
+// ─── Tabs (with arrow-key keyboard nav per WAI-ARIA tablist pattern) ─────────
+
+function PlayerTabs({ tabs, activeTab, onSelect, ariaLabel }) {
+  const tabRefs = useRef([]);
+
+  const focusTab = (index) => {
+    onSelect(index);
+    tabRefs.current[index]?.focus();
+  };
+
+  const handleKeyDown = (e) => {
+    const last = tabs.length - 1;
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+        e.preventDefault();
+        focusTab(activeTab === last ? 0 : activeTab + 1);
+        break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        e.preventDefault();
+        focusTab(activeTab === 0 ? last : activeTab - 1);
+        break;
+      case 'Home':
+        e.preventDefault();
+        focusTab(0);
+        break;
+      case 'End':
+        e.preventDefault();
+        focusTab(last);
+        break;
+      default:
+    }
+  };
+
+  return (
+    <div style={tabBarStyle} role="tablist" aria-label={ariaLabel} onKeyDown={handleKeyDown}>
+      {tabs.map((tab, i) => {
+        const selected = activeTab === i;
+        return (
+          <button
+            key={tab}
+            ref={(el) => { tabRefs.current[i] = el; }}
+            id={`player-tab-${i}`}
+            role="tab"
+            aria-selected={selected}
+            aria-controls={`player-tabpanel-${i}`}
+            tabIndex={selected ? 0 : -1}
+            onClick={() => onSelect(i)}
+            style={selected ? activeTabBtnStyle : tabBtnStyle}
+          >
+            {tab}
+          </button>
+        );
+      })}
     </div>
   );
 }

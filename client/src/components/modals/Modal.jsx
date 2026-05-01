@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useId } from 'react';
 import { X, Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { IconButton, Button, SecondaryButton } from '../ui';
@@ -12,13 +12,15 @@ const Modal = ({
   isOpen,
   onClose,
   onSave,
-  saveLabel = 'Save',
+  saveLabel,
   saveDisabled = false,
   showSave = true,
   large = false,
   children,
 }) => {
   const { t } = useTranslation();
+  const titleId = useId();
+  const resolvedSaveLabel = saveLabel ?? t('common.save', { defaultValue: 'Save' });
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -49,6 +51,9 @@ const Modal = ({
       <div
         className={`modal ${large ? 'modal-large' : ''}`}
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
       >
         {/* Header */}
         <div
@@ -60,6 +65,7 @@ const Modal = ({
           }}
         >
           <h2
+            id={titleId}
             className="modal-title"
             style={{
               margin: 0,
@@ -70,7 +76,7 @@ const Modal = ({
           >
             {title}
           </h2>
-          <IconButton onClick={onClose}>
+          <IconButton onClick={onClose} aria-label={t('common.close', { defaultValue: 'Close' })}>
             <X size={20} />
           </IconButton>
         </div>
@@ -93,7 +99,7 @@ const Modal = ({
           >
             <SecondaryButton onClick={onClose}>{t('common.cancel')}</SecondaryButton>
             <Button onClick={onSave} disabled={saveDisabled}>
-              <Save size={16} /> {saveLabel}
+              <Save size={16} /> {resolvedSaveLabel}
             </Button>
           </div>
         )}
