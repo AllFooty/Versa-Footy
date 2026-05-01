@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { useVideosAudit } from './useVideosAudit';
 import ConfirmModal from '../../components/modals/ConfirmModal';
+import { useIsMobile } from '../../hooks/useMediaQuery';
 
 // Multi-version is *informational*: exercises are allowed to have several
 // candidate videos per folder and one is picked as active in the library
@@ -28,17 +29,10 @@ export default function VideosAuditPage() {
   const { t } = useTranslation();
   const { audit, loading, error, refresh, deleteOrphans } = useVideosAudit();
   const [active, setActive] = useState('missing');
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState(null);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
 
   const counts = useMemo(
     () => Object.fromEntries(TAB_ORDER.map(({ key }) => [key, audit[key]?.length || 0])),

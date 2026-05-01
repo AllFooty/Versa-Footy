@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../lib/AuthContext';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
+import { useIsMobile } from '../../hooks/useMediaQuery';
 import '../../styles/academy.css';
 
 const NAV_KEYS = [
@@ -69,6 +70,26 @@ export default function AcademyLayout({ children }) {
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [settingPrimary, setSettingPrimary] = useState(false);
+  const isMobile = useIsMobile();
+  const closeBtnRef = useRef(null);
+  const hamburgerRef = useRef(null);
+
+  // ESC closes the mobile drawer; focus the close button when it opens, and
+  // restore focus to the hamburger when it closes.
+  useEffect(() => {
+    if (!mobileOpen) return undefined;
+    closeBtnRef.current?.focus();
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [mobileOpen]);
+
+  const handleClose = () => {
+    setMobileOpen(false);
+    hamburgerRef.current?.focus();
+  };
 
   const handleSetPrimary = async () => {
     if (!activeOrg?.id || activeOrg.is_primary) return;
@@ -87,27 +108,37 @@ export default function AcademyLayout({ children }) {
     return location.startsWith(href);
   };
 
+  const drawerOpen = isMobile && mobileOpen;
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', position: 'relative' }}>
       {/* Mobile top bar */}
       <div className="acad-mobile-bar" style={mobileBarStyle}>
-        <button className="acad-hamburger-btn" onClick={() => setMobileOpen(true)} style={hamburgerBtnStyle}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <button
+          ref={hamburgerRef}
+          className="acad-hamburger-btn"
+          onClick={() => setMobileOpen(true)}
+          style={hamburgerBtnStyle}
+          aria-label={t('academy.openMenu', { defaultValue: 'Open menu' })}
+          aria-expanded={drawerOpen}
+          aria-controls="academy-sidebar"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
             <line x1="3" y1="6" x2="21" y2="6" />
             <line x1="3" y1="12" x2="21" y2="12" />
             <line x1="3" y1="18" x2="21" y2="18" />
           </svg>
         </button>
         <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>
-          {activeOrg?.name || 'Academy'}
+          {activeOrg?.name || t('academy.fallbackName', { defaultValue: 'Academy' })}
         </span>
       </div>
 
       {/* Mobile overlay */}
-      {mobileOpen && (
+      {drawerOpen && (
         <div
           className="acad-overlay"
-          onClick={() => setMobileOpen(false)}
+          onClick={handleClose}
           style={{
             position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
             zIndex: 250, backdropFilter: 'blur(4px)',
@@ -117,16 +148,20 @@ export default function AcademyLayout({ children }) {
 
       {/* Sidebar */}
       <aside
+        id="academy-sidebar"
         className={`acad-sidebar ${mobileOpen ? 'acad-sidebar-open' : ''}`}
         style={sidebarStyle}
+        aria-label={t('academy.sidebarLabel', { defaultValue: 'Academy navigation' })}
       >
         {/* Close button (mobile only) */}
         <button
+          ref={closeBtnRef}
           className="acad-close-btn"
-          onClick={() => setMobileOpen(false)}
+          onClick={handleClose}
           style={closeBtnStyle}
+          aria-label={t('common.close', { defaultValue: 'Close' })}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
@@ -204,9 +239,9 @@ export default function AcademyLayout({ children }) {
 
         {/* Footer */}
         <div style={sidebarFooterStyle}>
-          <Link href="/">
+          <Link href="/home">
             <a style={backLinkStyle}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <line x1="19" y1="12" x2="5" y2="12" />
                 <polyline points="12 19 5 12 12 5" />
               </svg>
@@ -219,8 +254,13 @@ export default function AcademyLayout({ children }) {
         </div>
       </aside>
 
-      {/* Main content */}
-      <main className="acad-content" style={{ flex: 1, minWidth: 0 }}>
+      {/* Main content — inert while the mobile drawer is open so AT focus
+          stays inside the sidebar dialog. */}
+      <main
+        className="acad-content"
+        style={{ flex: 1, minWidth: 0 }}
+        {...(drawerOpen ? { inert: '' } : {})}
+      >
         {children}
       </main>
 

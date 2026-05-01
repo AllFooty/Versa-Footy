@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, Edit3, Play, ChevronRight, Video } from 'lucide-react';
 import { IconButton, Button, SecondaryButton, Badge, AgeBadge } from '../ui';
+import { useIsMobile } from '../../hooks/useMediaQuery';
 import { getYouTubeEmbedUrl } from '../../utils/youtube';
 import { renderDifficultyStars, getDifficultyStyle } from '../../utils/difficulty';
 
@@ -28,19 +29,9 @@ const PreviewModal = ({
   onEdit,
 }) => {
   const { t } = useTranslation();
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
   const [youtubeFullscreen, setYoutubeFullscreen] = useState(false);
   const videoRef = useRef(null);
-
-  // Detect mobile viewport
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   // Prevent body scroll when modal is open
   useEffect(() => {

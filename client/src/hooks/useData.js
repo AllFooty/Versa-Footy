@@ -548,6 +548,23 @@ export const useData = () => {
   // ============ Query Helpers ============
 
   /**
+   * Index exercises by skill_id once per `exercises` change. Lookups inside
+   * the filter pipeline below were O(skills × exercises) on every keystroke;
+   * this turns them into O(1).
+   */
+  const exercisesBySkillId = useMemo(() => {
+    const map = new Map();
+    for (const exercise of exercises) {
+      for (const skillId of exercise.skillIds) {
+        const bucket = map.get(skillId);
+        if (bucket) bucket.push(exercise);
+        else map.set(skillId, [exercise]);
+      }
+    }
+    return map;
+  }, [exercises]);
+
+  /**
    * Get a skill by its ID
    */
   const getSkillById = useCallback(
@@ -587,12 +604,12 @@ export const useData = () => {
       const exerciseFilter = filters.exerciseFilter || 'all';
       if (exerciseFilter === 'has') {
         result = result.filter((s) => {
-          const skillExercises = exercises.filter((e) => e.skillIds.includes(s.id));
+          const skillExercises = exercisesBySkillId.get(s.id) || [];
           return filterExercises(skillExercises, filters).length > 0;
         });
       } else if (exerciseFilter === 'none') {
         result = result.filter((s) => {
-          const skillExercises = exercises.filter((e) => e.skillIds.includes(s.id));
+          const skillExercises = exercisesBySkillId.get(s.id) || [];
           return filterExercises(skillExercises, filters).length === 0;
         });
       }
@@ -604,18 +621,17 @@ export const useData = () => {
         if (term) {
           result = result.filter((s) => {
             if (matchesAnyField([s.name, s.description || ''], term)) return true;
-            return exercises
-              .filter((e) => e.skillIds.includes(s.id))
-              .some((e) =>
-                matchesAnyField([e.name, e.description || '', ...(e.equipment || [])], term)
-              );
+            const skillExercises = exercisesBySkillId.get(s.id) || [];
+            return skillExercises.some((e) =>
+              matchesAnyField([e.name, e.description || '', ...(e.equipment || [])], term)
+            );
           });
         }
       }
 
       return result;
     },
-    [skills, exercises]
+    [skills, exercisesBySkillId]
   );
 
   /**
@@ -624,7 +640,7 @@ export const useData = () => {
    */
   const getExercisesForSkill = useCallback(
     (skillId, filters = {}) => {
-      const skillExercises = exercises.filter((e) => e.skillIds.includes(skillId));
+      const skillExercises = exercisesBySkillId.get(skillId) || [];
       let result = filterExercises(skillExercises, filters);
 
       // Sort by difficulty (easiest first), nulls last
@@ -637,7 +653,7 @@ export const useData = () => {
 
       return result;
     },
-    [exercises]
+    [exercisesBySkillId]
   );
 
   /**

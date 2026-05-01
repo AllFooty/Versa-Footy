@@ -85,28 +85,32 @@ export default function JoinOrganization() {
 
   return (
     <div style={containerStyle}>
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
       <div style={cardStyle}>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: 24 }}>
-            <div style={spinnerStyle} />
+          <div role="status" aria-live="polite" style={{ textAlign: 'center', padding: 24 }}>
+            <div style={spinnerStyle} aria-hidden="true" />
             <p style={{ marginTop: 16, color: 'var(--text-dim)' }}>{t('academy.join.lookingUpInvite')}</p>
           </div>
         ) : !code ? (
           <>
-            <div style={iconCircleStyle('#3b82f6')}>#</div>
+            <div style={iconCircleStyle('#3b82f6')} aria-hidden="true">#</div>
             <h1 style={titleStyle}>{t('academy.join.enterCodeTitle', 'Enter your invite code')}</h1>
             <p style={descStyle}>
               {t('academy.join.enterCodeDesc', 'Paste the 8-character code your coach gave you.')}
             </p>
             <form onSubmit={handleManualSubmit}>
+              <label htmlFor="invite-code" className="sr-only" style={visuallyHiddenStyle}>
+                {t('academy.join.enterCodeTitle', 'Enter your invite code')}
+              </label>
               <input
+                id="invite-code"
                 type="text"
                 value={manualCode}
                 onChange={(e) => setManualCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
                 placeholder="ABCD1234"
                 maxLength={12}
                 autoFocus
+                autoComplete="off"
                 style={codeInputStyle}
               />
               <button
@@ -121,22 +125,36 @@ export default function JoinOrganization() {
                 {t('academy.join.continue', 'Continue')}
               </button>
             </form>
-            <button onClick={() => navigate('/')} style={secondaryButtonStyle}>
+            <button onClick={() => navigate('/home')} style={secondaryButtonStyle}>
               {t('academy.join.goHome')}
             </button>
           </>
         ) : error && !invitation ? (
           <>
-            <div style={iconCircleStyle('#ef4444')}>!</div>
+            <div style={iconCircleStyle('#ef4444')} aria-hidden="true">!</div>
             <h1 style={titleStyle}>{t('academy.join.invalidInvite')}</h1>
             <p style={descStyle}>{error}</p>
-            <button onClick={() => navigate('/')} style={primaryButtonStyle}>
+            <button onClick={() => navigate('/join')} style={primaryButtonStyle}>
+              {t('academy.join.tryAnotherCode', 'Try another code')}
+            </button>
+            <button onClick={() => navigate('/home')} style={secondaryButtonStyle}>
               {t('academy.join.goHome')}
             </button>
           </>
-        ) : accepted ? (
+        ) : alreadyMember && !accepted ? (
           <>
-            <div style={iconCircleStyle('#22c55e')}>&#10003;</div>
+            <div style={iconCircleStyle('#22c55e')} aria-hidden="true">&#10003;</div>
+            <h1 style={titleStyle}>{t('academy.join.alreadyMember')}</h1>
+            <p style={descStyle}>
+              {t('academy.join.alreadyMemberDesc', { orgName: invitation.organizations?.name })}
+            </p>
+            <button onClick={() => navigate('/academy')} style={primaryButtonStyle}>
+              {t('academy.join.alreadyMemberCta', 'Go to academy')}
+            </button>
+          </>
+        ) : accepted ? (
+          <div role="status" aria-live="polite">
+            <div style={iconCircleStyle('#22c55e')} aria-hidden="true">&#10003;</div>
             <h1 style={titleStyle}>
               {alreadyMember ? t('academy.join.alreadyMember') : t('academy.join.youreIn')}
             </h1>
@@ -145,7 +163,7 @@ export default function JoinOrganization() {
                 ? t('academy.join.alreadyMemberDesc', { orgName: invitation.organizations?.name })
                 : t('academy.join.joinedAs', { orgName: invitation.organizations?.name, role: invitation.role })}
             </p>
-          </>
+          </div>
         ) : (
           <>
             <div style={iconCircleStyle('#3b82f6')}>&#9734;</div>
@@ -288,4 +306,16 @@ const codeInputStyle = {
   marginBottom: 12,
   outline: 'none',
   textTransform: 'uppercase',
+};
+
+const visuallyHiddenStyle = {
+  position: 'absolute',
+  width: 1,
+  height: 1,
+  padding: 0,
+  margin: -1,
+  overflow: 'hidden',
+  clip: 'rect(0, 0, 0, 0)',
+  whiteSpace: 'nowrap',
+  border: 0,
 };

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, SlidersHorizontal } from 'lucide-react';
 import { AGE_GROUPS, EQUIPMENT_OPTIONS, getDifficultyOptions, DURATION_OPTIONS } from '../constants';
+import { useIsMobile } from '../hooks/useMediaQuery';
 
 const FilterChip = ({ label, active, onClick }) => (
   <button
@@ -30,14 +31,7 @@ const AdvancedFilterPanel = ({
   onClose,
 }) => {
   const { t } = useTranslation();
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const isMobile = useIsMobile();
 
   const content = (
     <div className="filter-panel-grid">

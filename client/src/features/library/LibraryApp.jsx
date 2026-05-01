@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useCallback, useDeferredValue, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 // Components
@@ -58,6 +58,9 @@ export default function LibraryApp() {
 
   // Search & Filter state (unified)
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  // Defer the filter snapshot fed into the tree so keystrokes stay snappy
+  // while the (still O(skills × exercises)) filter pipeline runs concurrently.
+  const deferredFilters = useDeferredValue(filters);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
   const updateFilter = useCallback((key, value) => {
@@ -242,7 +245,7 @@ export default function LibraryApp() {
             getSkillsForCategory={getSkillsForCategory}
             getExercisesForSkill={getExercisesForSkill}
             getCategoriesMatchingSearch={getCategoriesMatchingSearch}
-            filters={filters}
+            filters={deferredFilters}
             // Category actions
             onEditCategory={openCategoryModal}
             onDeleteCategory={deleteCategory}
