@@ -68,7 +68,20 @@
     "invitations": "Invitations",
     "backToHome": "Back to Home",
     "backToLanding": "Back to landing page",
-    "backToRoster": "Back to Roster"
+    "backToRoster": "Back to Roster",
+    "videosAudit": "Videos Audit",
+    "marketingEmail": "Email Campaigns",
+    "marketingSegments": "Segments",
+    "marketingAutomations": "Automations",
+    "academySettings": "Academy Settings",
+    "account": "Account",
+    "ground": "Ground",
+    "groupAcademy": "Academy",
+    "groupAdmin": "Admin",
+    "adminMarketingSubheader": "Marketing",
+    "primary": "Primary navigation",
+    "skipToContent": "Skip to main content",
+    "openMenu": "Open navigation menu"
   },
   "landing": {
     "hero": {
@@ -478,7 +491,19 @@
     "createAcademy": "Create Your Academy",
     "createAcademyDescription": "Set up an organization to start tracking players",
     "exerciseLibrary": "Exercise Library",
-    "settings": "Settings"
+    "settings": "Settings",
+    "dashboardSubtitle": "Welcome back to your Ground",
+    "haveInviteCode": "Have an invite code?",
+    "libraryDescription": "Manage skills and exercises",
+    "marketingDescription": "Send campaigns and manage segments",
+    "accountDescription": "Profile, security and preferences",
+    "quickActions": "Quick actions",
+    "stats": {
+      "myAcademies": "My Academies",
+      "activeAcademy": "Active Academy",
+      "playersInOrg": "Players",
+      "pendingInvitations": "Pending Invitations"
+    }
   },
   "academy": {
     "dashboard": {
