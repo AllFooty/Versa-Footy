@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../lib/AuthContext';
 import { supabase } from '../../lib/supabase';
+import ConfirmModal from '../../components/modals/ConfirmModal';
 
 const ROLE_OPTIONS = ['owner', 'admin', 'coach', 'player', 'parent'];
 
@@ -28,6 +29,8 @@ export default function AcademySettings() {
   // Members
   const [members, setMembers] = useState([]);
   const [membersLoading, setMembersLoading] = useState(false);
+  const [memberError, setMemberError] = useState(null);
+  const [pendingRemoval, setPendingRemoval] = useState(null);
 
   // Fetch full org record (activeOrg from RPC only has id/name/type/role)
   useEffect(() => {
@@ -109,27 +112,34 @@ export default function AcademySettings() {
   };
 
   const handleRoleChange = async (memberId, newRole) => {
+    setMemberError(null);
     const { error } = await supabase
       .from('organization_members')
       .update({ role: newRole })
       .eq('id', memberId);
 
     if (error) {
-      alert(error.message);
+      setMemberError(error.message);
     } else {
       fetchMembers();
     }
   };
 
-  const handleRemoveMember = async (memberId, memberName) => {
-    if (!confirm(t('academy.settings.removeConfirm', { name: memberName || t('common.unknown') }))) return;
+  const requestRemoveMember = (memberId, memberName) => {
+    setMemberError(null);
+    setPendingRemoval({ memberId, memberName });
+  };
+
+  const handleConfirmRemove = async () => {
+    if (!pendingRemoval) return;
+    const { memberId } = pendingRemoval;
     const { error } = await supabase
       .from('organization_members')
       .delete()
       .eq('id', memberId);
 
     if (error) {
-      alert(error.message);
+      setMemberError(error.message);
     } else {
       fetchMembers();
     }
@@ -238,7 +248,7 @@ export default function AcademySettings() {
                   </select>
                   {m.role !== 'owner' && (
                     <button
-                      onClick={() => handleRemoveMember(m.id, m.full_name)}
+                      onClick={() => requestRemoveMember(m.id, m.full_name)}
                       style={removeBtnStyle}
                     >
                       {t('common.remove')}
@@ -250,6 +260,54 @@ export default function AcademySettings() {
           )}
         </div>
       </div>
+
+      {memberError && (
+        <div
+          role="alert"
+          style={{
+            position: 'fixed',
+            insetInlineEnd: 16,
+            bottom: 16,
+            maxWidth: 360,
+            background: 'var(--color-red-soft)',
+            border: '1px solid var(--color-red-soft-border)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '12px 14px',
+            color: '#fca5a5',
+            fontSize: 13,
+            zIndex: 100,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setMemberError(null)}
+            aria-label={t('common.close', { defaultValue: 'Close' })}
+            style={{
+              float: 'inline-end',
+              background: 'transparent',
+              border: 'none',
+              color: '#fca5a5',
+              cursor: 'pointer',
+              fontSize: 18,
+              lineHeight: 1,
+              padding: '0 0 0 8px',
+            }}
+          >×</button>
+          {memberError}
+        </div>
+      )}
+
+      <ConfirmModal
+        isOpen={pendingRemoval != null}
+        title={t('academy.settings.removeConfirmTitle', { defaultValue: 'Remove member?' })}
+        message={t('academy.settings.removeConfirm', {
+          name: pendingRemoval?.memberName || t('common.unknown'),
+        })}
+        confirmLabel={t('common.remove')}
+        confirmDanger
+        onConfirm={handleConfirmRemove}
+        onClose={() => setPendingRemoval(null)}
+      />
     </div>
   );
 }

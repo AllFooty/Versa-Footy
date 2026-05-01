@@ -72,7 +72,7 @@ class ErrorBoundary extends React.Component {
             >
               {t('errors.refreshPage')}
             </button>
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {import.meta.env.DEV && this.state.error && (
               <pre
                 style={{
                   marginTop: 24,

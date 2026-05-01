@@ -14,11 +14,6 @@ import {
   PreviewModal,
 } from '../../components/modals';
 
-// Landing page components
-import HeaderLanding from '../landing/components/HeaderLanding';
-import FooterLanding from '../landing/components/FooterLanding';
-import All4FootyFamilyBar from '../landing/components/All4FootyFamilyBar';
-
 // Hooks
 import { useData } from '../../hooks/useData';
 
@@ -27,7 +22,6 @@ import { DEFAULT_FILTERS } from '../../constants';
 
 // Styles
 import '../../styles/library.css';
-import '../landing/styles/landing-globals.css';
 
 /**
  * Versa Footy Library experience.
@@ -150,21 +144,16 @@ export default function LibraryApp() {
     : [];
 
   return (
-    <>
-      {/* Landing Page Header */}
-      <All4FootyFamilyBar />
-      <div
-        style={{
-          minHeight: '100vh',
-          background: 'linear-gradient(135deg, #0a0f1a 0%, #1a1f2e 50%, #0d1117 100%)',
-          fontFamily: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-          color: '#e4e4e7',
-        }}
-      >
-        <HeaderLanding />
-
-        {/* Library Stats Header */}
-        <Header stats={stats} />
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-app-gradient)',
+        fontFamily: 'var(--font-sans)',
+        color: 'var(--text-primary)',
+      }}
+    >
+      {/* Library Stats Header */}
+      <Header stats={stats} />
 
       {/* Main Content */}
       <main 
@@ -309,11 +298,7 @@ export default function LibraryApp() {
         onClose={() => setPreviewExercise(null)}
         onEdit={openExerciseModal}
       />
-      </div>
-
-      {/* Landing Page Footer */}
-      <FooterLanding />
-    </>
+    </div>
   );
 }
 

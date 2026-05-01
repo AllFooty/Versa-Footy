@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'wouter';
 import { useVideosAudit } from './useVideosAudit';
+import ConfirmModal from '../../components/modals/ConfirmModal';
 
 const TAB_ORDER = [
   { key: 'missing',    label: 'Missing video',      tone: 'danger' },
@@ -28,6 +29,7 @@ export default function VideosAuditPage() {
   const [isMobile, setIsMobile] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState(null);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth <= 768);
@@ -41,9 +43,12 @@ export default function VideosAuditPage() {
     [audit]
   );
 
-  const handleDeleteOrphans = async () => {
+  const requestDeleteOrphans = () => {
     if (!audit.orphans.length) return;
-    if (!window.confirm(`Delete ${audit.orphans.length} orphan files? This cannot be undone.`)) return;
+    setShowConfirmDelete(true);
+  };
+
+  const handleConfirmDeleteOrphans = async () => {
     setBusy(true);
     setMessage(null);
     const { removed, errors } = await deleteOrphans(audit.orphans.map((o) => o.path));
@@ -93,9 +98,19 @@ export default function VideosAuditPage() {
         {active === 'external'   && <ExternalList items={audit.external} />}
         {active === 'duplicates' && <DuplicatesList items={audit.duplicates} />}
         {active === 'orphans'    && (
-          <OrphansList items={audit.orphans} onDeleteAll={handleDeleteOrphans} busy={busy} />
+          <OrphansList items={audit.orphans} onDeleteAll={requestDeleteOrphans} busy={busy} />
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={showConfirmDelete}
+        title="Delete orphan files?"
+        message={`Delete ${audit.orphans?.length || 0} orphan files? This cannot be undone.`}
+        confirmLabel="Delete"
+        confirmDanger
+        onConfirm={handleConfirmDeleteOrphans}
+        onClose={() => setShowConfirmDelete(false)}
+      />
     </div>
   );
 }
