@@ -184,7 +184,7 @@ const ExternalList = ({ items }) =>
 const DuplicatesList = ({ items }) =>
   !items.length ? <Empty text="No exercises with multiple uploaded files." /> : (
     <>
-      <div style={{ padding: '8px 12px 12px', fontSize: 12, color: '#9ca3af' }}>
+      <div style={{ padding: '8px 12px 12px', fontSize: 12, color: 'var(--text-muted)' }}>
         These exercises have more than one file in storage. That's fine — open the
         exercise in the library and pick which one is shown to users.
       </div>
@@ -240,9 +240,9 @@ const Empty = ({ text }) => (
 const pageStyle = {
   minHeight: '100vh',
   background: '#0b1020',
-  color: '#e4e4e7',
+  color: 'var(--text-primary)',
   padding: 'max(16px, env(safe-area-inset-top)) 16px 24px',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  fontFamily: 'var(--font-sans)',
 };
 
 const headerRowStyle = {
@@ -254,28 +254,28 @@ const headerRowStyle = {
   flexWrap: 'wrap',
 };
 
-const crumbStyle = { fontSize: 12, color: '#9ca3af', marginBottom: 6 };
-const crumbLinkStyle = { color: '#9ca3af', textDecoration: 'none' };
+const crumbStyle = { fontSize: 12, color: 'var(--text-muted)', marginBottom: 6 };
+const crumbLinkStyle = { color: 'var(--text-muted)', textDecoration: 'none' };
 const titleStyle = { margin: 0, fontSize: 24, fontWeight: 700 };
-const subtitleStyle = { margin: '4px 0 0', fontSize: 12, color: '#9ca3af' };
+const subtitleStyle = { margin: '4px 0 0', fontSize: 12, color: 'var(--text-muted)' };
 
 const refreshBtnStyle = {
   padding: '10px 16px',
   minHeight: 44,
   background: 'rgba(96,165,250,0.12)',
   border: '1px solid rgba(96,165,250,0.3)',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-md)',
   color: '#bfdbfe',
   cursor: 'pointer',
   fontWeight: 600,
 };
 
 const errorBoxStyle = {
-  padding: 12, borderRadius: 8, marginBottom: 12,
+  padding: 12, borderRadius: 'var(--radius-md)', marginBottom: 12,
   background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#fecaca',
 };
 const messageBoxStyle = {
-  padding: 12, borderRadius: 8, marginBottom: 12,
+  padding: 12, borderRadius: 'var(--radius-md)', marginBottom: 12,
   background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', color: '#bbf7d0',
 };
 
@@ -296,7 +296,7 @@ const tabStyle = (isActive, tone, count, isMobile) => {
     display: 'inline-flex', alignItems: 'center', gap: 8,
     padding: isMobile ? '10px 12px' : '8px 14px',
     minHeight: isMobile ? 44 : 'auto',
-    borderRadius: 999,
+    borderRadius: 'var(--radius-full)',
     background: isActive ? c.bg : 'transparent',
     border: `1px solid ${c.border}`,
     color: c.text,
@@ -309,7 +309,7 @@ const tabStyle = (isActive, tone, count, isMobile) => {
 const badgeStyle = (tone, count) => {
   const c = toneColor(tone, count > 0);
   return {
-    padding: '2px 8px', borderRadius: 999,
+    padding: '2px 8px', borderRadius: 'var(--radius-full)',
     background: c.bg, color: c.text,
     fontSize: 11, fontWeight: 700,
     minWidth: 22, textAlign: 'center',
@@ -319,7 +319,7 @@ const badgeStyle = (tone, count) => {
 const panelStyle = {
   background: 'rgba(255,255,255,0.03)',
   border: '1px solid rgba(255,255,255,0.08)',
-  borderRadius: 12,
+  borderRadius: 'var(--radius-xl)',
   padding: 8,
 };
 
@@ -336,18 +336,18 @@ const rowStyle = {
 const rowMainStyle = { display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, flex: '1 1 auto', overflow: 'hidden' };
 const idChipStyle = {
   background: 'rgba(96,165,250,0.15)', color: '#bfdbfe',
-  padding: '2px 8px', borderRadius: 6, fontSize: 12, fontWeight: 700,
+  padding: '2px 8px', borderRadius: 'var(--radius-sm)', fontSize: 12, fontWeight: 700,
   flexShrink: 0,
 };
-const mutedStyle = { color: '#9ca3af', fontSize: 12, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' };
+const mutedStyle = { color: 'var(--text-muted)', fontSize: 12, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' };
 const codeStyle = {
-  fontFamily: 'ui-monospace, Menlo, monospace',
+  fontFamily: 'var(--font-mono)',
   fontSize: 11, color: '#d1d5db',
   minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
   flex: '1 1 auto',
 };
 const linkStyle = { color: '#60a5fa', textDecoration: 'none', fontSize: 12 };
-const detailsSummaryStyle = { cursor: 'pointer', color: '#9ca3af', fontSize: 12 };
+const detailsSummaryStyle = { cursor: 'pointer', color: 'var(--text-muted)', fontSize: 12 };
 
 const orphanHeaderStyle = {
   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -360,6 +360,6 @@ const dangerBtnStyle = {
   padding: '10px 16px', minHeight: 44,
   background: 'rgba(239,68,68,0.15)',
   border: '1px solid rgba(239,68,68,0.4)',
-  borderRadius: 8, color: '#fecaca',
+  borderRadius: 'var(--radius-md)', color: '#fecaca',
   cursor: 'pointer', fontWeight: 600,
 };

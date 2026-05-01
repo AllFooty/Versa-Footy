@@ -9,9 +9,9 @@ const containerStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
+  background: 'var(--bg-app-gradient)',
   color: '#e5e7eb',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  fontFamily: 'var(--font-sans)',
   padding: '32px',
 };
 
@@ -20,7 +20,7 @@ const cardStyle = {
   maxWidth: 420,
   background: 'rgba(255,255,255,0.04)',
   border: '1px solid rgba(255,255,255,0.08)',
-  borderRadius: 16,
+  borderRadius: 'var(--radius-2xl)',
   padding: '32px',
   boxShadow: '0 24px 70px rgba(0,0,0,0.4)',
   backdropFilter: 'blur(10px)',
@@ -29,7 +29,7 @@ const cardStyle = {
 const labelStyle = {
   display: 'block',
   marginBottom: 6,
-  color: '#cbd5e1',
+  color: 'var(--text-secondary)',
   fontWeight: 600,
   fontSize: 14,
 };
@@ -37,7 +37,7 @@ const labelStyle = {
 const inputStyle = {
   width: '100%',
   padding: '14px 16px',
-  borderRadius: 10,
+  borderRadius: 'var(--radius-lg)',
   border: '1px solid rgba(255,255,255,0.12)',
   background: 'rgba(255,255,255,0.03)',
   color: '#e5e7eb',
@@ -59,9 +59,9 @@ const otpInputStyle = {
 const buttonStyle = {
   width: '100%',
   padding: '14px 16px',
-  borderRadius: 12,
+  borderRadius: 'var(--radius-xl)',
   border: 'none',
-  background: 'linear-gradient(135deg, #2563eb, #22d3ee)',
+  background: 'var(--gradient-brand)',
   color: '#0b1020',
   fontWeight: 700,
   fontSize: 15,
@@ -81,7 +81,7 @@ const buttonDisabledStyle = {
 const secondaryButtonStyle = {
   width: '100%',
   padding: '12px 16px',
-  borderRadius: 10,
+  borderRadius: 'var(--radius-lg)',
   border: '1px solid rgba(255,255,255,0.12)',
   background: 'transparent',
   color: '#94a3b8',
@@ -94,7 +94,7 @@ const secondaryButtonStyle = {
 const errorStyle = {
   background: 'rgba(220, 38, 38, 0.15)',
   border: '1px solid rgba(220, 38, 38, 0.3)',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-md)',
   padding: '12px 14px',
   marginBottom: 16,
   color: '#fca5a5',
@@ -104,7 +104,7 @@ const errorStyle = {
 const successStyle = {
   background: 'rgba(34, 197, 94, 0.15)',
   border: '1px solid rgba(34, 197, 94, 0.3)',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-md)',
   padding: '12px 14px',
   marginBottom: 16,
   color: '#86efac',
@@ -346,7 +346,7 @@ export default function Login() {
               letterSpacing: '0.25em', 
               fontSize: 11, 
               margin: 0, 
-              color: '#64748b' 
+              color: 'var(--text-eyebrow)' 
             }}>
               {step === 'email' ? t('auth.signInLabel') : t('auth.verifyLabel')}
             </p>

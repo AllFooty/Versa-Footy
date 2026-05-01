@@ -135,13 +135,13 @@ const MobileSkillPicker = ({
           <div style={{
             fontSize: 17,
             fontWeight: 600,
-            color: '#e4e4e7',
-            fontFamily: "'Space Grotesk', sans-serif",
+            color: 'var(--text-primary)',
+            fontFamily: 'var(--font-display)',
           }}>
             {t('modals.exercise.selectSkills')}
           </div>
           {selectedCount > 0 && (
-            <div style={{ fontSize: 13, color: '#71717a', marginTop: 2 }}>
+            <div style={{ fontSize: 13, color: 'var(--text-dim)', marginTop: 2 }}>
               {selectedCount} {selectedCount > 1 ? t('modals.exercise.selectedCombo') : ''}
             </div>
           )}
@@ -154,7 +154,7 @@ const MobileSkillPicker = ({
             border: 'none',
             color: '#fff',
             padding: '10px 20px',
-            borderRadius: 8,
+            borderRadius: 'var(--radius-md)',
             fontSize: 15,
             fontWeight: 600,
             cursor: 'pointer',
@@ -177,7 +177,7 @@ const MobileSkillPicker = ({
           gap: 10,
           padding: '10px 14px',
           background: 'rgba(255,255,255,0.05)',
-          borderRadius: 10,
+          borderRadius: 'var(--radius-lg)',
           border: '1px solid rgba(255,255,255,0.08)',
         }}>
           <Search size={18} color="#71717a" />
@@ -191,7 +191,7 @@ const MobileSkillPicker = ({
               flex: 1,
               background: 'none',
               border: 'none',
-              color: '#e4e4e7',
+              color: 'var(--text-primary)',
               fontSize: 16,
               outline: 'none',
             }}
@@ -203,7 +203,7 @@ const MobileSkillPicker = ({
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#71717a',
+                color: 'var(--text-dim)',
                 padding: 4,
                 display: 'flex',
                 cursor: 'pointer',
@@ -298,7 +298,7 @@ const MobileSkillPicker = ({
                       background: 'rgba(255,255,255,0.02)',
                       border: 'none',
                       borderBottom: '1px solid rgba(255,255,255,0.05)',
-                      color: '#e4e4e7',
+                      color: 'var(--text-primary)',
                       fontSize: 15,
                       fontWeight: 600,
                       cursor: 'pointer',
@@ -318,7 +318,7 @@ const MobileSkillPicker = ({
                         marginInlineStart: 'auto',
                         padding: '2px 8px',
                         background: `${cat.color || '#8b5cf6'}25`,
-                        borderRadius: 10,
+                        borderRadius: 'var(--radius-lg)',
                         color: cat.color || '#8b5cf6',
                         fontSize: 12,
                         fontWeight: 700,
@@ -611,7 +611,7 @@ const ExerciseModal = ({
                 marginInlineStart: 8,
                 padding: '2px 8px',
                 background: 'rgba(251, 191, 36, 0.15)',
-                borderRadius: 4,
+                borderRadius: 'var(--radius-xs)',
                 color: '#fbbf24',
                 fontSize: 11,
                 fontWeight: 600,
@@ -646,7 +646,7 @@ const ExerciseModal = ({
                       border: `1px solid ${info.category?.color
                         ? `${info.category.color}40`
                         : 'rgba(139, 92, 246, 0.3)'}`,
-                      borderRadius: 8,
+                      borderRadius: 'var(--radius-md)',
                       color: info.category?.color || '#8b5cf6',
                       fontSize: 14,
                     }}
@@ -689,7 +689,7 @@ const ExerciseModal = ({
               padding: '14px 16px',
               background: 'rgba(255,255,255,0.04)',
               border: '1px dashed rgba(255,255,255,0.15)',
-              borderRadius: 10,
+              borderRadius: 'var(--radius-lg)',
               color: '#93c5fd',
               fontSize: 15,
               fontWeight: 500,
@@ -704,7 +704,7 @@ const ExerciseModal = ({
           </button>
 
           {selectedIds.length === 0 && (
-            <div style={{ marginTop: 6, fontSize: 12, color: '#71717a' }}>
+            <div style={{ marginTop: 6, fontSize: 12, color: 'var(--text-dim)' }}>
               {t('modals.exercise.skillPickerHint')}
             </div>
           )}
@@ -735,7 +735,7 @@ const ExerciseModal = ({
               marginInlineStart: 8,
               padding: '2px 8px',
               background: 'rgba(251, 191, 36, 0.15)',
-              borderRadius: 4,
+              borderRadius: 'var(--radius-xs)',
               color: '#fbbf24',
               fontSize: 11,
               fontWeight: 600,
@@ -770,7 +770,7 @@ const ExerciseModal = ({
                     border: `1px solid ${info.category?.color
                       ? `${info.category.color}40`
                       : 'rgba(139, 92, 246, 0.3)'}`,
-                    borderRadius: 6,
+                    borderRadius: 'var(--radius-sm)',
                     color: info.category?.color || '#8b5cf6',
                     fontSize: 13,
                   }}
@@ -800,7 +800,7 @@ const ExerciseModal = ({
         {/* Category-grouped skill picker */}
         <div style={{
           border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: 8,
+          borderRadius: 'var(--radius-md)',
           overflow: 'hidden',
           maxHeight: 280,
           overflowY: 'auto',
@@ -844,7 +844,7 @@ const ExerciseModal = ({
                       marginInlineStart: 'auto',
                       padding: '1px 7px',
                       background: `${cat.color || '#8b5cf6'}30`,
-                      borderRadius: 10,
+                      borderRadius: 'var(--radius-lg)',
                       color: cat.color || '#8b5cf6',
                       fontSize: 11,
                       fontWeight: 700,
@@ -900,7 +900,7 @@ const ExerciseModal = ({
         </div>
 
         {selectedIds.length === 0 && (
-          <div style={{ marginTop: 6, fontSize: 12, color: '#71717a' }}>
+          <div style={{ marginTop: 6, fontSize: 12, color: 'var(--text-dim)' }}>
             {t('modals.exercise.skillPickerRequired')}
           </div>
         )}
@@ -951,7 +951,7 @@ const ExerciseModal = ({
                 padding: isMobile ? '10px 12px' : '8px 12px',
                 background: 'rgba(74,222,128,0.08)',
                 border: '1px solid rgba(74,222,128,0.25)',
-                borderRadius: 8,
+                borderRadius: 'var(--radius-md)',
                 color: '#a1a1aa',
                 fontSize: 12,
                 wordBreak: 'break-all',
@@ -986,7 +986,7 @@ const ExerciseModal = ({
                 padding: isMobile ? '12px 16px' : '10px 14px',
                 background: 'rgba(255,255,255,0.04)',
                 border: '1px dashed rgba(255,255,255,0.12)',
-                borderRadius: 8,
+                borderRadius: 'var(--radius-md)',
                 color: '#a1a1aa',
                 fontSize: isMobile ? 14 : 13,
                 cursor: 'pointer',
@@ -1046,7 +1046,7 @@ const ExerciseModal = ({
               padding: '8px 12px',
               background: 'rgba(74, 222, 128, 0.1)',
               border: '1px solid rgba(74, 222, 128, 0.3)',
-              borderRadius: 8,
+              borderRadius: 'var(--radius-md)',
               color: '#4ade80',
               fontSize: 13,
               display: 'flex',
@@ -1099,7 +1099,7 @@ const ExerciseModal = ({
               padding: '8px 12px',
               background: 'rgba(248, 113, 113, 0.1)',
               border: '1px solid rgba(248, 113, 113, 0.3)',
-              borderRadius: 8,
+              borderRadius: 'var(--radius-md)',
               color: '#f87171',
               fontSize: 12,
             }}>
@@ -1152,7 +1152,7 @@ const ExerciseModal = ({
               ))}
             </Select>
           </FormField>
-          <div style={{ marginTop: 4, fontSize: 12, color: '#71717a' }}>
+          <div style={{ marginTop: 4, fontSize: 12, color: 'var(--text-dim)' }}>
             {t('modals.exercise.minDurationHint')}
           </div>
           {/* Timer mode info based on category */}
@@ -1166,7 +1166,7 @@ const ExerciseModal = ({
             return (
               <div style={{
                 marginTop: 8, padding: '8px 12px', fontSize: 12,
-                background: 'rgba(37, 99, 235, 0.08)', borderRadius: 8,
+                background: 'rgba(37, 99, 235, 0.08)', borderRadius: 'var(--radius-md)',
                 color: '#60a5fa', lineHeight: 1.5,
               }}>
                 <span style={{ fontWeight: 600 }}>Training timer:</span>{' '}
@@ -1196,7 +1196,7 @@ const ExerciseModal = ({
                     padding: isMobile ? '8px 12px' : '5px 10px',
                     background: 'rgba(59, 130, 246, 0.15)',
                     border: '1px solid rgba(59, 130, 246, 0.3)',
-                    borderRadius: 6,
+                    borderRadius: 'var(--radius-sm)',
                     color: '#93c5fd',
                     fontSize: isMobile ? 14 : 13,
                   }}

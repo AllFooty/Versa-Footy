@@ -216,12 +216,12 @@ export default function AcademySettings() {
       <div style={sectionStyle}>
         <div style={cardStyle}>
           <h2 style={cardTitleStyle}>{t('academy.settings.membersTitle')}</h2>
-          <p style={{ fontSize: 13, color: '#71717a', margin: '0 0 16px' }}>
+          <p style={{ fontSize: 13, color: 'var(--text-dim)', margin: '0 0 16px' }}>
             {t('academy.settings.memberCount', { count: members.length })}
           </p>
 
           {membersLoading ? (
-            <p style={{ color: '#71717a', fontSize: 13 }}>{t('academy.settings.loadingMembers')}</p>
+            <p style={{ color: 'var(--text-dim)', fontSize: 13 }}>{t('academy.settings.loadingMembers')}</p>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {members.map((m) => (
@@ -233,7 +233,7 @@ export default function AcademySettings() {
                     <p style={{ fontSize: 14, fontWeight: 500, margin: 0 }}>
                       {m.full_name || t('common.unknown')}
                     </p>
-                    <p style={{ fontSize: 12, color: '#71717a', margin: 0 }}>
+                    <p style={{ fontSize: 12, color: 'var(--text-dim)', margin: 0 }}>
                       {m.email || m.user_id.slice(0, 8)}
                     </p>
                   </div>
@@ -316,22 +316,22 @@ export default function AcademySettings() {
 
 const containerStyle = {
   minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  background: 'var(--bg-app-gradient)',
+  color: 'var(--text-primary)',
+  fontFamily: 'var(--font-sans)',
   padding: '32px',
 };
 
 const headerStyle = { maxWidth: 900, margin: '0 auto 24px' };
 const titleStyle = { fontSize: 28, fontWeight: 700, margin: '0 0 4px' };
-const subtitleStyle = { fontSize: 14, color: '#9ca3af', margin: 0 };
+const subtitleStyle = { fontSize: 14, color: 'var(--text-muted)', margin: 0 };
 
 const sectionStyle = { maxWidth: 900, margin: '0 auto 20px' };
 
 const cardStyle = {
   background: 'rgba(15, 23, 42, 0.6)',
   border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 16,
+  borderRadius: 'var(--radius-2xl)',
   padding: 24,
 };
 
@@ -339,14 +339,14 @@ const cardTitleStyle = { fontSize: 18, fontWeight: 600, margin: '0 0 16px' };
 
 const fieldStyle = { marginBottom: 16 };
 const rowStyle = { display: 'flex', gap: 12, flexWrap: 'wrap' };
-const labelStyle = { display: 'block', fontSize: 13, fontWeight: 500, color: '#9ca3af', marginBottom: 6 };
+const labelStyle = { display: 'block', fontSize: 13, fontWeight: 500, color: 'var(--text-muted)', marginBottom: 6 };
 const inputStyle = {
   width: '100%',
   padding: '10px 12px',
   background: 'rgba(255, 255, 255, 0.06)',
   border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 8,
-  color: '#e4e4e7',
+  borderRadius: 'var(--radius-md)',
+  color: 'var(--text-primary)',
   fontSize: 14,
   outline: 'none',
   boxSizing: 'border-box',
@@ -354,12 +354,12 @@ const inputStyle = {
 
 const primaryBtnStyle = {
   padding: '12px 24px',
-  background: 'linear-gradient(135deg, #2563eb, #22d3ee)',
+  background: 'var(--gradient-brand)',
   color: '#0b1020',
   fontWeight: 600,
   fontSize: 14,
   border: 'none',
-  borderRadius: 10,
+  borderRadius: 'var(--radius-lg)',
   cursor: 'pointer',
 };
 
@@ -369,7 +369,7 @@ const memberRowStyle = {
   gap: 10,
   padding: '10px 12px',
   background: 'rgba(255, 255, 255, 0.03)',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-md)',
 };
 
 const avatarStyle = {
@@ -390,8 +390,8 @@ const roleSelectStyle = {
   padding: '5px 8px',
   background: 'rgba(255, 255, 255, 0.06)',
   border: '1px solid rgba(255, 255, 255, 0.1)',
-  borderRadius: 6,
-  color: '#e4e4e7',
+  borderRadius: 'var(--radius-sm)',
+  color: 'var(--text-primary)',
   fontSize: 12,
 };
 
@@ -399,7 +399,7 @@ const removeBtnStyle = {
   padding: '5px 10px',
   background: 'rgba(239, 68, 68, 0.12)',
   border: '1px solid rgba(239, 68, 68, 0.2)',
-  borderRadius: 6,
+  borderRadius: 'var(--radius-sm)',
   color: '#ef4444',
   fontSize: 11,
   fontWeight: 500,

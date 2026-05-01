@@ -8,9 +8,9 @@ const containerStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
+  background: 'var(--bg-app-gradient)',
   color: '#e5e7eb',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  fontFamily: 'var(--font-sans)',
   padding: '32px',
 };
 
@@ -24,7 +24,7 @@ const eyebrowStyle = {
   letterSpacing: '0.25em',
   fontSize: 11,
   margin: '0 0 8px 0',
-  color: '#64748b',
+  color: 'var(--text-eyebrow)',
 };
 
 const titleStyle = {
@@ -53,7 +53,7 @@ const primaryCardStyle = {
   padding: '20px',
   background: 'rgba(15, 23, 42, 0.6)',
   border: '1px solid rgba(34, 211, 238, 0.15)',
-  borderRadius: 14,
+  borderRadius: 'var(--radius-card)',
   textDecoration: 'none',
   color: '#e5e7eb',
   boxShadow: '0 12px 40px rgba(0,0,0,0.3)',
@@ -63,7 +63,7 @@ const primaryCardStyle = {
 const iconCircleStyle = {
   width: 48,
   height: 48,
-  borderRadius: 12,
+  borderRadius: 'var(--radius-xl)',
   background: 'rgba(34, 211, 238, 0.08)',
   display: 'flex',
   alignItems: 'center',
@@ -90,7 +90,7 @@ const secondaryCardStyle = {
   padding: '14px 16px',
   background: 'rgba(255,255,255,0.03)',
   border: '1px solid rgba(255,255,255,0.08)',
-  borderRadius: 12,
+  borderRadius: 'var(--radius-xl)',
   textDecoration: 'none',
   color: '#d1d5db',
   fontSize: 14,
@@ -163,7 +163,7 @@ export default function HomePage() {
       <div style={containerStyle}>
         <div style={{ textAlign: 'center' }}>
           <div style={spinnerStyle} />
-          <p style={{ marginTop: 16, color: '#71717a' }}>{t('common.loading')}</p>
+          <p style={{ marginTop: 16, color: 'var(--text-dim)' }}>{t('common.loading')}</p>
         </div>
         <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
       </div>

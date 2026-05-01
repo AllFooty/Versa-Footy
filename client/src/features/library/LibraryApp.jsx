@@ -168,7 +168,7 @@ export default function LibraryApp() {
               justifyContent: 'center',
               alignItems: 'center',
               padding: '80px 0',
-              color: '#71717a',
+              color: 'var(--text-dim)',
             }}
           >
             <div style={{ textAlign: 'center' }}>
@@ -194,7 +194,7 @@ export default function LibraryApp() {
             style={{
               background: 'rgba(220, 38, 38, 0.1)',
               border: '1px solid rgba(220, 38, 38, 0.3)',
-              borderRadius: 8,
+              borderRadius: 'var(--radius-md)',
               padding: 16,
               marginBottom: 24,
               color: '#fca5a5',

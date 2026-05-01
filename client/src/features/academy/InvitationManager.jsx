@@ -219,7 +219,7 @@ function CodeInviteTab({ inviteByCode }) {
             </button>
           </div>
           <div style={{ marginTop: 12 }}>
-            <p style={{ fontSize: 12, color: '#71717a', marginBottom: 4 }}>{t('academy.invitations.shareLink')}</p>
+            <p style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 4 }}>{t('academy.invitations.shareLink')}</p>
             <div style={codeBoxStyle}>
               <span style={{ fontSize: 13, color: '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
                 {joinUrl}
@@ -229,7 +229,7 @@ function CodeInviteTab({ inviteByCode }) {
               </button>
             </div>
           </div>
-          <p style={{ fontSize: 12, color: '#71717a', marginTop: 12 }}>
+          <p style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 12 }}>
             {t('academy.invitations.expiresIn30Days')}
           </p>
           <button
@@ -262,13 +262,13 @@ function InvitationsListTab({ invitations, loading, onRevoke }) {
   };
 
   if (loading) {
-    return <p style={{ color: '#71717a', textAlign: 'center', padding: 32 }}>{t('academy.invitations.loadingInvitations')}</p>;
+    return <p style={{ color: 'var(--text-dim)', textAlign: 'center', padding: 32 }}>{t('academy.invitations.loadingInvitations')}</p>;
   }
 
   if (invitations.length === 0) {
     return (
       <div style={{ ...cardStyle, textAlign: 'center' }}>
-        <p style={{ color: '#71717a', fontSize: 14 }}>{t('academy.invitations.noInvitationsYet')}</p>
+        <p style={{ color: 'var(--text-dim)', fontSize: 14 }}>{t('academy.invitations.noInvitationsYet')}</p>
       </div>
     );
   }
@@ -292,7 +292,7 @@ function InvitationsListTab({ invitations, loading, onRevoke }) {
               <tr key={inv.id} style={trStyle}>
                 <td style={tdStyle}>
                   {inv.email || (
-                    <span style={{ fontFamily: 'monospace', fontSize: 13 }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13 }}>
                       {t('academy.invitations.codePrefix', { code: inv.invite_code })}
                     </span>
                   )}
@@ -330,15 +330,15 @@ function InvitationsListTab({ invitations, loading, onRevoke }) {
 
 const containerStyle = {
   minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  background: 'var(--bg-app-gradient)',
+  color: 'var(--text-primary)',
+  fontFamily: 'var(--font-sans)',
   padding: '32px',
 };
 
 const headerStyle = { maxWidth: 900, margin: '0 auto 24px' };
 const titleStyle = { fontSize: 28, fontWeight: 700, margin: '12px 0 8px' };
-const subtitleStyle = { fontSize: 14, color: '#9ca3af', margin: 0 };
+const subtitleStyle = { fontSize: 14, color: 'var(--text-muted)', margin: 0 };
 const backLinkStyle = { color: '#3b82f6', textDecoration: 'none', fontSize: 14 };
 
 const tabBarStyle = {
@@ -347,7 +347,7 @@ const tabBarStyle = {
   display: 'flex',
   gap: 4,
   background: 'rgba(255, 255, 255, 0.04)',
-  borderRadius: 10,
+  borderRadius: 'var(--radius-lg)',
   padding: 4,
 };
 
@@ -356,8 +356,8 @@ const tabStyle = {
   padding: '10px 16px',
   background: 'transparent',
   border: 'none',
-  borderRadius: 8,
-  color: '#9ca3af',
+  borderRadius: 'var(--radius-md)',
+  color: 'var(--text-muted)',
   fontSize: 13,
   fontWeight: 500,
   cursor: 'pointer',
@@ -378,7 +378,7 @@ const badgeStyle = {
   color: '#60a5fa',
   fontSize: 11,
   padding: '2px 6px',
-  borderRadius: 10,
+  borderRadius: 'var(--radius-lg)',
   fontWeight: 600,
 };
 
@@ -387,23 +387,23 @@ const contentStyle = { maxWidth: 900, margin: '0 auto' };
 const cardStyle = {
   background: 'rgba(15, 23, 42, 0.6)',
   border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 16,
+  borderRadius: 'var(--radius-2xl)',
   padding: 24,
   backdropFilter: 'blur(12px)',
 };
 
 const cardTitleStyle = { fontSize: 18, fontWeight: 600, margin: '0 0 8px' };
-const cardDescStyle = { fontSize: 13, color: '#9ca3af', margin: '0 0 20px', lineHeight: 1.5 };
+const cardDescStyle = { fontSize: 13, color: 'var(--text-muted)', margin: '0 0 20px', lineHeight: 1.5 };
 
 const fieldStyle = { marginBottom: 16 };
-const labelStyle = { display: 'block', fontSize: 13, fontWeight: 500, color: '#9ca3af', marginBottom: 6 };
+const labelStyle = { display: 'block', fontSize: 13, fontWeight: 500, color: 'var(--text-muted)', marginBottom: 6 };
 const inputStyle = {
   width: '100%',
   padding: '10px 12px',
   background: 'rgba(255, 255, 255, 0.06)',
   border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 8,
-  color: '#e4e4e7',
+  borderRadius: 'var(--radius-md)',
+  color: 'var(--text-primary)',
   fontSize: 14,
   outline: 'none',
   boxSizing: 'border-box',
@@ -412,12 +412,12 @@ const inputStyle = {
 const primaryButtonStyle = {
   width: '100%',
   padding: '12px 16px',
-  background: 'linear-gradient(135deg, #2563eb, #22d3ee)',
+  background: 'var(--gradient-brand)',
   color: '#0b1020',
   fontWeight: 600,
   fontSize: 14,
   border: 'none',
-  borderRadius: 10,
+  borderRadius: 'var(--radius-lg)',
   cursor: 'pointer',
 };
 
@@ -429,13 +429,13 @@ const secondaryButtonStyle = {
   color: '#94a3b8',
   fontWeight: 500,
   fontSize: 13,
-  borderRadius: 8,
+  borderRadius: 'var(--radius-md)',
   cursor: 'pointer',
 };
 
 const codeDisplayStyle = {
   background: 'rgba(0, 0, 0, 0.3)',
-  borderRadius: 12,
+  borderRadius: 'var(--radius-xl)',
   padding: 16,
 };
 
@@ -444,16 +444,16 @@ const codeBoxStyle = {
   alignItems: 'center',
   gap: 12,
   background: 'rgba(255, 255, 255, 0.06)',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-md)',
   padding: '10px 12px',
 };
 
 const codeTextStyle = {
-  fontFamily: 'monospace',
+  fontFamily: 'var(--font-mono)',
   fontSize: 22,
   fontWeight: 700,
   letterSpacing: '0.15em',
-  color: '#e4e4e7',
+  color: 'var(--text-primary)',
   flex: 1,
 };
 
@@ -461,7 +461,7 @@ const copyButtonStyle = {
   padding: '6px 12px',
   background: 'rgba(59, 130, 246, 0.2)',
   border: '1px solid rgba(59, 130, 246, 0.3)',
-  borderRadius: 6,
+  borderRadius: 'var(--radius-sm)',
   color: '#60a5fa',
   fontSize: 12,
   fontWeight: 600,
@@ -475,7 +475,7 @@ const tableStyle = { width: '100%', borderCollapse: 'collapse', fontSize: 13 };
 const thStyle = {
   textAlign: 'left',
   padding: '10px 12px',
-  color: '#71717a',
+  color: 'var(--text-dim)',
   fontWeight: 500,
   borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
   whiteSpace: 'nowrap',
@@ -485,7 +485,7 @@ const tdStyle = { padding: '10px 12px', whiteSpace: 'nowrap' };
 
 const roleBadgeStyle = (role) => ({
   padding: '2px 8px',
-  borderRadius: 6,
+  borderRadius: 'var(--radius-sm)',
   fontSize: 11,
   fontWeight: 600,
   textTransform: 'capitalize',
@@ -495,7 +495,7 @@ const roleBadgeStyle = (role) => ({
 
 const statusBadgeStyle = (status) => ({
   padding: '2px 8px',
-  borderRadius: 6,
+  borderRadius: 'var(--radius-sm)',
   fontSize: 11,
   fontWeight: 600,
   textTransform: 'capitalize',
@@ -515,7 +515,7 @@ const revokeButtonStyle = {
   padding: '4px 10px',
   background: 'rgba(239, 68, 68, 0.15)',
   border: '1px solid rgba(239, 68, 68, 0.25)',
-  borderRadius: 6,
+  borderRadius: 'var(--radius-sm)',
   color: '#ef4444',
   fontSize: 12,
   fontWeight: 500,

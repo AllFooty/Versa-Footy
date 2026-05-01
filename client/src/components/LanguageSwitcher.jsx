@@ -13,7 +13,7 @@ export default function LanguageSwitcher({ style, className }) {
         alignItems: 'center',
         gap: 6,
         padding: '6px 12px',
-        borderRadius: 8,
+        borderRadius: 'var(--radius-md)',
         border: '1px solid rgba(255,255,255,0.15)',
         background: 'rgba(255,255,255,0.06)',
         color: '#e5e7eb',

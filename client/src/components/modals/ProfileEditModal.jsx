@@ -97,7 +97,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
   const modalStyle = {
     background: 'linear-gradient(145deg, #1e2433 0%, #151a26 100%)',
     border: '1px solid rgba(255, 255, 255, 0.1)',
-    borderRadius: '20px',
+    borderRadius: 'var(--radius-3xl)',
     padding: '28px',
     width: '100%',
     maxWidth: '420px',
@@ -125,7 +125,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
           <h2
             style={{
               margin: 0,
-              fontFamily: "'Space Grotesk', sans-serif",
+              fontFamily: 'var(--font-display)',
               fontSize: 20,
               fontWeight: 600,
               color: 'white',
@@ -148,7 +148,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
             width: '80px',
             height: '80px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+            background: 'var(--gradient-brand-purple)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -191,7 +191,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
               style={{
                 background: canEdit ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.15)',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '10px',
+                borderRadius: 'var(--radius-lg)',
                 padding: '14px 16px',
                 color: canEdit ? 'white' : 'rgba(255, 255, 255, 0.4)',
                 fontSize: '15px',
@@ -237,7 +237,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
               style={{
                 background: 'rgba(0, 0, 0, 0.2)',
                 border: '1px solid rgba(255, 255, 255, 0.06)',
-                borderRadius: '10px',
+                borderRadius: 'var(--radius-lg)',
                 padding: '14px 16px',
                 color: 'rgba(255, 255, 255, 0.5)',
                 fontSize: '15px',
@@ -274,7 +274,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
               <div style={{
                 background: 'rgba(0, 0, 0, 0.2)',
                 border: '1px solid rgba(255, 255, 255, 0.06)',
-                borderRadius: '10px',
+                borderRadius: 'var(--radius-lg)',
                 padding: '12px 16px',
                 display: 'flex',
                 alignItems: 'center',
@@ -291,7 +291,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
                   color: '#60a5fa',
                   background: 'rgba(59, 130, 246, 0.15)',
                   padding: '3px 8px',
-                  borderRadius: 6,
+                  borderRadius: 'var(--radius-sm)',
                 }}>
                   {activeOrg.role}
                 </span>
@@ -304,7 +304,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
             <div style={{
               background: 'rgba(239, 68, 68, 0.1)',
               border: '1px solid rgba(239, 68, 68, 0.3)',
-              borderRadius: 8,
+              borderRadius: 'var(--radius-md)',
               padding: '12px 16px',
               marginBottom: 16,
               color: '#fca5a5',
@@ -319,7 +319,7 @@ export default function ProfileEditModal({ isOpen, onClose }) {
             <div style={{
               background: 'rgba(34, 197, 94, 0.1)',
               border: '1px solid rgba(34, 197, 94, 0.3)',
-              borderRadius: 8,
+              borderRadius: 'var(--radius-md)',
               padding: '12px 16px',
               marginBottom: 16,
               color: '#86efac',

@@ -136,7 +136,7 @@ export default function SettingsPage() {
             fontSize: '28px',
             fontWeight: '700',
             marginBottom: '8px',
-            fontFamily: "'Space Grotesk', sans-serif",
+            fontFamily: 'var(--font-display)',
           }}>
             {t('settings.pageTitle')}
           </h1>
@@ -152,7 +152,7 @@ export default function SettingsPage() {
           <div style={{
             background: 'rgba(255, 255, 255, 0.03)',
             border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '16px',
+            borderRadius: 'var(--radius-2xl)',
             padding: '28px',
           }}>
             <h2 style={{
@@ -175,13 +175,13 @@ export default function SettingsPage() {
               marginBottom: '28px',
               padding: '20px',
               background: 'rgba(0, 0, 0, 0.2)',
-              borderRadius: '12px',
+              borderRadius: 'var(--radius-xl)',
             }}>
               <div style={{
                 width: '72px',
                 height: '72px',
                 borderRadius: '50%',
-                background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+                background: 'var(--gradient-brand-purple)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -235,7 +235,7 @@ export default function SettingsPage() {
                   style={{
                     background: canEdit ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.15)',
                     border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '10px',
+                    borderRadius: 'var(--radius-lg)',
                     padding: '14px 16px',
                     color: canEdit ? 'white' : 'rgba(255, 255, 255, 0.4)',
                     fontSize: '15px',
@@ -284,7 +284,7 @@ export default function SettingsPage() {
                   style={{
                     background: 'rgba(0, 0, 0, 0.2)',
                     border: '1px solid rgba(255, 255, 255, 0.06)',
-                    borderRadius: '10px',
+                    borderRadius: 'var(--radius-lg)',
                     padding: '14px 16px',
                     color: 'rgba(255, 255, 255, 0.5)',
                     fontSize: '15px',
@@ -308,7 +308,7 @@ export default function SettingsPage() {
                 <div style={{
                   background: 'rgba(239, 68, 68, 0.1)',
                   border: '1px solid rgba(239, 68, 68, 0.3)',
-                  borderRadius: '8px',
+                  borderRadius: 'var(--radius-md)',
                   padding: '12px 16px',
                   marginBottom: '16px',
                   color: '#fca5a5',
@@ -323,7 +323,7 @@ export default function SettingsPage() {
                 <div style={{
                   background: 'rgba(34, 197, 94, 0.1)',
                   border: '1px solid rgba(34, 197, 94, 0.3)',
-                  borderRadius: '8px',
+                  borderRadius: 'var(--radius-md)',
                   padding: '12px 16px',
                   marginBottom: '16px',
                   color: '#86efac',
@@ -348,9 +348,9 @@ export default function SettingsPage() {
                   gap: '8px',
                   width: '100%',
                   padding: '14px 24px',
-                  background: (saving || !canEdit) ? 'rgba(59, 130, 246, 0.5)' : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                  background: (saving || !canEdit) ? 'rgba(59, 130, 246, 0.5)' : 'var(--gradient-brand)',
                   border: 'none',
-                  borderRadius: '12px',
+                  borderRadius: 'var(--radius-xl)',
                   color: 'white',
                   fontSize: '15px',
                   fontWeight: '600',
@@ -386,7 +386,7 @@ export default function SettingsPage() {
             marginTop: '32px',
             background: 'rgba(239, 68, 68, 0.04)',
             border: '1px solid rgba(239, 68, 68, 0.2)',
-            borderRadius: '16px',
+            borderRadius: 'var(--radius-2xl)',
             padding: '28px',
           }}>
             <h2 style={{
@@ -415,7 +415,7 @@ export default function SettingsPage() {
               <div style={{
                 background: 'rgba(239, 68, 68, 0.1)',
                 border: '1px solid rgba(239, 68, 68, 0.3)',
-                borderRadius: '8px',
+                borderRadius: 'var(--radius-md)',
                 padding: '12px 16px',
                 marginBottom: '16px',
                 color: '#fca5a5',
@@ -436,7 +436,7 @@ export default function SettingsPage() {
                 padding: '12px 20px',
                 background: 'rgba(239, 68, 68, 0.1)',
                 border: '1px solid rgba(239, 68, 68, 0.3)',
-                borderRadius: '10px',
+                borderRadius: 'var(--radius-lg)',
                 color: '#ef4444',
                 fontSize: '14px',
                 fontWeight: '600',

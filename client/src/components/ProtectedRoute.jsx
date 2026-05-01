@@ -8,9 +8,9 @@ const loadingContainerStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
+  background: 'var(--bg-app-gradient)',
   color: '#e5e7eb',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  fontFamily: 'var(--font-sans)',
 };
 
 const spinnerStyle = {
@@ -32,7 +32,7 @@ export default function ProtectedRoute({ children }) {
       <div style={loadingContainerStyle}>
         <div style={{ textAlign: 'center' }}>
           <div style={spinnerStyle} />
-          <p style={{ marginTop: 16, color: '#71717a' }}>{t('common.loading')}</p>
+          <p style={{ marginTop: 16, color: 'var(--text-dim)' }}>{t('common.loading')}</p>
         </div>
       </div>
     );

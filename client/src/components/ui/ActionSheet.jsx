@@ -77,7 +77,7 @@ const ActionSheet = ({ isOpen, onClose, items = [], title }) => {
             style={{
               padding: '0 4px 12px',
               fontSize: 13,
-              color: '#71717a',
+              color: 'var(--text-dim)',
               fontWeight: 600,
               textTransform: 'uppercase',
               letterSpacing: 0.5,
@@ -106,13 +106,13 @@ const ActionSheet = ({ isOpen, onClose, items = [], title }) => {
               padding: '16px 12px',
               background: 'transparent',
               border: 'none',
-              borderRadius: 12,
+              borderRadius: 'var(--radius-xl)',
               color: item.danger ? '#ef4444' : '#e4e4e7',
               fontSize: 16,
               fontWeight: 500,
               cursor: 'pointer',
               textAlign: 'left',
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: 'var(--font-sans)',
             }}
           >
             {item.icon}
@@ -132,12 +132,12 @@ const ActionSheet = ({ isOpen, onClose, items = [], title }) => {
             marginTop: 8,
             background: 'rgba(255,255,255,0.06)',
             border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: 12,
+            borderRadius: 'var(--radius-xl)',
             color: '#a1a1aa',
             fontSize: 16,
             fontWeight: 600,
             cursor: 'pointer',
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: 'var(--font-sans)',
           }}
         >
           {t('common.cancel')}

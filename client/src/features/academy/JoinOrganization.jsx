@@ -90,7 +90,7 @@ export default function JoinOrganization() {
         {loading ? (
           <div style={{ textAlign: 'center', padding: 24 }}>
             <div style={spinnerStyle} />
-            <p style={{ marginTop: 16, color: '#71717a' }}>{t('academy.join.lookingUpInvite')}</p>
+            <p style={{ marginTop: 16, color: 'var(--text-dim)' }}>{t('academy.join.lookingUpInvite')}</p>
           </div>
         ) : !code ? (
           <>
@@ -155,13 +155,13 @@ export default function JoinOrganization() {
                 <img
                   src={invitation.organizations.logo_url}
                   alt={invitation.organizations.name}
-                  style={{ width: 48, height: 48, borderRadius: 8, objectFit: 'cover', margin: '0 auto 8px', display: 'block' }}
+                  style={{ width: 48, height: 48, borderRadius: 'var(--radius-md)', objectFit: 'cover', margin: '0 auto 8px', display: 'block' }}
                 />
               )}
               <p style={orgNameStyle}>{invitation.organizations?.name}</p>
               <p style={orgTypeStyle}>{invitation.organizations?.type}</p>
               {invitation.organizations?.description && (
-                <p style={{ fontSize: 13, color: '#9ca3af', margin: '8px 0 0', lineHeight: 1.4 }}>
+                <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: '8px 0 0', lineHeight: 1.4 }}>
                   {invitation.organizations.description}
                 </p>
               )}
@@ -192,16 +192,16 @@ const containerStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
+  background: 'var(--bg-app-gradient)',
+  color: 'var(--text-primary)',
   padding: 32,
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  fontFamily: 'var(--font-sans)',
 };
 
 const cardStyle = {
   background: 'rgba(15, 23, 42, 0.6)',
   border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 16,
+  borderRadius: 'var(--radius-2xl)',
   padding: 32,
   maxWidth: 420,
   width: '100%',
@@ -236,27 +236,27 @@ const iconCircleStyle = (color) => ({
 });
 
 const titleStyle = { fontSize: 22, fontWeight: 700, margin: '0 0 12px' };
-const descStyle = { fontSize: 14, color: '#9ca3af', lineHeight: 1.5, marginBottom: 20 };
+const descStyle = { fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: 20 };
 
 const orgInfoStyle = {
   background: 'rgba(255, 255, 255, 0.04)',
-  borderRadius: 10,
+  borderRadius: 'var(--radius-lg)',
   padding: '12px 16px',
   marginBottom: 16,
 };
 
-const orgNameStyle = { fontSize: 16, fontWeight: 600, margin: '0 0 4px', color: '#e4e4e7' };
-const orgTypeStyle = { fontSize: 12, color: '#71717a', margin: 0, textTransform: 'capitalize' };
+const orgNameStyle = { fontSize: 16, fontWeight: 600, margin: '0 0 4px', color: 'var(--text-primary)' };
+const orgTypeStyle = { fontSize: 12, color: 'var(--text-dim)', margin: 0, textTransform: 'capitalize' };
 
 const primaryButtonStyle = {
   width: '100%',
   padding: '12px 16px',
-  background: 'linear-gradient(135deg, #2563eb, #22d3ee)',
+  background: 'var(--gradient-brand)',
   color: '#0b1020',
   fontWeight: 600,
   fontSize: 14,
   border: 'none',
-  borderRadius: 10,
+  borderRadius: 'var(--radius-lg)',
   cursor: 'pointer',
   marginBottom: 8,
 };
@@ -269,7 +269,7 @@ const secondaryButtonStyle = {
   color: '#94a3b8',
   fontWeight: 500,
   fontSize: 13,
-  borderRadius: 8,
+  borderRadius: 'var(--radius-md)',
   cursor: 'pointer',
 };
 
@@ -278,13 +278,13 @@ const codeInputStyle = {
   padding: '14px 16px',
   fontSize: 20,
   fontWeight: 700,
-  fontFamily: 'SFMono-Regular, Menlo, monospace',
+  fontFamily: 'var(--font-mono)',
   letterSpacing: '0.15em',
   textAlign: 'center',
   background: 'rgba(255, 255, 255, 0.04)',
   border: '1px solid rgba(255, 255, 255, 0.12)',
-  color: '#e4e4e7',
-  borderRadius: 10,
+  color: 'var(--text-primary)',
+  borderRadius: 'var(--radius-lg)',
   marginBottom: 12,
   outline: 'none',
   textTransform: 'uppercase',

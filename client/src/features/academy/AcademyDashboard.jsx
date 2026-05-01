@@ -96,7 +96,7 @@ export default function AcademyDashboard() {
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
                     <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 12 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
                     <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} allowDecimals={false} />
-                    <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#e4e4e7' }} />
+                    <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: 'var(--text-primary)' }} />
                     <Line type="monotone" dataKey="activePlayers" name={t('academy.dashboard.activePlayers')} stroke="#3b82f6" strokeWidth={2} dot={{ r: 3, fill: '#3b82f6' }} activeDot={{ r: 5 }} />
                   </LineChart>
                 </ResponsiveContainer>
@@ -111,7 +111,7 @@ export default function AcademyDashboard() {
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
                     <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 12 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
                     <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#e4e4e7' }} />
+                    <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: 'var(--text-primary)' }} />
                     <Bar dataKey="totalXp" name={t('common.xp')} fill="#8b5cf6" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -150,8 +150,8 @@ export default function AcademyDashboard() {
                         {(name[0] || '?').toUpperCase()}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 2px', color: '#e4e4e7' }}>{p.display_name || t('common.unknown')}</p>
-                        <p className="academy-muted-text" style={{ fontSize: 12, color: '#71717a', margin: 0 }}>{p.age_group || t('common.noAgeGroup')} &middot; {t('common.level')} {p.current_level}</p>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 2px', color: 'var(--text-primary)' }}>{p.display_name || t('common.unknown')}</p>
+                        <p className="academy-muted-text" style={{ fontSize: 12, color: 'var(--text-dim)', margin: 0 }}>{p.age_group || t('common.noAgeGroup')} &middot; {t('common.level')} {p.current_level}</p>
                       </div>
                       <div style={{ textAlign: 'right' }}>
                         <p style={{ fontSize: 13, fontWeight: 600, color: '#ef4444', margin: '0 0 2px' }}>
@@ -178,7 +178,7 @@ function KPICard({ label, value, suffix, color }) {
   return (
     <div className="academy-kpi-card" style={kpiCardStyle}>
       <div style={{ ...kpiIndicatorStyle, background: color }} />
-      <p className="academy-kpi-value" style={kpiValueStyle}>{value}{suffix && <span style={{ fontSize: 14, fontWeight: 400, color: '#9ca3af' }}> {suffix}</span>}</p>
+      <p className="academy-kpi-value" style={kpiValueStyle}>{value}{suffix && <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-muted)' }}> {suffix}</span>}</p>
       <p className="academy-kpi-label" style={kpiLabelStyle}>{label}</p>
     </div>
   );
@@ -197,22 +197,22 @@ function daysSince(dateStr) {
 
 const containerStyle = {
   minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  background: 'var(--bg-app-gradient)',
+  color: 'var(--text-primary)',
+  fontFamily: 'var(--font-sans)',
   padding: '32px',
 };
 
 const headerStyle = { maxWidth: 1200, margin: '0 auto 28px' };
 const titleStyle = { fontSize: 28, fontWeight: 700, margin: '0 0 4px' };
-const subtitleStyle = { fontSize: 14, color: '#9ca3af', margin: 0, textTransform: 'capitalize' };
+const subtitleStyle = { fontSize: 14, color: 'var(--text-muted)', margin: 0, textTransform: 'capitalize' };
 
 const orgSwitcherStyle = {
   padding: '8px 12px',
   background: 'rgba(255, 255, 255, 0.06)',
   border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 8,
-  color: '#e4e4e7',
+  borderRadius: 'var(--radius-md)',
+  color: 'var(--text-primary)',
   fontSize: 13,
 };
 
@@ -222,7 +222,7 @@ const actionLinkStyle = {
   padding: '8px 16px',
   background: 'rgba(59, 130, 246, 0.12)',
   border: '1px solid rgba(59, 130, 246, 0.25)',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-md)',
   color: '#60a5fa',
   fontSize: 13,
   fontWeight: 500,
@@ -237,7 +237,7 @@ const kpiGridStyle = {
 const kpiCardStyle = {
   background: 'rgba(15, 23, 42, 0.6)',
   border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 12, padding: '16px 18px',
+  borderRadius: 'var(--radius-xl)', padding: '16px 18px',
   position: 'relative', overflow: 'hidden',
 };
 
@@ -246,8 +246,8 @@ const kpiIndicatorStyle = {
   borderRadius: '12px 0 0 12px',
 };
 
-const kpiValueStyle = { fontSize: 26, fontWeight: 700, margin: '0 0 4px', color: '#e4e4e7' };
-const kpiLabelStyle = { fontSize: 12, color: '#9ca3af', margin: 0 };
+const kpiValueStyle = { fontSize: 26, fontWeight: 700, margin: '0 0 4px', color: 'var(--text-primary)' };
+const kpiLabelStyle = { fontSize: 12, color: 'var(--text-muted)', margin: 0 };
 
 const chartsGridStyle = {
   maxWidth: 1200, margin: '0 auto 24px',
@@ -257,26 +257,26 @@ const chartsGridStyle = {
 const chartCardStyle = {
   background: 'rgba(15, 23, 42, 0.6)',
   border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 14, padding: '20px 16px 12px',
+  borderRadius: 'var(--radius-card)', padding: '20px 16px 12px',
 };
 
 const chartTitleStyle = { fontSize: 14, fontWeight: 600, margin: '0 0 16px 4px', color: '#d1d5db' };
 
 const tooltipStyle = {
   background: '#1a1f2e', border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: 8, fontSize: 12,
+  borderRadius: 'var(--radius-md)', fontSize: 12,
 };
 
 const sectionStyle = { maxWidth: 1200, margin: '0 auto 24px' };
 const sectionTitleStyle = { fontSize: 16, fontWeight: 600, margin: '0 0 4px' };
-const sectionDescStyle = { fontSize: 12, color: '#71717a', margin: '0 0 12px' };
+const sectionDescStyle = { fontSize: 12, color: 'var(--text-dim)', margin: '0 0 12px' };
 
 const atRiskCardStyle = {
   display: 'flex', alignItems: 'center', gap: 12,
   padding: '12px 16px',
   background: 'rgba(239, 68, 68, 0.06)',
   border: '1px solid rgba(239, 68, 68, 0.12)',
-  borderRadius: 10, cursor: 'pointer',
+  borderRadius: 'var(--radius-lg)', cursor: 'pointer',
 };
 
 const atRiskAvatarStyle = {
