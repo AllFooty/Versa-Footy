@@ -85,7 +85,6 @@ export default function JoinOrganization() {
 
   return (
     <div style={containerStyle}>
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
       <div style={cardStyle}>
         {loading ? (
           <div style={{ textAlign: 'center', padding: 24 }}>
@@ -192,10 +191,10 @@ const containerStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
+  background: 'var(--bg-app-gradient)',
   color: '#e4e4e7',
   padding: 32,
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  fontFamily: 'var(--font-sans)',
 };
 
 const cardStyle = {

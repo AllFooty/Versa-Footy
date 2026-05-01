@@ -94,10 +94,10 @@ export default function AcademyDashboard() {
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={weeklyActivity}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                    <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 12 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
-                    <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} allowDecimals={false} />
-                    <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#e4e4e7' }} />
-                    <Line type="monotone" dataKey="activePlayers" name={t('academy.dashboard.activePlayers')} stroke="#3b82f6" strokeWidth={2} dot={{ r: 3, fill: '#3b82f6' }} activeDot={{ r: 5 }} />
+                    <XAxis dataKey="week" tick={{ fill: 'var(--text-dim)', fontSize: 12 }} axisLine={{ stroke: 'var(--border-light)' }} tickLine={false} />
+                    <YAxis tick={{ fill: 'var(--text-dim)', fontSize: 12 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: 'var(--text-primary)' }} />
+                    <Line type="monotone" dataKey="activePlayers" name={t('academy.dashboard.activePlayers')} stroke="var(--color-blue)" strokeWidth={2} dot={{ r: 3, fill: 'var(--color-blue)' }} activeDot={{ r: 5 }} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -109,10 +109,10 @@ export default function AcademyDashboard() {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={weeklyActivity}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                    <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 12 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
-                    <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#e4e4e7' }} />
-                    <Bar dataKey="totalXp" name={t('common.xp')} fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                    <XAxis dataKey="week" tick={{ fill: 'var(--text-dim)', fontSize: 12 }} axisLine={{ stroke: 'var(--border-light)' }} tickLine={false} />
+                    <YAxis tick={{ fill: 'var(--text-dim)', fontSize: 12 }} axisLine={false} tickLine={false} />
+                    <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: 'var(--text-primary)' }} />
+                    <Bar dataKey="totalXp" name={t('common.xp')} fill="var(--color-purple)" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -150,15 +150,15 @@ export default function AcademyDashboard() {
                         {(name[0] || '?').toUpperCase()}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 2px', color: '#e4e4e7' }}>{p.display_name || t('common.unknown')}</p>
-                        <p className="academy-muted-text" style={{ fontSize: 12, color: '#71717a', margin: 0 }}>{p.age_group || t('common.noAgeGroup')} &middot; {t('common.level')} {p.current_level}</p>
+                        <p style={{ fontSize: 14, fontWeight: 500, margin: '0 0 2px', color: 'var(--text-primary)' }}>{p.display_name || t('common.unknown')}</p>
+                        <p className="academy-muted-text" style={{ fontSize: 12, color: 'var(--text-dim)', margin: 0 }}>{p.age_group || t('common.noAgeGroup')} &middot; {t('common.level')} {p.current_level}</p>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <p style={{ fontSize: 13, fontWeight: 600, color: '#ef4444', margin: '0 0 2px' }}>
+                        <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-red)', margin: '0 0 2px' }}>
                           {p.last_practice_date ? t('common.daysAgo', { days: daysSince(p.last_practice_date) }) : t('academy.dashboard.neverTrained')}
                         </p>
                         {p.current_streak === 0 && p.longest_streak > 0 && (
-                          <p style={{ fontSize: 11, color: '#ef4444', margin: 0 }}>{t('academy.dashboard.streakBroken', { days: p.longest_streak })}</p>
+                          <p style={{ fontSize: 11, color: 'var(--color-red)', margin: 0 }}>{t('academy.dashboard.streakBroken', { days: p.longest_streak })}</p>
                         )}
                       </div>
                     </div>
@@ -178,7 +178,7 @@ function KPICard({ label, value, suffix, color }) {
   return (
     <div className="academy-kpi-card" style={kpiCardStyle}>
       <div style={{ ...kpiIndicatorStyle, background: color }} />
-      <p className="academy-kpi-value" style={kpiValueStyle}>{value}{suffix && <span style={{ fontSize: 14, fontWeight: 400, color: '#9ca3af' }}> {suffix}</span>}</p>
+      <p className="academy-kpi-value" style={kpiValueStyle}>{value}{suffix && <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-muted)' }}> {suffix}</span>}</p>
       <p className="academy-kpi-label" style={kpiLabelStyle}>{label}</p>
     </div>
   );
@@ -197,91 +197,115 @@ function daysSince(dateStr) {
 
 const containerStyle = {
   minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-  padding: '32px',
+  background: 'var(--bg-app-gradient)',
+  color: 'var(--text-primary)',
+  fontFamily: 'var(--font-sans)',
+  padding: 'var(--space-8)',
 };
 
-const headerStyle = { maxWidth: 1200, margin: '0 auto 28px' };
-const titleStyle = { fontSize: 28, fontWeight: 700, margin: '0 0 4px' };
-const subtitleStyle = { fontSize: 14, color: '#9ca3af', margin: 0, textTransform: 'capitalize' };
+const headerStyle = { maxWidth: 'var(--layout-content-width)', margin: '0 auto var(--space-7)' };
+const titleStyle = {
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--text-4xl)',
+  fontWeight: 700,
+  margin: '0 0 var(--space-1)',
+};
+const subtitleStyle = {
+  fontSize: 'var(--text-base)',
+  color: 'var(--text-muted)',
+  margin: 0,
+  textTransform: 'capitalize',
+};
 
 const orgSwitcherStyle = {
   padding: '8px 12px',
-  background: 'rgba(255, 255, 255, 0.06)',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 8,
-  color: '#e4e4e7',
+  background: 'var(--bg-soft-hover)',
+  border: '1px solid var(--border-medium)',
+  borderRadius: 'var(--radius-sm)',
+  color: 'var(--text-primary)',
   fontSize: 13,
 };
 
-const quickActionsStyle = { display: 'flex', gap: 8, marginTop: 16 };
+const quickActionsStyle = { display: 'flex', gap: 'var(--space-2)', marginTop: 'var(--space-4)' };
 
 const actionLinkStyle = {
   padding: '8px 16px',
-  background: 'rgba(59, 130, 246, 0.12)',
-  border: '1px solid rgba(59, 130, 246, 0.25)',
-  borderRadius: 8,
-  color: '#60a5fa',
+  background: 'var(--color-blue-soft)',
+  border: '1px solid var(--color-blue-soft-strong)',
+  borderRadius: 'var(--radius-sm)',
+  color: 'var(--color-blue-link)',
   fontSize: 13,
   fontWeight: 500,
   textDecoration: 'none',
 };
 
 const kpiGridStyle = {
-  maxWidth: 1200, margin: '0 auto 24px',
-  display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12,
+  maxWidth: 'var(--layout-content-width)', margin: '0 auto var(--space-6)',
+  display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--space-3)',
 };
 
 const kpiCardStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 12, padding: '16px 18px',
+  background: 'var(--bg-elevated)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-lg)',
+  padding: '16px 18px',
   position: 'relative', overflow: 'hidden',
 };
 
 const kpiIndicatorStyle = {
   position: 'absolute', top: 0, left: 0, width: 4, height: '100%',
-  borderRadius: '12px 0 0 12px',
+  borderRadius: 'var(--radius-lg) 0 0 var(--radius-lg)',
 };
 
-const kpiValueStyle = { fontSize: 26, fontWeight: 700, margin: '0 0 4px', color: '#e4e4e7' };
-const kpiLabelStyle = { fontSize: 12, color: '#9ca3af', margin: 0 };
+const kpiValueStyle = {
+  fontSize: 'var(--text-3xl)',
+  fontWeight: 700,
+  margin: '0 0 var(--space-1)',
+  color: 'var(--text-primary)',
+};
+const kpiLabelStyle = { fontSize: 'var(--text-sm)', color: 'var(--text-muted)', margin: 0 };
 
 const chartsGridStyle = {
-  maxWidth: 1200, margin: '0 auto 24px',
-  display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 16,
+  maxWidth: 'var(--layout-content-width)', margin: '0 auto var(--space-6)',
+  display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 'var(--space-4)',
 };
 
 const chartCardStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 14, padding: '20px 16px 12px',
+  background: 'var(--bg-elevated)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-xl)',
+  padding: '20px 16px 12px',
 };
 
-const chartTitleStyle = { fontSize: 14, fontWeight: 600, margin: '0 0 16px 4px', color: '#d1d5db' };
+const chartTitleStyle = {
+  fontSize: 'var(--text-base)',
+  fontWeight: 600,
+  margin: '0 0 16px 4px',
+  color: 'var(--text-secondary)',
+};
 
 const tooltipStyle = {
-  background: '#1a1f2e', border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: 8, fontSize: 12,
+  background: 'var(--bg-surface-2)',
+  border: '1px solid var(--border-medium)',
+  borderRadius: 'var(--radius-sm)',
+  fontSize: 12,
 };
 
-const sectionStyle = { maxWidth: 1200, margin: '0 auto 24px' };
-const sectionTitleStyle = { fontSize: 16, fontWeight: 600, margin: '0 0 4px' };
-const sectionDescStyle = { fontSize: 12, color: '#71717a', margin: '0 0 12px' };
+const sectionStyle = { maxWidth: 'var(--layout-content-width)', margin: '0 auto var(--space-6)' };
+const sectionTitleStyle = { fontSize: 'var(--text-lg)', fontWeight: 600, margin: '0 0 var(--space-1)' };
+const sectionDescStyle = { fontSize: 'var(--text-sm)', color: 'var(--text-dim)', margin: '0 0 var(--space-3)' };
 
 const atRiskCardStyle = {
-  display: 'flex', alignItems: 'center', gap: 12,
+  display: 'flex', alignItems: 'center', gap: 'var(--space-3)',
   padding: '12px 16px',
   background: 'rgba(239, 68, 68, 0.06)',
-  border: '1px solid rgba(239, 68, 68, 0.12)',
-  borderRadius: 10, cursor: 'pointer',
+  border: '1px solid var(--color-red-soft)',
+  borderRadius: 'var(--radius-md)', cursor: 'pointer',
 };
 
 const atRiskAvatarStyle = {
   width: 36, height: 36, borderRadius: '50%',
-  background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444',
+  background: 'var(--color-red-soft-strong)', color: 'var(--color-red)',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
   fontSize: 14, fontWeight: 600, flexShrink: 0,
 };

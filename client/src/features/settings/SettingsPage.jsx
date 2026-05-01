@@ -107,9 +107,9 @@ export default function SettingsPage() {
       <div
         style={{
           minHeight: '100vh',
-          background: 'linear-gradient(135deg, #0a0f1a 0%, #1a1f2e 50%, #0d1117 100%)',
-          fontFamily: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-          color: '#e4e4e7',
+          background: 'var(--bg-app-gradient)',
+          fontFamily: 'var(--font-sans)',
+          color: 'var(--text-primary)',
         }}
       >
         <HeaderLanding />
@@ -145,7 +145,7 @@ export default function SettingsPage() {
             fontSize: '28px',
             fontWeight: '700',
             marginBottom: '8px',
-            fontFamily: "'Space Grotesk', sans-serif",
+            fontFamily: 'var(--font-display)',
           }}>
             {t('settings.pageTitle')}
           </h1>
@@ -474,13 +474,6 @@ export default function SettingsPage() {
       />
 
       <FooterLanding />
-
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </>
   );
 }

@@ -1,19 +1,120 @@
 /* ============================================
-   Versa Footy Academy - Mobile Responsive Overrides
-   Used by: features/academy/* (via AcademyLayout.jsx)
+   Versa Footy Academy — Styles
+   Used by: features/academy/* (via AcademyLayout.jsx and pages)
 
-   These styles use !important to override inline JS styles
-   that cannot express @media queries.
+   Design tokens (colors, fonts, radii, shadows, transitions) live
+   in styles/tokens.css. This file only adds academy-specific
+   layout / class rules and mobile overrides.
    ============================================ */
+
+/* ============ Academy page shell ============ */
+.academy-container {
+  min-height: 100vh;
+  background: var(--bg-app-gradient);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  padding: var(--space-8);
+}
+
+.academy-page-header {
+  max-width: var(--layout-content-width);
+  margin: 0 auto var(--space-7);
+}
+
+.academy-title {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  margin: 0 0 var(--space-1);
+  color: var(--text-primary);
+}
+
+.academy-subtitle {
+  font-size: var(--text-base);
+  color: var(--text-muted);
+  margin: 0;
+  text-transform: capitalize;
+}
+
+/* ============ Cards (KPI / chart / section) ============ */
+.academy-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  color: var(--text-primary);
+}
+
+.academy-kpi-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.academy-chart-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 20px 16px 12px;
+}
+
+/* ============ Form controls (inputs / selects) ============ */
+.academy-input,
+.academy-select,
+.academy-org-switcher,
+.academy-search-input,
+.academy-filter-select {
+  background: var(--bg-soft);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  transition: border-color var(--transition-base), background var(--transition-base);
+}
+
+.academy-input:focus,
+.academy-select:focus,
+.academy-org-switcher:focus,
+.academy-search-input:focus,
+.academy-filter-select:focus {
+  outline: none;
+  border-color: var(--color-blue);
+  background: var(--bg-soft-hover);
+}
+
+/* ============ Action links ============ */
+.academy-action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background: var(--color-blue-soft);
+  border: 1px solid var(--color-blue-soft-strong);
+  border-radius: var(--radius-sm);
+  color: var(--color-blue-link);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background var(--transition-base);
+}
+
+.academy-action-link:hover {
+  background: rgba(59, 130, 246, 0.18);
+}
 
 /* ============ Mobile Container ============ */
 @media (max-width: 768px) {
   .academy-container {
-    padding: 16px !important;
+    padding: var(--space-4) !important;
   }
 
   .academy-title {
-    font-size: 22px !important;
+    font-size: var(--text-2xl) !important;
   }
 
   .academy-subtitle {
@@ -22,7 +123,6 @@
 }
 
 /* ============ Charts Grid ============ */
-/* Prevent overflow: default minmax(400px,1fr) breaks on small screens */
 @media (max-width: 768px) {
   .academy-charts-grid {
     grid-template-columns: 1fr !important;
@@ -34,7 +134,7 @@
 @media (max-width: 480px) {
   .academy-kpi-grid {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px !important;
+    gap: var(--space-2) !important;
   }
 
   .academy-kpi-card {
@@ -79,13 +179,10 @@
   }
 }
 
-/* ============ Loading Text Contrast Fix ============ */
-.academy-loading-text {
-  color: #9ca3af !important; /* was #71717a — improved contrast */
-}
-
+/* ============ Loading / Muted Text Contrast ============ */
+.academy-loading-text,
 .academy-muted-text {
-  color: #9ca3af !important; /* was #71717a */
+  color: var(--text-muted) !important;
 }
 
 /* ============ At-Risk Card Touch Target ============ */
@@ -112,19 +209,19 @@
   }
 
   .roster-player-card {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
     padding: 14px 16px;
     margin-bottom: 8px;
-    color: #e4e4e7;
+    color: var(--text-primary);
     text-decoration: none;
     display: block;
     transition: background 0.15s ease;
   }
 
   .roster-player-card:active {
-    background: rgba(15, 23, 42, 0.8);
+    background: var(--bg-elevated-strong);
   }
 
   .roster-card-header {
@@ -137,8 +234,8 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(59, 130, 246, 0.15);
-    color: #60a5fa;
+    background: var(--color-blue-soft);
+    color: var(--color-blue-link);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -156,7 +253,7 @@
     display: block;
     font-size: 15px;
     font-weight: 500;
-    color: #e4e4e7;
+    color: var(--text-primary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -165,7 +262,7 @@
   .roster-card-meta {
     display: block;
     font-size: 12px;
-    color: #9ca3af;
+    color: var(--text-muted);
     margin-top: 2px;
   }
 
@@ -173,24 +270,24 @@
     font-size: 12px;
     font-weight: 600;
     padding: 4px 10px;
-    border-radius: 6px;
+    border-radius: var(--radius-xs);
     text-transform: capitalize;
     flex-shrink: 0;
   }
 
   .roster-card-status--active {
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
+    background: var(--color-green-soft);
+    color: var(--color-green);
   }
 
   .roster-card-status--idle {
     background: rgba(234, 179, 8, 0.15);
-    color: #eab308;
+    color: var(--color-yellow);
   }
 
   .roster-card-status--inactive {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
+    background: var(--color-red-soft-strong);
+    color: var(--color-red);
   }
 
   .roster-card-stats {
@@ -199,7 +296,7 @@
     gap: 8px;
     margin-top: 10px;
     padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid var(--border-subtle);
   }
 
   .roster-card-stat {
@@ -211,7 +308,7 @@
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #9ca3af;
+    color: var(--text-muted);
     margin-bottom: 2px;
   }
 
@@ -219,7 +316,7 @@
     display: block;
     font-size: 15px;
     font-weight: 600;
-    color: #e4e4e7;
+    color: var(--text-primary);
   }
 
   /* Roster filters stacked on mobile */
@@ -267,7 +364,7 @@
 @supports (padding: max(0px)) {
   @media (max-width: 768px) {
     .academy-container {
-      padding-bottom: max(16px, env(safe-area-inset-bottom)) !important;
+      padding-bottom: max(var(--space-4), env(safe-area-inset-bottom)) !important;
     }
 
     .acad-mobile-bar {

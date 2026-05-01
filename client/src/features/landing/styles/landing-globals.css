@@ -3,23 +3,30 @@
 @tailwind utilities;
 
 /* =========================================
-   VERSA FOOTY - LANDING GLOBAL STYLES
+   VERSA FOOTY — LANDING GLOBAL STYLES
+
+   Design tokens (colors, fonts, radii, shadows) live in
+   ../../../styles/tokens.css and are loaded globally via index.css.
+   This file only adds:
+     1. shadcn/Tailwind HSL theme variables (light + dark)
+     2. landing-only marketing aliases (versa-coral, all4footy-*)
+     3. landing utility classes / animations
    ========================================= */
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .text-gradient {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    background: linear-gradient(135deg, #6366f1 0%, var(--color-purple) 50%, #a855f7 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
+
   .text-gradient-warm {
-    background: linear-gradient(135deg, #ff4b4b 0%, #ff6b6b 50%, #ffd166 100%);
+    background: var(--gradient-marketing);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -28,7 +35,7 @@
 
 @layer base {
   :root {
-    /* Core Design System */
+    /* shadcn/ui HSL variables — kept for Tailwind components only */
     --background: 0 0% 100%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
@@ -50,82 +57,55 @@
     --ring: 239 84% 67%;
     --radius: 0.75rem;
 
-    /* Chart Colors */
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
-    /* Brand System - All4Footy */
-    --all4footy-navy: #0f172a;
+    /* Marketing-only brand aliases — wired to the unified tokens */
+    --all4footy-navy: var(--color-navy);
     --all4footy-navy-light: #1e293b;
     --all4footy-purple: #6366f1;
     --all4footy-purple-light: #818cf8;
-    --all4footy-cyan: #22d3ee;
-    --all4footy-gradient: linear-gradient(135deg, #6366f1 0%, #22d3ee 100%);
+    --all4footy-cyan: var(--color-cyan);
+    --all4footy-gradient: linear-gradient(135deg, #6366f1 0%, var(--color-cyan) 100%);
 
-    /* Product Accent Colors */
-    --versa-accent: #22c55e;
+    --versa-accent: var(--color-green);
     --fair-accent: #ec4899;
-    --track-accent: #f97316;
-    --kaas-accent: #22d3ee;
+    --track-accent: var(--color-orange);
+    --kaas-accent: var(--color-cyan);
 
-    /* Versa Footy Core Palette */
-    --primary-bg: #1a2b47;
+    --primary-bg: var(--color-navy);
     --primary-bg-dark: #0f172a;
     --primary-bg-light: #1e3a5f;
     --secondary-bg: #f8fafc;
     --accent-color: #6366f1;
     --accent-color-light: #818cf8;
     --text-color: #1e293b;
-    --text-muted: #64748b;
-    
-    /* Action Colors */
-    --versa-coral: #ff4b4b;
-    --versa-coral-hover: #ef4444;
+
+    --versa-coral: var(--color-coral);
+    --versa-coral-hover: var(--color-coral-hover);
     --versa-coral-light: #ff6b6b;
-    --versa-green: #22c55e;
+    --versa-green: var(--color-green);
     --versa-green-light: #4ade80;
-    --versa-gold: #ffd166;
+    --versa-gold: var(--color-gold);
     --versa-gold-light: #ffda8a;
-    
-    /* UI State Colors */
+
     --button-bg: var(--versa-coral);
     --button-hover: var(--all4footy-purple);
     --highlight-color: var(--versa-gold);
     --success-color: #10b981;
     --warning-color: #f59e0b;
-    --error-color: #ef4444;
-    --info-color: #3b82f6;
+    --error-color: var(--color-red);
+    --info-color: var(--color-blue);
 
-    /* Semantic Aliases */
-    --color-primary: var(--primary-bg);
-    --color-secondary: var(--secondary-bg);
-    --color-accent: var(--accent-color);
-    --color-text: var(--text-color);
-    --color-button: var(--button-bg);
-    --color-button-hover: var(--button-hover);
-    --color-highlight: var(--highlight-color);
-
-    /* Legacy Support */
-    --primary-blue: #1a2b47;
-    --secondary-blue: #6366f1;
-    --accent-orange: #ff6b6b;
-    --highlight-yellow: #ffd166;
-    --success-green: #10b981;
-    --warning-orange: #f59e0b;
-    --error-red: #ef4444;
-    --dark-blue: #1a2b47;
-    --light-gray: #f8fafc;
-    --medium-gray: #cbd5e1;
-
-    /* Shadows */
+    /* Marketing shadow scale (light surfaces) */
     --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-sm-marketing: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md-marketing: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg-marketing: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl-marketing: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
     --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
     --shadow-glow-purple: 0 0 40px rgb(99 102 241 / 0.25);
@@ -233,8 +213,10 @@ img[loading="lazy"].loaded {
   }
 }
 
-/* Animations */
-@keyframes fadeIn {
+/* Animations
+   Note: a simple fade-only `fadeIn` lives in styles/tokens.css and is used
+   by app modals. Landing uses `fadeInUp` (with translate) for hero text. */
+@keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -305,18 +287,11 @@ img[loading="lazy"].loaded {
   }
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+/* spin keyframe lives in styles/tokens.css */
 
 /* Utility animation classes */
 .animate-fade-in {
-  animation: fadeIn 0.5s ease forwards;
+  animation: fadeInUp 0.5s ease forwards;
 }
 
 .animate-slide-in-left {
@@ -394,17 +369,4 @@ img[loading="lazy"].loaded {
   animation: slideInLeft 0.5s ease forwards;
 }
 
-/* ============ Reduced Motion Support ============ */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-
-  html {
-    scroll-behavior: auto !important;
-  }
-}
+/* Reduced motion support is declared globally in index.css */

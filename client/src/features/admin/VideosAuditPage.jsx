@@ -224,10 +224,10 @@ const Empty = ({ text }) => (
 
 const pageStyle = {
   minHeight: '100vh',
-  background: '#0b1020',
-  color: '#e4e4e7',
+  background: 'var(--bg-app-gradient)',
+  color: 'var(--text-primary)',
   padding: 'max(16px, env(safe-area-inset-top)) 16px 24px',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  fontFamily: 'var(--font-sans)',
 };
 
 const headerRowStyle = {
@@ -326,7 +326,7 @@ const idChipStyle = {
 };
 const mutedStyle = { color: '#9ca3af', fontSize: 12, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' };
 const codeStyle = {
-  fontFamily: 'ui-monospace, Menlo, monospace',
+  fontFamily: 'var(--font-mono)',
   fontSize: 11, color: '#d1d5db',
   minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
   flex: '1 1 auto',

@@ -154,12 +154,8 @@ export default function LibraryApp() {
       {/* Landing Page Header */}
       <All4FootyFamilyBar />
       <div
-        style={{
-          minHeight: '100vh',
-          background: 'linear-gradient(135deg, #0a0f1a 0%, #1a1f2e 50%, #0d1117 100%)',
-          fontFamily: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-          color: '#e4e4e7',
-        }}
+        className="vf-app-page"
+        style={{ minHeight: '100vh' }}
       >
         <HeaderLanding />
 
@@ -179,21 +175,11 @@ export default function LibraryApp() {
               justifyContent: 'center',
               alignItems: 'center',
               padding: '80px 0',
-              color: '#71717a',
+              color: 'var(--text-dim)',
             }}
           >
             <div style={{ textAlign: 'center' }}>
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  border: '3px solid #27272a',
-                  borderTopColor: '#E63946',
-                  borderRadius: '50%',
-                  animation: 'spin 1s linear infinite',
-                  margin: '0 auto 16px',
-                }}
-              />
+              <div className="vf-spinner" style={{ margin: '0 auto 16px' }} />
               <p>{t('library.loadingData')}</p>
             </div>
           </div>
@@ -203,9 +189,9 @@ export default function LibraryApp() {
         {error && (
           <div
             style={{
-              background: 'rgba(220, 38, 38, 0.1)',
-              border: '1px solid rgba(220, 38, 38, 0.3)',
-              borderRadius: 8,
+              background: 'var(--color-red-soft)',
+              border: '1px solid var(--border-danger)',
+              borderRadius: 'var(--radius-sm)',
               padding: 16,
               marginBottom: 24,
               color: '#fca5a5',

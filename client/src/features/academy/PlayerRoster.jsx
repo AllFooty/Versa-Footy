@@ -75,8 +75,8 @@ export default function PlayerRoster() {
           </div>
         ) : players.length === 0 ? (
           <div className="roster-empty" style={{ textAlign: 'center', padding: 48 }}>
-            <p className="academy-muted-text" style={{ color: '#71717a', fontSize: 14 }}>{t('academy.roster.noPlayersFound')}</p>
-            <Link href="/academy/invitations" style={{ color: '#3b82f6', fontSize: 14 }}>{t('academy.roster.invitePlayers')}</Link>
+            <p className="academy-muted-text" style={{ color: 'var(--text-dim)', fontSize: 14 }}>{t('academy.roster.noPlayersFound')}</p>
+            <Link href="/academy/invitations" style={{ color: 'var(--color-blue)', fontSize: 14 }}>{t('academy.roster.invitePlayers')}</Link>
           </div>
         ) : (
           <>
@@ -208,59 +208,64 @@ const statusBadgeStyle = (status) => ({
 
 const containerStyle = {
   minHeight: '100vh',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e4e4e7',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-  padding: '32px',
+  background: 'var(--bg-app-gradient)',
+  color: 'var(--text-primary)',
+  fontFamily: 'var(--font-sans)',
+  padding: 'var(--space-8)',
 };
 
-const headerStyle = { maxWidth: 1200, margin: '0 auto 20px' };
-const backLinkStyle = { color: '#3b82f6', textDecoration: 'none', fontSize: 14 };
-const titleStyle = { fontSize: 28, fontWeight: 700, margin: '12px 0 4px' };
-const subtitleStyle = { fontSize: 14, color: '#9ca3af', margin: 0 };
+const headerStyle = { maxWidth: 'var(--layout-content-width)', margin: '0 auto var(--space-5)' };
+const backLinkStyle = { color: 'var(--color-blue-link)', textDecoration: 'none', fontSize: 14 };
+const titleStyle = {
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--text-4xl)',
+  fontWeight: 700,
+  margin: '12px 0 4px',
+};
+const subtitleStyle = { fontSize: 14, color: 'var(--text-muted)', margin: 0 };
 
 const filtersStyle = {
-  maxWidth: 1200, margin: '0 auto 16px',
-  display: 'flex', gap: 8, flexWrap: 'wrap',
+  maxWidth: 'var(--layout-content-width)', margin: '0 auto var(--space-4)',
+  display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap',
 };
 
 const searchInputStyle = {
   flex: '1 1 200px', padding: '8px 12px',
-  background: 'rgba(255, 255, 255, 0.06)',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 8, color: '#e4e4e7', fontSize: 13, outline: 'none',
+  background: 'var(--bg-soft-hover)',
+  border: '1px solid var(--border-medium)',
+  borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)', fontSize: 13, outline: 'none',
 };
 
 const filterSelectStyle = {
   padding: '8px 12px',
-  background: 'rgba(255, 255, 255, 0.06)',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 8, color: '#e4e4e7', fontSize: 13,
+  background: 'var(--bg-soft-hover)',
+  border: '1px solid var(--border-medium)',
+  borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)', fontSize: 13,
 };
 
 const tableWrapStyle = {
-  maxWidth: 1200, margin: '0 auto',
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 14,
+  maxWidth: 'var(--layout-content-width)', margin: '0 auto',
+  background: 'var(--bg-elevated)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-xl)',
 };
 
 const spinnerStyle = {
   width: 40, height: 40,
-  border: '3px solid #27272a', borderTopColor: '#E63946',
+  border: '3px solid var(--border-medium)', borderTopColor: 'var(--color-cyan)',
   borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto',
 };
 
 const tableStyle = { width: '100%', borderCollapse: 'collapse', fontSize: 13 };
 
 const thStyle = {
-  textAlign: 'left', padding: '12px 10px', color: '#71717a', fontWeight: 500,
-  borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+  textAlign: 'left', padding: '12px 10px', color: 'var(--text-dim)', fontWeight: 500,
+  borderBottom: '1px solid var(--border-light)',
   whiteSpace: 'nowrap', cursor: 'pointer', userSelect: 'none',
 };
 
 const trStyle = {
-  borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
+  borderBottom: '1px solid var(--border-subtle)',
   transition: 'background 0.1s',
 };
 
@@ -268,12 +273,12 @@ const tdStyle = { padding: '10px', whiteSpace: 'nowrap' };
 
 const playerLinkStyle = {
   display: 'flex', alignItems: 'center', gap: 8,
-  color: '#e4e4e7', textDecoration: 'none', fontWeight: 500,
+  color: 'var(--text-primary)', textDecoration: 'none', fontWeight: 500,
 };
 
 const avatarStyle = {
   width: 28, height: 28, borderRadius: '50%',
-  background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa',
+  background: 'var(--color-blue-soft)', color: 'var(--color-blue-link)',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
   fontSize: 12, fontWeight: 600, flexShrink: 0,
 };

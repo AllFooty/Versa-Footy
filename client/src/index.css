@@ -1,10 +1,20 @@
 /**
- * Main application styles
- * - Landing pages use: features/landing/styles/landing-globals.css (Tailwind + landing-specific)
- * - Library app uses: styles/global.css (custom CSS variables + library-specific)
+ * Versa Footy — Main entry stylesheet
+ *
+ * Loads the shared design-token layer and the app-shell primitives
+ * that every feature (Library, Academy, Home, Settings, Auth, Admin,
+ * Landing) consumes for consistent typography, colors and surfaces.
+ *
+ * Feature-specific stylesheets:
+ *   - features/landing/styles/landing-globals.css  (Tailwind + landing extras)
+ *   - styles/library.css                           (Library-specific components)
+ *   - styles/academy.css                           (Academy-specific overrides)
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+@import './styles/tokens.css';
+@import './styles/app-shell.css';
 
 /* Base reset and defaults */
 *,
@@ -21,9 +31,9 @@ html {
 
 body {
   margin: 0;
-  background: #0a0f1a;
-  color: #e4e4e7;
-  font-family: 'Rubik', 'Inter', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
   line-height: 1.6;
 }
 
@@ -31,3 +41,14 @@ body {
   min-height: 100vh;
 }
 
+/* Reduced motion support — applied globally so every feature inherits it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

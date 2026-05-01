@@ -1,0 +1,185 @@
+/* ============================================================
+   Versa Footy — Shared App Shell
+   Class-based primitives every in-app feature should use to
+   guarantee consistent backgrounds, spacing, cards and buttons.
+
+   Use these instead of redeclaring page wrappers / cards inline
+   in each feature.
+   ============================================================ */
+
+/* ---------- Page wrappers ---------- */
+.vf-app-page {
+  min-height: 100vh;
+  background: var(--bg-app-gradient);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+.vf-app-page--centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+}
+
+.vf-app-content {
+  max-width: var(--layout-content-width);
+  margin: 0 auto;
+  padding: var(--space-8);
+}
+
+@media (max-width: 768px) {
+  .vf-app-content {
+    padding: var(--space-4);
+  }
+}
+
+/* ---------- Cards ---------- */
+.vf-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  color: var(--text-primary);
+}
+
+.vf-card--gradient {
+  background: var(--bg-card-gradient);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  backdrop-filter: blur(20px);
+}
+
+.vf-card--interactive {
+  cursor: pointer;
+  transition: border-color var(--transition-base), background var(--transition-base), transform var(--transition-smooth);
+}
+
+.vf-card--interactive:hover {
+  border-color: var(--border-medium);
+  background: var(--bg-elevated-strong);
+}
+
+/* ---------- Section headings ---------- */
+.vf-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  margin: 0 0 var(--space-2);
+}
+
+.vf-title {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1);
+}
+
+.vf-subtitle {
+  font-size: var(--text-base);
+  color: var(--text-muted);
+  margin: 0 0 var(--space-6);
+}
+
+/* ---------- Buttons ---------- */
+.vf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform var(--transition-fast), background var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.vf-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vf-btn-primary {
+  background: linear-gradient(135deg, var(--color-blue) 0%, var(--color-blue-hover) 100%);
+  color: var(--text-on-accent);
+  border-color: transparent;
+}
+
+.vf-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-button);
+}
+
+.vf-btn-secondary {
+  background: var(--bg-soft-hover);
+  color: var(--text-secondary);
+  border-color: var(--border-light);
+}
+
+.vf-btn-secondary:hover:not(:disabled) {
+  background: var(--bg-soft-active);
+  color: var(--text-primary);
+  border-color: var(--border-medium);
+}
+
+.vf-btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border-light);
+}
+
+.vf-btn-ghost:hover:not(:disabled) {
+  background: var(--bg-soft-hover);
+  color: var(--text-primary);
+}
+
+/* ---------- Tag / chip ---------- */
+.vf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  background: var(--color-blue-soft);
+  color: var(--color-blue-link);
+  border: 1px solid var(--color-blue-soft-strong);
+}
+
+/* ---------- Spinner ---------- */
+.vf-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-medium);
+  border-top-color: var(--color-cyan);
+  border-radius: 50%;
+  animation: vf-spin 1s linear infinite;
+}
+
+/* ---------- Brand mark (used in headers/sidebars) ---------- */
+.vf-brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--gradient-brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-on-accent);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.vf-brand-mark--lg {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  font-size: 24px;
+}

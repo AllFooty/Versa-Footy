@@ -98,7 +98,7 @@ export default function AcademyLayout({ children }) {
             <line x1="3" y1="18" x2="21" y2="18" />
           </svg>
         </button>
-        <span style={{ fontSize: 15, fontWeight: 600, color: '#e4e4e7' }}>
+        <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>
           {activeOrg?.name || 'Academy'}
         </span>
       </div>
@@ -109,7 +109,7 @@ export default function AcademyLayout({ children }) {
           className="acad-overlay"
           onClick={() => setMobileOpen(false)}
           style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
+            position: 'fixed', inset: 0, background: 'var(--bg-overlay)',
             zIndex: 250, backdropFilter: 'blur(4px)',
           }}
         />
@@ -140,7 +140,7 @@ export default function AcademyLayout({ children }) {
           <div style={{ flex: 1, minWidth: 0 }}>
             <p style={orgNameStyle}>
               {activeOrg?.is_primary && (
-                <span title={t('academy.primaryBadge', 'Primary')} style={{ color: '#facc15', marginRight: 4 }}>★</span>
+                <span title={t('academy.primaryBadge', 'Primary')} style={{ color: 'var(--color-yellow-amber)', marginRight: 4 }}>★</span>
               )}
               {activeOrg?.name || 'Academy'}
             </p>
@@ -275,21 +275,21 @@ const mobileBarStyle = {
   right: 0,
   height: 56,
   background: '#080d18',
-  borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+  borderBottom: '1px solid var(--border-light)',
   alignItems: 'center',
   gap: 12,
   padding: '0 16px',
   zIndex: 200,
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  fontFamily: 'var(--font-sans)',
 };
 
 const hamburgerBtnStyle = {
   background: 'none',
   border: 'none',
-  color: '#e4e4e7',
+  color: 'var(--text-primary)',
   cursor: 'pointer',
   padding: 8,
-  borderRadius: 8,
+  borderRadius: 'var(--radius-sm)',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -301,7 +301,7 @@ const closeBtnStyle = {
   insetInlineEnd: 12,
   background: 'none',
   border: 'none',
-  color: '#9ca3af',
+  color: 'var(--text-muted)',
   cursor: 'pointer',
   padding: 4,
   alignItems: 'center',
@@ -310,11 +310,11 @@ const closeBtnStyle = {
 
 const sidebarStyle = {
   background: '#080d18',
-  borderInlineEnd: '1px solid rgba(255, 255, 255, 0.08)',
+  borderInlineEnd: '1px solid var(--border-light)',
   display: 'flex',
   flexDirection: 'column',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-  color: '#e4e4e7',
+  fontFamily: 'var(--font-sans)',
+  color: 'var(--text-primary)',
   padding: '20px 12px',
 };
 
@@ -323,20 +323,20 @@ const orgHeaderStyle = {
   alignItems: 'center',
   gap: 10,
   padding: '0 4px 16px',
-  borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+  borderBottom: '1px solid var(--border-subtle)',
 };
 
 const orgAvatarStyle = {
   width: 36,
   height: 36,
-  borderRadius: 10,
-  background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+  borderRadius: 'var(--radius-md)',
+  background: 'var(--gradient-brand)',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   fontSize: 16,
   fontWeight: 700,
-  color: 'white',
+  color: 'var(--text-on-accent)',
   flexShrink: 0,
 };
 
@@ -351,7 +351,7 @@ const orgNameStyle = {
 
 const orgTypeStyle = {
   fontSize: 11,
-  color: '#71717a',
+  color: 'var(--text-dim)',
   margin: 0,
   textTransform: 'capitalize',
 };
@@ -359,10 +359,10 @@ const orgTypeStyle = {
 const orgSwitcherStyle = {
   width: '100%',
   padding: '7px 10px',
-  background: 'rgba(255, 255, 255, 0.04)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 8,
-  color: '#e4e4e7',
+  background: 'var(--bg-soft)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-sm)',
+  color: 'var(--text-primary)',
   fontSize: 12,
   margin: '12px 0 0',
 };
@@ -372,8 +372,8 @@ const setPrimaryBtnStyle = {
   padding: '6px 10px',
   background: 'transparent',
   border: '1px solid rgba(250, 204, 21, 0.35)',
-  borderRadius: 8,
-  color: '#facc15',
+  borderRadius: 'var(--radius-sm)',
+  color: 'var(--color-yellow-amber)',
   fontSize: 11,
   fontWeight: 500,
   margin: '8px 0 0',
@@ -385,23 +385,23 @@ const navItemStyle = {
   alignItems: 'center',
   gap: 10,
   padding: '9px 12px',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-sm)',
   fontSize: 13,
   fontWeight: 500,
-  color: '#9ca3af',
+  color: 'var(--text-muted)',
   textDecoration: 'none',
   margin: '2px 0',
-  transition: 'background 0.15s, color 0.15s',
+  transition: 'background var(--transition-fast), color var(--transition-fast)',
 };
 
 const navItemActiveStyle = {
-  background: 'rgba(59, 130, 246, 0.12)',
-  color: '#60a5fa',
+  background: 'var(--color-blue-soft)',
+  color: 'var(--color-blue-link)',
 };
 
 const sidebarFooterStyle = {
   paddingTop: 12,
-  borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+  borderTop: '1px solid var(--border-subtle)',
 };
 
 const backLinkStyle = {
@@ -409,9 +409,9 @@ const backLinkStyle = {
   alignItems: 'center',
   gap: 8,
   padding: '9px 12px',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-sm)',
   fontSize: 13,
   fontWeight: 500,
-  color: '#71717a',
+  color: 'var(--text-dim)',
   textDecoration: 'none',
 };

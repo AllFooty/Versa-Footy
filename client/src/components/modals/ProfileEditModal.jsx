@@ -370,14 +370,6 @@ export default function ProfileEditModal({ isOpen, onClose }) {
             )}
           </Button>
         </div>
-
-        {/* Keyframes for spinner */}
-        <style>{`
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-        `}</style>
       </div>
     </div>
   );

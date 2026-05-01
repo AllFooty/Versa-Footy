@@ -40,7 +40,7 @@ const Header = ({ stats }) => {
               style={{
                 width: 48,
                 height: 48,
-                background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+                background: 'var(--gradient-brand)',
                 borderRadius: 12,
                 display: 'flex',
                 alignItems: 'center',
@@ -53,7 +53,7 @@ const Header = ({ stats }) => {
             <div>
               <h1
                 style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontFamily: 'var(--font-display)',
                   fontSize: 22,
                   fontWeight: 700,
                   margin: 0,
@@ -106,7 +106,7 @@ const Header = ({ stats }) => {
               style={{
                 width: 40,
                 height: 40,
-                background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+                background: 'var(--gradient-brand)',
                 borderRadius: 10,
                 display: 'flex',
                 alignItems: 'center',
@@ -119,7 +119,7 @@ const Header = ({ stats }) => {
             <div>
               <h1
                 style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontFamily: 'var(--font-display)',
                   fontSize: 16,
                   fontWeight: 700,
                   margin: 0,

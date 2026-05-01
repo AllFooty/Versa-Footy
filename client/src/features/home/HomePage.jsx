@@ -8,10 +8,10 @@ const containerStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
-  color: '#e5e7eb',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-  padding: '32px',
+  background: 'var(--bg-app-gradient)',
+  color: 'var(--text-primary)',
+  fontFamily: 'var(--font-sans)',
+  padding: 'var(--space-8)',
 };
 
 const contentWrapperStyle = {
@@ -22,49 +22,50 @@ const contentWrapperStyle = {
 const eyebrowStyle = {
   textTransform: 'uppercase',
   letterSpacing: '0.25em',
-  fontSize: 11,
-  margin: '0 0 8px 0',
-  color: '#64748b',
+  fontSize: 'var(--text-xs)',
+  margin: '0 0 var(--space-2) 0',
+  color: 'var(--text-dim)',
 };
 
 const titleStyle = {
-  fontSize: 26,
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--text-3xl)',
   fontWeight: 700,
   margin: '0 0 6px 0',
-  color: '#f1f5f9',
+  color: 'var(--text-primary)',
 };
 
 const subtitleStyle = {
-  fontSize: 15,
-  color: '#94a3b8',
-  margin: '0 0 28px 0',
+  fontSize: 'var(--text-md)',
+  color: 'var(--text-muted)',
+  margin: '0 0 var(--space-7) 0',
 };
 
 const cardsContainerStyle = {
   display: 'flex',
   flexDirection: 'column',
-  gap: 12,
+  gap: 'var(--space-3)',
 };
 
 const primaryCardStyle = {
   display: 'flex',
   alignItems: 'center',
-  gap: 16,
-  padding: '20px',
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(34, 211, 238, 0.15)',
-  borderRadius: 14,
+  gap: 'var(--space-4)',
+  padding: 'var(--space-5)',
+  background: 'var(--bg-elevated)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-xl)',
   textDecoration: 'none',
-  color: '#e5e7eb',
-  boxShadow: '0 12px 40px rgba(0,0,0,0.3)',
+  color: 'var(--text-primary)',
+  boxShadow: 'var(--shadow-md)',
   backdropFilter: 'blur(12px)',
 };
 
 const iconCircleStyle = {
   width: 48,
   height: 48,
-  borderRadius: 12,
-  background: 'rgba(34, 211, 238, 0.08)',
+  borderRadius: 'var(--radius-lg)',
+  background: 'var(--color-cyan-soft)',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -72,28 +73,28 @@ const iconCircleStyle = {
 };
 
 const cardTitleStyle = {
-  fontSize: 16,
+  fontSize: 'var(--text-lg)',
   fontWeight: 600,
-  color: '#f1f5f9',
+  color: 'var(--text-primary)',
   marginBottom: 2,
 };
 
 const cardDescStyle = {
   fontSize: 13,
-  color: '#94a3b8',
+  color: 'var(--text-muted)',
 };
 
 const secondaryCardStyle = {
   display: 'flex',
   alignItems: 'center',
-  gap: 12,
+  gap: 'var(--space-3)',
   padding: '14px 16px',
-  background: 'rgba(255,255,255,0.03)',
-  border: '1px solid rgba(255,255,255,0.08)',
-  borderRadius: 12,
+  background: 'var(--bg-soft)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-lg)',
   textDecoration: 'none',
-  color: '#d1d5db',
-  fontSize: 14,
+  color: 'var(--text-primary)',
+  fontSize: 'var(--text-base)',
   fontWeight: 500,
 };
 
@@ -106,33 +107,24 @@ const bottomActionsStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: 16,
-  marginTop: 28,
+  gap: 'var(--space-4)',
+  marginTop: 'var(--space-7)',
 };
 
 const textLinkStyle = {
-  color: '#60a5fa',
+  color: 'var(--color-blue-link)',
   textDecoration: 'none',
-  fontSize: 14,
+  fontSize: 'var(--text-base)',
 };
 
 const signOutButtonStyle = {
   background: 'none',
   border: 'none',
-  color: '#ef4444',
-  fontSize: 14,
+  color: 'var(--color-red)',
+  fontSize: 'var(--text-base)',
   cursor: 'pointer',
   padding: 0,
   fontFamily: 'inherit',
-};
-
-const spinnerStyle = {
-  width: 40,
-  height: 40,
-  border: '3px solid #27272a',
-  borderTopColor: '#22d3ee',
-  borderRadius: '50%',
-  animation: 'spin 1s linear infinite',
 };
 
 const Chevron = () => (
@@ -162,10 +154,9 @@ export default function HomePage() {
     return (
       <div style={containerStyle}>
         <div style={{ textAlign: 'center' }}>
-          <div style={spinnerStyle} />
-          <p style={{ marginTop: 16, color: '#71717a' }}>{t('common.loading')}</p>
+          <div className="vf-spinner" style={{ margin: '0 auto' }} />
+          <p style={{ marginTop: 16, color: 'var(--text-dim)' }}>{t('common.loading')}</p>
         </div>
-        <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
@@ -183,7 +174,7 @@ export default function HomePage() {
             <Link href="/academy" style={primaryCardStyle}>
               <div style={iconCircleStyle}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="#22d3ee" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  stroke="var(--color-cyan)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="3" width="7" height="7" />
                   <rect x="14" y="3" width="7" height="7" />
                   <rect x="14" y="14" width="7" height="7" />
@@ -200,7 +191,7 @@ export default function HomePage() {
             <Link href="/org/create" style={primaryCardStyle}>
               <div style={iconCircleStyle}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="#22d3ee" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  stroke="var(--color-cyan)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19" />
                   <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
@@ -256,14 +247,12 @@ export default function HomePage() {
           <Link href="/" style={textLinkStyle}>
             {t('nav.backToLanding')}
           </Link>
-          <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
+          <span style={{ color: 'var(--border-strong)' }}>|</span>
           <button onClick={handleSignOut} style={signOutButtonStyle}>
             {t('common.signOut')}
           </button>
         </div>
       </div>
-
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

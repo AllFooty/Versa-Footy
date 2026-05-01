@@ -7,9 +7,9 @@ const loadingContainerStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  background: 'radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f)',
+  background: 'var(--bg-app-gradient)',
   color: '#e5e7eb',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  fontFamily: 'var(--font-sans)',
 };
 
 const spinnerStyle = {

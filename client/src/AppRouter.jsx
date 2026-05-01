@@ -53,68 +53,69 @@ const containerStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  background: 'radial-gradient(circle at 20% 20%, #111827, #0b1020 45%, #050910)',
-  color: '#e4e4e7',
-  padding: '32px',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  background: 'var(--bg-app-gradient)',
+  color: 'var(--text-primary)',
+  padding: 'var(--space-8)',
+  fontFamily: 'var(--font-sans)',
 };
 
 const cardStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  borderRadius: 16,
-  padding: '32px',
+  background: 'var(--bg-elevated)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-2xl)',
+  padding: 'var(--space-8)',
   maxWidth: 480,
   width: '100%',
-  boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
+  boxShadow: 'var(--shadow-lg)',
   backdropFilter: 'blur(12px)',
 };
 
 const eyebrowStyle = {
   textTransform: 'uppercase',
   letterSpacing: '0.2em',
-  fontSize: 12,
-  color: '#9ca3af',
-  marginBottom: 8,
+  fontSize: 'var(--text-sm)',
+  color: 'var(--text-muted)',
+  marginBottom: 'var(--space-2)',
 };
 
 const titleStyle = {
-  fontSize: 28,
-  margin: '0 0 12px 0',
-  color: '#e5e7eb',
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--text-4xl)',
+  margin: '0 0 var(--space-3) 0',
+  color: 'var(--text-primary)',
 };
 
 const bodyStyle = {
-  fontSize: 16,
+  fontSize: 'var(--text-lg)',
   lineHeight: 1.6,
-  color: '#d1d5db',
-  marginBottom: 20,
+  color: 'var(--text-secondary)',
+  marginBottom: 'var(--space-5)',
 };
 
-const actionsStyle = { display: 'flex', gap: 12 };
+const actionsStyle = { display: 'flex', gap: 'var(--space-3)' };
 const primaryButtonStyle = {
   display: 'inline-flex',
   alignItems: 'center',
-  gap: 8,
+  gap: 'var(--space-2)',
   padding: '10px 16px',
-  background: 'linear-gradient(135deg, #2563eb, #22d3ee)',
+  background: 'linear-gradient(135deg, var(--color-blue-hover), var(--color-cyan))',
   color: '#0b1020',
   fontWeight: 600,
   textDecoration: 'none',
-  borderRadius: 10,
-  boxShadow: '0 10px 30px rgba(37,99,235,0.35)',
+  borderRadius: 'var(--radius-md)',
+  boxShadow: 'var(--shadow-button)',
 };
 const ghostButtonStyle = {
   display: 'inline-flex',
   alignItems: 'center',
-  gap: 8,
+  gap: 'var(--space-2)',
   padding: '10px 16px',
-  background: 'rgba(255,255,255,0.04)',
-  color: '#e5e7eb',
+  background: 'var(--bg-soft)',
+  color: 'var(--text-primary)',
   fontWeight: 600,
   textDecoration: 'none',
-  borderRadius: 10,
-  border: '1px solid rgba(255,255,255,0.08)',
+  borderRadius: 'var(--radius-md)',
+  border: '1px solid var(--border-light)',
 };
 
 const LoadingFallback = () => (
@@ -123,7 +124,7 @@ const LoadingFallback = () => (
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'radial-gradient(circle at 20% 20%, #111827, #0b1020 45%, #050910)',
+    background: 'var(--bg-app-gradient)',
   }} />
 );
 
@@ -133,10 +134,10 @@ function DevBanner() {
   return (
     <div style={{
       position: 'fixed', top: 0, left: '50%', transform: 'translateX(-50%)',
-      zIndex: 9999, background: '#f97316', color: '#fff',
+      zIndex: 9999, background: 'var(--color-orange)', color: 'var(--text-on-accent)',
       fontSize: 11, fontWeight: 700, letterSpacing: '0.05em',
       padding: '2px 12px', borderRadius: '0 0 6px 6px',
-      fontFamily: "'Inter', system-ui, sans-serif",
+      fontFamily: 'var(--font-sans)',
     }}>
       {t('common.devEnvironment')}
     </div>

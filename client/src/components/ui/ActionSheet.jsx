@@ -41,7 +41,7 @@ const ActionSheet = ({ isOpen, onClose, items = [], title }) => {
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'rgba(0, 0, 0, 0.6)',
+          background: 'var(--bg-overlay)',
           backdropFilter: 'blur(4px)',
           animation: 'fadeIn 0.2s ease',
         }}
@@ -112,7 +112,7 @@ const ActionSheet = ({ isOpen, onClose, items = [], title }) => {
               fontWeight: 500,
               cursor: 'pointer',
               textAlign: 'left',
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: 'var(--font-sans)',
             }}
           >
             {item.icon}
@@ -137,7 +137,7 @@ const ActionSheet = ({ isOpen, onClose, items = [], title }) => {
             fontSize: 16,
             fontWeight: 600,
             cursor: 'pointer',
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: 'var(--font-sans)',
           }}
         >
           {t('common.cancel')}

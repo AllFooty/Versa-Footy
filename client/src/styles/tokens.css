@@ -1,0 +1,186 @@
+/* ============================================================
+   Versa Footy — Unified Design Tokens
+   Single source of truth for colors, typography, radii, shadows,
+   transitions and shared keyframes used by EVERY feature
+   (Library, Academy, Home, Settings, Auth, Admin, Landing).
+
+   How to use:
+     - Reference tokens via `var(--token-name)` from CSS and from
+       inline JSX styles, e.g. `style={{ color: 'var(--text-primary)' }}`.
+     - Do NOT redefine these values inside feature-specific files;
+       extend them here instead.
+   ============================================================ */
+
+:root {
+  /* ---------- Surfaces / Backgrounds ---------- */
+  --bg-app: #0a0f1a;
+  --bg-app-deep: #050910;
+  --bg-surface: #0f172a;
+  --bg-surface-2: #1a1f2e;
+  --bg-elevated: rgba(15, 23, 42, 0.6);
+  --bg-elevated-strong: rgba(15, 23, 42, 0.8);
+  --bg-overlay: rgba(0, 0, 0, 0.6);
+  --bg-overlay-strong: rgba(0, 0, 0, 0.8);
+  --bg-input: rgba(0, 0, 0, 0.3);
+  --bg-soft: rgba(255, 255, 255, 0.04);
+  --bg-soft-hover: rgba(255, 255, 255, 0.06);
+  --bg-soft-active: rgba(255, 255, 255, 0.08);
+
+  /* Unified app-shell gradient used by all post-login features */
+  --bg-app-gradient: radial-gradient(circle at 10% 20%, #0b1020, #050910 60%, #02060f);
+
+  /* Card surface gradient used for elevated content */
+  --bg-card-gradient: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+
+  /* Modal surface */
+  --bg-modal: linear-gradient(145deg, #1e2433 0%, #151a26 100%);
+
+  /* ---------- Text ---------- */
+  --text-primary: #e4e4e7;
+  --text-secondary: #a1a1aa;
+  --text-muted: #9ca3af;
+  --text-dim: #71717a;
+  --text-faint: #6b6b75;
+  --text-on-accent: #ffffff;
+
+  /* ---------- Brand / Accent palette ---------- */
+  --color-blue: #3b82f6;
+  --color-blue-hover: #2563eb;
+  --color-blue-soft: rgba(59, 130, 246, 0.12);
+  --color-blue-soft-strong: rgba(59, 130, 246, 0.25);
+  --color-blue-link: #60a5fa;
+
+  --color-purple: #8b5cf6;
+  --color-purple-light: #a78bfa;
+
+  --color-cyan: #22d3ee;
+  --color-cyan-soft: rgba(34, 211, 238, 0.08);
+
+  --color-green: #22c55e;
+  --color-green-soft: rgba(34, 197, 94, 0.15);
+
+  --color-orange: #f97316;
+  --color-orange-soft: rgba(249, 115, 22, 0.15);
+
+  --color-yellow: #eab308;
+  --color-yellow-amber: #facc15;
+
+  --color-red: #ef4444;
+  --color-red-soft: rgba(239, 68, 68, 0.12);
+  --color-red-soft-strong: rgba(239, 68, 68, 0.2);
+
+  /* Marketing-only accents (used by landing) */
+  --color-coral: #ff4b4b;
+  --color-coral-hover: #e63946;
+  --color-gold: #ffd166;
+  --color-navy: #1a2b47;
+
+  /* Signature gradient used for logos / FABs */
+  --gradient-brand: linear-gradient(135deg, var(--color-blue) 0%, var(--color-purple) 100%);
+  --gradient-brand-cyan: linear-gradient(135deg, var(--color-blue) 0%, var(--color-cyan) 100%);
+  --gradient-marketing: linear-gradient(135deg, var(--color-coral) 0%, #ff6b6b 50%, var(--color-gold) 100%);
+
+  /* ---------- Borders ---------- */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --border-accent: rgba(59, 130, 246, 0.25);
+  --border-danger: rgba(239, 68, 68, 0.25);
+
+  /* ---------- Radii ---------- */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+  --radius-pill: 999px;
+
+  /* ---------- Shadows ---------- */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 12px 40px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 20px 40px rgba(0, 0, 0, 0.4);
+  --shadow-button: 0 8px 24px rgba(59, 130, 246, 0.4);
+  --shadow-button-coral: 0 8px 25px rgba(255, 75, 75, 0.35);
+
+  /* ---------- Spacing scale ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  /* ---------- Typography ---------- */
+  --font-sans: 'Inter', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+  --font-mono: 'SFMono-Regular', ui-monospace, Menlo, Consolas, monospace;
+
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 22px;
+  --text-3xl: 26px;
+  --text-4xl: 32px;
+
+  /* ---------- Transitions ---------- */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ---------- Layout ---------- */
+  --layout-max-width: 1400px;
+  --layout-content-width: 1200px;
+
+  /* ---------- Legacy aliases (kept for backwards compatibility while
+     existing component CSS migrates to the canonical token names above).
+     New code should NOT reference these. ---------- */
+  --color-bg-primary: var(--bg-app);
+  --color-bg-secondary: var(--bg-surface-2);
+  --color-bg-tertiary: #0d1117;
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-dim: var(--text-faint);
+}
+
+/* ============================================================
+   Shared keyframes — declared once, available globally.
+   Avoid redeclaring `spin`, `fadeIn`, `slideUp` in feature CSS
+   or inline <style> blocks.
+   ============================================================ */
+@keyframes vf-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes vf-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes vf-slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes vf-slide-up-mobile {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Backwards-compatible aliases so existing `animation: spin/fadeIn/slideUp ...`
+   declarations keep working without churn. */
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUpMobile { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: translateY(0); } }
