@@ -46,7 +46,7 @@
 /* ============ Button Styles ============ */
 .btn-primary {
   background: var(--gradient-primary-action);
-  color: white;
+  color: var(--text-on-brand);
   border: none;
   padding: 12px 24px;
   border-radius: 12px;
@@ -223,7 +223,7 @@
   height: 18px;
   border-radius: 9px;
   background: var(--color-primary-action);
-  color: white;
+  color: var(--text-on-brand);
   font-size: 11px;
   font-weight: 700;
   display: flex;
@@ -338,7 +338,7 @@
   height: 16px;
   border-radius: 50%;
   border: none;
-  background: var(--color-cyan-soft-border);
+  background: var(--color-cyan-soft-strong);
   color: var(--color-link-hover);
   cursor: pointer;
   padding: 0;
@@ -684,7 +684,7 @@
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-  background: var(--border-medium);
+  background: var(--surface-glass-hover);
   border-radius: 3px;
 }
 
@@ -984,7 +984,7 @@
   border-radius: 50%;
   background: var(--gradient-primary-action);
   border: none;
-  color: white;
+  color: var(--text-on-brand);
   font-size: 24px;
   cursor: pointer;
   box-shadow: var(--shadow-button-indigo);
@@ -1030,7 +1030,7 @@
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 4px 12px var(--surface-input);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: all 0.2s ease;
 }
 
@@ -1091,7 +1091,7 @@
   }
 
   .touchable:active {
-    background-color: var(--border-light);
+    background-color: var(--surface-glass-hover);
   }
 }
 

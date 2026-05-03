@@ -19,8 +19,8 @@
   top: -100px;
   z-index: 1000;
   padding: 10px 16px;
-  background: var(--color-secondary-action-hover);
-  color: white;
+  background: var(--color-brand-strong);
+  color: var(--text-on-brand);
   font-weight: 600;
   font-size: 13px;
   text-decoration: none;
@@ -239,7 +239,7 @@
   bottom: 8px;
   width: 3px;
   border-radius: 0 3px 3px 0;
-  background: linear-gradient(180deg, var(--color-cyan), var(--color-brand));
+  background: linear-gradient(180deg, var(--color-brand), var(--color-cyan));
 }
 
 [dir="rtl"] .app-nav-item--active::before {

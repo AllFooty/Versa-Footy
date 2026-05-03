@@ -235,7 +235,7 @@ function LevelProgressBar({ levelProgress }) {
           style={{
             width: `${pct}%`,
             height: '100%',
-            background: 'linear-gradient(90deg, var(--color-focus), var(--color-focus))',
+            background: 'linear-gradient(90deg, var(--color-secondary-action), var(--color-focus))',
             transition: 'width 0.5s ease',
           }}
         />

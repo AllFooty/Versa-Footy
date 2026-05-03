@@ -56,8 +56,8 @@ export const renderDifficultyStars = (value) => {
  * @returns {object} Style object with background and color
  */
 export const getDifficultyStyle = (value) => {
-  const palette = ['var(--status-success)', 'var(--status-success-text)', 'var(--status-warning)', 'var(--color-orange)', 'var(--status-danger)'];
+  const palette = ['var(--difficulty-1)', 'var(--difficulty-2)', 'var(--difficulty-3)', 'var(--difficulty-4)', 'var(--difficulty-5)'];
   const rating = normalizeDifficulty(value);
-  const color = palette[rating - 1] || 'var(--color-focus)';
+  const color = palette[rating - 1] || 'var(--difficulty-1)';
   return { background: `color-mix(in srgb, ${color} 18%, transparent)`, color, letterSpacing: 1 };
 };

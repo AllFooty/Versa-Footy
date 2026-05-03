@@ -32,6 +32,7 @@
   --text-tertiary: #94a3b8;
   --text-eyebrow: #a5b4fc;
   --text-inverse: #0b1020;
+  --text-on-brand: #ffffff;
 
   /* ---- Color: Brand ----
      Aligned with landing palette: indigo + cyan, warm accents.
@@ -64,6 +65,7 @@
   --color-brand-soft-bg: rgba(99, 102, 241, 0.14);
   --color-brand-soft-border: rgba(99, 102, 241, 0.3);
   --color-cyan-soft: rgba(34, 211, 238, 0.12);
+  --color-cyan-soft-strong: rgba(34, 211, 238, 0.28);
   --color-cyan-soft-border: rgba(34, 211, 238, 0.28);
   --color-gold-soft: rgba(255, 209, 102, 0.16);
   --color-gold-soft-border: rgba(255, 209, 102, 0.34);
@@ -89,6 +91,14 @@
   --status-info-text: var(--color-link);
   --status-info-soft: var(--color-cyan-soft);
   --status-info-border: var(--color-cyan-soft-border);
+
+  /* ---- Difficulty ramp (1=easiest, 5=hardest) ----
+     Distinct hues so adjacent ratings remain visually separable. */
+  --difficulty-1: #22c55e;
+  --difficulty-2: #84cc16;
+  --difficulty-3: #eab308;
+  --difficulty-4: #f97316;
+  --difficulty-5: #ef4444;
 
   /* ---- Borders ---- */
   --border-subtle: rgba(255, 255, 255, 0.06);
@@ -168,7 +178,11 @@
   --transition-base: 0.2s ease;
   --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* ---- Focus ---- */
+  /* ---- Focus ----
+     Ring colors carry alpha ≥ 0.5 so the indicator stays visible against the
+     dark gradient backdrop (WCAG 2.4.7 / 1.4.11). */
+  --focus-ring: rgba(34, 211, 238, 0.55);
+  --focus-ring-danger: rgba(239, 68, 68, 0.55);
   --focus-ring-color: var(--color-cyan);
   --focus-ring-offset: 2px;
 }

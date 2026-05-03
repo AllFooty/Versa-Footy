@@ -9,6 +9,9 @@ export function ConfirmProvider({ children }) {
 
   const confirm = useCallback((options = {}) => {
     return new Promise((resolve) => {
+      // If a previous prompt is still pending, treat the override as a dismissal
+      // so the earlier caller's promise settles instead of dangling forever.
+      resolverRef.current?.(false);
       resolverRef.current = resolve;
       setState({
         title: options.title,
