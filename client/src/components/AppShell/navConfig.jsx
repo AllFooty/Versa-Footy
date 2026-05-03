@@ -109,6 +109,9 @@ const navConfig = [
     items: [
       { labelKey: 'nav.library', href: '/library', icon: LibraryIcon },
       { labelKey: 'nav.videosAudit', href: '/videos-audit', icon: VideosIcon },
+      { labelKey: 'nav.marketingEmail', href: '/marketing', exact: true, icon: EmailIcon },
+      { labelKey: 'nav.marketingSegments', href: '/marketing/segments', icon: SegmentsIcon },
+      { labelKey: 'nav.marketingAutomations', href: '/marketing/automations', icon: AutomationsIcon },
     ],
   },
   {

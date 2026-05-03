@@ -303,19 +303,19 @@ export default function AppRouter() {
         {/* Marketing Email - Admin only */}
         <Route path="/marketing">
           <AdminProtectedRoute>
-            <AppShell pageTitleKey="nav.marketing"><MarketingEmailPage /></AppShell>
+            <AppShell pageTitleKey="nav.marketingEmail"><MarketingEmailPage /></AppShell>
           </AdminProtectedRoute>
         </Route>
 
         <Route path="/marketing/segments">
           <AdminProtectedRoute>
-            <AppShell pageTitleKey="nav.marketing"><SegmentsPage /></AppShell>
+            <AppShell pageTitleKey="nav.marketingSegments"><SegmentsPage /></AppShell>
           </AdminProtectedRoute>
         </Route>
 
         <Route path="/marketing/automations">
           <AdminProtectedRoute>
-            <AppShell pageTitleKey="nav.marketing"><AutomationsPage /></AppShell>
+            <AppShell pageTitleKey="nav.marketingAutomations"><AutomationsPage /></AppShell>
           </AdminProtectedRoute>
         </Route>
 
