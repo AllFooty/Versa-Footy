@@ -11,20 +11,18 @@ export default function SegmentsPage() {
   const { t } = useTranslation();
   const confirmDialog = useConfirm();
   const [segments, setSegments] = useState(null);
-  const [error, setError] = useState(null);
   const [editing, setEditing] = useState(null); // { id?, name, description, filter, is_builtin }
   const [counts, setCounts] = useState({});
 
   useEffect(() => { void load(); }, []);
 
   async function load() {
-    setError(null);
     const { data, error } = await supabase
       .from('marketing_segments')
       .select('*')
       .order('is_builtin', { ascending: false })
       .order('name');
-    if (error) { setError(error.message); return; }
+    if (error) { toast.error(error.message); return; }
     setSegments(data || []);
     // Live counts per segment.
     const next = {};
@@ -139,13 +137,11 @@ export default function SegmentsPage() {
   return (
     <PageContainer width="narrow">
       <PageHeader
-        backLink={<BackLink href="/admin/marketing">{t('admin.common.marketing')}</BackLink>}
+        backLink={<BackLink href="/marketing">{t('admin.common.marketing')}</BackLink>}
         title={t('admin.segments.title')}
         actions={<button onClick={newSegment} style={primaryBtnStyle}>{t('admin.segments.newSegment')}</button>}
       />
       <div>
-
-        {error && <div style={errorBoxStyle}>{error}</div>}
 
         <div className="card card--lg">
           {segments == null ? (
@@ -205,9 +201,4 @@ const smallBtn = {
   padding: '6px 10px', background: 'rgba(255,255,255,0.04)',
   color: '#e5e7eb', border: '1px solid rgba(255,255,255,0.1)',
   borderRadius: 6, cursor: 'pointer', fontSize: 12,
-};
-const errorBoxStyle = {
-  padding: 12, marginBottom: 12,
-  background: 'rgba(230,57,70,0.1)', border: '1px solid rgba(230,57,70,0.3)',
-  borderRadius: 8, color: '#fca5a5', fontSize: 13,
 };

@@ -13,14 +13,13 @@ export default function AutomationsPage() {
   const { t } = useTranslation();
   const confirmDialog = useConfirm();
   const [list, setList] = useState(null);
-  const [error, setError] = useState(null);
   const [editing, setEditing] = useState(null); // automation id or 'new'
 
   const reload = useCallback(async () => {
     const { data, error } = await supabase.rpc('marketing_automations_list');
-    if (error) setError(error.message);
-    else { setError(null); setList(data || []); }
-  }, []);
+    if (error) toast.error(t('admin.common.failedToLoad', { error: error.message }));
+    else setList(data || []);
+  }, [t]);
 
   useEffect(() => { reload(); }, [reload]);
 
@@ -47,13 +46,11 @@ export default function AutomationsPage() {
   return (
     <PageContainer width="narrow">
       <PageHeader
-        backLink={<BackLink href="/admin/marketing">{t('admin.common.marketing')}</BackLink>}
+        backLink={<BackLink href="/marketing">{t('admin.common.marketing')}</BackLink>}
         title={t('admin.automations.title')}
         subtitle={t('admin.automations.subtitle')}
       />
       <div>
-
-        {error && <div style={errBox}>{t('admin.common.failedToLoad', { error })}</div>}
 
         <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
@@ -299,7 +296,6 @@ const lbl = { display: 'block', color: '#cbd5e1', fontSize: 13, marginTop: 8 };
 const input = { width: '100%', padding: '8px 10px', borderRadius: 6, marginTop: 4, fontSize: 13, background: 'rgba(255,255,255,0.04)', color: '#e5e7eb', border: '1px solid rgba(255,255,255,0.12)', boxSizing: 'border-box' };
 const textarea = { ...input, fontFamily: 'monospace', fontSize: 12 };
 const muted = { color: '#9ca3af', fontSize: 13, padding: 8, fontStyle: 'italic' };
-const errBox = { padding: 12, background: 'rgba(230,57,70,0.1)', border: '1px solid rgba(230,57,70,0.3)', borderRadius: 8, color: '#fca5a5', fontSize: 13, marginBottom: 12 };
 const btnBase = { padding: '8px 14px', fontSize: 12, fontWeight: 600, borderRadius: 6, cursor: 'pointer' };
 const btnPrimary = { ...btnBase, background: 'linear-gradient(135deg,#2563eb,#22d3ee)', color: '#0b1020', border: 'none' };
 const btnGhost = { ...btnBase, background: 'rgba(255,255,255,0.04)', color: '#e5e7eb', border: '1px solid rgba(255,255,255,0.12)' };

@@ -891,7 +891,8 @@
     "confirm": {
       "defaultTitle": "تأكيد",
       "defaultCancel": "إلغاء",
-      "defaultConfirm": "تأكيد"
+      "defaultConfirm": "تأكيد",
+      "confirmTextHint": "اكتب {{token}} للتأكيد:"
     },
     "profileEdit": {
       "title": "تعديل الملف الشخصي",
@@ -1104,6 +1105,11 @@
       "unknownTags": "تم العثور على {{count}} علامة دمج غير معروفة: {{tags}}",
       "modeBlocks": "الكتل",
       "modeHtml": "HTML خام",
+      "modeSwitch": {
+        "title": "التبديل إلى وضع {{target}}؟",
+        "message": "عملك في وضع {{current}} محفوظ كمسودة — يمكنك التبديل مجدداً متى شئت دون أن تفقد شيئاً.",
+        "confirm": "التبديل إلى {{target}}"
+      },
       "rawHtmlHintPre": "وضع HTML الخام. ضع ",
       "rawHtmlHintPost": " داخل الجسم حتى يتمكن المستلمون من إلغاء الاشتراك.",
       "sendNow": "إرسال الآن",
@@ -1121,7 +1127,6 @@
       "hidePreview": "إخفاء المعاينة",
       "scheduledToast": "تم الجدولة في {{when}}. معرّف الحملة: {{id}}",
       "sentToast": "تم إرسال {{success}} من {{total}} ({{failed}} فشل). معرّف الحملة: {{id}}",
-      "errorPrefix": "خطأ",
       "previewLabel": "المعاينة",
       "previewSubject": "الموضوع:",
       "previewEmpty": "(فارغ)",
@@ -1149,6 +1154,7 @@
         "campaignTitle": "إرسال الحملة؟",
         "campaignMessageSubscribers": "إرسال هذه الحملة إلى {{count}} مشترك في النشرة؟ لا يمكن التراجع.",
         "campaignMessageOptedIn": "إرسال هذه الحملة إلى {{count}} مستخدم موافق؟ لا يمكن التراجع.",
+        "campaignMessageLargeSend": "أنت على وشك الإرسال إلى {{count}} مستلم (≈ ${{cost}}). لا يمكن التراجع.",
         "send": "إرسال",
         "schedule": "جدولة"
       },
@@ -1157,13 +1163,19 @@
         "pickDateTime": "يرجى اختيار تاريخ ووقت لجدولة الحملة.",
         "invalidDate": "هذا التاريخ غير صحيح. يرجى اختيار تاريخ ووقت صالحين.",
         "futureDate": "يجب أن يكون وقت الجدولة في المستقبل.",
-        "sendPrompt": "أنت على وشك الإرسال إلى {{count}} مستلم (≈ ${{cost}}). اكتب SEND للتأكيد:",
-        "sendCanceled": "أُلغي الإرسال — نص التأكيد لم يتطابق.",
         "notAuthenticated": "لم تسجّل الدخول. حدّث الصفحة وحاول مجدداً.",
         "renderFailed": "فشل عرض البريد: {{error}}",
         "renderFailedAr": "فشل عرض البريد العربي: {{error}}",
         "missingArVariant": "تم تفعيل النسخة العربية ولكن الموضوع أو الجسم مفقود.",
         "arPrefix": "النسخة العربية: {{issues}}"
+      },
+      "validation": {
+        "heading": "أصلح ما يلي قبل الإرسال",
+        "subjectMissing": "أضف سطر الموضوع",
+        "bodyMissing": "أضف على الأقل كتلة واحدة إلى جسم البريد",
+        "testRecipientMissing": "أضف بريد المستلم التجريبي",
+        "arSubjectMissing": "أضف سطر الموضوع بالعربية",
+        "arBodyMissing": "أضف جسم البريد بالعربية"
       }
     },
     "templates": {

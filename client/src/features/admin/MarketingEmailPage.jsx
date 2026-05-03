@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/AuthContext';
 import { useConfirm } from '../../components/ConfirmProvider';
@@ -20,6 +21,26 @@ function loadSavedTestAddresses() {
 function saveTestAddresses(arr) {
   try { localStorage.setItem(TEST_ADDR_KEY, JSON.stringify(arr.slice(0, 20))); } catch {}
 }
+
+// "Dirty" = admin has edited the buffer beyond the seed defaults. Used to
+// decide whether toggling modes deserves a confirm dialog: a fresh, unedited
+// buffer can be swapped silently; one with real work shouldn't surprise.
+function isBlocksDirty(blocks) {
+  const fresh = defaultBlocks();
+  if (!Array.isArray(blocks) || blocks.length !== fresh.length) return true;
+  for (let i = 0; i < fresh.length; i++) {
+    const a = blocks[i];
+    const b = fresh[i];
+    if (!a || a.type !== b.type) return true;
+    if (a.text !== b.text) return true;
+    if (b.type === 'button' && a.href !== b.href) return true;
+    if (b.type === 'image' && (a.src !== b.src || a.alt !== b.alt)) return true;
+    if (b.type === 'spacer' && a.height !== b.height) return true;
+    if (b.type === 'heading' && (a.level !== b.level || a.align !== b.align)) return true;
+  }
+  return false;
+}
+
 import { applyMergeTags, recipientToVars, MERGE_TAGS, findUnknownTags } from './marketing/mergeTags.js';
 
 const FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-marketing-email`;
@@ -70,14 +91,13 @@ export default function MarketingEmailPage() {
   const [testRecipient, setTestRecipient] = useState(user?.email || '');
   const [counts, setCounts] = useState(null);
   const [sending, setSending] = useState(false);
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [renderedHtml, setRenderedHtml] = useState('');
   const [sampleRecipient, setSampleRecipient] = useState(null);
   const [sendMode, setSendMode] = useState('now'); // 'now' | 'schedule'
   const [scheduledFor, setScheduledFor] = useState(''); // datetime-local string, browser TZ
   const [scheduleRefresh, setScheduleRefresh] = useState(0);
+  const [recentRefresh, setRecentRefresh] = useState(0);
   // Arabic variant (E). Mode is shared between EN and AR; only subject/body differ.
   const [enableAr, setEnableAr] = useState(false);
   const [langTab, setLangTab] = useState('en'); // 'en' | 'ar'
@@ -127,7 +147,7 @@ export default function MarketingEmailPage() {
         const result = await renderEmailHtml(blocks);
         if (!cancelled) setRenderedHtml(result);
       } catch (e) {
-        if (!cancelled) setError(t('admin.email.errors.renderFailed', { error: e?.message || e }));
+        if (!cancelled) toast.error(t('admin.email.errors.renderFailed', { error: e?.message || e }));
       }
     })();
     return () => { cancelled = true; };
@@ -142,7 +162,7 @@ export default function MarketingEmailPage() {
         const result = await renderEmailHtml(blocksAr);
         if (!cancelled) setRenderedHtmlAr(result);
       } catch (e) {
-        if (!cancelled) setError(t('admin.email.errors.renderFailedAr', { error: e?.message || e }));
+        if (!cancelled) toast.error(t('admin.email.errors.renderFailedAr', { error: e?.message || e }));
       }
     })();
     return () => { cancelled = true; };
@@ -191,10 +211,72 @@ export default function MarketingEmailPage() {
     [subject, outgoingHtml, enableAr, subjectAr, outgoingHtmlAr]
   );
 
-  async function handleSend() {
-    setError(null);
-    setResult(null);
+  // Live list of every reason the Send button is gated. Surfaced inline so
+  // admins can see what's missing instead of staring at a disabled button.
+  const sendIssues = useMemo(() => {
+    const issues = [];
+    if (!subject.trim()) issues.push(t('admin.email.validation.subjectMissing'));
+    if (!outgoingHtml) issues.push(t('admin.email.validation.bodyMissing'));
+    if (audience === 'test' && !testRecipient) {
+      issues.push(t('admin.email.validation.testRecipientMissing'));
+    }
+    if (sendMode === 'schedule' && audience !== 'test' && !scheduledFor) {
+      issues.push(t('admin.email.errors.pickDateTime'));
+    }
+    if (enableAr) {
+      if (!subjectAr.trim()) issues.push(t('admin.email.validation.arSubjectMissing'));
+      if (!outgoingHtmlAr) issues.push(t('admin.email.validation.arBodyMissing'));
+    }
+    if (mode === 'blocks') {
+      issues.push(...validateBlocks(blocks));
+      if (enableAr) {
+        for (const issue of validateBlocks(blocksAr)) {
+          issues.push(t('admin.email.errors.arPrefix', { issues: issue }));
+        }
+      }
+    }
+    // Recipient count: only flag once counts have loaded so we don't show a
+    // false positive while the audience RPC is still in flight.
+    if (audience !== 'test' && counts) {
+      const recipientCount = audience === 'subscribers' ? counts.subscribers
+        : audience === 'segment' ? (segmentCounts[segmentId] ?? 0)
+        : audience === 'all_users' ? counts.all_users
+        : counts.opted_in_users;
+      if (recipientCount === 0) issues.push(t('admin.email.errors.noRecipients'));
+    }
+    return issues;
+  }, [
+    subject, outgoingHtml, audience, testRecipient, sendMode, scheduledFor,
+    enableAr, subjectAr, outgoingHtmlAr, mode, blocks, blocksAr,
+    counts, segmentCounts, segmentId, t,
+  ]);
 
+  // Toggle the editor mode. Both buffers (blocks + html) live in state in
+  // parallel, so swapping never destroys content — but "what's about to send"
+  // changes, so confirm if the active buffer has real edits.
+  async function handleModeToggle(targetMode) {
+    if (mode === targetMode) return;
+    const activeDirty = mode === 'blocks'
+      ? (isBlocksDirty(blocks) || (enableAr && isBlocksDirty(blocksAr)))
+      : ((html.trim() !== '' && html !== TEMPLATE_LAUNCH) || (enableAr && htmlAr.trim() !== ''));
+    if (activeDirty) {
+      const ok = await confirmDialog({
+        title: t('admin.email.modeSwitch.title', {
+          target: targetMode === 'blocks' ? t('admin.email.modeBlocks') : t('admin.email.modeHtml'),
+        }),
+        message: t('admin.email.modeSwitch.message', {
+          current: mode === 'blocks' ? t('admin.email.modeBlocks') : t('admin.email.modeHtml'),
+        }),
+        confirmLabel: t('admin.email.modeSwitch.confirm', {
+          target: targetMode === 'blocks' ? t('admin.email.modeBlocks') : t('admin.email.modeHtml'),
+        }),
+      });
+      if (!ok) return;
+    }
+    setMode(targetMode);
+  }
+
+  async function handleSend() {
     const recipientCount = audience === 'test' ? 1
       : audience === 'subscribers' ? (counts?.subscribers ?? 0)
       : audience === 'segment' ? (segmentCounts[segmentId] ?? 0)
@@ -202,63 +284,60 @@ export default function MarketingEmailPage() {
       : (counts?.opted_in_users ?? 0);
 
     if (recipientCount === 0) {
-      setError(t('admin.email.errors.noRecipients'));
+      toast.error(t('admin.email.errors.noRecipients'));
       return;
     }
 
     const isSchedule = sendMode === 'schedule' && audience !== 'test';
     let scheduledISO = null;
     if (isSchedule) {
-      if (!scheduledFor) { setError(t('admin.email.errors.pickDateTime')); return; }
+      if (!scheduledFor) { toast.error(t('admin.email.errors.pickDateTime')); return; }
       const dt = new Date(scheduledFor);
-      if (isNaN(dt.getTime())) { setError(t('admin.email.errors.invalidDate')); return; }
-      if (dt <= new Date()) { setError(t('admin.email.errors.futureDate')); return; }
+      if (isNaN(dt.getTime())) { toast.error(t('admin.email.errors.invalidDate')); return; }
+      if (dt <= new Date()) { toast.error(t('admin.email.errors.futureDate')); return; }
       scheduledISO = dt.toISOString();
     }
 
-    // Typed-SEND confirm gate for big sends. Plain confirm() is too easy to miss-click.
-    if (audience !== 'test' && recipientCount > 100 && !isSchedule) {
-      const costEst = (recipientCount * 0.0004).toFixed(2);
-      const typed = window.prompt(t('admin.email.errors.sendPrompt', { count: recipientCount, cost: costEst }));
-      if (typed !== 'SEND') {
-        setError(typed == null ? null : t('admin.email.errors.sendCanceled'));
-        return;
-      }
-    } else {
-      const confirmTitle = audience === 'test'
-        ? t('admin.email.confirm.testTitle')
-        : isSchedule
-          ? t('admin.email.confirm.scheduleTitle')
-          : t('admin.email.confirm.campaignTitle');
-      const confirmMsg = audience === 'test'
-        ? t('admin.email.confirm.testMessage', { email: testRecipient })
-        : isSchedule
-          ? t('admin.email.confirm.scheduleMessage', { count: recipientCount, when: new Date(scheduledISO).toLocaleString() })
+    // Large sends require typing "SEND" — same modal pattern as smaller sends, just gated.
+    // The magic word stays literal English so ops procedures are stable across locales.
+    const isLargeSend = audience !== 'test' && recipientCount > 100 && !isSchedule;
+    const costEst = (recipientCount * 0.0004).toFixed(2);
+    const confirmTitle = audience === 'test'
+      ? t('admin.email.confirm.testTitle')
+      : isSchedule
+        ? t('admin.email.confirm.scheduleTitle')
+        : t('admin.email.confirm.campaignTitle');
+    const confirmMsg = audience === 'test'
+      ? t('admin.email.confirm.testMessage', { email: testRecipient })
+      : isSchedule
+        ? t('admin.email.confirm.scheduleMessage', { count: recipientCount, when: new Date(scheduledISO).toLocaleString() })
+        : isLargeSend
+          ? t('admin.email.confirm.campaignMessageLargeSend', { count: recipientCount, cost: costEst })
           : audience === 'subscribers'
             ? t('admin.email.confirm.campaignMessageSubscribers', { count: recipientCount })
             : t('admin.email.confirm.campaignMessageOptedIn', { count: recipientCount });
-      const ok = await confirmDialog({
-        title: confirmTitle,
-        message: confirmMsg,
-        confirmLabel: isSchedule ? t('admin.email.confirm.schedule') : t('admin.email.confirm.send'),
-        danger: !isSchedule && audience !== 'test',
-      });
-      if (!ok) return;
-    }
+    const ok = await confirmDialog({
+      title: confirmTitle,
+      message: confirmMsg,
+      confirmLabel: isSchedule ? t('admin.email.confirm.schedule') : t('admin.email.confirm.send'),
+      danger: !isSchedule && audience !== 'test',
+      requireConfirmText: isLargeSend ? 'SEND' : undefined,
+    });
+    if (!ok) return;
 
     if (mode === 'blocks') {
       const issues = validateBlocks(blocks);
       if (issues.length > 0) {
-        setError(issues.join(' '));
+        toast.error(issues.join(' '));
         return;
       }
       if (enableAr) {
         const issuesAr = validateBlocks(blocksAr);
-        if (issuesAr.length > 0) { setError(t('admin.email.errors.arPrefix', { issues: issuesAr.join(' ') })); return; }
+        if (issuesAr.length > 0) { toast.error(t('admin.email.errors.arPrefix', { issues: issuesAr.join(' ') })); return; }
       }
     }
     if (enableAr && (!subjectAr || (mode === 'html' && !htmlAr))) {
-      setError(t('admin.email.errors.missingArVariant'));
+      toast.error(t('admin.email.errors.missingArVariant'));
       return;
     }
 
@@ -280,9 +359,11 @@ export default function MarketingEmailPage() {
           p_subject_ar: sendSubjectAr,
           p_html_ar: sendHtmlAr,
         });
-        if (rpcErr) setError(rpcErr.message);
+        if (rpcErr) toast.error(rpcErr.message);
         else {
-          setResult({ scheduled: true, campaignId: data, scheduledFor: scheduledISO });
+          toast.success(
+            t('admin.email.scheduledToast', { when: new Date(scheduledISO).toLocaleString(), id: data }),
+          );
           setScheduleRefresh((n) => n + 1);
         }
         setSending(false);
@@ -291,7 +372,7 @@ export default function MarketingEmailPage() {
 
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        setError(t('admin.email.errors.notAuthenticated'));
+        toast.error(t('admin.email.errors.notAuthenticated'));
         setSending(false);
         return;
       }
@@ -318,12 +399,20 @@ export default function MarketingEmailPage() {
 
       const body = await res.json();
       if (!res.ok || !body.ok) {
-        setError(body.error || `HTTP ${res.status}`);
+        toast.error(body.error || `HTTP ${res.status}`);
       } else {
-        setResult(body);
+        toast.success(
+          t('admin.email.sentToast', {
+            success: body.successful,
+            failed: body.failed,
+            total: body.totalRecipients,
+            id: body.campaignId,
+          }),
+        );
+        setRecentRefresh((n) => n + 1);
       }
     } catch (e) {
-      setError(e?.message || String(e));
+      toast.error(e?.message || String(e));
     } finally {
       setSending(false);
     }
@@ -332,14 +421,14 @@ export default function MarketingEmailPage() {
   return (
     <PageContainer width="narrow">
       <PageHeader
-        backLink={<BackLink href="/admin/library">{t('admin.common.library')}</BackLink>}
+        backLink={<BackLink href="/library">{t('admin.common.library')}</BackLink>}
         title={t('admin.email.title')}
         subtitle={
           <>
             {t('admin.email.subtitle')}{' '}
-            <Link href="/admin/marketing/segments"><a style={{ color: '#22d3ee', textDecoration: 'none' }}>{t('admin.email.subtitleSegments')}</a></Link>
+            <Link href="/marketing/segments"><a style={{ color: '#22d3ee', textDecoration: 'none' }}>{t('admin.email.subtitleSegments')}</a></Link>
             {' · '}
-            <Link href="/admin/marketing/automations"><a style={{ color: '#22d3ee', textDecoration: 'none' }}>{t('admin.email.subtitleAutomations')}</a></Link>
+            <Link href="/marketing/automations"><a style={{ color: '#22d3ee', textDecoration: 'none' }}>{t('admin.email.subtitleAutomations')}</a></Link>
           </>
         }
       />
@@ -359,17 +448,12 @@ export default function MarketingEmailPage() {
               onLoad={({ subject: s, mode: m, blocks: b, html: h }) => {
                 setSubject(s);
                 setMode(m);
-                // Reset both modes so stale state from the unused mode doesn't leak
-                // back if the admin toggles after loading. (P2-3)
-                if (m === 'blocks') {
-                  setBlocks(b || defaultBlocks());
-                  setHtml(TEMPLATE_LAUNCH);
-                } else {
-                  setHtml(h ?? '');
-                  setBlocks(defaultBlocks());
-                }
-                setError(null);
-                setResult(null);
+                // Only populate the mode the template targets. The inactive
+                // mode is left as-is so admins don't lose draft work in the
+                // other buffer when they load a template. (Toggle confirm
+                // catches accidental swaps.)
+                if (m === 'blocks') setBlocks(b || defaultBlocks());
+                else setHtml(h ?? '');
               }}
             />
           </label>
@@ -423,7 +507,7 @@ export default function MarketingEmailPage() {
                     </option>
                   ))}
                 </select>
-                <Link href="/admin/marketing/segments"><a style={{ color: '#22d3ee', fontSize: 12, textDecoration: 'none' }}>{t('admin.email.manageSegments')}</a></Link>
+                <Link href="/marketing/segments"><a style={{ color: '#22d3ee', fontSize: 12, textDecoration: 'none' }}>{t('admin.email.manageSegments')}</a></Link>
               </div>
             )}
           </label>
@@ -569,14 +653,14 @@ export default function MarketingEmailPage() {
             <div style={modeToggleStyle}>
               <button
                 type="button"
-                onClick={() => setMode('blocks')}
+                onClick={() => handleModeToggle('blocks')}
                 style={mode === 'blocks' ? modeBtnActive : modeBtnStyle}
               >
                 {t('admin.email.modeBlocks')}
               </button>
               <button
                 type="button"
-                onClick={() => setMode('html')}
+                onClick={() => handleModeToggle('html')}
                 style={mode === 'html' ? modeBtnActive : modeBtnStyle}
               >
                 {t('admin.email.modeHtml')}
@@ -644,11 +728,24 @@ export default function MarketingEmailPage() {
             );
           })()}
 
+          {sendIssues.length > 0 && (
+            <div style={issuesPanelStyle} role="status" aria-live="polite">
+              <strong style={issuesPanelHeadingStyle}>
+                {t('admin.email.validation.heading')}
+              </strong>
+              <ul style={issuesPanelListStyle}>
+                {sendIssues.map((issue, i) => (
+                  <li key={`${i}-${issue}`}>{issue}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
             <button
               onClick={handleSend}
-              disabled={sending || !subject || !outgoingHtml || (audience === 'test' && !testRecipient) || (sendMode === 'schedule' && audience !== 'test' && !scheduledFor) || (enableAr && (!subjectAr || !outgoingHtmlAr))}
-              style={sending ? buttonDisabledStyle : buttonStyle}
+              disabled={sending || sendIssues.length > 0}
+              style={sending || sendIssues.length > 0 ? buttonDisabledStyle : buttonStyle}
             >
               {sending
                 ? (sendMode === 'schedule' && audience !== 'test' ? t('admin.email.schedulingButton') : t('admin.email.sendingButton'))
@@ -665,26 +762,6 @@ export default function MarketingEmailPage() {
             </button>
           </div>
 
-          {result && result.scheduled && (
-            <div style={successBoxStyle}>
-              {t('admin.email.scheduledToast', { when: new Date(result.scheduledFor).toLocaleString(), id: result.campaignId })}
-            </div>
-          )}
-          {result && !result.scheduled && (
-            <div style={successBoxStyle}>
-              {t('admin.email.sentToast', {
-                success: result.successful,
-                failed: result.failed,
-                total: result.totalRecipients,
-                id: result.campaignId,
-              })}
-            </div>
-          )}
-          {error && (
-            <div style={errorBoxStyle}>
-              <strong>{t('admin.email.errorPrefix')}:</strong> {error}
-            </div>
-          )}
         </div>
 
         {showPreview && (
@@ -733,7 +810,7 @@ export default function MarketingEmailPage() {
           <p style={{ ...subtitleStyle, margin: '0 0 12px 0' }}>
             {t('admin.email.recentSubtitle')}
           </p>
-          <RecentCampaignsPanel refreshKey={result?.campaignId} />
+          <RecentCampaignsPanel refreshKey={recentRefresh} />
         </div>
 
         <div className="card card--lg">
@@ -877,24 +954,30 @@ const ghostButtonStyle = {
   fontSize: 14,
 };
 
-const successBoxStyle = {
-  marginTop: 16,
+const issuesPanelStyle = {
+  marginBottom: 12,
   padding: 12,
-  background: 'rgba(16,185,129,0.1)',
-  border: '1px solid rgba(16,185,129,0.3)',
+  background: 'rgba(251,191,36,0.06)',
+  border: '1px solid rgba(251,191,36,0.25)',
   borderRadius: 8,
-  color: '#a7f3d0',
   fontSize: 13,
 };
 
-const errorBoxStyle = {
-  marginTop: 16,
-  padding: 12,
-  background: 'rgba(230,57,70,0.1)',
-  border: '1px solid rgba(230,57,70,0.3)',
-  borderRadius: 8,
-  color: '#fca5a5',
-  fontSize: 13,
+const issuesPanelHeadingStyle = {
+  display: 'block',
+  color: '#fde68a',
+  fontSize: 12,
+  fontWeight: 700,
+  letterSpacing: '0.04em',
+  textTransform: 'uppercase',
+  marginBottom: 6,
+};
+
+const issuesPanelListStyle = {
+  margin: 0,
+  paddingInlineStart: 20,
+  color: '#e5e7eb',
+  lineHeight: 1.7,
 };
 
 const previewCardStyle = {

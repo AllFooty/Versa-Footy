@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { useVideosAudit } from './useVideosAudit';
-import ConfirmModal from '../../components/modals/ConfirmModal';
+import { useConfirm } from '../../components/ConfirmProvider';
 import { useIsMobile } from '../../hooks/useMediaQuery';
 
 // Multi-version is *informational*: exercises are allowed to have several
@@ -28,32 +29,39 @@ const formatBytes = (n) => {
 export default function VideosAuditPage() {
   const { t } = useTranslation();
   const { audit, loading, error, refresh, deleteOrphans } = useVideosAudit();
+  const confirmDialog = useConfirm();
   const [active, setActive] = useState('missing');
   const isMobile = useIsMobile();
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState(null);
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   const counts = useMemo(
     () => Object.fromEntries(TAB_ORDER.map(({ key }) => [key, audit[key]?.length || 0])),
     [audit]
   );
 
-  const requestDeleteOrphans = () => {
-    if (!audit.orphans.length) return;
-    setShowConfirmDelete(true);
-  };
+  // Surface load/refresh errors as toasts. The hook owns the error state; we
+  // just announce when it changes so admins notice without scanning for a box.
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
 
-  const handleConfirmDeleteOrphans = async () => {
+  const requestDeleteOrphans = async () => {
+    if (!audit.orphans.length) return;
+    const ok = await confirmDialog({
+      title: t('videosAudit.orphans.deleteConfirmTitle'),
+      message: t('videosAudit.orphans.deleteConfirmBody', { count: audit.orphans.length }),
+      confirmLabel: t('common.delete', { defaultValue: 'Delete' }),
+      danger: true,
+    });
+    if (!ok) return;
     setBusy(true);
-    setMessage(null);
     const { removed, errors } = await deleteOrphans(audit.orphans.map((o) => o.path));
     setBusy(false);
-    setMessage(
-      errors.length
-        ? t('videosAudit.orphans.deleteErrors', { errors: errors.join(', ') })
-        : t('videosAudit.orphans.deleteSuccess', { count: removed })
-    );
+    if (errors.length) {
+      toast.error(t('videosAudit.orphans.deleteErrors', { errors: errors.join(', ') }));
+    } else {
+      toast.success(t('videosAudit.orphans.deleteSuccess', { count: removed }));
+    }
   };
 
   return (
@@ -74,9 +82,6 @@ export default function VideosAuditPage() {
           {loading ? t('videosAudit.loading') : t('videosAudit.refresh')}
         </button>
       </div>
-
-      {error && <div style={errorBoxStyle}>{error}</div>}
-      {message && <div role="status" aria-live="polite" style={messageBoxStyle}>{message}</div>}
 
       <div style={tabsWrapStyle}>
         {TAB_ORDER.map(({ key, tone }) => (
@@ -102,15 +107,6 @@ export default function VideosAuditPage() {
         )}
       </div>
 
-      <ConfirmModal
-        isOpen={showConfirmDelete}
-        title={t('videosAudit.orphans.deleteConfirmTitle')}
-        message={t('videosAudit.orphans.deleteConfirmBody', { count: audit.orphans?.length || 0 })}
-        confirmLabel={t('common.delete', { defaultValue: 'Delete' })}
-        confirmDanger
-        onConfirm={handleConfirmDeleteOrphans}
-        onClose={() => setShowConfirmDelete(false)}
-      />
     </div>
   );
 }
@@ -267,15 +263,6 @@ const refreshBtnStyle = {
   color: '#bfdbfe',
   cursor: 'pointer',
   fontWeight: 600,
-};
-
-const errorBoxStyle = {
-  padding: 12, borderRadius: 'var(--radius-md)', marginBottom: 12,
-  background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#fecaca',
-};
-const messageBoxStyle = {
-  padding: 12, borderRadius: 'var(--radius-md)', marginBottom: 12,
-  background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', color: '#bbf7d0',
 };
 
 const tabsWrapStyle = {

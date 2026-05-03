@@ -891,7 +891,8 @@
     "confirm": {
       "defaultTitle": "Confirm",
       "defaultCancel": "Cancel",
-      "defaultConfirm": "Confirm"
+      "defaultConfirm": "Confirm",
+      "confirmTextHint": "Type {{token}} to confirm:"
     },
     "profileEdit": {
       "title": "Edit Profile",
@@ -1104,6 +1105,11 @@
       "unknownTags": "{{count}} unknown merge tag(s) found: {{tags}}",
       "modeBlocks": "Blocks",
       "modeHtml": "Raw HTML",
+      "modeSwitch": {
+        "title": "Switch to {{target}} mode?",
+        "message": "Your work in {{current}} mode is saved as a draft — you can switch back any time without losing it.",
+        "confirm": "Switch to {{target}}"
+      },
       "rawHtmlHintPre": "Raw HTML mode. Include ",
       "rawHtmlHintPost": " somewhere in the body so recipients can opt out.",
       "sendNow": "Send now",
@@ -1121,7 +1127,6 @@
       "hidePreview": "Hide preview",
       "scheduledToast": "Scheduled for {{when}}. Campaign id: {{id}}",
       "sentToast": "Sent {{success}} of {{total}} ({{failed}} failed). Campaign id: {{id}}",
-      "errorPrefix": "Error",
       "previewLabel": "Preview",
       "previewSubject": "Subject:",
       "previewEmpty": "(empty)",
@@ -1149,6 +1154,7 @@
         "campaignTitle": "Send campaign?",
         "campaignMessageSubscribers": "Send this campaign to {{count}} newsletter subscribers? This cannot be undone.",
         "campaignMessageOptedIn": "Send this campaign to {{count}} opted-in users? This cannot be undone.",
+        "campaignMessageLargeSend": "You're about to send to {{count}} recipients (≈ ${{cost}}). This cannot be undone.",
         "send": "Send",
         "schedule": "Schedule"
       },
@@ -1157,13 +1163,19 @@
         "pickDateTime": "Please pick a date and time to schedule the campaign.",
         "invalidDate": "That date doesn't look right. Please pick a valid date and time.",
         "futureDate": "Scheduled time must be in the future.",
-        "sendPrompt": "You're about to send to {{count}} recipients (≈ ${{cost}}). Type SEND to confirm:",
-        "sendCanceled": "Send cancelled — confirmation text didn't match.",
         "notAuthenticated": "You're not signed in. Refresh and try again.",
         "renderFailed": "Failed to render email: {{error}}",
         "renderFailedAr": "Failed to render Arabic email: {{error}}",
         "missingArVariant": "Arabic variant is enabled but missing a subject or body.",
         "arPrefix": "Arabic variant: {{issues}}"
+      },
+      "validation": {
+        "heading": "Fix before sending",
+        "subjectMissing": "Add a subject line",
+        "bodyMissing": "Add at least one block to the email body",
+        "testRecipientMissing": "Add a test recipient email",
+        "arSubjectMissing": "Add an Arabic subject line",
+        "arBodyMissing": "Add an Arabic email body"
       }
     },
     "templates": {
