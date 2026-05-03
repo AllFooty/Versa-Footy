@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Link, Route, Switch } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { Toaster } from 'sonner';
 
 import { AuthProvider } from './lib/AuthContext';
 import { LanguageProvider } from './lib/LanguageContext';
@@ -163,6 +164,7 @@ export default function AppRouter() {
     <LanguageProvider>
     <AuthProvider>
       <DevBanner />
+      <Toaster position="top-right" richColors closeButton theme="dark" />
       <Suspense fallback={<LoadingFallback />}>
       <Switch>
         <Route path="/">
