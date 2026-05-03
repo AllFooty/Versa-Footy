@@ -9,6 +9,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import AcademyProtectedRoute from './components/AcademyProtectedRoute';
 import AppShell from './components/AppShell';
+import { ConfirmProvider } from './components/ConfirmProvider';
 
 const Landing = React.lazy(() => import('./features/landing/LandingPage'));
 const HomePage = React.lazy(() => import('./features/home/HomePage'));
@@ -163,6 +164,7 @@ export default function AppRouter() {
   return (
     <LanguageProvider>
     <AuthProvider>
+    <ConfirmProvider>
       <DevBanner />
       <Toaster position="top-right" richColors closeButton theme="dark" />
       <Suspense fallback={<LoadingFallback />}>
@@ -322,6 +324,7 @@ export default function AppRouter() {
         </Route>
       </Switch>
       </Suspense>
+    </ConfirmProvider>
     </AuthProvider>
     </LanguageProvider>
   );
