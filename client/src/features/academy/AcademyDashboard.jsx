@@ -73,17 +73,17 @@ export default function AcademyDashboard() {
         <>
           {/* KPI Cards */}
           <div className="academy-kpi-grid" style={kpiGridStyle}>
-            <KPICard label={t('academy.dashboard.totalPlayers')} value={stats?.total_players ?? 0} color="#3b82f6" />
+            <KPICard label={t('academy.dashboard.totalPlayers')} value={stats?.total_players ?? 0} color="var(--color-focus)" />
             <KPICard
               label={t('academy.dashboard.activeThisWeek')}
               value={stats?.active_this_week ?? 0}
               suffix={stats?.total_players ? `/ ${stats.total_players}` : ''}
-              color="#22c55e"
+              color="var(--status-success)"
             />
-            <KPICard label={t('academy.dashboard.skillsMastered')} value={stats?.total_skills_mastered ?? 0} color="#8b5cf6" />
-            <KPICard label={t('academy.dashboard.avgLevel')} value={stats?.avg_player_level ?? 0} color="#f97316" />
-            <KPICard label={t('academy.dashboard.weeklyXP')} value={formatNumber(stats?.total_xp_this_week ?? 0)} color="#22d3ee" />
-            <KPICard label={t('academy.dashboard.avgStreak')} value={`${stats?.avg_streak ?? 0}d`} color="#eab308" />
+            <KPICard label={t('academy.dashboard.skillsMastered')} value={stats?.total_skills_mastered ?? 0} color="var(--color-secondary-action)" />
+            <KPICard label={t('academy.dashboard.avgLevel')} value={stats?.avg_player_level ?? 0} color="var(--color-gold)" />
+            <KPICard label={t('academy.dashboard.weeklyXP')} value={formatNumber(stats?.total_xp_this_week ?? 0)} color="var(--color-focus)" />
+            <KPICard label={t('academy.dashboard.avgStreak')} value={`${stats?.avg_streak ?? 0}d`} color="var(--status-warning)" />
           </div>
 
           {/* Charts */}
@@ -93,11 +93,11 @@ export default function AcademyDashboard() {
               <div style={{ height: 240 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={weeklyActivity}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                    <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 12 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
-                    <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" />
+                    <XAxis dataKey="week" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={{ stroke: 'var(--border-light)' }} tickLine={false} />
+                    <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} allowDecimals={false} />
                     <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: 'var(--text-primary)' }} />
-                    <Line type="monotone" dataKey="activePlayers" name={t('academy.dashboard.activePlayers')} stroke="#3b82f6" strokeWidth={2} dot={{ r: 3, fill: '#3b82f6' }} activeDot={{ r: 5 }} />
+                    <Line type="monotone" dataKey="activePlayers" name={t('academy.dashboard.activePlayers')} stroke="var(--color-focus)" strokeWidth={2} dot={{ r: 3, fill: 'var(--color-focus)' }} activeDot={{ r: 5 }} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -108,11 +108,11 @@ export default function AcademyDashboard() {
               <div style={{ height: 240 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={weeklyActivity}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                    <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 12 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
-                    <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" />
+                    <XAxis dataKey="week" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={{ stroke: 'var(--border-light)' }} tickLine={false} />
+                    <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
                     <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: 'var(--text-primary)' }} />
-                    <Bar dataKey="totalXp" name={t('common.xp')} fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="totalXp" name={t('common.xp')} fill="var(--color-secondary-action)" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -154,11 +154,11 @@ export default function AcademyDashboard() {
                         <p className="academy-muted-text" style={{ fontSize: 12, color: 'var(--text-dim)', margin: 0 }}>{p.age_group || t('common.noAgeGroup')} &middot; {t('common.level')} {p.current_level}</p>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <p style={{ fontSize: 13, fontWeight: 600, color: '#ef4444', margin: '0 0 2px' }}>
+                        <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--status-danger-text)', margin: '0 0 2px' }}>
                           {p.last_practice_date ? t('common.daysAgo', { days: daysSince(p.last_practice_date) }) : t('academy.dashboard.neverTrained')}
                         </p>
                         {p.current_streak === 0 && p.longest_streak > 0 && (
-                          <p style={{ fontSize: 11, color: '#ef4444', margin: 0 }}>{t('academy.dashboard.streakBroken', { days: p.longest_streak })}</p>
+                          <p style={{ fontSize: 11, color: 'var(--status-danger-text)', margin: 0 }}>{t('academy.dashboard.streakBroken', { days: p.longest_streak })}</p>
                         )}
                       </div>
                     </div>
@@ -209,8 +209,8 @@ const subtitleStyle = { fontSize: 14, color: 'var(--text-muted)', margin: 0, tex
 
 const orgSwitcherStyle = {
   padding: '8px 12px',
-  background: 'rgba(255, 255, 255, 0.06)',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
+  background: 'var(--surface-glass)',
+  border: '1px solid var(--border-medium)',
   borderRadius: 'var(--radius-md)',
   color: 'var(--text-primary)',
   fontSize: 13,
@@ -220,10 +220,10 @@ const quickActionsStyle = { display: 'flex', gap: 8, marginTop: 16 };
 
 const actionLinkStyle = {
   padding: '8px 16px',
-  background: 'rgba(59, 130, 246, 0.12)',
-  border: '1px solid rgba(59, 130, 246, 0.25)',
+  background: 'var(--color-cyan-soft)',
+  border: '1px solid var(--color-cyan-soft-border)',
   borderRadius: 'var(--radius-md)',
-  color: '#60a5fa',
+  color: 'var(--color-link-hover)',
   fontSize: 13,
   fontWeight: 500,
   textDecoration: 'none',
@@ -235,8 +235,8 @@ const kpiGridStyle = {
 };
 
 const kpiCardStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
+  background: 'var(--surface-card)',
+  border: '1px solid var(--surface-border)',
   borderRadius: 'var(--radius-xl)', padding: '16px 18px',
   position: 'relative', overflow: 'hidden',
 };
@@ -255,15 +255,15 @@ const chartsGridStyle = {
 };
 
 const chartCardStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
+  background: 'var(--surface-card)',
+  border: '1px solid var(--surface-border)',
   borderRadius: 'var(--radius-card)', padding: '20px 16px 12px',
 };
 
-const chartTitleStyle = { fontSize: 14, fontWeight: 600, margin: '0 0 16px 4px', color: '#d1d5db' };
+const chartTitleStyle = { fontSize: 14, fontWeight: 600, margin: '0 0 16px 4px', color: 'var(--text-secondary)' };
 
 const tooltipStyle = {
-  background: '#1a1f2e', border: '1px solid rgba(255,255,255,0.1)',
+  background: 'var(--bg-app-near)', border: '1px solid var(--border-medium)',
   borderRadius: 'var(--radius-md)', fontSize: 12,
 };
 
@@ -274,14 +274,14 @@ const sectionDescStyle = { fontSize: 12, color: 'var(--text-dim)', margin: '0 0 
 const atRiskCardStyle = {
   display: 'flex', alignItems: 'center', gap: 12,
   padding: '12px 16px',
-  background: 'rgba(239, 68, 68, 0.06)',
-  border: '1px solid rgba(239, 68, 68, 0.12)',
+  background: 'var(--surface-danger)',
+  border: '1px solid var(--status-danger-border)',
   borderRadius: 'var(--radius-lg)', cursor: 'pointer',
 };
 
 const atRiskAvatarStyle = {
   width: 36, height: 36, borderRadius: '50%',
-  background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444',
+  background: 'var(--status-danger-soft)', color: 'var(--status-danger-text)',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
   fontSize: 14, fontWeight: 600, flexShrink: 0,
 };

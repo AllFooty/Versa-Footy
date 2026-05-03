@@ -5,24 +5,33 @@
    ============================================ */
 
 :root {
-  /* ---- Color: Surfaces ---- */
-  --bg-app-deep: #02060f;
-  --bg-app-mid: #0b1020;
-  --bg-app-near: #050910;
-  --bg-elevated: rgba(15, 23, 42, 0.6);
+  /* ---- Color: Surfaces ----
+     Aligned with landing palette so post-login screens share the same
+     navy backdrop as the marketing site.
+       --bg-app-deep  → landing #0f172a (deepest navy)
+       --bg-app-mid   → landing #1a2b47 (hero start)
+       --bg-app-near  → landing #1e293b (hero end / slate)
+     `--bg-sidebar` is the chrome-only deep variant for the sidebar rail. */
+  --bg-app-deep: #0f172a;
+  --bg-app-mid: #1a2b47;
+  --bg-app-near: #1e293b;
+  --bg-sidebar: rgba(15, 23, 42, 0.92);
+  --bg-elevated: rgba(15, 23, 42, 0.64);
   --bg-soft: rgba(255, 255, 255, 0.04);
   --bg-softer: rgba(255, 255, 255, 0.03);
-  --bg-overlay: rgba(0, 0, 0, 0.8);
+  --bg-overlay: rgba(0, 0, 0, 0.78);
 
-  /* Canonical app background — the radial used on Home/Login/Academy/etc. */
-  --bg-app-gradient: radial-gradient(circle at 10% 20%, var(--bg-app-mid), var(--bg-app-near) 60%, var(--bg-app-deep));
+  /* Canonical app background — same hero gradient as the landing page. */
+  --bg-app-gradient: linear-gradient(165deg, var(--bg-app-mid) 0%, var(--bg-app-deep) 50%, var(--bg-app-near) 100%);
 
   /* ---- Color: Text ---- */
-  --text-primary: #e4e4e7;
+  --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
-  --text-muted: #9ca3af;
-  --text-dim: #71717a;
-  --text-eyebrow: #64748b;
+  --text-muted: #94a3b8;
+  --text-dim: #94a3b8;
+  --text-tertiary: #94a3b8;
+  --text-eyebrow: #a5b4fc;
+  --text-inverse: #0b1020;
 
   /* ---- Color: Brand ----
      Aligned with landing palette: indigo + cyan, warm accents.
@@ -31,8 +40,17 @@
   --color-brand: #6366f1;
   --color-brand-strong: #4f46e5;
   --color-brand-soft: #818cf8;
-  --color-blue: #3b82f6;
-  --color-blue-strong: #2563eb;
+  --color-primary-action: #dc2626;
+  --color-primary-action-hover: #b91c1c;
+  --color-primary-action-soft: rgba(220, 38, 38, 0.14);
+  --color-primary-action-border: rgba(220, 38, 38, 0.34);
+  --color-secondary-action: #6366f1;
+  --color-secondary-action-hover: #4f46e5;
+  --color-focus: #22d3ee;
+  --color-link: #67e8f9;
+  --color-link-hover: #a5f3fc;
+  --color-blue: #60a5fa;
+  --color-blue-strong: #3b82f6;
   --color-cyan: #22d3ee;
   --color-purple: #8b5cf6;
   --color-green: #22c55e;
@@ -44,13 +62,33 @@
 
   /* ---- Color: State ---- */
   --color-brand-soft-bg: rgba(99, 102, 241, 0.14);
-  --color-brand-soft-border: rgba(99, 102, 241, 0.28);
-  --color-blue-soft: rgba(59, 130, 246, 0.12);
-  --color-blue-soft-border: rgba(59, 130, 246, 0.25);
+  --color-brand-soft-border: rgba(99, 102, 241, 0.3);
+  --color-cyan-soft: rgba(34, 211, 238, 0.12);
+  --color-cyan-soft-border: rgba(34, 211, 238, 0.28);
+  --color-gold-soft: rgba(255, 209, 102, 0.16);
+  --color-gold-soft-border: rgba(255, 209, 102, 0.34);
+  --color-blue-soft: rgba(96, 165, 250, 0.12);
+  --color-blue-soft-border: rgba(96, 165, 250, 0.25);
   --color-red-soft: rgba(239, 68, 68, 0.12);
   --color-red-soft-border: rgba(239, 68, 68, 0.3);
   --color-green-soft: rgba(34, 197, 94, 0.15);
   --color-green-soft-border: rgba(34, 197, 94, 0.3);
+  --status-success: #22c55e;
+  --status-success-text: #86efac;
+  --status-success-soft: rgba(34, 197, 94, 0.14);
+  --status-success-border: rgba(34, 197, 94, 0.3);
+  --status-warning: #ffd166;
+  --status-warning-text: #fde68a;
+  --status-warning-soft: rgba(255, 209, 102, 0.14);
+  --status-warning-border: rgba(255, 209, 102, 0.3);
+  --status-danger: #ef4444;
+  --status-danger-text: #fca5a5;
+  --status-danger-soft: rgba(239, 68, 68, 0.14);
+  --status-danger-border: rgba(239, 68, 68, 0.3);
+  --status-info: var(--color-cyan);
+  --status-info-text: var(--color-link);
+  --status-info-soft: var(--color-cyan-soft);
+  --status-info-border: var(--color-cyan-soft-border);
 
   /* ---- Borders ---- */
   --border-subtle: rgba(255, 255, 255, 0.06);
@@ -58,9 +96,36 @@
   --border-medium: rgba(255, 255, 255, 0.12);
   --border-strong: rgba(255, 255, 255, 0.15);
 
+  /* ---- Semantic App Surfaces ---- */
+  --surface-card: rgba(15, 23, 42, 0.64);
+  --surface-card-strong: rgba(15, 23, 42, 0.82);
+  --surface-card-muted: rgba(15, 23, 42, 0.42);
+  --surface-glass: rgba(255, 255, 255, 0.04);
+  --surface-glass-hover: rgba(255, 255, 255, 0.07);
+  --surface-input: rgba(0, 0, 0, 0.24);
+  --surface-input-disabled: rgba(0, 0, 0, 0.16);
+  --surface-popover: linear-gradient(145deg, var(--bg-app-near) 0%, var(--bg-app-deep) 100%);
+  --surface-danger: rgba(239, 68, 68, 0.06);
+  --surface-warning: rgba(255, 209, 102, 0.08);
+
+  /* Legacy aliases point back to the product tokens above. */
+  --surface-1: var(--surface-card);
+  --surface-2: var(--surface-card-muted);
+  --surface-muted: var(--surface-glass);
+  --surface-border: var(--border-light);
+  --surface-border-strong: var(--border-medium);
+  --accent-blue: var(--color-secondary-action);
+  --accent-blue-hover: var(--color-secondary-action-hover);
+  --accent-cyan: var(--color-cyan);
+  --accent-link: var(--color-link);
+  --accent-link-hover: var(--color-link-hover);
+
   /* ---- Gradients ---- */
   --gradient-brand: linear-gradient(135deg, var(--color-brand) 0%, var(--color-cyan) 100%);
   --gradient-brand-purple: linear-gradient(135deg, var(--color-brand), var(--color-purple));
+  --gradient-primary-action: linear-gradient(135deg, var(--color-primary-action) 0%, var(--color-primary-action-hover) 100%);
+  --gradient-secondary-action: linear-gradient(135deg, var(--color-secondary-action) 0%, var(--color-cyan) 100%);
+  --gradient-gold: linear-gradient(135deg, var(--color-gold) 0%, #ffbe0b 100%);
   --gradient-danger: linear-gradient(135deg, var(--color-red), #dc2626);
 
   /* ---- Radii ---- */
@@ -93,8 +158,9 @@
   --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.3);
   --shadow-card-lg: 0 20px 60px rgba(0, 0, 0, 0.35);
   --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-  --shadow-button-brand: 0 16px 40px rgba(34, 211, 238, 0.35);
-  --shadow-button-blue: 0 8px 24px rgba(59, 130, 246, 0.3);
+  --shadow-button-primary: 0 14px 34px rgba(220, 38, 38, 0.32);
+  --shadow-button-brand: 0 16px 40px rgba(34, 211, 238, 0.28);
+  --shadow-button-blue: 0 8px 24px rgba(99, 102, 241, 0.3);
   --shadow-button-indigo: 0 10px 30px rgba(99, 102, 241, 0.32);
 
   /* ---- Motion ---- */

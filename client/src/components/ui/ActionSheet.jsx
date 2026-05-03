@@ -52,12 +52,12 @@ const ActionSheet = ({ isOpen, onClose, items = [], title }) => {
         onClick={(e) => e.stopPropagation()}
         style={{
           position: 'relative',
-          background: 'linear-gradient(145deg, #1e2433, #151a26)',
+          background: 'linear-gradient(145deg, #1e293b, #0f172a)',
           borderRadius: '20px 20px 0 0',
           padding: '12px 16px',
           paddingBottom: 'max(16px, env(safe-area-inset-bottom, 16px))',
           animation: 'slideUpMobile 0.3s ease-out',
-          border: '1px solid rgba(255,255,255,0.1)',
+          border: '1px solid var(--border-medium)',
           borderBottom: 'none',
         }}
       >

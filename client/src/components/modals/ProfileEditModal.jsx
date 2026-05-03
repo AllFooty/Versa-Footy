@@ -95,8 +95,8 @@ export default function ProfileEditModal({ isOpen, onClose }) {
 
   // Modal container styles
   const modalStyle = {
-    background: 'linear-gradient(145deg, #1e2433 0%, #151a26 100%)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    background: 'linear-gradient(145deg, #1e293b 0%, #0f172a 100%)',
+    border: '1px solid var(--border-medium)',
     borderRadius: 'var(--radius-3xl)',
     padding: '28px',
     width: '100%',

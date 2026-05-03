@@ -461,7 +461,7 @@ export default function HeaderLanding() {
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
               style={{
-                background: 'linear-gradient(145deg, #1e2433 0%, #151a26 100%)',
+                background: 'linear-gradient(145deg, #1e293b 0%, #0f172a 100%)',
                 borderRadius: '20px',
                 padding: '24px',
                 width: '100%',

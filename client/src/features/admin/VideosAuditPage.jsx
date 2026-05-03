@@ -238,7 +238,7 @@ const Empty = ({ text }) => (
 
 const pageStyle = {
   minHeight: '100vh',
-  background: '#0b1020',
+  background: 'var(--bg-app-gradient)',
   color: 'var(--text-primary)',
   padding: 'max(16px, env(safe-area-inset-top)) 16px 24px',
   fontFamily: 'var(--font-sans)',

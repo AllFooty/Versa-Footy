@@ -116,8 +116,8 @@ export default function DashboardHome() {
 
       {noOrgs && (
         <div style={{
-          background: 'rgba(15, 23, 42, 0.65)',
-          border: '1px solid rgba(34, 211, 238, 0.18)',
+          background: 'var(--surface-card)',
+          border: '1px solid var(--color-cyan-soft-border)',
           borderRadius: 14,
           padding: 22,
           marginBottom: 24,
@@ -130,24 +130,24 @@ export default function DashboardHome() {
             width: 48,
             height: 48,
             borderRadius: 12,
-            background: 'rgba(34, 211, 238, 0.1)',
-            color: '#22d3ee',
+            background: 'var(--color-cyan-soft)',
+            color: 'var(--color-focus)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
           }}>{Icons.add}</div>
           <div style={{ flex: 1, minWidth: 200 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: '#f1f5f9', marginBottom: 3 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 3 }}>
               {t('home.createAcademy')}
             </div>
-            <div style={{ fontSize: 13.5, color: '#94a3b8' }}>
+            <div style={{ fontSize: 13.5, color: 'var(--text-muted)' }}>
               {t('home.createAcademyDescription')}
             </div>
           </div>
           <Link href="/org/create" style={{
-            background: 'linear-gradient(135deg, #6366f1 0%, #22d3ee 100%)',
-            color: '#0b1020',
+            background: 'linear-gradient(135deg, var(--color-secondary-action) 0%, var(--color-focus) 100%)',
+            color: 'var(--text-inverse)',
             fontWeight: 700,
             padding: '10px 18px',
             borderRadius: 10,
@@ -155,7 +155,7 @@ export default function DashboardHome() {
             fontSize: 13.5,
           }}>{t('common.create')}</Link>
           <Link href="/join" style={{
-            color: '#a5b4fc',
+            color: 'var(--color-link-hover)',
             textDecoration: 'none',
             fontSize: 13,
           }}>{t('home.haveInviteCode', 'Have an invite code?')}</Link>
@@ -171,7 +171,7 @@ export default function DashboardHome() {
         <StatCard
           label={t('home.stats.myAcademies', 'My Academies')}
           value={organizations.length}
-          accent="#6366f1"
+          accent="var(--color-secondary-action)"
           icon={Icons.buildings}
           loading={orgsLoading}
         />
@@ -179,7 +179,7 @@ export default function DashboardHome() {
           <StatCard
             label={t('home.stats.activeAcademy', 'Active Academy')}
             value={activeOrg.name}
-            accent="#22d3ee"
+            accent="var(--color-focus)"
             icon={Icons.star}
             loading={orgsLoading}
           />
@@ -188,7 +188,7 @@ export default function DashboardHome() {
           <StatCard
             label={t('home.stats.playersInOrg', 'Players')}
             value={stats?.total_players ?? 0}
-            accent="#22c55e"
+            accent="var(--status-success)"
             icon={Icons.players}
             loading={!stats}
           />
@@ -197,7 +197,7 @@ export default function DashboardHome() {
           <StatCard
             label={t('home.stats.pendingInvitations', 'Pending Invitations')}
             value={pendingInvites ?? 0}
-            accent="#ff4b4b"
+            accent="var(--color-coral)"
             icon={Icons.invite}
             loading={pendingInvites === null}
           />
@@ -208,7 +208,7 @@ export default function DashboardHome() {
         <h2 style={{
           fontSize: 13,
           fontWeight: 700,
-          color: '#94a3b8',
+          color: 'var(--text-muted)',
           textTransform: 'uppercase',
           letterSpacing: '0.1em',
           margin: '0 0 12px',
@@ -224,7 +224,7 @@ export default function DashboardHome() {
               title={t('home.academyDashboard')}
               description={t('home.academyDescription')}
               icon={Icons.dashboard}
-              accent="#6366f1"
+              accent="var(--color-secondary-action)"
               primary
             />
           )}
@@ -234,7 +234,7 @@ export default function DashboardHome() {
               title={t('home.createAcademy')}
               description={t('home.createAcademyDescription')}
               icon={Icons.add}
-              accent="#6366f1"
+              accent="var(--color-secondary-action)"
               primary
             />
           )}
@@ -244,7 +244,7 @@ export default function DashboardHome() {
               title={t('home.exerciseLibrary')}
               description={t('home.libraryDescription', 'Manage skills and exercises')}
               icon={Icons.library}
-              accent="#22d3ee"
+              accent="var(--color-focus)"
             />
           )}
           {isAdmin && (
@@ -253,7 +253,7 @@ export default function DashboardHome() {
               title={t('nav.videosAudit', 'Videos Audit')}
               description={t('home.videosAuditDescription', 'Review uploaded videos')}
               icon={Icons.invite}
-              accent="#ffd166"
+              accent="var(--color-gold)"
             />
           )}
           <QuickAction
@@ -261,7 +261,7 @@ export default function DashboardHome() {
             title={t('nav.account', 'Account')}
             description={t('home.accountDescription', 'Profile, security and preferences')}
             icon={Icons.settings}
-            accent="#22c55e"
+            accent="var(--status-success)"
           />
         </div>
       </section>

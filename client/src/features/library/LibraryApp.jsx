@@ -179,8 +179,8 @@ export default function LibraryApp() {
                 style={{
                   width: 40,
                   height: 40,
-                  border: '3px solid #27272a',
-                  borderTopColor: '#E63946',
+                  border: '3px solid var(--border-medium)',
+                  borderTopColor: 'var(--color-primary-action)',
                   borderRadius: '50%',
                   animation: 'spin 1s linear infinite',
                   margin: '0 auto 16px',
@@ -195,12 +195,12 @@ export default function LibraryApp() {
         {error && (
           <div
             style={{
-              background: 'rgba(220, 38, 38, 0.1)',
-              border: '1px solid rgba(220, 38, 38, 0.3)',
+              background: 'var(--status-danger-soft)',
+              border: '1px solid var(--status-danger-border)',
               borderRadius: 'var(--radius-md)',
               padding: 16,
               marginBottom: 24,
-              color: '#fca5a5',
+              color: 'var(--status-danger-text)',
             }}
           >
             <strong>{t('library.errorLoading')}</strong> {error}

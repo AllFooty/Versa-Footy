@@ -57,8 +57,8 @@ export default function PlayerDetail() {
     return (
       <div style={containerStyle}>
         <div style={{ textAlign: 'center', padding: 64 }}>
-          <p style={{ color: '#ef4444', fontSize: 14 }}>{error || t('academy.playerDetail.playerNotFound')}</p>
-          <Link href="/academy/players" style={{ color: '#3b82f6', fontSize: 14 }}>&larr; {t('academy.roster.title')}</Link>
+          <p style={{ color: 'var(--status-danger)', fontSize: 14 }}>{error || t('academy.playerDetail.playerNotFound')}</p>
+          <Link href="/academy/players" style={{ color: 'var(--color-focus)', fontSize: 14 }}>&larr; {t('academy.roster.title')}</Link>
         </div>
       </div>
     );
@@ -230,12 +230,12 @@ function LevelProgressBar({ levelProgress }) {
         </span>
         <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{pct}%</span>
       </div>
-      <div style={{ height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+      <div style={{ height: 6, borderRadius: 3, background: 'var(--border-light)', overflow: 'hidden' }}>
         <div
           style={{
             width: `${pct}%`,
             height: '100%',
-            background: 'linear-gradient(90deg, #3b82f6, #22d3ee)',
+            background: 'linear-gradient(90deg, var(--color-focus), var(--color-focus))',
             transition: 'width 0.5s ease',
           }}
         />
@@ -263,10 +263,10 @@ function OverviewTab({ categoryRadar, dailyActivity, skillsError, activityError 
           <div style={{ height: 300 }}>
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={categoryRadar}>
-                <PolarGrid stroke="rgba(255,255,255,0.08)" />
-                <PolarAngleAxis dataKey="category" tick={{ fill: '#9ca3af', fontSize: 12 }} />
-                <PolarRadiusAxis tick={{ fill: '#71717a', fontSize: 11 }} domain={[0, 100]} />
-                <Radar dataKey="masteryPercent" name="Mastery %" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.25} />
+                <PolarGrid stroke="var(--border-light)" />
+                <PolarAngleAxis dataKey="category" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+                <PolarRadiusAxis tick={{ fill: 'var(--text-muted)', fontSize: 11 }} domain={[0, 100]} />
+                <Radar dataKey="masteryPercent" name="Mastery %" stroke="var(--color-secondary-action)" fill="var(--color-secondary-action)" fillOpacity={0.25} />
               </RadarChart>
             </ResponsiveContainer>
           </div>
@@ -288,18 +288,18 @@ function OverviewTab({ categoryRadar, dailyActivity, skillsError, activityError 
           <div style={{ height: 300 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={dailyActivity.slice(-90)}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" />
                 <XAxis
                   dataKey="activity_date"
-                  tick={{ fill: '#71717a', fontSize: 11 }}
+                  tick={{ fill: 'var(--text-muted)', fontSize: 11 }}
                   tickFormatter={(d) => new Date(d).toLocaleDateString('en', { month: 'short', day: 'numeric' })}
                   interval={14}
-                  axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                  axisLine={{ stroke: 'var(--border-light)' }}
                   tickLine={false}
                 />
-                <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: 'var(--text-primary)' }} />
-                <Bar dataKey="xp_earned" name={t('common.xp')} fill="#22c55e" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="xp_earned" name={t('common.xp')} fill="var(--status-success)" radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -360,7 +360,7 @@ function SkillRoadmapTab({ roadmap, categoryFilter, setCategoryFilter, errorMess
           <div style={{
             height: '100%', borderRadius: 'var(--radius-xs)', transition: 'width 0.5s ease',
             width: `${roadmap.progressPercent}%`,
-            background: `linear-gradient(90deg, ${getRoadmapColor(roadmap.progressPercent)}, ${getRoadmapColor(roadmap.progressPercent)}cc)`,
+            background: getRoadmapColor(roadmap.progressPercent),
           }} />
         </div>
 
@@ -370,7 +370,7 @@ function SkillRoadmapTab({ roadmap, categoryFilter, setCategoryFilter, errorMess
             <div key={cat.name} style={categorySummaryChipStyle}>
               <span style={{ fontSize: 12 }}>{cat.icon}</span>
               <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{cat.name}</span>
-              <span style={{ fontSize: 11, fontWeight: 600, color: cat.mastered === cat.total ? '#22c55e' : '#e4e4e7' }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: cat.mastered === cat.total ? 'var(--status-success)' : 'var(--text-primary)' }}>
                 {cat.mastered}/{cat.total}
               </span>
             </div>
@@ -416,11 +416,11 @@ function SkillRoadmapTab({ roadmap, categoryFilter, setCategoryFilter, errorMess
                 <span style={{
                   ...ageGroupBadgeStyle,
                   background: group.isRelevant
-                    ? (allMastered ? 'rgba(34,197,94,0.15)' : 'rgba(59,130,246,0.15)')
-                    : 'rgba(255,255,255,0.04)',
+                    ? (allMastered ? 'var(--status-success-soft)' : 'var(--color-cyan-soft)')
+                    : 'var(--surface-glass)',
                   color: group.isRelevant
-                    ? (allMastered ? '#22c55e' : '#60a5fa')
-                    : '#71717a',
+                    ? (allMastered ? 'var(--status-success)' : 'var(--color-link)')
+                    : 'var(--text-muted)',
                 }}>
                   {group.ageGroup}
                 </span>
@@ -430,7 +430,7 @@ function SkillRoadmapTab({ roadmap, categoryFilter, setCategoryFilter, errorMess
                 {allMastered && <span style={{ fontSize: 14 }}>&#10003;</span>}
               </div>
               {group.isRelevant && !allMastered && (
-                <span style={{ fontSize: 11, color: '#eab308', fontWeight: 500 }}>
+                <span style={{ fontSize: 11, color: 'var(--status-warning)', fontWeight: 500 }}>
                   {t('academy.playerDetail.roadmapShouldMaster')}
                 </span>
               )}
@@ -456,7 +456,7 @@ function SkillRoadmapCard({ skill }) {
   return (
     <div style={{
       ...skillCardStyle,
-      borderLeft: `3px solid ${skill.isMastered ? '#22c55e' : skill.isCloseToMastering ? '#eab308' : skill.timesPracticed > 0 ? skill.categoryColor : 'rgba(255,255,255,0.06)'}`,
+      borderLeft: `3px solid ${skill.isMastered ? 'var(--status-success)' : skill.isCloseToMastering ? 'var(--status-warning)' : skill.timesPracticed > 0 ? skill.categoryColor : 'var(--border-subtle)'}`,
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: 1, minWidth: 0 }}>
@@ -474,7 +474,7 @@ function SkillRoadmapCard({ skill }) {
           <div style={{
             ...progressBarFillStyle,
             width: `${progressPercent}%`,
-            background: skill.isMastered ? '#22c55e' : skill.isCloseToMastering ? '#eab308' : skill.categoryColor,
+            background: skill.isMastered ? 'var(--status-success)' : skill.isCloseToMastering ? 'var(--status-warning)' : skill.categoryColor,
           }} />
         </div>
         {!skill.isMastered && (
@@ -485,7 +485,7 @@ function SkillRoadmapCard({ skill }) {
       </div>
 
       {skill.needsRatingBoost && (
-        <p style={{ fontSize: 10, color: '#eab308', margin: '0 0 4px', lineHeight: 1.3 }}>
+        <p style={{ fontSize: 10, color: 'var(--status-warning)', margin: '0 0 4px', lineHeight: 1.3 }}>
           {t('academy.playerDetail.skillNeedsHigherRatings', { defaultValue: 'Needs higher ratings to master' })}
         </p>
       )}
@@ -495,7 +495,7 @@ function SkillRoadmapCard({ skill }) {
           {skill.timesPracticed > 0 ? t('academy.playerDetail.skillCompletions', { count: skill.timesPracticed }) : t('academy.playerDetail.skillNotStarted')}
         </span>
         {skill.timesPracticed > 0 && (
-          <span style={{ fontSize: 11, color: skill.avgRating >= 4.5 ? '#22c55e' : '#71717a' }}>
+          <span style={{ fontSize: 11, color: skill.avgRating >= 4.5 ? 'var(--status-success)' : 'var(--text-muted)' }}>
             {skill.avgRating.toFixed(1)}&#9733;
           </span>
         )}
@@ -505,20 +505,20 @@ function SkillRoadmapCard({ skill }) {
 }
 
 function getRoadmapColor(percent) {
-  if (percent >= 80) return '#22c55e';
-  if (percent >= 50) return '#3b82f6';
-  if (percent >= 25) return '#eab308';
-  return '#ef4444';
+  if (percent >= 80) return 'var(--status-success)';
+  if (percent >= 50) return 'var(--color-focus)';
+  if (percent >= 25) return 'var(--status-warning)';
+  return 'var(--status-danger)';
 }
 
 // ─── Tab: Training History ─────────────────────────────────────────────────────
 
 const SESSION_STATUS_STYLES = {
-  completed: { bg: 'rgba(34,197,94,0.15)', fg: '#22c55e' },
-  abandoned: { bg: 'rgba(239,68,68,0.15)', fg: '#ef4444' },
-  in_progress: { bg: 'rgba(234,179,8,0.15)', fg: '#eab308' },
+  completed: { bg: 'var(--status-success-soft)', fg: 'var(--status-success)' },
+  abandoned: { bg: 'var(--status-danger-soft)', fg: 'var(--status-danger)' },
+  in_progress: { bg: 'var(--status-warning-soft)', fg: 'var(--status-warning)' },
 };
-const UNKNOWN_STATUS_STYLE = { bg: 'rgba(255,255,255,0.06)', fg: '#9ca3af' };
+const UNKNOWN_STATUS_STYLE = { bg: 'var(--border-subtle)', fg: 'var(--text-muted)' };
 
 function formatSessionDate(startedAt) {
   if (!startedAt) return '\u2014';
@@ -605,7 +605,7 @@ function HistoryTab({ sessions, errorMessage }) {
           </thead>
           <tbody>
             {sessions.map((s) => (
-              <tr key={s.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+              <tr key={s.id} style={{ borderBottom: '1px solid var(--surface-glass)' }}>
                 <td style={tdStyle}>{formatSessionDate(s.started_at)}</td>
                 <td style={tdStyle}><span style={{ textTransform: 'capitalize' }}>{s.session_type}</span></td>
                 <td style={tdStyle}>{s.exercises_completed}</td>
@@ -648,11 +648,11 @@ function TrendsTab({ weeklyTrends, errorMessage }) {
         <div style={{ height: 240 }}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={weeklyTrends}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 12 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
-              <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" />
+              <XAxis dataKey="week" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={{ stroke: 'var(--border-light)' }} tickLine={false} />
+              <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: 'var(--text-primary)' }} />
-              <Line type="monotone" dataKey="xp" name={t('common.xp')} stroke="#3b82f6" strokeWidth={2} dot={{ r: 3, fill: '#3b82f6' }} />
+              <Line type="monotone" dataKey="xp" name={t('common.xp')} stroke="var(--color-focus)" strokeWidth={2} dot={{ r: 3, fill: 'var(--color-focus)' }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -663,11 +663,11 @@ function TrendsTab({ weeklyTrends, errorMessage }) {
         <div style={{ height: 240 }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={weeklyTrends}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="week" tick={{ fill: '#71717a', fontSize: 12 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} />
-              <YAxis tick={{ fill: '#71717a', fontSize: 12 }} axisLine={false} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" />
+              <XAxis dataKey="week" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={{ stroke: 'var(--border-light)' }} tickLine={false} />
+              <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: 'var(--text-primary)' }} />
-              <Bar dataKey="minutes" name="Minutes" fill="#22c55e" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="minutes" name="Minutes" fill="var(--status-success)" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -698,14 +698,14 @@ const containerStyle = {
 };
 
 const headerStyle = { maxWidth: 1000, margin: '0 auto 24px' };
-const backLinkStyle = { color: '#3b82f6', textDecoration: 'none', fontSize: 14 };
+const backLinkStyle = { color: 'var(--color-focus)', textDecoration: 'none', fontSize: 14 };
 const titleStyle = { fontSize: 24, fontWeight: 700, margin: '0 0 4px' };
 const subtitleStyle = { fontSize: 13, color: 'var(--text-muted)', margin: 0 };
 
 const playerHeaderStyle = { display: 'flex', alignItems: 'center', gap: 16, marginTop: 12 };
 const largeAvatarStyle = {
   width: 52, height: 52, borderRadius: '50%',
-  background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa',
+  background: 'var(--color-cyan-soft)', color: 'var(--color-link)',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
   fontSize: 22, fontWeight: 700, flexShrink: 0,
 };
@@ -717,12 +717,12 @@ const miniKpiRowStyle = {
 const levelProgressWrapStyle = {
   marginTop: 16,
   padding: '12px 14px',
-  background: 'rgba(255, 255, 255, 0.04)',
+  background: 'var(--surface-glass)',
   borderRadius: 'var(--radius-lg)',
 };
 const miniKpiStyle = {
   padding: '8px 14px',
-  background: 'rgba(255, 255, 255, 0.04)',
+  background: 'var(--surface-glass)',
   borderRadius: 'var(--radius-md)',
   textAlign: 'center',
   minWidth: 70,
@@ -731,7 +731,7 @@ const miniKpiStyle = {
 const tabBarStyle = {
   maxWidth: 1000, margin: '0 auto 20px',
   display: 'flex', gap: 4,
-  background: 'rgba(255, 255, 255, 0.04)',
+  background: 'var(--surface-glass)',
   borderRadius: 'var(--radius-lg)', padding: 4,
 };
 
@@ -743,7 +743,7 @@ const tabBtnStyle = {
 
 const activeTabBtnStyle = {
   ...tabBtnStyle,
-  background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6',
+  background: 'var(--color-cyan-soft)', color: 'var(--color-focus)',
 };
 
 const contentStyle = { maxWidth: 1000, margin: '0 auto' };
@@ -753,51 +753,51 @@ const tabGridStyle = {
 };
 
 const cardStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
+  background: 'var(--surface-card)',
+  border: '1px solid var(--border-light)',
   borderRadius: 'var(--radius-card)', padding: '20px 16px',
 };
 
-const cardTitleStyle = { fontSize: 14, fontWeight: 600, margin: '0 0 12px', color: '#d1d5db' };
+const cardTitleStyle = { fontSize: 14, fontWeight: 600, margin: '0 0 12px', color: 'var(--text-secondary)' };
 
 const tooltipStyle = {
-  background: '#1a1f2e', border: '1px solid rgba(255,255,255,0.1)',
+  background: 'var(--bg-app-near)', border: '1px solid var(--border-medium)',
   borderRadius: 'var(--radius-md)', fontSize: 12,
 };
 
 const spinnerStyle = {
   width: 40, height: 40,
-  border: '3px solid #27272a', borderTopColor: '#E63946',
+  border: '3px solid var(--border-medium)', borderTopColor: 'var(--color-primary-action)',
   borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto',
 };
 
 const emptyStyle = { color: 'var(--text-dim)', fontSize: 14, textAlign: 'center', padding: 32 };
 
 const errorStyle = {
-  color: '#fca5a5', fontSize: 14, textAlign: 'center', padding: 32,
-  background: 'rgba(239, 68, 68, 0.06)',
-  border: '1px solid rgba(239, 68, 68, 0.18)',
+  color: 'var(--status-danger-text)', fontSize: 14, textAlign: 'center', padding: 32,
+  background: 'var(--surface-danger)',
+  border: '1px solid var(--status-danger-border)',
   borderRadius: 'var(--radius-xl)',
 };
 
 const sessionCardStyle = {
   padding: '14px 14px',
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
+  background: 'var(--surface-card)',
+  border: '1px solid var(--border-light)',
   borderRadius: 'var(--radius-xl)',
 };
 
 // Skill filter chips
 const chipStyle = {
-  padding: '6px 12px', background: 'rgba(255,255,255,0.04)',
-  border: '1px solid rgba(255,255,255,0.08)', borderRadius: 'var(--radius-md)',
+  padding: '6px 12px', background: 'var(--surface-glass)',
+  border: '1px solid var(--border-light)', borderRadius: 'var(--radius-md)',
   color: 'var(--text-muted)', fontSize: 12, fontWeight: 500, cursor: 'pointer',
 };
 const activeChipStyle = {
   ...chipStyle,
-  background: 'rgba(59, 130, 246, 0.15)',
-  border: '1px solid rgba(59, 130, 246, 0.3)',
-  color: '#3b82f6',
+  background: 'var(--color-cyan-soft)',
+  border: '1px solid var(--color-cyan-soft-border)',
+  color: 'var(--color-focus)',
 };
 
 const skillGridStyle = {
@@ -806,19 +806,19 @@ const skillGridStyle = {
 
 const skillCardStyle = {
   padding: '10px 12px',
-  background: 'rgba(255, 255, 255, 0.03)',
-  border: '1px solid rgba(255, 255, 255, 0.06)',
+  background: 'var(--surface-glass)',
+  border: '1px solid var(--surface-glass-hover)',
   borderRadius: 'var(--radius-md)',
 };
 
 const masteredBadge = {
   padding: '2px 6px', borderRadius: 'var(--radius-xs)', fontSize: 10, fontWeight: 600,
-  background: 'rgba(34, 197, 94, 0.15)', color: '#22c55e',
+  background: 'var(--status-success-soft)', color: 'var(--status-success)',
 };
 
 const progressBarBgStyle = {
   height: 4, borderRadius: 2,
-  background: 'rgba(255, 255, 255, 0.08)',
+  background: 'var(--border-light)',
 };
 
 const progressBarFillStyle = {
@@ -828,7 +828,7 @@ const progressBarFillStyle = {
 
 const thStyle = {
   textAlign: 'left', padding: '10px 10px', color: 'var(--text-dim)', fontWeight: 500,
-  borderBottom: '1px solid rgba(255, 255, 255, 0.08)', whiteSpace: 'nowrap',
+  borderBottom: '1px solid var(--border-light)', whiteSpace: 'nowrap',
 };
 
 const tdStyle = { padding: '10px', whiteSpace: 'nowrap' };
@@ -836,8 +836,8 @@ const tdStyle = { padding: '10px', whiteSpace: 'nowrap' };
 // ─── Roadmap-specific styles ────────────────────────────────────────────────
 
 const roadmapHeaderStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
+  background: 'var(--surface-card)',
+  border: '1px solid var(--border-light)',
   borderRadius: 'var(--radius-card)', padding: '20px 20px 16px',
   marginBottom: 16,
 };
@@ -853,8 +853,8 @@ const categorySummaryRowStyle = {
 const categorySummaryChipStyle = {
   display: 'flex', alignItems: 'center', gap: 4,
   padding: '4px 8px', borderRadius: 'var(--radius-sm)',
-  background: 'rgba(255, 255, 255, 0.04)',
-  border: '1px solid rgba(255, 255, 255, 0.06)',
+  background: 'var(--surface-glass)',
+  border: '1px solid var(--surface-glass-hover)',
 };
 
 const ageGroupHeaderStyle = {
@@ -869,5 +869,5 @@ const ageGroupBadgeStyle = {
 
 const almostBadge = {
   padding: '2px 6px', borderRadius: 'var(--radius-xs)', fontSize: 10, fontWeight: 600,
-  background: 'rgba(234, 179, 8, 0.15)', color: '#eab308',
+  background: 'var(--status-warning-soft)', color: 'var(--status-warning)',
 };

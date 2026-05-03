@@ -58,46 +58,46 @@
     --chart-5: 27 87% 67%;
 
     /* Brand System - All4Footy */
-    --all4footy-navy: #0f172a;
-    --all4footy-navy-light: #1e293b;
-    --all4footy-purple: #6366f1;
-    --all4footy-purple-light: #818cf8;
-    --all4footy-cyan: #22d3ee;
-    --all4footy-gradient: linear-gradient(135deg, #6366f1 0%, #22d3ee 100%);
+    --all4footy-navy: var(--bg-app-deep);
+    --all4footy-navy-light: var(--bg-app-near);
+    --all4footy-purple: var(--color-brand);
+    --all4footy-purple-light: var(--color-brand-soft);
+    --all4footy-cyan: var(--color-cyan);
+    --all4footy-gradient: var(--gradient-brand);
 
     /* Product Accent Colors */
-    --versa-accent: #22c55e;
+    --versa-accent: var(--status-success);
     --fair-accent: #ec4899;
-    --track-accent: #f97316;
-    --kaas-accent: #22d3ee;
+    --track-accent: var(--color-orange);
+    --kaas-accent: var(--color-cyan);
 
     /* Versa Footy Core Palette */
-    --primary-bg: #1a2b47;
-    --primary-bg-dark: #0f172a;
+    --primary-bg: var(--bg-app-mid);
+    --primary-bg-dark: var(--bg-app-deep);
     --primary-bg-light: #1e3a5f;
-    --secondary-bg: #f8fafc;
-    --accent-color: #6366f1;
-    --accent-color-light: #818cf8;
-    --text-color: #1e293b;
-    --text-muted: #64748b;
+    --secondary-bg: var(--text-primary);
+    --accent-color: var(--color-brand);
+    --accent-color-light: var(--color-brand-soft);
+    --text-color: var(--bg-app-near);
+    --text-muted: var(--text-muted);
     
     /* Action Colors */
-    --versa-coral: #ff4b4b;
-    --versa-coral-hover: #ef4444;
+    --versa-coral: var(--color-coral);
+    --versa-coral-hover: var(--color-primary-action);
     --versa-coral-light: #ff6b6b;
-    --versa-green: #22c55e;
-    --versa-green-light: #4ade80;
-    --versa-gold: #ffd166;
+    --versa-green: var(--status-success);
+    --versa-green-light: var(--status-success-text);
+    --versa-gold: var(--color-gold);
     --versa-gold-light: #ffda8a;
     
     /* UI State Colors */
     --button-bg: var(--versa-coral);
     --button-hover: var(--all4footy-purple);
     --highlight-color: var(--versa-gold);
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --error-color: #ef4444;
-    --info-color: #3b82f6;
+    --success-color: var(--status-success);
+    --warning-color: var(--status-warning);
+    --error-color: var(--status-danger);
+    --info-color: var(--color-blue);
 
     /* Semantic Aliases */
     --color-primary: var(--primary-bg);
@@ -109,16 +109,16 @@
     --color-highlight: var(--highlight-color);
 
     /* Legacy Support */
-    --primary-blue: #1a2b47;
-    --secondary-blue: #6366f1;
-    --accent-orange: #ff6b6b;
-    --highlight-yellow: #ffd166;
-    --success-green: #10b981;
-    --warning-orange: #f59e0b;
-    --error-red: #ef4444;
-    --dark-blue: #1a2b47;
-    --light-gray: #f8fafc;
-    --medium-gray: #cbd5e1;
+    --primary-blue: var(--bg-app-mid);
+    --secondary-blue: var(--color-brand);
+    --accent-orange: var(--versa-coral-light);
+    --highlight-yellow: var(--color-gold);
+    --success-green: var(--status-success);
+    --warning-orange: var(--status-warning);
+    --error-red: var(--status-danger);
+    --dark-blue: var(--bg-app-mid);
+    --light-gray: var(--text-primary);
+    --medium-gray: var(--text-secondary);
 
     /* Shadows */
     --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);

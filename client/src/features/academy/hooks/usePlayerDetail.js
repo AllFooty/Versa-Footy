@@ -247,7 +247,7 @@ function computeRoadmap(profile, allSkills, progressRecords) {
       name: skill.name,
       ageGroup: skill.age_group,
       category: skill.categories?.name || 'Unknown',
-      categoryColor: skill.categories?.color || '#3b82f6',
+      categoryColor: skill.categories?.color || 'var(--color-focus)',
       categoryIcon: skill.categories?.icon || '',
       isMastered,
       status: progress?.status || 'not_started',
@@ -287,7 +287,7 @@ function computeRoadmap(profile, allSkills, progressRecords) {
     if (!catMap[catName]) {
       catMap[catName] = {
         name: catName,
-        color: skill.categories?.color || '#3b82f6',
+        color: skill.categories?.color || 'var(--color-focus)',
         icon: skill.categories?.icon || '',
         total: 0,
         mastered: 0,

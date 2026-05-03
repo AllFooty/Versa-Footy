@@ -1,10 +1,10 @@
 import React from 'react';
 
-export default function StatCard({ label, value, accent = '#6366f1', icon, suffix, loading }) {
+export default function StatCard({ label, value, accent = 'var(--color-secondary-action)', icon, suffix, loading }) {
   return (
     <div className="dash-stat" style={{
-      background: 'rgba(15, 23, 42, 0.55)',
-      border: '1px solid rgba(255, 255, 255, 0.06)',
+      background: 'var(--surface-card)',
+      border: '1px solid var(--border-subtle)',
       borderRadius: 14,
       padding: '18px 20px',
       display: 'flex',
@@ -16,7 +16,7 @@ export default function StatCard({ label, value, accent = '#6366f1', icon, suffi
         width: 40,
         height: 40,
         borderRadius: 10,
-        background: `${accent}1a`,
+        background: `color-mix(in srgb, ${accent} 18%, transparent)`,
         color: accent,
         display: 'flex',
         alignItems: 'center',
@@ -31,7 +31,7 @@ export default function StatCard({ label, value, accent = '#6366f1', icon, suffi
             width: 60,
             height: 28,
             borderRadius: 6,
-            background: 'linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.12), rgba(255,255,255,0.06))',
+            background: 'linear-gradient(90deg, var(--surface-glass-hover), var(--border-medium), var(--surface-glass-hover))',
             backgroundSize: '200% 100%',
             animation: 'app-shell-shimmer 1.4s ease-in-out infinite',
             marginBottom: 6,
@@ -40,18 +40,18 @@ export default function StatCard({ label, value, accent = '#6366f1', icon, suffi
           <div style={{
             fontSize: 26,
             fontWeight: 700,
-            color: '#f1f5f9',
+            color: 'var(--text-primary)',
             lineHeight: 1.1,
             marginBottom: 4,
             wordBreak: 'break-word',
           }}>
             {value}
-            {suffix && <span style={{ fontSize: 14, fontWeight: 500, color: '#94a3b8', marginInlineStart: 4 }}>{suffix}</span>}
+            {suffix && <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-muted)', marginInlineStart: 4 }}>{suffix}</span>}
           </div>
         )}
         <div style={{
           fontSize: 12.5,
-          color: '#94a3b8',
+          color: 'var(--text-muted)',
           textTransform: 'uppercase',
           letterSpacing: '0.06em',
           fontWeight: 600,

@@ -7,6 +7,7 @@
     "dev": "vite dev --port 5000",
     "build": "tsx script/build.ts",
     "check": "tsc",
+    "check:colors": "node script/check-colors.mjs",
     "deploy": "wrangler pages deploy dist/public --project-name=versa-footy --branch=main"
   },
   "dependencies": {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'wouter';
 
-export default function QuickAction({ href, title, description, icon, accent = '#22d3ee', primary }) {
+export default function QuickAction({ href, title, description, icon, accent = 'var(--color-focus)', primary }) {
   return (
     <Link href={href}>
       <a
@@ -11,11 +11,11 @@ export default function QuickAction({ href, title, description, icon, accent = '
           alignItems: 'center',
           gap: 14,
           padding: '16px 18px',
-          background: primary ? 'rgba(15, 23, 42, 0.65)' : 'rgba(255, 255, 255, 0.03)',
-          border: primary ? `1px solid ${accent}3d` : '1px solid rgba(255, 255, 255, 0.06)',
+          background: primary ? 'var(--surface-card)' : 'var(--surface-glass)',
+          border: primary ? `1px solid color-mix(in srgb, ${accent} 34%, transparent)` : '1px solid var(--border-subtle)',
           borderRadius: 12,
           textDecoration: 'none',
-          color: '#e5e7eb',
+          color: 'var(--text-primary)',
           transition: 'transform 0.15s, background 0.15s, border-color 0.15s',
         }}
       >
@@ -23,7 +23,7 @@ export default function QuickAction({ href, title, description, icon, accent = '
           width: 40,
           height: 40,
           borderRadius: 10,
-          background: `${accent}1f`,
+          background: `color-mix(in srgb, ${accent} 18%, transparent)`,
           color: accent,
           display: 'flex',
           alignItems: 'center',
@@ -33,11 +33,11 @@ export default function QuickAction({ href, title, description, icon, accent = '
           {icon}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: '#f1f5f9', marginBottom: 2 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 2 }}>
             {title}
           </div>
           {description && (
-            <div style={{ fontSize: 12.5, color: '#94a3b8' }}>
+            <div style={{ fontSize: 12.5, color: 'var(--text-muted)' }}>
               {description}
             </div>
           )}
