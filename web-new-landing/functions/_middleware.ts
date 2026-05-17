@@ -14,6 +14,26 @@ const SPA_PREFIXES = [
   "/attached_assets",
 ];
 
+// Native Next routes that the old SPA also served at the un-prefixed URL
+// (the old SPA had no /<lang>/ segment). Visitors arriving from old links
+// or muscle-memory at e.g. /login get bounced to the default locale.
+const BARE_NATIVE_PATHS = [
+  "/login",
+  "/home",
+  "/settings",
+  "/preferences",
+  "/unsubscribe",
+  "/terms-of-service",
+  "/privacy-policy",
+  "/org/create",
+  "/academy",
+  "/academy/invitations",
+  "/academy/teams",
+  "/academy/settings",
+];
+
+const DEFAULT_LOCALE = "ar";
+
 // Inline types — avoids depending on @cloudflare/workers-types in package.json.
 type EventContext = {
   request: Request;
@@ -37,17 +57,25 @@ export const onRequest = async (context: EventContext): Promise<Response> => {
   if (joinMatch) {
     const [, lang, code] = joinMatch;
     return Response.redirect(
-      `${url.origin}/${lang ?? "ar"}/join?code=${encodeURIComponent(code.toUpperCase())}`,
+      `${url.origin}/${lang ?? DEFAULT_LOCALE}/join?code=${encodeURIComponent(code.toUpperCase())}`,
       302,
     );
   }
-  // Bare /join with no locale → default locale
+  // Bare /join with no locale → default locale (handled by BARE_NATIVE_PATHS
+  // below, but keep this explicit since it's the most-shared invite shape).
   if (pathname === "/join" || pathname === "/join/") {
-    return Response.redirect(`${url.origin}/ar/join`, 302);
+    return Response.redirect(`${url.origin}/${DEFAULT_LOCALE}/join`, 302);
   }
-  // Bare /academy with no locale → default locale (old SPA URLs)
-  if (pathname === "/academy" || pathname === "/academy/") {
-    return Response.redirect(`${url.origin}/ar/academy`, 302);
+
+  // Bare un-localized native paths (old SPA URL shapes) → default-locale page.
+  const stripped = pathname.endsWith("/") && pathname !== "/"
+    ? pathname.slice(0, -1)
+    : pathname;
+  if (BARE_NATIVE_PATHS.includes(stripped)) {
+    return Response.redirect(
+      `${url.origin}/${DEFAULT_LOCALE}${stripped}${url.search}`,
+      302,
+    );
   }
 
   const isSpaPath = SPA_PREFIXES.some(
