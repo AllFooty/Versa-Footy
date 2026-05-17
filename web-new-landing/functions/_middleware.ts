@@ -3,9 +3,6 @@
 // falls through to Next.js static export.
 
 const SPA_PREFIXES = [
-  "/library",
-  "/videos-audit",
-  "/marketing",
   "/assets",
   "/Favicons",
   "/attached_assets",
@@ -28,6 +25,11 @@ const BARE_NATIVE_PATHS = [
   "/academy/teams",
   "/academy/settings",
   "/academy/players",
+  "/library",
+  "/videos-audit",
+  "/marketing",
+  "/marketing/segments",
+  "/marketing/automations",
 ];
 
 const DEFAULT_LOCALE = "ar";
