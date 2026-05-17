@@ -3,7 +3,6 @@
 // falls through to Next.js static export.
 
 const SPA_PREFIXES = [
-  "/org",
   "/join",
   "/academy",
   "/library",
