@@ -1,34 +1,6 @@
-# Reverse-proxy old SPA paths to APP_ORIGIN (status 200 = transparent rewrite).
-# Order matters — first match wins.
-
-# SPA static assets first (most specific)
-/assets/*           https://app-origin.versafooty.com/assets/:splat              200
-/Favicons/*         https://app-origin.versafooty.com/Favicons/:splat            200
-/attached_assets/*  https://app-origin.versafooty.com/attached_assets/:splat     200
-
-# SPA auth + product surfaces
-/login              https://app-origin.versafooty.com/login                       200
-/home               https://app-origin.versafooty.com/home                        200
-/settings           https://app-origin.versafooty.com/settings                    200
-/org/*              https://app-origin.versafooty.com/org/:splat                  200
-/join               https://app-origin.versafooty.com/join                        200
-/join/*             https://app-origin.versafooty.com/join/:splat                 200
-/academy            https://app-origin.versafooty.com/academy                     200
-/academy/*          https://app-origin.versafooty.com/academy/:splat              200
-/library            https://app-origin.versafooty.com/library                     200
-/library/*          https://app-origin.versafooty.com/library/:splat              200
-/videos-audit       https://app-origin.versafooty.com/videos-audit                200
-/marketing          https://app-origin.versafooty.com/marketing                   200
-/marketing/*        https://app-origin.versafooty.com/marketing/:splat            200
-
-# SPA legacy marketing pages (port to Next later)
-/about-us           https://app-origin.versafooty.com/about-us                    200
-/faq                https://app-origin.versafooty.com/faq                         200
-/terms-of-service   https://app-origin.versafooty.com/terms-of-service            200
-/privacy-policy     https://app-origin.versafooty.com/privacy-policy              200
-/unsubscribe        https://app-origin.versafooty.com/unsubscribe                 200
-/preferences        https://app-origin.versafooty.com/preferences                 200
-
-# Root → default locale. Accept-Language detection lived in proxy.ts;
+# SPA path proxies are handled by functions/_middleware.ts (Cloudflare
+# Pages doesn't support external rewrites in _redirects).
+#
+# Root -> default locale. Accept-Language detection lived in proxy.ts;
 # with static export we default to Arabic (primary GCC audience).
 /                   /ar                                                            302
