@@ -1,15 +1,23 @@
 import { ImageResponse } from "next/og";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { hasLocale } from "../_dictionaries";
+
+// Required by @cloudflare/next-on-pages — OG image generation runs as an edge function.
+export const runtime = "edge";
 
 export const alt = "Versa Footy: AI football coach for kids 7–14";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://versafooty.com";
+
 async function asDataUrl(relPath: string, mime = "image/webp") {
-  const buf = await readFile(join(process.cwd(), "public", relPath));
-  return `data:${mime};base64,${buf.toString("base64")}`;
+  const res = await fetch(`${SITE_URL}/${relPath}`);
+  const buf = await res.arrayBuffer();
+  // Base64 encode without Buffer (not available on edge runtime).
+  const bytes = new Uint8Array(buf);
+  let binary = "";
+  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+  return `data:${mime};base64,${btoa(binary)}`;
 }
 
 export default async function Image({
