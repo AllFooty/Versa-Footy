@@ -818,6 +818,8 @@ export const productAr: ProductDict = {
       cancelTooLate: "فات الأوان — هذه الحملة قيد الإرسال بالفعل.",
       canceledToast: "تم إلغاء الحملة.",
       reschedulePrompt: "وقت الإرسال الجديد (منطقتك الزمنية). مثل: 2025-12-31 09:00",
+      rescheduleTitle: "إعادة جدولة الحملة",
+      rescheduleConfirm: "إعادة جدولة",
       invalidDate: "هذا لا يبدو تاريخاً صالحاً.",
       futureRequired: "يجب أن يكون الوقت الجديد في المستقبل.",
       rescheduleFailed: "تعذّرت إعادة الجدولة: {{error}}",

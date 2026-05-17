@@ -422,14 +422,6 @@ export function MarketingEmailView({
   const performSend = async (state: ConfirmSendState) => {
     setSendConfirm(null);
 
-    if (state.isLargeSend) {
-      const typed = window.prompt(t.largeSendPrompt);
-      if (typed !== "SEND") {
-        if (typed != null) toast.error(t.largeSendTypoError);
-        return;
-      }
-    }
-
     if (mode === "blocks") {
       const issues = validateBlocks(blocks);
       if (issues.length > 0) {
@@ -1100,6 +1092,8 @@ export function MarketingEmailView({
         confirmLabel={sendConfirm?.confirmLabel ?? ""}
         cancelLabel={dict.common.cancel}
         destructive={sendConfirm?.destructive}
+        requireConfirmText={sendConfirm?.isLargeSend ? "SEND" : undefined}
+        confirmTextLabel={sendConfirm?.isLargeSend ? t.largeSendPrompt : undefined}
         onConfirm={() => sendConfirm && void performSend(sendConfirm)}
         onCancel={() => setSendConfirm(null)}
       />

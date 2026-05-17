@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Button } from "./Button";
+import { Input } from "./Input";
 
 type Props = {
   open: boolean;
@@ -11,6 +12,8 @@ type Props = {
   confirmLabel?: string;
   cancelLabel?: string;
   destructive?: boolean;
+  requireConfirmText?: string;
+  confirmTextLabel?: string;
   onConfirm: () => void;
   onCancel: () => void;
 };
@@ -22,11 +25,16 @@ export function ConfirmDialog({
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
   destructive = false,
+  requireConfirmText,
+  confirmTextLabel,
   onConfirm,
   onCancel,
 }: Props) {
+  const [typed, setTyped] = useState("");
+
   useEffect(() => {
     if (!open) return;
+    setTyped("");
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCancel();
     };
@@ -38,6 +46,8 @@ export function ConfirmDialog({
       document.body.style.overflow = prev;
     };
   }, [open, onCancel]);
+
+  const matches = requireConfirmText == null || typed === requireConfirmText;
 
   return (
     <AnimatePresence>
@@ -76,6 +86,26 @@ export function ConfirmDialog({
                 {description}
               </p>
             )}
+            {requireConfirmText != null && (
+              <div className="mt-5">
+                {confirmTextLabel && (
+                  <label
+                    htmlFor="confirm-text"
+                    className="mb-2 block font-sans text-body-s text-accent-dark/75"
+                  >
+                    {confirmTextLabel}
+                  </label>
+                )}
+                <Input
+                  id="confirm-text"
+                  autoFocus
+                  value={typed}
+                  onChange={(e) => setTyped(e.currentTarget.value)}
+                  placeholder={requireConfirmText}
+                  aria-label={confirmTextLabel ?? requireConfirmText}
+                />
+              </div>
+            )}
             <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <Button variant="secondary" size="md" onClick={onCancel}>
                 {cancelLabel}
@@ -84,6 +114,7 @@ export function ConfirmDialog({
                 variant={destructive ? "danger" : "primary"}
                 size="md"
                 onClick={onConfirm}
+                disabled={!matches}
               >
                 {confirmLabel}
               </Button>

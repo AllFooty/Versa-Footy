@@ -3,6 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../../../../_lib/supabase";
 import { ConfirmDialog } from "../../../../_components/primitives/ConfirmDialog";
+import { Modal } from "../../../../_components/primitives/Modal";
+import { Button } from "../../../../_components/primitives/Button";
+import { DateTimeInput } from "../../../../_components/primitives/DateTimeInput";
 import { toast } from "../../../../_components/primitives/Toast";
 import type { ProductDict } from "../../../../_dictionaries/product";
 
@@ -31,6 +34,8 @@ export function ScheduledCampaignsPanel({
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [pendingCancel, setPendingCancel] = useState<string | null>(null);
+  const [reschedTarget, setReschedTarget] = useState<string | null>(null);
+  const [reschedValue, setReschedValue] = useState("");
 
   const reload = useCallback(async () => {
     const { data, error: rpcError } = await supabase.rpc("marketing_list_scheduled");
@@ -63,10 +68,15 @@ export function ScheduledCampaignsPanel({
     void reload();
   };
 
-  const reschedule = async (id: string) => {
-    const input = window.prompt(t.reschedulePrompt);
-    if (!input) return;
-    const dt = new Date(input);
+  const openReschedule = (id: string) => {
+    setReschedValue("");
+    setReschedTarget(id);
+  };
+
+  const confirmReschedule = async () => {
+    const id = reschedTarget;
+    if (!id || !reschedValue) return;
+    const dt = new Date(reschedValue);
     if (Number.isNaN(dt.getTime())) {
       toast.error(t.invalidDate);
       return;
@@ -75,6 +85,7 @@ export function ScheduledCampaignsPanel({
       toast.error(t.futureRequired);
       return;
     }
+    setReschedTarget(null);
     setBusyId(id);
     const { data, error: rpcError } = await supabase.rpc(
       "marketing_reschedule_campaign",
@@ -145,7 +156,7 @@ export function ScheduledCampaignsPanel({
               <div className="flex gap-2">
                 <button
                   type="button"
-                  onClick={() => void reschedule(c.id)}
+                  onClick={() => openReschedule(c.id)}
                   disabled={busyId === c.id}
                   className="inline-flex min-h-[36px] items-center rounded-full border border-accent-dark/15 bg-cream px-3 py-1.5 font-display label-xs uppercase text-accent-dark transition-colors hover:bg-accent-dark hover:text-cream disabled:opacity-50"
                 >
@@ -164,6 +175,41 @@ export function ScheduledCampaignsPanel({
           </div>
         );
       })}
+
+      <Modal
+        open={reschedTarget != null}
+        onClose={() => setReschedTarget(null)}
+        size="sm"
+        ariaLabel={t.rescheduleTitle}
+      >
+        <h2 className="font-display uppercase font-black tracking-[-0.01em] text-[clamp(20px,2.4vw,26px)] text-accent-dark">
+          {t.rescheduleTitle}
+        </h2>
+        <p className="mt-3 font-sans text-body-s text-accent-dark/75">
+          {t.reschedulePrompt}
+        </p>
+        <div className="mt-5">
+          <DateTimeInput
+            autoFocus
+            aria-label={t.reschedulePrompt}
+            value={reschedValue}
+            onChange={(e) => setReschedValue(e.currentTarget.value)}
+          />
+        </div>
+        <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+          <Button variant="secondary" size="md" onClick={() => setReschedTarget(null)}>
+            {dict.common.cancel}
+          </Button>
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => void confirmReschedule()}
+            disabled={!reschedValue}
+          >
+            {t.rescheduleConfirm}
+          </Button>
+        </div>
+      </Modal>
 
       <ConfirmDialog
         open={pendingCancel != null}

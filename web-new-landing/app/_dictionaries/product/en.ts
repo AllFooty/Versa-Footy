@@ -826,6 +826,8 @@ export const productEn = {
       cancelTooLate: "Too late — this campaign is already sending.",
       canceledToast: "Campaign cancelled.",
       reschedulePrompt: "New send time (your timezone). e.g. 2025-12-31 09:00",
+      rescheduleTitle: "Reschedule campaign",
+      rescheduleConfirm: "Reschedule",
       invalidDate: "That doesn't look like a valid date.",
       futureRequired: "New time must be in the future.",
       rescheduleFailed: "Couldn't reschedule: {{error}}",
