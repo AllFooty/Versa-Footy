@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../_lib/auth/AuthProvider";
 import { supabase } from "../../../_lib/supabase";
+import { useAcademyDashboard } from "../../../_lib/academy/useAcademyDashboard";
 import { Skeleton } from "../../../_components/primitives/Skeleton";
 import type { ProductDict } from "../../../_dictionaries/product";
 import type { Locale } from "../../../_dictionaries";
@@ -107,6 +108,9 @@ export function HomeView({ dict, lang }: { dict: ProductDict; lang: Locale }) {
   const { user, profile, organizations, activeOrg, orgsLoading, isAdmin, isCoach } =
     useAuth();
   const pending = usePendingInvitations(user?.email);
+  const { stats: academyStats, loading: academyLoading } = useAcademyDashboard(
+    activeOrg?.id,
+  );
 
   const firstName = profile?.full_name?.split(" ")[0];
   const greeting = firstName
@@ -169,6 +173,14 @@ export function HomeView({ dict, lang }: { dict: ProductDict; lang: Locale }) {
             value={activeOrg.name}
             accent="var(--color-glyph-gold)"
             loading={orgsLoading}
+          />
+        )}
+        {activeOrg && isCoach && (
+          <Stat
+            label={t.stats.players}
+            value={academyStats?.total_players ?? 0}
+            accent="var(--color-deep-teal)"
+            loading={academyLoading && !academyStats}
           />
         )}
         {(pending === null || pending > 0) && (

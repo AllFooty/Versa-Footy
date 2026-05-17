@@ -3,7 +3,12 @@
 // falls through to Next.js static export.
 
 const SPA_PREFIXES = [
-  "/academy",
+  // /academy itself is now native; sub-routes (/academy/players, /teams,
+  // /invitations, /settings) still proxy until ported in this phase.
+  "/academy/players",
+  "/academy/invitations",
+  "/academy/teams",
+  "/academy/settings",
   "/library",
   "/videos-audit",
   "/marketing",
@@ -42,6 +47,10 @@ export const onRequest = async (context: EventContext): Promise<Response> => {
   // Bare /join with no locale → default locale
   if (pathname === "/join" || pathname === "/join/") {
     return Response.redirect(`${url.origin}/ar/join`, 302);
+  }
+  // Bare /academy with no locale → default locale (old SPA URLs)
+  if (pathname === "/academy" || pathname === "/academy/") {
+    return Response.redirect(`${url.origin}/ar/academy`, 302);
   }
 
   const isSpaPath = SPA_PREFIXES.some(
