@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
-import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useAuth } from "./AuthProvider";
 import { Spinner } from "../../_components/primitives/Spinner";
 
@@ -10,10 +10,8 @@ type Role = "any" | "admin" | "coach";
 function useLoginHref() {
   const params = useParams<{ lang?: string }>();
   const pathname = usePathname();
-  const search = useSearchParams();
   const lang = params?.lang ?? "ar";
-  const qs = search?.toString();
-  const next = encodeURIComponent(`${pathname}${qs ? `?${qs}` : ""}`);
+  const next = encodeURIComponent(pathname);
   return `/${lang}/login?next=${next}`;
 }
 
