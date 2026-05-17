@@ -32,6 +32,7 @@ export function Button({
   href,
   disabled = false,
   type = "button",
+  onClick,
 }: {
   children: ReactNode;
   variant?: Variant;
@@ -42,19 +43,20 @@ export function Button({
   href?: string;
   disabled?: boolean;
   type?: "submit" | "button" | "reset";
+  onClick?: () => void;
 }) {
   const pulseCls = pulse && !disabled ? "animate-[pulse-cta_2.8s_ease-in-out_infinite]" : "";
   const cls = `${base} ${variants[variant]} ${sizes[size]} ${pulseCls} ${className}`.trim();
 
   if (asLink && href) {
     return (
-      <a href={href} className={cls}>
+      <a href={href} className={cls} onClick={onClick}>
         {children}
       </a>
     );
   }
   return (
-    <button type={type} disabled={disabled} className={cls}>
+    <button type={type} disabled={disabled} className={cls} onClick={onClick}>
       {children}
     </button>
   );

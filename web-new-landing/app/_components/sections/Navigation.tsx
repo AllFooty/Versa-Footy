@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "../primitives/Button";
 import { LanguageSwitcher } from "../primitives/LanguageSwitcher";
+import { GetStartedModal } from "../primitives/GetStartedModal";
 import { LOGIN_HREF } from "../links";
 import type { Dict, Locale } from "../../_dictionaries";
 
@@ -12,6 +13,7 @@ type Props = { dict: Dict; lang: Locale };
 
 export function Navigation({ dict, lang }: Props) {
   const [scrolled, setScrolled] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.85);
@@ -67,11 +69,12 @@ export function Navigation({ dict, lang }: Props) {
           >
             {dict.nav.login}
           </a>
-          <Button variant="primary" size="md" asLink href={`/${lang}#get-started`}>
+          <Button variant="primary" size="md" onClick={() => setModalOpen(true)}>
             {dict.nav.cta}
           </Button>
         </div>
       </nav>
+      <GetStartedModal open={modalOpen} onClose={() => setModalOpen(false)} dict={dict} />
     </header>
   );
 }

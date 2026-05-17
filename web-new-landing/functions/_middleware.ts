@@ -4,10 +4,7 @@
 
 const SPA_PREFIXES = [
   "/login",
-  "/about-us",
-  "/faq",
   "/terms-of-service",
-  "/privacy-policy",
   "/unsubscribe",
   "/preferences",
   "/home",

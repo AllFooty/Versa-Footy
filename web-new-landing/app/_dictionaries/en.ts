@@ -382,6 +382,56 @@ export const en = {
   a11y: {
     skipToContent: "Skip to main content",
   },
+  getStartedModal: {
+    title: "How would you like to get started?",
+    subtitle: "Download the app to train with Versa, or sign in to your existing account.",
+    download: {
+      label: "Download the app",
+      description: "Get Versa on the App Store. Google Play coming soon.",
+    },
+    login: {
+      label: "Log in",
+      description: "Continue with your existing Versa Footy account.",
+    },
+    closeAria: "Close",
+  },
+  privacy: {
+    nav: { label: "Privacy" },
+    meta: {
+      title: "Privacy Policy",
+      description: "How Versa Footy collects, uses, and protects your data.",
+    },
+    title: "Privacy Policy",
+    lastUpdated: "Last updated: May 17, 2026",
+    intro:
+      "This Privacy Policy explains how Versa Footy (\"we\", \"us\", \"our\") collects, uses, shares, and protects your information when you use the Versa Footy mobile app and website (the \"Service\"). By using the Service, you agree to the terms described here.",
+    sections: [
+      {
+        heading: "Information We Collect",
+        body: "We collect information you provide directly (such as your name, email, and a child's age range when signing up) and limited technical data (device type, app version, anonymized usage events) needed to deliver and improve training sessions.",
+      },
+      {
+        heading: "How We Use Your Information",
+        body: "We use your information to personalize training drills, communicate important account and product updates, measure aggregated product performance, and comply with legal obligations. We do not sell your personal data.",
+      },
+      {
+        heading: "Children's Privacy",
+        body: "Versa Footy is designed for kids 7–14 and we take children's privacy seriously. Accounts must be created and managed by a parent or legal guardian. We collect the minimum information necessary to deliver personalized training and never use a child's data for advertising.",
+      },
+      {
+        heading: "Data Sharing",
+        body: "We share data only with vetted infrastructure providers (such as our hosting and authentication partners) under strict contractual safeguards, and when required by law. We never sell data to advertisers or third parties.",
+      },
+      {
+        heading: "Your Rights",
+        body: "You may access, update, export, or delete your account information at any time from the app settings, or by contacting us. We honor data-protection rights under applicable law, including the right to withdraw consent.",
+      },
+      {
+        heading: "Contact Us",
+        body: "Questions about this policy? Email privacy@versafooty.com and we will respond within 7 business days.",
+      },
+    ],
+  },
 };
 
 export type Dict = typeof en;
