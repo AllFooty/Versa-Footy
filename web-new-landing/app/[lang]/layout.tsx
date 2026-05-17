@@ -98,11 +98,20 @@ export async function generateMetadata({
       alternateLocale: lang === "ar" ? ["en_US"] : ["ar_SA"],
       siteName: "Versa Footy",
       url: `/${lang}`,
+      images: [
+        {
+          url: `${siteUrl}/opengraph.png`,
+          width: 2798,
+          height: 1644,
+          alt: "Versa Footy",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: dict.meta.title,
       description: dict.meta.ogDescription,
+      images: [`${siteUrl}/opengraph.png`],
     },
   };
 }

@@ -192,6 +192,15 @@ export const ar: Dict = {
   },
   // TODO-AR-REVIEW: FAQ copy — needs native polish for cadence
   faq: {
+    meta: {
+      title: "الأسئلة الشائعة — فيرسا فوتي",
+      description:
+        "إجابات على الأسئلة اللي يسألها الأهالي والمدربين قبل ما يسجلون أطفالهم في فيرسا فوتي.",
+    },
+    pageTitle: "الأسئلة الشائعة",
+    pageSubtitle:
+      "الأسئلة اللي يسألونها الأهالي والمدربين قبل ما يسجلون أطفالهم.",
+    backToHome: "الرجوع للصفحة الرئيسية",
     chip: "أسئلة شائعة",
     headlineA: "أسئلة،",
     headlineB: "وأجوبتها",

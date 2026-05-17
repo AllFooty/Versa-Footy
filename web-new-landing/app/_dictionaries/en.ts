@@ -172,6 +172,15 @@ export const en = {
     ],
   },
   faq: {
+    meta: {
+      title: "FAQ — Versa Footy",
+      description:
+        "Answers to what parents and coaches ask before signing their kid up to Versa Footy.",
+    },
+    pageTitle: "Frequently asked questions",
+    pageSubtitle:
+      "What parents and coaches ask before they sign their kid up.",
+    backToHome: "Back to home",
     chip: "FAQ",
     headlineA: "Questions,",
     headlineB: "answered",

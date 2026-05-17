@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "GCGNZS3MT2.ytoofasrev.versa-footy-app",
+        "paths": ["/join/*"]
+      }
+    ]
+  }
+}
