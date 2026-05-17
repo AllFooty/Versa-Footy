@@ -1,8 +1,43 @@
 import type { NextConfig } from "next";
 
+// Old Vite SPA paths reverse-proxied to APP_ORIGIN until they're ported to Next.
+const SPA_PROXY_PATHS = [
+  "/login",
+  "/about-us",
+  "/faq",
+  "/terms-of-service",
+  "/privacy-policy",
+  "/unsubscribe",
+  "/preferences",
+  "/home",
+  "/settings",
+  "/org/create",
+  "/join",
+  "/join/:code*",
+  "/academy",
+  "/academy/:path*",
+  "/library",
+  "/library/:path*",
+  "/videos-audit",
+  "/marketing",
+  "/marketing/:path*",
+  "/assets/:path*",
+  "/Favicons/:path*",
+  "/attached_assets/:path*",
+];
+
+const APP_ORIGIN = process.env.APP_ORIGIN;
+
 const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
+  },
+  async rewrites() {
+    if (!APP_ORIGIN) return [];
+    return SPA_PROXY_PATHS.map((source) => ({
+      source,
+      destination: `${APP_ORIGIN}${source}`,
+    }));
   },
   images: {
     formats: ["image/avif", "image/webp"],

@@ -24,8 +24,35 @@ function pickLocale(request: NextRequest): string {
   return DEFAULT_LOCALE;
 }
 
+// Paths that belong to the old SPA (handled by next.config rewrites).
+// Must skip the locale redirect so /login doesn't get rewritten to /ar/login.
+const SPA_PREFIXES = [
+  "/login",
+  "/about-us",
+  "/faq",
+  "/terms-of-service",
+  "/privacy-policy",
+  "/unsubscribe",
+  "/preferences",
+  "/home",
+  "/settings",
+  "/org",
+  "/join",
+  "/academy",
+  "/library",
+  "/videos-audit",
+  "/marketing",
+  "/assets",
+  "/Favicons",
+  "/attached_assets",
+];
+
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (SPA_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+    return;
+  }
 
   const hasLocalePrefix = LOCALES.some(
     (l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`),

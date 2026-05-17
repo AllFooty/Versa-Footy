@@ -32,6 +32,7 @@ export const ar: Dict = {
       { label: "أسئلة شائعة", id: "faq" },
     ],
     cta: "ابدأ الآن",
+    login: "تسجيل الدخول",
     homeAria: "الصفحة الرئيسية لفيرسا فوتي",
     mainAria: "القائمة الرئيسية",
   },

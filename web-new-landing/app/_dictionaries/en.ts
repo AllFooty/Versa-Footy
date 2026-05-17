@@ -21,6 +21,7 @@ export const en = {
       { label: "FAQ", id: "faq" },
     ],
     cta: "Get Started",
+    login: "Login",
     homeAria: "Versa Footy home",
     mainAria: "Main",
   },

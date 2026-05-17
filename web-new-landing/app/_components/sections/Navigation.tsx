@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "../primitives/Button";
 import { LanguageSwitcher } from "../primitives/LanguageSwitcher";
+import { LOGIN_HREF } from "../links";
 import type { Dict, Locale } from "../../_dictionaries";
 
 type Props = { dict: Dict; lang: Locale };
@@ -60,6 +61,12 @@ export function Navigation({ dict, lang }: Props) {
 
         <div className="flex items-center gap-3">
           <LanguageSwitcher current={lang} labels={dict.switcher} />
+          <a
+            href={LOGIN_HREF}
+            className="hidden h-11 items-center rounded-sm px-2 font-display uppercase label-sm text-cream/75 transition-colors hover:text-glyph-gold focus:outline-none focus-visible:ring-2 focus-visible:ring-glyph-gold focus-visible:ring-offset-2 focus-visible:ring-offset-transparent md:inline-flex"
+          >
+            {dict.nav.login}
+          </a>
           <Button variant="primary" size="md" asLink href={`/${lang}#get-started`}>
             {dict.nav.cta}
           </Button>
