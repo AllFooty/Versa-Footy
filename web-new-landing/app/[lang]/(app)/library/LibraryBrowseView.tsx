@@ -13,6 +13,8 @@ import { TreeView } from "./_components/TreeView";
 import { DeleteCategoryModal } from "./_components/DeleteCategoryModal";
 import { DeleteSkillModal } from "./_components/DeleteSkillModal";
 import { DeleteExerciseModal } from "./_components/DeleteExerciseModal";
+import { AdvancedFilterPanel } from "./_components/AdvancedFilterPanel";
+import { ActiveFilterChips } from "./_components/ActiveFilterChips";
 import { Select } from "../../../_components/primitives/Select";
 import { Spinner } from "../../../_components/primitives/Spinner";
 import { toast } from "../../../_components/primitives/Toast";
@@ -52,6 +54,12 @@ export function LibraryBrowseView({
     getCategoriesMatchingSearch,
   } = useLibraryData();
   const [filters, setFilters] = useState<LibraryFilters>(DEFAULT_FILTERS);
+  const [filterPanelOpen, setFilterPanelOpen] = useState(false);
+  const clearAllFilters = () => setFilters(DEFAULT_FILTERS);
+  const visibleCategories =
+    filters.categoryIds.length > 0
+      ? categories.filter((c) => filters.categoryIds.includes(c.id))
+      : categories;
   const [pendingDelete, setPendingDelete] = useState<Category | null>(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [pendingDeleteSkill, setPendingDeleteSkill] = useState<Skill | null>(null);
@@ -239,7 +247,23 @@ export function LibraryBrowseView({
             <option value="has">{t.exerciseFilterHas}</option>
             <option value="none">{t.exerciseFilterNone}</option>
           </Select>
+
+          <button
+            type="button"
+            onClick={() => setFilterPanelOpen(true)}
+            className="inline-flex h-10 items-center gap-2 rounded-xl border border-accent-dark/15 bg-cream px-4 font-display label-xs uppercase tracking-wide text-accent-dark transition-colors hover:bg-accent-dark hover:text-cream"
+          >
+            {t.filters.openButton}
+          </button>
         </div>
+
+        <ActiveFilterChips
+          filters={filters}
+          setFilters={setFilters}
+          clearAll={clearAllFilters}
+          categories={categories}
+          dict={dict}
+        />
       </section>
 
       <section className="mt-6">
@@ -253,7 +277,7 @@ export function LibraryBrowseView({
           </div>
         ) : (
           <TreeView
-            categories={categories}
+            categories={visibleCategories}
             filters={filters}
             getSkillsForCategory={getSkillsForCategory}
             getExercisesForSkill={getExercisesForSkill}
@@ -294,6 +318,16 @@ export function LibraryBrowseView({
         busy={deleteExerciseBusy}
         onConfirm={() => void performDeleteExercise()}
         onClose={() => setPendingDeleteExercise(null)}
+        dict={dict}
+      />
+
+      <AdvancedFilterPanel
+        open={filterPanelOpen}
+        onClose={() => setFilterPanelOpen(false)}
+        filters={filters}
+        setFilters={setFilters}
+        clearAll={clearAllFilters}
+        categories={categories}
         dict={dict}
       />
     </div>
