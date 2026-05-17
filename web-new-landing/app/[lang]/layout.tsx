@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { Nunito, Saira_Condensed, Tajawal } from "next/font/google";
 import { MotionProvider } from "../_components/MotionProvider";
+import { AuthProviderClient } from "../_components/AuthProviderClient";
 import { getDictionary, hasLocale, LOCALES, type Locale } from "../_dictionaries";
 import "../globals.css";
 
@@ -141,7 +142,9 @@ export default async function RootLayout({
       className={`${saira.variable} ${nunito.variable} ${tajawal.variable} relative h-full antialiased`}
     >
       <body className={`min-h-full flex flex-col bg-cream text-accent-dark ${bodyFont}`}>
-        <MotionProvider>{children}</MotionProvider>
+        <MotionProvider>
+          <AuthProviderClient>{children}</AuthProviderClient>
+        </MotionProvider>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
