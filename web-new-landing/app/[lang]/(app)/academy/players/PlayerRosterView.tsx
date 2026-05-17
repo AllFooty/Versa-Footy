@@ -276,7 +276,7 @@ function PlayerRow({
     <tr className="border-b border-accent-dark/5 transition-colors hover:bg-warm-shadow/5">
       <td className="whitespace-nowrap p-3">
         <Link
-          href={`/academy/players/${player.player_id}`}
+          href={`/${lang}/academy/players/detail?id=${player.player_id}`}
           className="inline-flex items-center gap-2 font-display uppercase label-sm font-bold text-accent-dark transition-colors hover:text-deep-teal"
         >
           <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-glyph-gold/25 font-display text-[12px] font-bold text-accent-dark">
@@ -329,7 +329,7 @@ function PlayerCard({
   return (
     <li>
       <Link
-        href={`/academy/players/${player.player_id}`}
+        href={`/${lang}/academy/players/detail?id=${player.player_id}`}
         className="flex flex-col gap-3 rounded-2xl border border-accent-dark/10 bg-white p-4 transition-colors hover:border-accent-dark/25"
       >
         <div className="flex items-center gap-3">

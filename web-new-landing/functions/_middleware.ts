@@ -3,9 +3,6 @@
 // falls through to Next.js static export.
 
 const SPA_PREFIXES = [
-  // /academy itself is now native; sub-routes (/academy/players, /teams,
-  // /invitations, /settings) still proxy until ported in this phase.
-  "/academy/players",
   "/library",
   "/videos-audit",
   "/marketing",
@@ -49,6 +46,13 @@ type EventContext = {
 // (old SPA didn't have locale segments). Default to /ar when missing.
 const JOIN_LEGACY_RE = /^(?:\/([a-z]{2}))?\/join\/([A-Za-z0-9]+)\/?$/;
 
+// /<lang>/academy/players/<UUID> and the legacy un-prefixed
+// /academy/players/<UUID> → /<lang>/academy/players/detail?id=<UUID>
+// (same static-export trade-off as /join: arbitrary IDs can't be
+// pre-generated, so the native detail route reads ?id=).
+const PLAYER_DETAIL_RE =
+  /^(?:\/([a-z]{2}))?\/academy\/players\/([0-9a-fA-F-]{8,})\/?$/;
+
 export const onRequest = async (context: EventContext): Promise<Response> => {
   const appOrigin = context.env.APP_ORIGIN ?? "https://app-origin.versafooty.com";
   const url = new URL(context.request.url);
@@ -59,6 +63,14 @@ export const onRequest = async (context: EventContext): Promise<Response> => {
     const [, lang, code] = joinMatch;
     return Response.redirect(
       `${url.origin}/${lang ?? DEFAULT_LOCALE}/join?code=${encodeURIComponent(code.toUpperCase())}`,
+      302,
+    );
+  }
+  const playerMatch = PLAYER_DETAIL_RE.exec(pathname);
+  if (playerMatch) {
+    const [, lang, id] = playerMatch;
+    return Response.redirect(
+      `${url.origin}/${lang ?? DEFAULT_LOCALE}/academy/players/detail?id=${encodeURIComponent(id)}`,
       302,
     );
   }

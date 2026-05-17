@@ -3,10 +3,24 @@
 import Link from "next/link";
 import { useAuth } from "../../../_lib/auth/AuthProvider";
 import { useAcademyDashboard } from "../../../_lib/academy/useAcademyDashboard";
+import {
+  usePlayerRoster,
+  getPlayerStatus,
+  type Player,
+} from "../../../_lib/academy/usePlayerRoster";
 import { Skeleton } from "../../../_components/primitives/Skeleton";
 import type { ProductDict } from "../../../_dictionaries/product";
 import type { Locale } from "../../../_dictionaries";
 import { AcademyCharts } from "./AcademyCharts";
+
+function fmtTpl(template: string, vars: Record<string, string | number>) {
+  return template.replace(/\{\{(\w+)\}\}/g, (_, k) => String(vars[k] ?? ""));
+}
+
+function initial(name: string | null): string {
+  if (!name) return "?";
+  return name.trim().charAt(0).toUpperCase() || "?";
+}
 
 function formatNumber(n: number): string {
   if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
@@ -59,6 +73,20 @@ export function AcademyView({
   const { activeOrg, organizations, setActiveOrg, orgsLoading } = useAuth();
   const { stats, weeklyActivity, loading, error, refresh } =
     useAcademyDashboard(activeOrg?.id);
+  const { allPlayers } = usePlayerRoster(activeOrg?.id);
+
+  const atRiskPlayers: Player[] = allPlayers
+    .filter((p) => getPlayerStatus(p) === "inactive")
+    .sort((a, b) => {
+      if (!a.last_practice_date && !b.last_practice_date) return 0;
+      if (!a.last_practice_date) return -1;
+      if (!b.last_practice_date) return 1;
+      return (
+        new Date(a.last_practice_date).getTime() -
+        new Date(b.last_practice_date).getTime()
+      );
+    })
+    .slice(0, 5);
 
   if (!orgsLoading && organizations.length === 0) {
     return (
@@ -219,8 +247,81 @@ export function AcademyView({
               xp: t.charts.xp,
             }}
           />
+
+          {atRiskPlayers.length > 0 ? (
+            <section className="mt-10">
+              <h2 className="font-display uppercase label-md font-bold text-accent-dark">
+                {t.atRiskTitle}
+              </h2>
+              <p className="mt-1 font-sans text-body-s text-accent-dark/70">
+                {t.atRiskDescription}
+              </p>
+              <ul className="mt-4 flex flex-col gap-2">
+                {atRiskPlayers.map((p) => (
+                  <AtRiskCard
+                    key={p.player_id}
+                    player={p}
+                    lang={lang}
+                    t={t}
+                  />
+                ))}
+              </ul>
+            </section>
+          ) : null}
         </>
       )}
     </div>
+  );
+}
+
+function AtRiskCard({
+  player,
+  lang,
+  t,
+}: {
+  player: Player;
+  lang: Locale;
+  t: ProductDict["academy"];
+}) {
+  const lastLabel = player.last_practice_date
+    ? (() => {
+        const days = Math.floor(
+          (Date.now() - new Date(player.last_practice_date).getTime()) /
+            86_400_000,
+        );
+        if (days <= 1) return t.atRiskDaysAgoOne;
+        return fmtTpl(t.atRiskDaysAgoOther, { days });
+      })()
+    : t.atRiskNever;
+  return (
+    <li>
+      <Link
+        href={`/${lang}/academy/players/detail?id=${player.player_id}`}
+        className="flex items-center gap-3 rounded-2xl border border-error/20 bg-error/5 p-3 transition-colors hover:border-error/35"
+      >
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-error/15 font-display label-sm font-bold text-error">
+          {initial(player.display_name)}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-display uppercase label-sm font-bold text-accent-dark">
+            {player.display_name || "—"}
+          </p>
+          <p className="truncate font-sans text-body-xs text-warm-shadow">
+            {player.age_group || t.atRiskNoAgeGroup} ·{" "}
+            {fmtTpl(t.atRiskLevel, { level: player.current_level })}
+          </p>
+        </div>
+        <div className="text-end">
+          <p className="font-display label-sm font-bold text-error">
+            {lastLabel}
+          </p>
+          {player.current_streak === 0 && player.longest_streak > 0 ? (
+            <p className="mt-0.5 font-sans text-body-xs text-error/80">
+              {fmtTpl(t.atRiskStreakBroken, { days: player.longest_streak })}
+            </p>
+          ) : null}
+        </div>
+      </Link>
+    </li>
   );
 }
