@@ -186,9 +186,12 @@ export function LoginForm({ dict, lang }: { dict: ProductDict; lang: Locale }) {
     }
   };
 
-  const showDevToggle =
-    typeof window !== "undefined" &&
-    !/\.versafooty\.com$/.test(window.location.hostname);
+  // SSR renders without the dev toggle; client decides post-mount based on
+  // hostname. Doing the check inline would cause a hydration mismatch.
+  const [showDevToggle, setShowDevToggle] = useState(false);
+  useEffect(() => {
+    setShowDevToggle(!/\.versafooty\.com$/.test(window.location.hostname));
+  }, []);
 
   return (
     <div className="relative w-full max-w-md">

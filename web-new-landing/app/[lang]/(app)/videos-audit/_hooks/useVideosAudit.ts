@@ -45,7 +45,12 @@ export function useVideosAudit() {
       if (rpcError) throw rpcError;
       setAudit({ ...EMPTY_AUDIT, ...(data as Partial<Audit>) });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load audit");
+      // Supabase sometimes throws errors with an empty .message (e.g. when the
+      // RPC isn't deployed). Surface something useful rather than letting the
+      // dict prefix double up.
+      const message =
+        err instanceof Error && err.message ? err.message : "Unknown error";
+      setError(message);
     } finally {
       setLoading(false);
     }
