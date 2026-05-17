@@ -161,21 +161,30 @@ export function LibraryBrowseView({
           </p>
         </div>
         <div className="flex flex-wrap items-end gap-4 font-sans text-body-s text-accent-dark">
-          <Stat label={t.stats.categories} value={stats.totalCategories} />
-          <Stat label={t.stats.skills} value={stats.totalSkills} />
-          <Stat label={t.stats.exercises} value={stats.totalExercises} />
+          <div className="flex items-end gap-5 border-e border-accent-dark/10 pe-5">
+            <Stat label={t.stats.categories} value={stats.totalCategories} />
+            <Stat label={t.stats.skills} value={stats.totalSkills} />
+            <Stat label={t.stats.exercises} value={stats.totalExercises} />
+          </div>
           <Link
             href={`/${lang}/library/category/edit`}
             className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-glyph-gold px-5 py-2 font-display label-s uppercase tracking-wide text-accent-dark transition-colors hover:bg-glyph-gold/90"
           >
+            <span aria-hidden>+</span>
             {t.addCategory}
           </Link>
         </div>
       </header>
 
       <section className="mt-8 rounded-2xl border border-accent-dark/10 bg-white p-4 shadow-sm md:p-5">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="relative min-w-[220px] flex-1">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-[minmax(220px,1fr)_auto_auto_auto] md:items-center">
+          <div className="relative">
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 start-3 inline-flex items-center text-warm-shadow"
+            >
+              🔍
+            </span>
             <input
               type="search"
               value={filters.searchTerm}
@@ -183,7 +192,8 @@ export function LibraryBrowseView({
                 setFilters((prev) => ({ ...prev, searchTerm: e.target.value }))
               }
               placeholder={t.searchPlaceholder}
-              className="h-11 w-full rounded-xl border border-accent-dark/15 bg-cream px-4 font-sans text-body-m text-accent-dark placeholder:text-warm-shadow/70 focus:border-glyph-gold focus:outline-none"
+              aria-label={t.searchPlaceholder}
+              className="h-11 w-full rounded-xl border border-accent-dark/15 bg-cream ps-10 pe-9 font-sans text-body-m text-accent-dark placeholder:text-warm-shadow/70 focus:border-glyph-gold focus:outline-none"
             />
             {filters.searchTerm && (
               <button
@@ -197,40 +207,24 @@ export function LibraryBrowseView({
             )}
           </div>
 
-          <label className="flex items-center gap-2 font-sans text-body-xs text-warm-shadow">
-            <span>{t.ageGroupLabel}</span>
-            <Select
-              value={filters.ageGroup}
-              onChange={(e) =>
-                setFilters((prev) => ({
-                  ...prev,
-                  ageGroup: e.target.value as LibraryFilters["ageGroup"],
-                }))
-              }
-              className="h-10 w-auto"
-            >
-              <option value="">{t.allAgeGroups}</option>
-              {AGE_GROUPS.map((g) => (
-                <option key={g} value={g}>
-                  {g} {filters.exactAgeMatch ? "" : t.andBelow}
-                </option>
-              ))}
-            </Select>
-          </label>
-
-          {filters.ageGroup && (
-            <label className="inline-flex items-center gap-2 font-sans text-body-xs text-accent-dark">
-              <input
-                type="checkbox"
-                checked={filters.exactAgeMatch}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, exactAgeMatch: e.target.checked }))
-                }
-                className="h-4 w-4 accent-glyph-gold"
-              />
-              {t.exactAgeOnly}
-            </label>
-          )}
+          <Select
+            value={filters.ageGroup}
+            onChange={(e) =>
+              setFilters((prev) => ({
+                ...prev,
+                ageGroup: e.target.value as LibraryFilters["ageGroup"],
+              }))
+            }
+            className="h-11 w-full md:w-auto"
+            aria-label={t.ageGroupLabel}
+          >
+            <option value="">{t.allAgeGroups}</option>
+            {AGE_GROUPS.map((g) => (
+              <option key={g} value={g}>
+                {g} {filters.exactAgeMatch ? "" : t.andBelow}
+              </option>
+            ))}
+          </Select>
 
           <Select
             value={filters.exerciseFilter}
@@ -240,7 +234,7 @@ export function LibraryBrowseView({
                 exerciseFilter: e.target.value as LibraryFilters["exerciseFilter"],
               }))
             }
-            className="h-10 w-auto"
+            className="h-11 w-full md:w-auto"
             aria-label={t.exerciseFilterLabel}
           >
             <option value="all">{t.exerciseFilterAll}</option>
@@ -251,11 +245,26 @@ export function LibraryBrowseView({
           <button
             type="button"
             onClick={() => setFilterPanelOpen(true)}
-            className="inline-flex h-10 items-center gap-2 rounded-xl border border-accent-dark/15 bg-cream px-4 font-display label-xs uppercase tracking-wide text-accent-dark transition-colors hover:bg-accent-dark hover:text-cream"
+            className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-accent-dark/15 bg-cream px-4 font-display label-xs uppercase tracking-wide text-accent-dark transition-colors hover:bg-accent-dark hover:text-cream md:w-auto"
           >
+            <span aria-hidden>⚙</span>
             {t.filters.openButton}
           </button>
         </div>
+
+        {filters.ageGroup && (
+          <label className="mt-3 inline-flex items-center gap-2 font-sans text-body-xs text-accent-dark">
+            <input
+              type="checkbox"
+              checked={filters.exactAgeMatch}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, exactAgeMatch: e.target.checked }))
+              }
+              className="h-4 w-4 accent-glyph-gold"
+            />
+            {t.exactAgeOnly}
+          </label>
+        )}
 
         <ActiveFilterChips
           filters={filters}
