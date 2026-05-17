@@ -141,3 +141,52 @@ export function isAcceptableExternalUrl(url: string): boolean {
 export function isUploadedStorageUrl(url: string | null | undefined): boolean {
   return !!url && url.includes("/exercise-videos/");
 }
+
+export type VideoCandidate = {
+  path: string;
+  name: string;
+  publicUrl: string;
+  sizeBytes: number | null;
+  createdAt: string | null;
+  mimeType: string | null;
+};
+
+export async function listExerciseVideos(
+  exerciseId: number | null | undefined,
+): Promise<VideoCandidate[]> {
+  if (exerciseId == null) return [];
+  const folder = `exercises/${exerciseId}`;
+  const { data, error } = await supabase.storage
+    .from("exercise-videos")
+    .list(folder, { limit: 100, sortBy: { column: "created_at", order: "desc" } });
+  if (error) throw error;
+  type Entry = {
+    id: string | null;
+    name: string;
+    created_at?: string | null;
+    metadata?: { size?: number | null; mimetype?: string | null } | null;
+  };
+  return ((data ?? []) as Entry[])
+    .filter((entry) => entry.id !== null)
+    .map((entry) => {
+      const path = `${folder}/${entry.name}`;
+      const { data: pub } = supabase.storage.from("exercise-videos").getPublicUrl(path);
+      return {
+        path,
+        name: entry.name,
+        publicUrl: pub?.publicUrl ?? "",
+        sizeBytes: entry.metadata?.size ?? null,
+        createdAt: entry.created_at ?? null,
+        mimeType: entry.metadata?.mimetype ?? null,
+      };
+    });
+}
+
+export async function deleteExerciseVideoByPath(path: string): Promise<boolean> {
+  const { error } = await supabase.storage.from("exercise-videos").remove([path]);
+  if (error) {
+    console.warn("Failed to delete storage object:", error.message);
+    return false;
+  }
+  return true;
+}

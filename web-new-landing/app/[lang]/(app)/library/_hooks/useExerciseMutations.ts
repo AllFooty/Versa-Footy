@@ -3,10 +3,61 @@
 import { supabase } from "../../../../_lib/supabase";
 import {
   deleteExerciseVideo,
+  deleteExerciseVideoByPath,
   isUploadedStorageUrl,
+  listExerciseVideos,
   uploadExerciseVideo,
+  type VideoCandidate,
 } from "../_lib/storage";
 import type { Exercise } from "../_lib/types";
+
+export async function addExerciseVideoCandidate(
+  exerciseId: number,
+  file: File,
+  onProgress?: (percent: number) => void,
+): Promise<VideoCandidate> {
+  const { path, publicUrl } = await uploadExerciseVideo(file, exerciseId, onProgress);
+  return {
+    path,
+    name: path.split("/").pop() ?? path,
+    publicUrl,
+    sizeBytes: file.size,
+    createdAt: new Date().toISOString(),
+    mimeType: file.type || null,
+  };
+}
+
+export async function setActiveExerciseVideo(
+  exerciseId: number,
+  publicUrl: string,
+): Promise<void> {
+  const { error } = await supabase
+    .from("exercises")
+    .update({ video_url: publicUrl, updated_at: new Date().toISOString() })
+    .eq("id", exerciseId);
+  if (error) throw error;
+}
+
+export async function deleteExerciseVideoCandidate(
+  exerciseId: number,
+  candidate: VideoCandidate,
+  currentActiveUrl: string | null,
+): Promise<{ clearedActive: boolean }> {
+  const ok = await deleteExerciseVideoByPath(candidate.path);
+  if (!ok) throw new Error("Failed to delete video file.");
+  if (currentActiveUrl && currentActiveUrl === candidate.publicUrl) {
+    const { error } = await supabase
+      .from("exercises")
+      .update({ video_url: null, updated_at: new Date().toISOString() })
+      .eq("id", exerciseId);
+    if (error) throw error;
+    return { clearedActive: true };
+  }
+  return { clearedActive: false };
+}
+
+export { listExerciseVideos };
+export type { VideoCandidate };
 
 export type ExerciseInput = {
   name: string;

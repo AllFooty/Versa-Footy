@@ -18,6 +18,7 @@ import {
   isAcceptableExternalUrl,
   isUploadedStorageUrl,
 } from "../../_lib/storage";
+import { CandidateVideoManager } from "../../_components/CandidateVideoManager";
 import type { Category, Exercise, Skill } from "../../_lib/types";
 import type { ProductDict } from "../../../../../_dictionaries/product";
 import type { Locale } from "../../../../../_dictionaries";
@@ -519,6 +520,17 @@ export function ExerciseEditView({
           </Field>
         </div>
       </section>
+
+      {isEdit && id != null && (
+        <CandidateVideoManager
+          exerciseId={id}
+          activeUrl={form.videoUrl || null}
+          onActiveChange={(url) =>
+            setForm((prev) => ({ ...prev, videoUrl: url ?? "" }))
+          }
+          dict={dict}
+        />
+      )}
 
       <div className="mt-6 flex flex-wrap gap-3">
         <button
