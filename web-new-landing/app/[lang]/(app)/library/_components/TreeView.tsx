@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Category, Exercise, LibraryFilters, Skill } from "../_lib/types";
 import { isAnyFilterActive } from "../_lib/search";
 import type { ProductDict } from "../../../../_dictionaries/product";
@@ -204,12 +204,12 @@ function CategoryNode({
           <span className="flex-1 truncate font-display label-md uppercase text-accent-dark">
             {category.name}
           </span>
-          <span className="font-sans text-body-xs text-warm-shadow">
-            {skills.length}
+          <span className="inline-flex items-center rounded-full bg-accent-dark/8 px-2.5 py-0.5 font-display label-xs uppercase text-warm-shadow">
+            {skills.length} {t.stats.skills}
           </span>
           <span
             aria-hidden
-            className={`text-warm-shadow transition-transform ${expanded ? "rotate-90" : ""}`}
+            className={`text-warm-shadow transition-transform rtl:rotate-180 ${expanded ? "rotate-90 rtl:rotate-90" : ""}`}
           >
             ›
           </span>
@@ -220,13 +220,11 @@ function CategoryNode({
         >
           {t.categoryActions.edit}
         </Link>
-        <button
-          type="button"
-          onClick={() => onRequestDeleteCategory(category)}
-          className="inline-flex h-8 items-center rounded-full border border-error/40 bg-error/10 px-3 font-display label-xs uppercase text-error transition-colors hover:bg-error hover:text-white"
-        >
-          {t.categoryActions.delete}
-        </button>
+        <RowMoreMenu
+          label={t.categoryActions.more}
+          deleteLabel={t.categoryActions.delete}
+          onDelete={() => onRequestDeleteCategory(category)}
+        />
       </div>
 
       {expanded && (
@@ -298,7 +296,7 @@ function SkillNode({
         >
           <span
             aria-hidden
-            className={`text-warm-shadow transition-transform ${expanded ? "rotate-90" : ""}`}
+            className={`text-warm-shadow transition-transform rtl:rotate-180 ${expanded ? "rotate-90 rtl:rotate-90" : ""}`}
           >
             ›
           </span>
@@ -310,7 +308,9 @@ function SkillNode({
               {t.skillAgePrefix} {skill.ageGroup}
             </span>
           )}
-          <span className="font-sans text-body-xs text-warm-shadow">{exercises.length}</span>
+          <span className="inline-flex items-center rounded-full bg-accent-dark/8 px-2.5 py-0.5 font-display label-xs uppercase text-warm-shadow">
+            {exercises.length} {t.stats.exercises}
+          </span>
         </button>
         <Link
           href={`/${lang}/library/skill/edit?id=${skill.id}`}
@@ -318,13 +318,11 @@ function SkillNode({
         >
           {t.skillActions.edit}
         </Link>
-        <button
-          type="button"
-          onClick={() => onRequestDeleteSkill(skill)}
-          className="inline-flex h-8 items-center rounded-full border border-error/40 bg-error/10 px-3 font-display label-xs uppercase text-error transition-colors hover:bg-error hover:text-white"
-        >
-          {t.skillActions.delete}
-        </button>
+        <RowMoreMenu
+          label={t.skillActions.more}
+          deleteLabel={t.skillActions.delete}
+          onDelete={() => onRequestDeleteSkill(skill)}
+        />
       </div>
 
       {expanded && (
@@ -355,6 +353,82 @@ function SkillNode({
         </div>
       )}
     </li>
+  );
+}
+
+function RowMoreMenu({
+  label,
+  deleteLabel,
+  onDelete,
+}: {
+  label: string;
+  deleteLabel: string;
+  onDelete: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const deleteItemRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDocPointer = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+    document.addEventListener("mousedown", onDocPointer);
+    document.addEventListener("keydown", onKey);
+    deleteItemRef.current?.focus();
+    return () => {
+      document.removeEventListener("mousedown", onDocPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button
+        ref={buttonRef}
+        type="button"
+        aria-label={label}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((v) => !v);
+        }}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-accent-dark/15 bg-cream text-accent-dark transition-colors hover:bg-accent-dark hover:text-cream"
+      >
+        <span aria-hidden className="text-base leading-none">⋯</span>
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="absolute end-0 top-9 z-20 min-w-[10rem] overflow-hidden rounded-xl border border-accent-dark/10 bg-white shadow-lg"
+        >
+          <button
+            ref={deleteItemRef}
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              onDelete();
+            }}
+            className="flex w-full items-center gap-2 px-3 py-2 text-start font-sans text-body-s text-error transition-colors hover:bg-error/10 focus:bg-error/10 focus:outline-none"
+          >
+            <span aria-hidden>🗑</span>
+            <span>{deleteLabel}</span>
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -400,13 +474,11 @@ function ExerciseRow({
         >
           {t.exerciseActions.edit}
         </Link>
-        <button
-          type="button"
-          onClick={() => onRequestDeleteExercise(exercise)}
-          className="inline-flex h-8 items-center rounded-full border border-error/40 bg-error/10 px-3 font-display label-xs uppercase text-error transition-colors hover:bg-error hover:text-white"
-        >
-          {t.exerciseActions.delete}
-        </button>
+        <RowMoreMenu
+          label={t.exerciseActions.more}
+          deleteLabel={t.exerciseActions.delete}
+          onDelete={() => onRequestDeleteExercise(exercise)}
+        />
       </div>
     </li>
   );
