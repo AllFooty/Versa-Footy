@@ -1,12 +1,6 @@
-// Cloudflare Pages middleware: reverse-proxy old Vite SPA paths to APP_ORIGIN.
-// Runs before static-file serving. SPA paths go to app-origin; everything else
-// falls through to Next.js static export.
-
-const SPA_PREFIXES = [
-  "/assets",
-  "/Favicons",
-  "/attached_assets",
-];
+// Cloudflare Pages middleware: locale canonicalization + legacy URL rewrites.
+// Runs before static-file serving. Native Next.js paths fall through to the
+// static export; bare un-localized paths get redirected to the default locale.
 
 // Native Next routes that the old SPA also served at the un-prefixed URL
 // (the old SPA had no /<lang>/ segment). Visitors arriving from old links
@@ -41,7 +35,7 @@ const DEFAULT_LOCALE: Locale = "ar";
 // Inline types — avoids depending on @cloudflare/workers-types in package.json.
 type EventContext = {
   request: Request;
-  env: { APP_ORIGIN?: string };
+  env: Record<string, never>;
   next: () => Promise<Response>;
 };
 
@@ -82,7 +76,6 @@ const PLAYER_DETAIL_RE =
   /^(?:\/([a-z]{2}))?\/academy\/players\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\/?$/;
 
 export const onRequest = async (context: EventContext): Promise<Response> => {
-  const appOrigin = context.env.APP_ORIGIN ?? "https://app-origin.versafooty.com";
   const url = new URL(context.request.url);
   const { pathname } = url;
 
@@ -115,19 +108,5 @@ export const onRequest = async (context: EventContext): Promise<Response> => {
     );
   }
 
-  const isSpaPath = SPA_PREFIXES.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`),
-  );
-  if (!isSpaPath) return context.next();
-
-  const target = `${appOrigin}${pathname}${url.search}`;
-  const init: RequestInit = {
-    method: context.request.method,
-    headers: context.request.headers,
-    redirect: "manual",
-  };
-  if (context.request.method !== "GET" && context.request.method !== "HEAD") {
-    init.body = context.request.body;
-  }
-  return fetch(target, init);
+  return context.next();
 };
