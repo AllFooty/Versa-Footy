@@ -1,0 +1,333 @@
+@import "tailwindcss";
+
+/*
+ * Versa Footy — design tokens.
+ * Source of truth: Resources/04_visual_identity.md
+ * Shadow Plumage uses #BB5A2B (visual deliverable) vs #8B5A2B (doc) — visual wins.
+ */
+
+@theme inline {
+  /* Brand palette */
+  --color-cream: #FAF6EE;
+  --color-body-gold: #E8A93C;
+  --color-shadow-plumage: #BB5A2B;
+  --color-deep-teal: #147373;
+  --color-darker-teal: #0D5959;
+  --color-burgundy: #7A1F2E;
+  --color-glyph-gold: #FFD24A;
+  --color-warm-shadow: #6B4419;
+  --color-accent-dark: #24170F;
+
+  /* State tokens — generate bg-success / text-error / etc. */
+  --color-success: #9CA856;
+  --color-error: #B5301F;
+  --color-warning: #E8A93C;
+  --color-info: #147373;
+
+  /* Semantic */
+  --color-background: var(--color-cream);
+  --color-foreground: var(--color-accent-dark);
+
+  /* Font families
+   * Two-font system:
+   *   • Saira Condensed Black — display + short labels only.
+   *   • Nunito — body, captions, leads. Sentence case. Italic only for true emphasis.
+   * Kid-readability rules: avoid italic body, avoid all-caps for body-length text.
+   */
+  --font-display: var(--font-saira), "Arial Narrow", system-ui, sans-serif;
+  /* Arabic stack — Tajawal is disabled in app/layout.tsx while the site is
+     English-only. Re-enable it there to power this token. Until then, the
+     stack falls back to Cairo / system-ui. */
+  --font-arabic: var(--font-tajawal), "Cairo", system-ui, sans-serif;
+  --font-sans: var(--font-nunito), system-ui, sans-serif;
+
+  /* Type scale — 11 steps per brand bible. Labels: .label-xs/sm/md utility classes.
+   *
+   * 2026-05 readability pass: small-text floor raised. Body-s was 14, caption 13,
+   * label-xs 12 with 0.22em tracking — at those sizes the editorial labels read
+   * smaller than their px values because tracked uppercase loses word shape.
+   * Body steps bumped 1px each; label utilities below loosened in both size and
+   * tracking. Display + heading scales unchanged. */
+  --text-display-xl: clamp(80px, 12vw, 180px);
+  --text-display-l:  clamp(64px, 8vw, 104px);
+  --text-display-m:  clamp(48px, 6vw, 72px);
+  --text-display-s:  clamp(32px, 5vw, 48px);
+  --text-heading-l:  28px;
+  --text-heading-m:  22px;
+  --text-heading-s:  18px;
+  --text-body-l:     20px;
+  --text-body-base:  16px;
+  --text-body-m:     16px;
+  --text-body-s:     15px;
+  --text-caption:    14px;
+
+  /* Shadow tokens — neutral elevation (aliases :root --elevation-*) + brand glows. */
+  --shadow-rest:     var(--elevation-rest);
+  --shadow-raised:   var(--elevation-raised);
+  --shadow-floating: var(--elevation-floating);
+  --shadow-glow-gold:     0 18px 40px -12px color-mix(in srgb, var(--color-glyph-gold) 55%, transparent);
+  --shadow-glow-burgundy: 0 18px 40px -12px color-mix(in srgb, var(--color-burgundy) 55%, transparent);
+  --shadow-glow-error:    0 18px 40px -12px color-mix(in srgb, var(--color-error) 55%, transparent);
+
+  /* Card + image shadows — repeated patterns extracted from section files */
+  --shadow-card-elevated: 0 50px 100px -30px rgba(36, 23, 15, 0.5);
+  --shadow-card-soft:     0 20px 40px -20px rgba(36, 23, 15, 0.25);
+  --drop-shadow-image-cinematic: 0 60px 100px rgba(36, 23, 15, 0.7);
+
+  /* Motion · easing tokens (generate Tailwind ease-* utilities) */
+  --ease-versa:  cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-quick:  cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Motion · duration tokens (generate Tailwind duration-* utilities) */
+  --duration-fast:   200ms;
+  --duration-medium: 500ms;
+  --duration-slow:   1000ms;
+  --duration-hero:   1500ms;
+}
+
+/*
+ * Foundation tokens — pure CSS custom properties consumed via var(--token).
+ * Not utility-generating; semantic tokens in @theme above are.
+ */
+:root {
+  /* Foundations · spacing (4-base, 8 steps) */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 24px;
+  --spacing-6: 32px;
+  --spacing-7: 48px;
+  --spacing-8: 64px;
+
+  /* Foundations · radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  /* Foundations · elevation */
+  --elevation-rest: 0 0 0 0 rgba(36, 23, 15, 0);
+  --elevation-raised: 0 8px 24px -8px rgba(36, 23, 15, 0.18);
+  --elevation-floating: 0 30px 60px -30px rgba(36, 23, 15, 0.45);
+
+  /* Foundations · breakpoints (reference values; Tailwind drives utilities) */
+  --bp-sm: 640px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+  --container-max: 1500px;
+}
+
+@layer base {
+  html,
+  body {
+    background: var(--color-cream);
+    color: var(--color-accent-dark);
+  }
+
+  /* Arabic locale: route every font utility to Tajawal. Saira and Nunito
+     are Latin-only, so without this override Arabic glyphs fall back to
+     the system font. Brand spec pairs Tajawal for both display and body. */
+  html[lang="ar"] {
+    --font-display: var(--font-tajawal), "Cairo", system-ui, sans-serif;
+    --font-sans:    var(--font-tajawal), "Cairo", system-ui, sans-serif;
+  }
+
+  html {
+    position: relative;
+    scroll-padding-top: 88px;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-burgundy);
+    color: var(--color-cream);
+  }
+}
+
+/* Cinematic motion keyframes */
+@keyframes versa-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.012); }
+}
+
+@keyframes wing-flare {
+  0%, 100% { opacity: 0.35; transform: scale(0.96); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+@keyframes horizon-pulse {
+  0%, 100% { opacity: 0.6; transform: translateY(0); }
+  50% { opacity: 0.85; transform: translateY(-6px); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.35; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Burgundy ring around the gold primary CTA on cream/light surfaces. */
+@keyframes pulse-cta {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(122, 31, 46, 0.45); }
+  50% { box-shadow: 0 0 0 14px rgba(122, 31, 46, 0); }
+}
+
+/* Gold ring for use on dark/teal surfaces where burgundy would disappear. */
+@keyframes pulse-cta-dark {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 210, 74, 0.45); }
+  50% { box-shadow: 0 0 0 14px rgba(255, 210, 74, 0); }
+}
+
+@keyframes slow-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Reusable utility shortcuts */
+.font-display { font-family: var(--font-display); }
+.font-arabic { font-family: var(--font-arabic); }
+
+/*
+ * Editorial label tokens — sizes + tracking only, applied alongside
+ * `font-display uppercase` (or `font-arabic` for the future Arabic locale).
+ * These set a readability floor. Two failure modes have been corrected:
+ *   1. raw size — anything under 13px reads as visual noise on cream;
+ *   2. heavy tracking on uppercase — at 0.20em+ the letters lose word shape,
+ *      so a 13px tracked label reads like 10-11px normal-case body.
+ *
+ *   .label-xs — 13px / 0.18em — smallest tier (file refs, ticks, footnotes)
+ *   .label-sm — 14px / 0.16em — standard labels (eyebrows, attributions, chips)
+ *   .label-md — 15px / 0.14em — emphasized labels (CTA captions, section heads)
+ *
+ * Two-tier surface policy (audience-driven):
+ *
+ *   • Spec surfaces (/branding, internal docs, adult-only reference pages)
+ *     may use the full range, label-xs included.
+ *   • Consumer surfaces (landing page, app — kids ages 7–14)
+ *     start at label-sm. label-xs is spec-only.
+ *
+ * Opacity floor: any small label (≤ label-md) stays at ≥ 70% opacity on cream.
+ * Anything below /70 fails WCAG AA contrast at these sizes.
+ *
+ * Usage:   className="font-display uppercase label-sm text-burgundy font-bold"
+ *
+ * Color, weight, and font-family stay inline so each component can tune
+ * them per context. Shift the whole site's label sizing by editing here.
+ */
+.label-xs,
+.label-sm,
+.label-md {
+  line-height: 1;
+}
+.label-xs { font-size: 13px; letter-spacing: 0.18em; }
+.label-sm { font-size: 14px; letter-spacing: 0.16em; }
+.label-md { font-size: 15px; letter-spacing: 0.14em; }
+
+.text-shadow-warm { text-shadow: 0 1px 0 rgba(36, 23, 15, 0.18); }
+.text-shadow-cinematic { text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35); }
+
+.bg-noise {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.6 0 0 0 0 0.45 0 0 0 0 0.2 0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.55'/></svg>");
+}
+
+.mask-fade-b {
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+}
+
+/* Smooth-scroll lock when Lenis is active */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Hide the default scrollbar (Lenis manages scroll) */
+.lenis-smooth::-webkit-scrollbar { width: 0; background: transparent; }
+
+/* Reusable glow effects for Versa character */
+.versa-glow {
+  background: radial-gradient(closest-side, rgba(255,210,74,0.5) 0%, rgba(232,169,60,0.2) 40%, transparent 70%);
+  animation: wing-flare 5s ease-in-out infinite;
+}
+
+.versa-glow-intense {
+  background: radial-gradient(closest-side, rgba(255,210,74,0.6), rgba(232,169,60,0.2) 50%, transparent 80%);
+  animation: wing-flare 4s ease-in-out infinite;
+}
+
+.versa-glow-subtle {
+  background: radial-gradient(closest-side, rgba(255,210,74,0.3) 0%, transparent 70%);
+  animation: wing-flare 5s ease-in-out infinite;
+}
+
+.versa-glow-strong {
+  background: radial-gradient(closest-side, rgba(255,210,74,0.8), rgba(232,169,60,0.3) 50%, transparent 80%);
+  animation: wing-flare 4s ease-in-out infinite;
+}
+
+/* Skip to content link for keyboard users */
+.skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link:focus {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  height: auto;
+  clip: auto;
+  overflow: visible;
+  white-space: normal;
+  padding: 1rem 2rem;
+  background: var(--color-glyph-gold);
+  color: var(--color-accent-dark);
+  font-weight: bold;
+  z-index: 100;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
