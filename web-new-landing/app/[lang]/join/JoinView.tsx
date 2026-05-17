@@ -272,6 +272,7 @@ function ManualEntry({
               onChange(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))
             }
             placeholder={t.codePlaceholder}
+            aria-label={t.enterCodeTitle}
             maxLength={12}
             autoFocus
             autoComplete="off"

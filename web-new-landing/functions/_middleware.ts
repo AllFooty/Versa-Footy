@@ -25,14 +25,18 @@ const BARE_NATIVE_PATHS = [
   "/academy/teams",
   "/academy/settings",
   "/academy/players",
+  "/academy/players/detail",
   "/library",
   "/videos-audit",
   "/marketing",
   "/marketing/segments",
   "/marketing/automations",
+  "/join",
 ];
 
-const DEFAULT_LOCALE = "ar";
+const SUPPORTED_LOCALES = ["en", "ar"] as const;
+type Locale = (typeof SUPPORTED_LOCALES)[number];
+const DEFAULT_LOCALE: Locale = "ar";
 
 // Inline types — avoids depending on @cloudflare/workers-types in package.json.
 type EventContext = {
@@ -40,6 +44,28 @@ type EventContext = {
   env: { APP_ORIGIN?: string };
   next: () => Promise<Response>;
 };
+
+// Pick the best locale for a bare (un-prefixed) request:
+//   1. NEXT_LOCALE cookie if set to a supported value
+//   2. Accept-Language header (en* → "en", otherwise "ar")
+//   3. DEFAULT_LOCALE
+function pickLocale(request: Request): Locale {
+  const cookieHeader = request.headers.get("cookie") ?? "";
+  for (const part of cookieHeader.split(";")) {
+    const [rawName, ...rest] = part.split("=");
+    if (rawName?.trim() === "NEXT_LOCALE") {
+      const value = rest.join("=").trim();
+      if ((SUPPORTED_LOCALES as readonly string[]).includes(value)) {
+        return value as Locale;
+      }
+    }
+  }
+  const accept = request.headers.get("accept-language") ?? "";
+  const primary = accept.split(",")[0]?.trim().toLowerCase() ?? "";
+  if (primary.startsWith("en")) return "en";
+  if (primary.startsWith("ar")) return "ar";
+  return DEFAULT_LOCALE;
+}
 
 // /<lang>/join/<CODE> still ships in shared invite links. The Next.js app
 // uses /<lang>/join?code=<CODE> instead (static export can't take an arbitrary
@@ -53,7 +79,7 @@ const JOIN_LEGACY_RE = /^(?:\/([a-z]{2}))?\/join\/([A-Za-z0-9]+)\/?$/;
 // (same static-export trade-off as /join: arbitrary IDs can't be
 // pre-generated, so the native detail route reads ?id=).
 const PLAYER_DETAIL_RE =
-  /^(?:\/([a-z]{2}))?\/academy\/players\/([0-9a-fA-F-]{8,})\/?$/;
+  /^(?:\/([a-z]{2}))?\/academy\/players\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\/?$/;
 
 export const onRequest = async (context: EventContext): Promise<Response> => {
   const appOrigin = context.env.APP_ORIGIN ?? "https://app-origin.versafooty.com";
@@ -64,7 +90,7 @@ export const onRequest = async (context: EventContext): Promise<Response> => {
   if (joinMatch) {
     const [, lang, code] = joinMatch;
     return Response.redirect(
-      `${url.origin}/${lang ?? DEFAULT_LOCALE}/join?code=${encodeURIComponent(code.toUpperCase())}`,
+      `${url.origin}/${lang ?? pickLocale(context.request)}/join?code=${encodeURIComponent(code.toUpperCase())}`,
       302,
     );
   }
@@ -72,24 +98,20 @@ export const onRequest = async (context: EventContext): Promise<Response> => {
   if (playerMatch) {
     const [, lang, id] = playerMatch;
     return Response.redirect(
-      `${url.origin}/${lang ?? DEFAULT_LOCALE}/academy/players/detail?id=${encodeURIComponent(id)}`,
+      `${url.origin}/${lang ?? pickLocale(context.request)}/academy/players/detail?id=${encodeURIComponent(id)}`,
       302,
     );
   }
-  // Bare /join with no locale → default locale (handled by BARE_NATIVE_PATHS
-  // below, but keep this explicit since it's the most-shared invite shape).
-  if (pathname === "/join" || pathname === "/join/") {
-    return Response.redirect(`${url.origin}/${DEFAULT_LOCALE}/join`, 302);
-  }
 
   // Bare un-localized native paths (old SPA URL shapes) → default-locale page.
+  // Permanent canonicalization (308 preserves method + body).
   const stripped = pathname.endsWith("/") && pathname !== "/"
     ? pathname.slice(0, -1)
     : pathname;
   if (BARE_NATIVE_PATHS.includes(stripped)) {
     return Response.redirect(
-      `${url.origin}/${DEFAULT_LOCALE}${stripped}${url.search}`,
-      302,
+      `${url.origin}/${pickLocale(context.request)}${stripped}${url.search}`,
+      308,
     );
   }
 

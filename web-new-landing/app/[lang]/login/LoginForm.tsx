@@ -307,6 +307,7 @@ export function LoginForm({ dict, lang }: { dict: ProductDict; lang: Locale }) {
                 <Input
                   type="email"
                   placeholder={t.emailPlaceholder}
+                  aria-label={t.emailPlaceholder}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
@@ -316,6 +317,7 @@ export function LoginForm({ dict, lang }: { dict: ProductDict; lang: Locale }) {
                 <Input
                   type="password"
                   placeholder={t.devPasswordPlaceholder}
+                  aria-label={t.devPasswordPlaceholder}
                   value={devPassword}
                   onChange={(e) => setDevPassword(e.target.value)}
                   disabled={loading}

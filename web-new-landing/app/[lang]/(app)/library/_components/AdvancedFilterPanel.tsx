@@ -12,6 +12,7 @@ import {
   type ComboFilter,
   type LibraryFilters,
 } from "../_lib/types";
+import { AGE_GROUPS, type AgeGroup } from "../../../../_lib/academy/constants";
 
 type Props = {
   open: boolean;
@@ -140,7 +141,7 @@ export function AdvancedFilterPanel({
               className="h-10 w-auto"
             >
               <option value="">{t.min}</option>
-              {[1, 2, 3, 4, 5].map((v) => (
+              {[0, 1, 2, 3, 4, 5].map((v) => (
                 <option key={v} value={v}>
                   {fmt(t.stars, { value: v })}
                 </option>
@@ -159,12 +160,74 @@ export function AdvancedFilterPanel({
               className="h-10 w-auto"
             >
               <option value="">{t.max}</option>
-              {[1, 2, 3, 4, 5].map((v) => (
+              {[0, 1, 2, 3, 4, 5].map((v) => (
                 <option key={v} value={v}>
                   {fmt(t.stars, { value: v })}
                 </option>
               ))}
             </Select>
+          </div>
+        </Section>
+
+        <Section title={t.ageGroup}>
+          <div className="flex flex-col gap-2">
+            <Select
+              aria-label={t.ageGroup}
+              value={filters.ageGroup}
+              onChange={(e) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  ageGroup: (e.target.value || "") as AgeGroup | "",
+                }))
+              }
+              className="h-10 w-auto"
+            >
+              <option value="">{t.allAges}</option>
+              {AGE_GROUPS.map((age) => (
+                <option key={age} value={age}>
+                  {age}
+                  {!filters.exactAgeMatch ? ` ${t.andBelow}` : ""}
+                </option>
+              ))}
+            </Select>
+            {filters.ageGroup && (
+              <Chip
+                label={t.exactAgeOnly}
+                active={filters.exactAgeMatch}
+                onClick={() =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    exactAgeMatch: !prev.exactAgeMatch,
+                  }))
+                }
+              />
+            )}
+          </div>
+        </Section>
+
+        <Section title={t.exerciseStatus}>
+          <div className="flex flex-wrap gap-2">
+            <Chip
+              label={t.exerciseStatusAll}
+              active={filters.exerciseFilter === "all"}
+              onClick={() =>
+                setFilters((prev) => ({ ...prev, exerciseFilter: "all" }))
+              }
+            />
+            <Chip
+              label={t.exerciseStatusHas}
+              active={filters.exerciseFilter === "has"}
+              onClick={() =>
+                setFilters((prev) => ({ ...prev, exerciseFilter: "has" }))
+              }
+            />
+            <Chip
+              label={t.exerciseStatusNone}
+              active={filters.exerciseFilter === "none"}
+              onClick={() =>
+                setFilters((prev) => ({ ...prev, exerciseFilter: "none" }))
+              }
+            />
           </div>
         </Section>
 

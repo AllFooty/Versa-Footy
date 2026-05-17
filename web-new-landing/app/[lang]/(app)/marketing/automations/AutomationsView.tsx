@@ -205,7 +205,7 @@ type DraftStep = StepRow & { _persisted: boolean };
 
 function makeDraftStep(order: number): DraftStep {
   return {
-    id: `tmp_${Date.now()}_${order}`,
+    id: `tmp_${crypto.randomUUID()}`,
     automation_id: "",
     step_order: order,
     delay_days: 0,

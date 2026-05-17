@@ -9,6 +9,7 @@ import { Input } from "../../../_components/primitives/Input";
 import { Select } from "../../../_components/primitives/Select";
 import { Textarea } from "../../../_components/primitives/Textarea";
 import { Field } from "../../../_components/primitives/Field";
+import { DateTimeInput } from "../../../_components/primitives/DateTimeInput";
 import { toast } from "../../../_components/primitives/Toast";
 import { BlockComposer } from "./_components/BlockComposer";
 import { RecentCampaignsPanel } from "./_components/RecentCampaignsPanel";
@@ -20,7 +21,6 @@ import {
   validateBlocks,
   type Block,
 } from "./_lib/blocks";
-import { renderEmailHtml } from "./_lib/renderEmail";
 import type { SegmentFilter } from "./_lib/segments";
 import {
   applyMergeTags,
@@ -123,9 +123,6 @@ type ConfirmSendState = {
   isLargeSend: boolean;
 };
 
-const inputCls =
-  "w-full rounded-xl border border-accent-dark/15 bg-cream px-3 py-2 font-sans text-body-s text-accent-dark placeholder:text-warm-shadow/60 focus:border-glyph-gold focus:outline-none";
-
 export function MarketingEmailView({
   dict,
   lang,
@@ -176,11 +173,14 @@ export function MarketingEmailView({
   }, []);
 
   useEffect(() => {
+    // Seed the test-recipient field once when the auth user resolves; intentionally
+    // ignore `testRecipient` so subsequent user edits aren't clobbered.
     if (user?.email && !testRecipient) setTestRecipient(user.email);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.email]);
 
   useEffect(() => {
+    // run-once mount: audience counts are a snapshot; we don't refetch.
     void (async () => {
       const { data, error } = await supabase.rpc("marketing_audience_counts");
       if (!error && data) setCounts(data as Counts);
@@ -188,6 +188,8 @@ export function MarketingEmailView({
   }, []);
 
   useEffect(() => {
+    // run-once mount: load segments and parallelize per-segment counts. We
+    // intentionally do not depend on `segmentId` (only used to seed the default).
     let cancelled = false;
     void (async () => {
       const { data } = await supabase
@@ -199,13 +201,18 @@ export function MarketingEmailView({
       const rows = data as SegmentRow[];
       setSegments(rows);
       if (rows[0] && !segmentId) setSegmentId(rows[0].id);
+      const results = await Promise.all(
+        rows.map(async (row) => {
+          const { data: c } = await supabase.rpc("marketing_segment_count", {
+            p_filter: row.filter,
+          });
+          return [row.id, c] as const;
+        }),
+      );
+      if (cancelled) return;
       const next: Record<string, number> = {};
-      for (const s of rows) {
-        const { data: c } = await supabase.rpc("marketing_segment_count", {
-          p_filter: s.filter,
-        });
-        if (cancelled) return;
-        if (typeof c === "number") next[s.id] = c;
+      for (const [id, c] of results) {
+        if (typeof c === "number") next[id] = c;
       }
       setSegmentCounts(next);
     })();
@@ -220,6 +227,7 @@ export function MarketingEmailView({
     let cancelled = false;
     void (async () => {
       try {
+        const { renderEmailHtml } = await import("./_lib/renderEmail");
         const result = await renderEmailHtml(blocks);
         if (!cancelled) setRenderedHtml(result);
       } catch (e) {
@@ -237,6 +245,7 @@ export function MarketingEmailView({
     let cancelled = false;
     void (async () => {
       try {
+        const { renderEmailHtml } = await import("./_lib/renderEmail");
         const result = await renderEmailHtml(blocksAr);
         if (!cancelled) setRenderedHtmlAr(result);
       } catch (e) {
@@ -400,7 +409,7 @@ export function MarketingEmailView({
         : isSchedule && scheduledISO
           ? fmt(t.confirm.scheduleMessage, {
               count,
-              when: new Date(scheduledISO).toLocaleString(),
+              when: new Date(scheduledISO).toLocaleString(lang),
             })
           : isLargeSend
             ? fmt(t.confirm.campaignMessageLargeSend, { count, cost: costEst })
@@ -443,10 +452,13 @@ export function MarketingEmailView({
 
     setSending(true);
     try {
-      const sendHtml = mode === "blocks" ? await renderEmailHtml(blocks) : html;
+      const renderMod =
+        mode === "blocks" ? await import("./_lib/renderEmail") : null;
+      const sendHtml =
+        mode === "blocks" && renderMod ? await renderMod.renderEmailHtml(blocks) : html;
       const sendHtmlAr = enableAr
-        ? mode === "blocks"
-          ? await renderEmailHtml(blocksAr)
+        ? mode === "blocks" && renderMod
+          ? await renderMod.renderEmailHtml(blocksAr)
           : htmlAr
         : null;
       const sendSubjectAr = enableAr ? subjectAr : null;
@@ -472,7 +484,7 @@ export function MarketingEmailView({
         else {
           toast.success(
             fmt(t.scheduledToast, {
-              when: new Date(state.scheduledISO).toLocaleString(),
+              when: new Date(state.scheduledISO).toLocaleString(lang),
               id: String(data ?? ""),
             }),
           );
@@ -899,11 +911,11 @@ export function MarketingEmailView({
                 {t.scheduleFor}
               </label>
               {sendMode === "schedule" && (
-                <input
-                  type="datetime-local"
+                <DateTimeInput
                   value={scheduledFor}
                   onChange={(e) => setScheduledFor(e.target.value)}
-                  className={inputCls + " w-auto"}
+                  lang={lang}
+                  className="w-auto"
                 />
               )}
             </div>
@@ -919,7 +931,7 @@ export function MarketingEmailView({
             const c = recipientCount();
             return (
               <p className="mt-3 font-sans text-body-xs text-warm-shadow">
-                {fmt(t.estimateRecipients, { count: c.toLocaleString() })}
+                {fmt(t.estimateRecipients, { count: c.toLocaleString(lang) })}
                 {c > 0 && (
                   <>
                     {" · "}

@@ -72,7 +72,7 @@ export function AcademyView({
   const t = dict.academy;
   const { activeOrg, organizations, setActiveOrg, orgsLoading } = useAuth();
   const { stats, weeklyActivity, loading, error, refresh } =
-    useAcademyDashboard(activeOrg?.id);
+    useAcademyDashboard(activeOrg?.id, lang);
   const { allPlayers } = usePlayerRoster(activeOrg?.id);
 
   const atRiskPlayers: Player[] = allPlayers

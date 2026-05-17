@@ -7,14 +7,17 @@ const base =
 
 type Props = Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & {
   invalid?: boolean;
+  lang?: string;
 };
 
 export const DateTimeInput = forwardRef<HTMLInputElement, Props>(
-  function DateTimeInput({ className = "", invalid, ...rest }, ref) {
+  function DateTimeInput({ className = "", invalid, lang, ...rest }, ref) {
     return (
       <input
         ref={ref}
         type="datetime-local"
+        dir="ltr"
+        lang={lang}
         aria-invalid={invalid || undefined}
         className={`${base} ${invalid ? "border-error focus:border-error focus-visible:ring-error/40" : ""} ${className}`}
         {...rest}

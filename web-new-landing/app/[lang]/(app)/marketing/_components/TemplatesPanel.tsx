@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { supabase } from "../../../../_lib/supabase";
 import { ConfirmDialog } from "../../../../_components/primitives/ConfirmDialog";
 import { toast } from "../../../../_components/primitives/Toast";
@@ -47,6 +48,8 @@ export function TemplatesPanel({
   dict: ProductDict;
 }) {
   const t = dict.marketing.templates;
+  const params = useParams();
+  const lang = String(params?.lang ?? "");
   const [templates, setTemplates] = useState<Template[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState("");
@@ -210,7 +213,7 @@ export function TemplatesPanel({
         <p className="mt-2 font-sans text-body-xs text-warm-shadow">
           {selected.is_builtin
             ? t.builtinNote
-            : fmt(t.customNote, { when: new Date(selected.updated_at).toLocaleString() })}
+            : fmt(t.customNote, { when: new Date(selected.updated_at).toLocaleString(lang) })}
           {" · "}
           {t.subjectPrefix}{" "}
           <em className="text-accent-dark/80">

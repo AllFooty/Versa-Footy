@@ -122,11 +122,11 @@ export async function addExercise(
     if (createdRowId != null) {
       await supabase.from("exercise_skills").delete().eq("exercise_id", createdRowId).then(
         () => undefined,
-        () => undefined,
+        (err) => console.warn("[useExerciseMutations] addExercise rollback failed:", err),
       );
       await supabase.from("exercises").delete().eq("id", createdRowId).then(
         () => undefined,
-        () => undefined,
+        (err) => console.warn("[useExerciseMutations] addExercise rollback failed:", err),
       );
     }
     throw err;
@@ -145,6 +145,9 @@ export async function updateExercise(
   }
   const previousVideoUrl = previous?.videoUrl ?? null;
   let uploadedUrl: string | null = null;
+  let junctionSnapshot: Array<{ skill_id: number; sort_order: number | null }> | null = null;
+  let junctionRestoreNeeded = false;
+  let exerciseRowNeedsRevert = false;
   try {
     let videoUrl: string | null = input.videoUrl ?? previousVideoUrl;
     if (videoFile) {
@@ -167,17 +170,27 @@ export async function updateExercise(
       })
       .eq("id", id);
     if (error) throw error;
+    exerciseRowNeedsRevert = true;
+
+    const { data: snapData, error: snapErr } = await supabase
+      .from("exercise_skills")
+      .select("skill_id, sort_order")
+      .eq("exercise_id", id);
+    if (snapErr) throw snapErr;
+    junctionSnapshot = (snapData ?? []) as Array<{ skill_id: number; sort_order: number | null }>;
 
     const { error: delErr } = await supabase
       .from("exercise_skills")
       .delete()
       .eq("exercise_id", id);
     if (delErr) throw delErr;
+    junctionRestoreNeeded = true;
 
     const { error: insErr } = await supabase
       .from("exercise_skills")
       .insert(input.skillIds.map((sid) => ({ exercise_id: id, skill_id: sid })));
     if (insErr) throw insErr;
+    junctionRestoreNeeded = false;
 
     if (
       previousVideoUrl &&
@@ -187,7 +200,36 @@ export async function updateExercise(
       await deleteExerciseVideo(previousVideoUrl).catch(() => undefined);
     }
   } catch (err) {
-    if (uploadedUrl) await deleteExerciseVideo(uploadedUrl).catch(() => undefined);
+    if (junctionRestoreNeeded && junctionSnapshot) {
+      if (junctionSnapshot.length > 0) {
+        await supabase
+          .from("exercise_skills")
+          .insert(
+            junctionSnapshot.map((row) => ({
+              exercise_id: id,
+              skill_id: row.skill_id,
+              sort_order: row.sort_order,
+            })),
+          )
+          .then(
+            () => undefined,
+            (e) => console.warn("[useExerciseMutations] updateExercise junction restore failed:", e),
+          );
+      }
+      if (exerciseRowNeedsRevert) {
+        await supabase
+          .from("exercises")
+          .update({ video_url: previousVideoUrl })
+          .eq("id", id)
+          .then(
+            () => undefined,
+            (e) => console.warn("[useExerciseMutations] updateExercise video_url revert failed:", e),
+          );
+      }
+      if (uploadedUrl) await deleteExerciseVideo(uploadedUrl).catch(() => undefined);
+    } else {
+      if (uploadedUrl) await deleteExerciseVideo(uploadedUrl).catch(() => undefined);
+    }
     throw err;
   }
 }

@@ -150,12 +150,12 @@ function parseLocalDate(dateStr: string): Date | null {
   const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
   return Number.isNaN(d.getTime()) ? null : d;
 }
-function getWeekKey(date: Date): string {
+function getWeekKey(date: Date, lang: string): string {
   const d = new Date(date);
   const day = d.getDay();
   const diff = d.getDate() - day + (day === 0 ? -6 : 1);
   d.setDate(diff);
-  const month = d.toLocaleString("en", { month: "short" });
+  const month = d.toLocaleString(lang, { month: "short" });
   return `${month} ${d.getDate()}`;
 }
 
@@ -174,18 +174,18 @@ function computeCategoryRadar(skills: SkillProgressRow[]): CategoryRadarPoint[] 
   }));
 }
 
-function computeWeeklyTrends(activities: DailyActivity[]): WeeklyTrendPoint[] {
+function computeWeeklyTrends(activities: DailyActivity[], lang: string): WeeklyTrendPoint[] {
   const weeks: Record<string, WeeklyTrendPoint> = {};
   for (let i = 25; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i * 7);
-    const key = getWeekKey(d);
+    const key = getWeekKey(d, lang);
     weeks[key] = { week: key, xp: 0, minutes: 0, days: 0 };
   }
   activities.forEach(({ activity_date, xp_earned, practice_minutes }) => {
     const parsed = parseLocalDate(activity_date);
     if (!parsed) return;
-    const key = getWeekKey(parsed);
+    const key = getWeekKey(parsed, lang);
     if (weeks[key]) {
       weeks[key].xp += xp_earned ?? 0;
       weeks[key].minutes += practice_minutes ?? 0;
@@ -344,7 +344,7 @@ function takeOrRecord<T, K extends keyof SectionErrors>(
   return value.data;
 }
 
-export function usePlayerDetail(playerId: string | undefined) {
+export function usePlayerDetail(playerId: string | undefined, lang: string = "en") {
   const [profile, setProfile] = useState<PlayerProfile | null>(null);
   const [skillProgress, setSkillProgress] = useState<SkillProgressRow[]>([]);
   const [allSkills, setAllSkills] = useState<SkillRow[]>([]);
@@ -454,8 +454,8 @@ export function usePlayerDetail(playerId: string | undefined) {
     [skillProgress],
   );
   const weeklyTrends = useMemo(
-    () => computeWeeklyTrends(dailyActivity),
-    [dailyActivity],
+    () => computeWeeklyTrends(dailyActivity, lang),
+    [dailyActivity, lang],
   );
   const roadmap = useMemo(
     () => computeRoadmap(profile, allSkills, skillProgress),

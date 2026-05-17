@@ -71,10 +71,11 @@ export type Block =
   | TwoColumnBlock
   | FooterBlock;
 
-let _idCounter = 0;
 function newId(): string {
-  _idCounter += 1;
-  return `b_${Date.now().toString(36)}_${_idCounter}`;
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return `b_${crypto.randomUUID()}`;
+  }
+  return `b_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
 export function createBlock(type: BlockType): Block {

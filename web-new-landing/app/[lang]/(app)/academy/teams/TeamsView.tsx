@@ -194,6 +194,7 @@ export function TeamsView({
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder={t.teamNamePlaceholder}
+                  aria-label={t.teamNamePlaceholder}
                   disabled={creating}
                   autoFocus
                   required

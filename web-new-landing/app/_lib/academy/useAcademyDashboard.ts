@@ -37,16 +37,19 @@ function parseLocalDate(dateStr: string): Date | null {
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
-function getWeekKey(date: Date): string {
+function getWeekKey(date: Date, lang: string): string {
   const d = new Date(date);
   const day = d.getDay();
   const diff = d.getDate() - day + (day === 0 ? -6 : 1);
   d.setDate(diff);
-  const month = d.toLocaleString("en", { month: "short" });
+  const month = d.toLocaleString(lang, { month: "short" });
   return `${month} ${d.getDate()}`;
 }
 
-function aggregateWeekly(activities: DailyActivityRow[]): WeeklyActivityPoint[] {
+function aggregateWeekly(
+  activities: DailyActivityRow[],
+  lang: string,
+): WeeklyActivityPoint[] {
   const weeks: Record<
     string,
     { week: string; activePlayers: Set<string>; totalXp: number }
@@ -54,13 +57,13 @@ function aggregateWeekly(activities: DailyActivityRow[]): WeeklyActivityPoint[] 
   for (let i = 11; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i * 7);
-    const key = getWeekKey(d);
+    const key = getWeekKey(d, lang);
     weeks[key] = { week: key, activePlayers: new Set(), totalXp: 0 };
   }
   activities.forEach(({ user_id, activity_date, xp_earned }) => {
     const parsed = parseLocalDate(activity_date);
     if (!parsed) return;
-    const key = getWeekKey(parsed);
+    const key = getWeekKey(parsed, lang);
     if (weeks[key]) {
       weeks[key].activePlayers.add(user_id);
       weeks[key].totalXp += xp_earned ?? 0;
@@ -73,7 +76,7 @@ function aggregateWeekly(activities: DailyActivityRow[]): WeeklyActivityPoint[] 
   }));
 }
 
-export function useAcademyDashboard(orgId: string | undefined) {
+export function useAcademyDashboard(orgId: string | undefined, lang: string = "en") {
   const [stats, setStats] = useState<AcademyStats>(null);
   const [weeklyActivity, setWeeklyActivity] = useState<WeeklyActivityPoint[]>([]);
   const [loading, setLoading] = useState(false);
@@ -100,7 +103,7 @@ export function useAcademyDashboard(orgId: string | undefined) {
 
       const playerIds = (members ?? []).map((m: { user_id: string }) => m.user_id);
       if (playerIds.length === 0) {
-        setWeeklyActivity(aggregateWeekly([]));
+        setWeeklyActivity(aggregateWeekly([], lang));
       } else {
         const { data: activityData, error: activityError } = await supabase
           .from("daily_activity")
@@ -108,14 +111,14 @@ export function useAcademyDashboard(orgId: string | undefined) {
           .gte("activity_date", getWeeksAgoDate(12))
           .in("user_id", playerIds);
         if (activityError) throw activityError;
-        setWeeklyActivity(aggregateWeekly((activityData ?? []) as DailyActivityRow[]));
+        setWeeklyActivity(aggregateWeekly((activityData ?? []) as DailyActivityRow[], lang));
       }
     } catch (err) {
       setError((err as Error).message);
     } finally {
       setLoading(false);
     }
-  }, [orgId]);
+  }, [orgId, lang]);
 
   useEffect(() => {
     fetchDashboard();

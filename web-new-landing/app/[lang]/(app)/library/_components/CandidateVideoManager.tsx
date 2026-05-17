@@ -38,10 +38,27 @@ export function CandidateVideoManager({
   const t = dict.library.candidates;
   const [items, setItems] = useState<VideoCandidate[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [busyPath, setBusyPath] = useState<string | null>(null);
+  const [busyPaths, setBusyPaths] = useState<Set<string>>(() => new Set());
   const [uploadPct, setUploadPct] = useState<number | null>(null);
   const [pendingDelete, setPendingDelete] = useState<VideoCandidate | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const activeUrlRef = useRef(activeUrl);
+  useEffect(() => {
+    activeUrlRef.current = activeUrl;
+  }, [activeUrl]);
+
+  const addBusy = (path: string) =>
+    setBusyPaths((prev) => {
+      const n = new Set(prev);
+      n.add(path);
+      return n;
+    });
+  const removeBusy = (path: string) =>
+    setBusyPaths((prev) => {
+      const n = new Set(prev);
+      n.delete(path);
+      return n;
+    });
 
   const reload = useCallback(async () => {
     try {
@@ -72,7 +89,7 @@ export function CandidateVideoManager({
   };
 
   const handleSetActive = async (cand: VideoCandidate) => {
-    setBusyPath(cand.path);
+    addBusy(cand.path);
     try {
       await setActiveExerciseVideo(exerciseId, cand.publicUrl);
       onActiveChange(cand.publicUrl);
@@ -80,7 +97,7 @@ export function CandidateVideoManager({
     } catch (e) {
       toast.error(fmt(t.activateFailed, { error: e instanceof Error ? e.message : String(e) }));
     } finally {
-      setBusyPath(null);
+      removeBusy(cand.path);
     }
   };
 
@@ -88,12 +105,12 @@ export function CandidateVideoManager({
     const cand = pendingDelete;
     if (!cand) return;
     setPendingDelete(null);
-    setBusyPath(cand.path);
+    addBusy(cand.path);
     try {
       const { clearedActive } = await deleteExerciseVideoCandidate(
         exerciseId,
         cand,
-        activeUrl,
+        activeUrlRef.current,
       );
       if (clearedActive) onActiveChange(null);
       toast.success(t.deleted);
@@ -101,7 +118,7 @@ export function CandidateVideoManager({
     } catch (e) {
       toast.error(fmt(t.deleteFailed, { error: e instanceof Error ? e.message : String(e) }));
     } finally {
-      setBusyPath(null);
+      removeBusy(cand.path);
     }
   };
 
@@ -148,7 +165,9 @@ export function CandidateVideoManager({
           <ul className="m-0 list-none p-0">
             {items.map((cand) => {
               const isActive = activeUrl === cand.publicUrl;
-              const isBusy = busyPath === cand.path;
+              const isBusy = busyPaths.has(cand.path);
+              const anyBusy = busyPaths.size > 0;
+              const disabled = isBusy || anyBusy;
               return (
                 <li
                   key={cand.path}
@@ -182,7 +201,7 @@ export function CandidateVideoManager({
                       <button
                         type="button"
                         onClick={() => void handleSetActive(cand)}
-                        disabled={isBusy}
+                        disabled={disabled}
                         className="inline-flex min-h-[36px] items-center rounded-full border border-accent-dark/15 bg-cream px-3 font-display label-xs uppercase text-accent-dark transition-colors hover:bg-accent-dark hover:text-cream disabled:opacity-60"
                       >
                         {t.setActive}
@@ -191,7 +210,7 @@ export function CandidateVideoManager({
                     <button
                       type="button"
                       onClick={() => setPendingDelete(cand)}
-                      disabled={isBusy}
+                      disabled={disabled}
                       className="inline-flex min-h-[36px] items-center rounded-full border border-error/40 bg-error/10 px-3 font-display label-xs uppercase text-error transition-colors hover:bg-error hover:text-white disabled:opacity-60"
                     >
                       {t.delete}
@@ -201,6 +220,11 @@ export function CandidateVideoManager({
               );
             })}
           </ul>
+        )}
+        {items != null && items.length === 100 && (
+          <p className="mt-2 font-sans text-body-xs italic text-warm-shadow">
+            {t.truncatedNotice}
+          </p>
         )}
       </div>
 

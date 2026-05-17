@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { supabase } from "../../../../_lib/supabase";
 import { ConfirmDialog } from "../../../../_components/primitives/ConfirmDialog";
 import { Modal } from "../../../../_components/primitives/Modal";
@@ -46,6 +47,8 @@ export function CampaignDrilldownModal({
   onClose: () => void;
 }) {
   const t = dict.marketing.drilldown;
+  const params = useParams();
+  const lang = String(params?.lang ?? "");
   const [rows, setRows] = useState<RecipientRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<FilterKey>("all");
@@ -246,10 +249,10 @@ export function CampaignDrilldownModal({
                   {r.status}
                 </span>
                 <span className={`font-sans text-body-xs ${r.opened_at ? "text-glyph-gold" : "text-warm-shadow/60"}`}>
-                  {r.opened_at ? new Date(r.opened_at).toLocaleDateString() : "—"}
+                  {r.opened_at ? new Date(r.opened_at).toLocaleDateString(lang) : "—"}
                 </span>
                 <span className={`font-sans text-body-xs ${r.clicked_at ? "text-glyph-gold" : "text-warm-shadow/60"}`}>
-                  {r.clicked_at ? new Date(r.clicked_at).toLocaleDateString() : "—"}
+                  {r.clicked_at ? new Date(r.clicked_at).toLocaleDateString(lang) : "—"}
                 </span>
                 <span className="font-sans text-body-xs text-warm-shadow">
                   {r.bounced_at ? t.bounced : r.complained_at ? t.complained : "—"}

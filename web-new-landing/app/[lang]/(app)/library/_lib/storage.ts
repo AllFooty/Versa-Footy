@@ -97,7 +97,7 @@ async function uploadWithProgress(
     });
     xhr.addEventListener("error", () => reject(new Error("Network error during upload")));
     xhr.addEventListener("abort", () => reject(new Error("Upload cancelled")));
-    xhr.open("POST", uploadUrl, true);
+    xhr.open("PUT", uploadUrl, true);
     xhr.setRequestHeader("Authorization", `Bearer ${accessToken ?? supabaseAnonKey}`);
     xhr.setRequestHeader("apikey", supabaseAnonKey);
     xhr.setRequestHeader("Content-Type", file.type || "video/mp4");
@@ -118,6 +118,8 @@ function extractStoragePath(input: string | null | undefined): string | null {
   }
   if (path.startsWith("public/")) path = path.replace(/^public\//, "");
   if (path.startsWith("exercise-videos/")) path = path.slice("exercise-videos/".length);
+  const queryIdx = path.indexOf("?");
+  if (queryIdx !== -1) path = path.slice(0, queryIdx);
   return path;
 }
 

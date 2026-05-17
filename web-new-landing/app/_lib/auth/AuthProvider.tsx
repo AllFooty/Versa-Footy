@@ -109,15 +109,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const orgs = (data ?? []) as Organization[];
       setOrganizations(orgs);
       if (orgs.length > 0) {
+        let savedId: string | null = null;
+        try {
+          savedId = localStorage.getItem("activeOrgId");
+        } catch {}
         setActiveOrg((prev) => {
           if (prev) {
             const refreshed = orgs.find((o) => o.id === prev.id);
             if (refreshed) return refreshed;
           }
-          let savedId: string | null = null;
-          try {
-            savedId = localStorage.getItem("activeOrgId");
-          } catch {}
           const saved = savedId ? orgs.find((o) => o.id === savedId) : null;
           if (saved) return saved;
           const primary = orgs.find((o) => o.is_primary);

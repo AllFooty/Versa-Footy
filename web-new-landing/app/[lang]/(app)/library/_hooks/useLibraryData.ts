@@ -79,7 +79,7 @@ export function useLibraryData() {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
+    if (version === 0) setLoading(true);
     setError(null);
     void (async () => {
       try {

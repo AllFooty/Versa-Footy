@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
 import {
@@ -17,7 +18,25 @@ import {
 import { Skeleton } from "../../../../../_components/primitives/Skeleton";
 import type { ProductDict } from "../../../../../_dictionaries/product";
 import type { Locale } from "../../../../../_dictionaries";
-import { PlayerCharts } from "./PlayerCharts";
+
+const PlayerCharts = {
+  RadarChart: dynamic(
+    () => import("./PlayerCharts").then((m) => m.PlayerCharts.RadarChart),
+    { ssr: false, loading: () => null },
+  ),
+  ActivityBars: dynamic(
+    () => import("./PlayerCharts").then((m) => m.PlayerCharts.ActivityBars),
+    { ssr: false, loading: () => null },
+  ),
+  WeeklyLine: dynamic(
+    () => import("./PlayerCharts").then((m) => m.PlayerCharts.WeeklyLine),
+    { ssr: false, loading: () => null },
+  ),
+  WeeklyBars: dynamic(
+    () => import("./PlayerCharts").then((m) => m.PlayerCharts.WeeklyBars),
+    { ssr: false, loading: () => null },
+  ),
+};
 
 type T = ProductDict["playerDetail"];
 
@@ -59,7 +78,7 @@ export function PlayerDetailView({
     loading,
     error,
     sectionErrors,
-  } = usePlayerDetail(playerId || undefined);
+  } = usePlayerDetail(playerId || undefined, lang);
 
   const [activeTab, setActiveTab] = useState(0);
   const [roadmapFilter, setRoadmapFilter] = useState("all");

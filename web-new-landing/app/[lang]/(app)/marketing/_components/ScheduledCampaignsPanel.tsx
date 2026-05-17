@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { supabase } from "../../../../_lib/supabase";
 import { ConfirmDialog } from "../../../../_components/primitives/ConfirmDialog";
 import { Modal } from "../../../../_components/primitives/Modal";
@@ -30,6 +31,8 @@ export function ScheduledCampaignsPanel({
   dict: ProductDict;
 }) {
   const t = dict.marketing.scheduled;
+  const params = useParams<{ lang?: string }>();
+  const lang = typeof params?.lang === "string" ? params.lang : undefined;
   const [rows, setRows] = useState<ScheduledRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -191,6 +194,7 @@ export function ScheduledCampaignsPanel({
         <div className="mt-5">
           <DateTimeInput
             autoFocus
+            lang={lang}
             aria-label={t.reschedulePrompt}
             value={reschedValue}
             onChange={(e) => setReschedValue(e.currentTarget.value)}

@@ -33,8 +33,7 @@ export const isAnyFilterActive = (filters: LibraryFilters): boolean =>
   filters.durationMin != null ||
   filters.durationMax != null ||
   filters.hasVideo != null ||
-  filters.comboFilter !== "either" ||
-  filters.categoryIds.length > 0;
+  filters.comboFilter !== "either";
 
 export function filterExercises(exerciseList: Exercise[], filters: LibraryFilters): Exercise[] {
   let result = exerciseList;

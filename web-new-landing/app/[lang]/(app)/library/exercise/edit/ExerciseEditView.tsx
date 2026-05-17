@@ -22,6 +22,7 @@ import { CandidateVideoManager } from "../../_components/CandidateVideoManager";
 import type { Category, Exercise, Skill } from "../../_lib/types";
 import type { ProductDict } from "../../../../../_dictionaries/product";
 import type { Locale } from "../../../../../_dictionaries";
+import { useAuth } from "../../../../../_lib/auth/AuthProvider";
 
 function fmt(template: string, vars: Record<string, string | number>): string {
   return template.replace(/\{\{(\w+)\}\}/g, (_, k) => String(vars[k] ?? ""));
@@ -30,7 +31,7 @@ function fmt(template: string, vars: Record<string, string | number>): string {
 type FormState = {
   name: string;
   skillIds: number[];
-  difficulty: number;
+  difficulty: number | null;
   duration: string;
   description: string;
   equipment: string[];
@@ -40,7 +41,7 @@ type FormState = {
 const EMPTY_FORM: FormState = {
   name: "",
   skillIds: [],
-  difficulty: 1,
+  difficulty: null,
   duration: "",
   description: "",
   equipment: [],
@@ -55,6 +56,7 @@ export function ExerciseEditView({
   lang: Locale;
 }) {
   const t = dict.library.exerciseEdit;
+  const { isAdmin } = useAuth();
   const router = useRouter();
   const params = useSearchParams();
   const idParam = params.get("id");
@@ -150,7 +152,7 @@ export function ExerciseEditView({
         setForm({
           name: r.name,
           skillIds: allSkillIds,
-          difficulty: r.difficulty ?? 1,
+          difficulty: r.difficulty,
           duration: r.minimum_duration?.toString() ?? "",
           description: r.description ?? "",
           equipment: r.equipment ?? [],
@@ -257,6 +259,7 @@ export function ExerciseEditView({
         skillIds: form.skillIds,
         videoUrl: form.videoUrl.trim() || null,
         difficulty: form.difficulty,
+
         description: form.description.trim() ? form.description : null,
         equipment: form.equipment,
         minimumDuration: duration != null && !Number.isNaN(duration) ? duration : null,
@@ -392,16 +395,42 @@ export function ExerciseEditView({
             min={0}
             max={5}
             step={1}
-            value={form.difficulty}
+            value={form.difficulty ?? 0}
+            disabled={form.difficulty == null}
             onChange={(e) =>
               setForm({ ...form, difficulty: Number.parseInt(e.target.value, 10) })
             }
-            className="h-2 w-full accent-glyph-gold"
+            className="h-2 w-full accent-glyph-gold disabled:opacity-50"
           />
-          <p className="mt-1 font-sans text-body-s text-accent-dark">
-            {"★".repeat(form.difficulty)}
-            {"☆".repeat(Math.max(0, 5 - form.difficulty))} ({form.difficulty})
-          </p>
+          <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
+            <p className="font-sans text-body-s text-accent-dark">
+              {form.difficulty == null ? (
+                <span className="italic text-warm-shadow">{t.difficultyNone}</span>
+              ) : (
+                <>
+                  {"★".repeat(form.difficulty)}
+                  {"☆".repeat(Math.max(0, 5 - form.difficulty))} ({form.difficulty})
+                </>
+              )}
+            </p>
+            {form.difficulty == null ? (
+              <button
+                type="button"
+                onClick={() => setForm({ ...form, difficulty: 1 })}
+                className="font-display label-xs uppercase text-warm-shadow hover:text-accent-dark"
+              >
+                {t.difficultyScale}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setForm({ ...form, difficulty: null })}
+                className="font-display label-xs uppercase text-warm-shadow hover:text-accent-dark"
+              >
+                {t.difficultyNone}
+              </button>
+            )}
+          </div>
         </Field>
         <Field label={t.durationLabel} hint={t.durationHint}>
           <Input
@@ -521,7 +550,7 @@ export function ExerciseEditView({
         </div>
       </section>
 
-      {isEdit && id != null && (
+      {isEdit && id != null && isAdmin && (
         <CandidateVideoManager
           exerciseId={id}
           activeUrl={form.videoUrl || null}

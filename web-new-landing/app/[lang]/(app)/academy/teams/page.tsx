@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { TeamsView } from "./TeamsView";
 import { AcademyProtectedRoute } from "../../../../_lib/auth/ProtectedRoute";
 import { hasLocale } from "../../../../_dictionaries";
@@ -14,7 +15,9 @@ export default async function TeamsPage({
   const productDict = getProductDictionary(lang);
   return (
     <AcademyProtectedRoute>
-      <TeamsView dict={productDict} lang={lang} />
+      <Suspense fallback={null}>
+        <TeamsView dict={productDict} lang={lang} />
+      </Suspense>
     </AcademyProtectedRoute>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { supabase } from "../../../../_lib/supabase";
 import { CampaignDrilldownModal, type CampaignSummary } from "./CampaignDrilldownModal";
 import type { ProductDict } from "../../../../_dictionaries/product";
@@ -29,6 +30,8 @@ export function RecentCampaignsPanel({
   dict: ProductDict;
 }) {
   const t = dict.marketing.recent;
+  const params = useParams();
+  const lang = String(params?.lang ?? "");
   const [campaigns, setCampaigns] = useState<CampaignRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [drilldown, setDrilldown] = useState<CampaignRow | null>(null);
@@ -77,7 +80,7 @@ export function RecentCampaignsPanel({
         <span className="text-center">{t.colBounced}</span>
       </div>
       {campaigns.map((c) => (
-        <CampaignRow key={c.id} c={c} t={t} onClick={() => setDrilldown(c)} />
+        <CampaignRow key={c.id} c={c} t={t} lang={lang} onClick={() => setDrilldown(c)} />
       ))}
       {drilldown && (
         <CampaignDrilldownModal
@@ -93,10 +96,12 @@ export function RecentCampaignsPanel({
 function CampaignRow({
   c,
   t,
+  lang,
   onClick,
 }: {
   c: CampaignRow;
   t: ProductDict["marketing"]["recent"];
+  lang: string;
   onClick: () => void;
 }) {
   const sent = c.successful_sends ?? 0;
@@ -126,7 +131,7 @@ function CampaignRow({
         <div className="mt-1 font-sans text-body-xs text-warm-shadow">
           {fmt(t.rowMeta, {
             audience: c.audience,
-            date: date ? new Date(date).toLocaleDateString() : "—",
+            date: date ? new Date(date).toLocaleDateString(lang) : "—",
             status: c.status,
             sender,
           })}

@@ -110,6 +110,7 @@ export function HomeView({ dict, lang }: { dict: ProductDict; lang: Locale }) {
   const pending = usePendingInvitations(user?.email);
   const { stats: academyStats, loading: academyLoading } = useAcademyDashboard(
     activeOrg?.id,
+    lang,
   );
 
   const firstName = profile?.full_name?.split(" ")[0];

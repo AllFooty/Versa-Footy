@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { AcademySettingsView } from "./AcademySettingsView";
 import { AcademyProtectedRoute } from "../../../../_lib/auth/ProtectedRoute";
 import { hasLocale } from "../../../../_dictionaries";
@@ -14,7 +15,9 @@ export default async function AcademySettingsPage({
   const productDict = getProductDictionary(lang);
   return (
     <AcademyProtectedRoute>
-      <AcademySettingsView dict={productDict} lang={lang} />
+      <Suspense fallback={null}>
+        <AcademySettingsView dict={productDict} lang={lang} />
+      </Suspense>
     </AcademyProtectedRoute>
   );
 }

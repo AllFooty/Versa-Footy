@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { supabase } from "../../../../_lib/supabase";
 import { ConfirmDialog } from "../../../../_components/primitives/ConfirmDialog";
 import { toast } from "../../../../_components/primitives/Toast";
@@ -19,6 +20,8 @@ function fmt(template: string, vars: Record<string, string | number>): string {
 
 export function SuppressionsPanel({ dict }: { dict: ProductDict }) {
   const t = dict.marketing.suppressions;
+  const params = useParams();
+  const lang = String(params?.lang ?? "");
   const [rows, setRows] = useState<SuppressionRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState("");
@@ -122,7 +125,7 @@ export function SuppressionsPanel({ dict }: { dict: ProductDict }) {
                 {r.notes ?? "—"}
               </span>
               <span className="font-sans text-body-xs text-warm-shadow">
-                {new Date(r.created_at).toLocaleDateString()}
+                {new Date(r.created_at).toLocaleDateString(lang)}
               </span>
               <button
                 type="button"

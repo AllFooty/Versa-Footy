@@ -417,7 +417,11 @@ function ImageUploader({
     setUploading(true);
     try {
       const ext = file.name.split(".").pop() ?? "bin";
-      const path = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const id =
+        typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const path = `${id}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from("marketing-assets")
         .upload(path, file, { contentType: file.type, upsert: false });
