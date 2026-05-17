@@ -23,11 +23,14 @@ const SPA_PREFIXES = [
   "/attached_assets",
 ];
 
-interface Env {
-  APP_ORIGIN?: string;
-}
+// Inline types — avoids depending on @cloudflare/workers-types in package.json.
+type EventContext = {
+  request: Request;
+  env: { APP_ORIGIN?: string };
+  next: () => Promise<Response>;
+};
 
-export const onRequest: PagesFunction<Env> = async (context) => {
+export const onRequest = async (context: EventContext): Promise<Response> => {
   const appOrigin = context.env.APP_ORIGIN ?? "https://app-origin.versafooty.com";
   const url = new URL(context.request.url);
   const { pathname } = url;
