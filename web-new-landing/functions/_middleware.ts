@@ -30,6 +30,7 @@ const BARE_NATIVE_PATHS = [
   "/academy/invitations",
   "/academy/teams",
   "/academy/settings",
+  "/academy/players",
 ];
 
 const DEFAULT_LOCALE = "ar";

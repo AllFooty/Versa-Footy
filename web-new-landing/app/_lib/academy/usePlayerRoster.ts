@@ -11,8 +11,11 @@ export type Player = {
   age_group: string | null;
   current_level: number;
   total_xp: number;
+  xp_this_week: number;
+  skills_mastered: number;
   current_streak: number;
   longest_streak: number;
+  avg_self_rating: number;
   last_practice_date: string | null;
   [k: string]: unknown;
 };
