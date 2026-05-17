@@ -6,7 +6,6 @@ const SPA_PREFIXES = [
   // /academy itself is now native; sub-routes (/academy/players, /teams,
   // /invitations, /settings) still proxy until ported in this phase.
   "/academy/players",
-  "/academy/settings",
   "/library",
   "/videos-audit",
   "/marketing",
