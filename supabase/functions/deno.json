@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.45.4"
+  },
+  "tasks": {
+    "serve:send": "deno run --allow-env --allow-net send-marketing-email/index.ts",
+    "serve:resend": "deno run --allow-env --allow-net resend-campaign-failures/index.ts"
+  }
+}
