@@ -1,5 +1,8 @@
 import type { MetadataRoute } from "next";
 
+// Required for output: 'export' — pre-render at build time.
+export const dynamic = "force-static";
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://versafooty.com";
 
 const HOME_LAST_MODIFIED = "2026-05-16";

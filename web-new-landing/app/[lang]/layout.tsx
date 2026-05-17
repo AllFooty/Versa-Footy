@@ -5,10 +5,6 @@ import { MotionProvider } from "../_components/MotionProvider";
 import { getDictionary, hasLocale, LOCALES, type Locale } from "../_dictionaries";
 import "../globals.css";
 
-// Required by @cloudflare/next-on-pages adapter — every non-static route must
-// declare the edge runtime so Cloudflare can serve it as a Worker.
-export const runtime = "edge";
-
 const saira = Saira_Condensed({
   variable: "--font-saira",
   subsets: ["latin"],
